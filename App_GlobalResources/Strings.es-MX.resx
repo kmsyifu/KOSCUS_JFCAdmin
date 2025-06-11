@@ -1,0 +1,1970 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>Cuenta</value>
+    <comment>Account</comment>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Nombre de Cuenta</value>
+    <comment>Account Name</comment>
+  </data>
+  <data name="ActionRequired" xml:space="preserve">
+    <value>Acción Requerida</value>
+    <comment>Action Required</comment>
+  </data>
+  <data name="Addadvancepayment" xml:space="preserve">
+    <value>Agregar pago previa</value>
+    <comment>Add advance payment</comment>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Dirección</value>
+    <comment>Address</comment>
+  </data>
+  <data name="Address1" xml:space="preserve">
+    <value>Dirección 1</value>
+    <comment>Address 1</comment>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Dirección 2</value>
+    <comment>Address 2</comment>
+  </data>
+  <data name="ADJUSTMENT" xml:space="preserve">
+    <value>Ajuste</value>
+    <comment>Adjustment</comment>
+  </data>
+  <data name="AdvancePayment" xml:space="preserve">
+    <value>Pagamiento Previa</value>
+    <comment>Advance Payment</comment>
+  </data>
+  <data name="Aging" xml:space="preserve">
+    <value>Envejecimiento</value>
+    <comment>Aging</comment>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todo</value>
+    <comment>All</comment>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Monto</value>
+    <comment>Amount</comment>
+  </data>
+  <data name="Anorderhasbeencanceled" xml:space="preserve">
+    <value>Un orden ha sido cancelada.</value>
+    <comment>An order has been canceled.</comment>
+  </data>
+  <data name="API" xml:space="preserve">
+    <value />
+  </data>
+  <data name="App" xml:space="preserve">
+    <value>App</value>
+    <comment>App</comment>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Aplicar</value>
+    <comment>Apply</comment>
+  </data>
+  <data name="AutoPaymentConfirmation" xml:space="preserve">
+    <value>Confirmación de Pago Automático</value>
+    <comment>Auto Payment Confirmation</comment>
+  </data>
+  <data name="Autopaymentfailed" xml:space="preserve">
+    <value>Pago automático falló</value>
+    <comment>Auto payment failed</comment>
+  </data>
+  <data name="AutoPaymentMsg1" xml:space="preserve">
+    <value>Por favor note que aunque la nota de crédito haya generado, va a tardar hasta que parezca en el estado de cuenta. El descuento se va a apricar automáticamente en su próximo pago automático.</value>
+    <comment>Please note that when a credit memo is issued, it will not be refunded to your bank immediately. Instead, its negative balance will be included in your next auto payment for your future invoices.</comment>
+  </data>
+  <data name="AutoPaymentMsg2" xml:space="preserve">
+    <value>Términos y Condiciones</value>
+    <comment>Terms and Conditions</comment>
+  </data>
+  <data name="AutoPaymentMsg3" xml:space="preserve">
+    <value>Solicitando el servicio de pago automático, nos da autolización de transferir automáticamente el monto de pago que ha solicitado arriba, de su cuenta de banco que indicó arriba a JFC. Por favor reconozca que la transacción de pago automático a JFC debe cumplir la ley de México. Esta autorización es permanecer con toda la fuerza y en efecto hasta que recibamos una notificación de solicitud de cancelar autorización en escrito o por línea de su parte.</value>
+    <comment>By requesting this Auto Payment service, you authorize us to automatically transfer the amount of the payment you requested above, from your bank account indicated above, and to JFC. You acknowledge that the origination of automatic payment transactions to JFC must comply with the provisions of U.S. law. This authorization is to remain in full force and in effect until we have received written or online notification from you to cancel this authorization.</comment>
+  </data>
+  <data name="AutoPaymentMsg4" xml:space="preserve">
+    <value>Acepto téminos y condiciones</value>
+    <comment>I agree to the Terms and Conditions</comment>
+  </data>
+  <data name="AutoPaymentMsg5" xml:space="preserve">
+    <value>Pago automático (todo) - Su pago realizará automáticamente en 24 horas después de que hayan generado factura y nota de crédito.</value>
+    <comment>Auto payment (all) - Automatically deduct the total amount within 24 hours after your invoice and credit memo has been created.    </comment>
+  </data>
+  <data name="AutoPaymentMsg6" xml:space="preserve">
+    <value>{0}% de descuento está aplicado para empleados.</value>
+    <comment>{0}% discount is applied for employees.</comment>
+  </data>
+  <data name="AutoPaymentMsg7" xml:space="preserve">
+    <value>Pago automatico (solo alcohol) - Su pago para alcohol incluyendo interes de alcohol realizará automáticamente en 24 horas después de que hayan generado factura y nota de crédito.</value>
+    <comment>Auto payment (liquor only) - Automatically deduct the total amount for liquor including liquor interest within 24 hours after your invoice has been created.</comment>
+  </data>
+  <data name="AutoPaymentSettings" xml:space="preserve">
+    <value>Configración de Pago Automático</value>
+    <comment>Auto Payment Settings</comment>
+  </data>
+  <data name="Avail" xml:space="preserve">
+    <value />
+    <comment>Avail</comment>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo</value>
+    <comment>Balance</comment>
+  </data>
+  <data name="BalanceDtlMsg1" xml:space="preserve">
+    <value>¡Gracias! Su pago ha sido aprobado.</value>
+    <comment>Thank you! Your payment has been approved.</comment>
+  </data>
+  <data name="BalanceDtltitle" xml:space="preserve">
+    <value>Historia de transacción con JFC</value>
+    <comment>Transaction History with JFC</comment>
+  </data>
+  <data name="BalanceforJFC" xml:space="preserve">
+    <value>Saldo para JFC</value>
+    <comment>Balance for JFC</comment>
+  </data>
+  <data name="BalanceMsg1" xml:space="preserve">
+    <value>Esta tarjeta ya está registrada. Por favor vaya a su cuenta su necesita modificación.</value>
+    <comment>This card exists in your account list. Please go to your account if you need to modify</comment>
+  </data>
+  <data name="BalanceMsg10" xml:space="preserve">
+    <value>Monto de pago no puede ser más de ${0}. Si quiere pagar más de ${1}, por favor divida en pago múltiple.</value>
+    <comment>Payment amount cannot exceed ${0}. If you want to pay more than ${1}, please divide it to multiple payments.</comment>
+  </data>
+  <data name="BalanceMsg11" xml:space="preserve">
+    <value>Eso muestra que ha generado pago dentro de dos horas. Este pago no procede por pago duplicado. Si quiere generar otro pago, por favor cambie monto de pago.</value>
+    <comment>It appears that you have made a payment with the same amount within 2 hours. This payment cannot be processed as it might be duplicate payment. If you want to make another payment, please change your payment amount.</comment>
+  </data>
+  <data name="BalanceMsg12" xml:space="preserve">
+    <value>Tarjeta que seleccionó ha sido expirada. Por favor use otra cuenta.</value>
+    <comment>The card you selected has been expired. Please use another account.</comment>
+  </data>
+  <data name="BalanceMsg13" xml:space="preserve">
+    <value>No encuentra su cuenta de pago.</value>
+    <comment>Cannot find your payment account.</comment>
+  </data>
+  <data name="BalanceMsg14" xml:space="preserve">
+    <value>Transacción fue rechazada. Mensaje de procesador de pago fue {0}. Por favor checque su cuenta de pago o use otra cuenta.</value>
+    <comment>The transaction was declined. The error message from the payment processor was {0}. Please check your payment account or use another account.</comment>
+  </data>
+  <data name="BalanceMsg15" xml:space="preserve">
+    <value>Por favor acepte los Términos y Condiciones. </value>
+    <comment>Please agree to the Terms and Conditions.</comment>
+  </data>
+  <data name="BalanceMsg16" xml:space="preserve">
+    <value>Gracias por su pago de {0}.</value>
+    <comment>Thank you for your payment of {0}.</comment>
+  </data>
+  <data name="BalanceMsg17" xml:space="preserve">
+    <value>Gracias por su pago.</value>
+    <comment>Thank you for your payment.</comment>
+  </data>
+  <data name="BalanceMsg18" xml:space="preserve">
+    <value>Su pago de {0} ha sido aprobado y {1} ha sido rechazado.</value>
+    <comment>Your payment of {0} has been approved and {1} has been declined.</comment>
+  </data>
+  <data name="BalanceMsg19" xml:space="preserve">
+    <value>Su pago ID es {0}.</value>
+    <comment>Your payment ID is {0}.</comment>
+  </data>
+  <data name="BalanceMsg2" xml:space="preserve">
+    <value>Ese número de cuenta de banco ya está registarado. Por favor vaya a su cuenta su necesita modificación.</value>
+    <comment>This bank account # has already exist in your list. Please go to your account if you need to modify</comment>
+  </data>
+  <data name="BalanceMsg20" xml:space="preserve">
+    <value>El monto de pago tiene que ser número positivo.</value>
+    <comment>Payment amount has to be a positive number</comment>
+  </data>
+  <data name="BalanceMsg3" xml:space="preserve">
+    <value>Por favor escriba la razón si el monto de pago es menos que monto pendiente.</value>
+    <comment>Please enter reason in note field for each line if payment amount is less than balance</comment>
+  </data>
+  <data name="BalanceMsg4" xml:space="preserve">
+    <value>El monto de pago no se puede superar a monto pendiente.</value>
+    <comment>Payment amount cannot be greater than remainding balance.</comment>
+  </data>
+  <data name="BalanceMsg5" xml:space="preserve">
+    <value>Monto de pago previa no puede ser negativo</value>
+    <comment>Advance Payment amount cannot be negative</comment>
+  </data>
+  <data name="BalanceMsg6" xml:space="preserve">
+    <value>Monto de pago no puede ser negativo</value>
+    <comment>Payment amount cannot be negative</comment>
+  </data>
+  <data name="BalanceMsg7" xml:space="preserve">
+    <value>Por favor checque más de una factura que quiere pagar.</value>
+    <comment>Please check at least one invoice that you would like to pay.</comment>
+  </data>
+  <data name="BalanceMsg8" xml:space="preserve">
+    <value>Si quiere pagar monto diferente, por favor use buzón de "Aplicar" para aplicar monto que ingresó en monto de pago.</value>
+    <comment>If you would like to pay different amount, please use 'Apply' button to apply the amount you entered to the payment amount.</comment>
+  </data>
+  <data name="BalanceMsg9" xml:space="preserve">
+    <value>{0} o use otra cuenta de pago.</value>
+    <comment>{0} or use another payment account.</comment>
+  </data>
+  <data name="BankAccount" xml:space="preserve">
+    <value>Cuenta de banco</value>
+    <comment>Bank Account</comment>
+  </data>
+  <data name="Bankaccountdoesnotmatch" xml:space="preserve">
+    <value>Número de cuenta de banco no corresponde</value>
+    <comment>Bank account # does not match</comment>
+  </data>
+  <data name="BankAccountUpto17digits" xml:space="preserve">
+    <value>Número de Cuenta de Banco (Máximo 17 dígitos)</value>
+    <comment>Bank Account # (Up to 17 digits)</comment>
+  </data>
+  <data name="Batch_FortePaymentSync" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Batch_FortePaymentSync1" xml:space="preserve">
+    <value>Tarjeta para pago automático ha sido expirada. Por favor registre nueva tarjeta en app.jfc.com.</value>
+    <comment>The card you use for auto payment has been expired. Please register another card at app.jfc.com.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync2" xml:space="preserve">
+    <value>No se encuentra cuenta para pago automático. Si desea ultizar pago automático, por favor registre en https://app.jfc.com.</value>
+    <comment>Cannot find your bank account for auto payment. If you would like to use auto payment, please set it up at https://app.jfc.com.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync3" xml:space="preserve">
+    <value>Su pago automático ha sido rechasado. Mensaje de procesador de pago es {0}. Por favor cheque su cuenta de pago automático en app.jfc.com.</value>
+    <comment>The auto payment was declined. The error message from the payment processor was {0}. Please check your account for auto payment at app.jfc.com.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync4" xml:space="preserve">
+    <value>Siguiente pago ha fallado.</value>
+    <comment>The following payment you made has failed.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync5" xml:space="preserve">
+    <value>Como resultado, su monto de pago añadirá a su cuenta en 1 o 2 días laborales.  Por favor regrese nuestra página web a las {0} en unos días laborales y realice pago de nuevo.</value>
+    <comment>As a result, your paid amount will be added back to your account in 1 to 2 business days. Please visit our website at {0} in a few business days and make a payment again.</comment>
+  </data>
+  <data name="Bestregards" xml:space="preserve">
+    <value>Saludos cordiales</value>
+    <comment>Best regards</comment>
+  </data>
+  <data name="Bounced" xml:space="preserve">
+    <value>Rebotado</value>
+    <comment>Bounced</comment>
+  </data>
+  <data name="BOUNCEDPAYMENT" xml:space="preserve">
+    <value>Pago rebotado</value>
+    <comment>Bounced Payment</comment>
+  </data>
+  <data name="btnAutoPay" xml:space="preserve">
+    <value>Actualizar Pago Automático</value>
+    <comment>Set Auto Payment</comment>
+  </data>
+  <data name="btnPay" xml:space="preserve">
+    <value>Ver y Pagar Saldo</value>
+    <comment>View &amp; Pay Balance</comment>
+  </data>
+  <data name="Canceled" xml:space="preserve">
+    <value>Cancelado</value>
+    <comment>Canceled</comment>
+  </data>
+  <data name="Cannotopenthedocument" xml:space="preserve">
+    <value>No puede abrir documento</value>
+    <comment>Cannot open the document</comment>
+  </data>
+  <data name="CardNumber" xml:space="preserve">
+    <value>Número de Tarjeta</value>
+    <comment>Card Number</comment>
+  </data>
+  <data name="CardType" xml:space="preserve">
+    <value>Tipo de Tarjeta</value>
+    <comment>Card Type</comment>
+  </data>
+  <data name="CasePrice" xml:space="preserve">
+    <value>Precio por Caja</value>
+    <comment>Case Price</comment>
+  </data>
+  <data name="CellPhone" xml:space="preserve">
+    <value>Celular</value>
+    <comment>Cell Phone</comment>
+  </data>
+  <data name="Changepassword" xml:space="preserve">
+    <value>Cambiar contraseña...</value>
+    <comment>Change password...</comment>
+  </data>
+  <data name="CheckingAccount" xml:space="preserve">
+    <value>Cuenta de Cheque</value>
+    <comment>Checking Account</comment>
+  </data>
+  <data name="Chilled" xml:space="preserve">
+    <value>Refrigerado</value>
+    <comment>Chilled</comment>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Ciudad</value>
+    <comment>City</comment>
+  </data>
+  <data name="Clickhere" xml:space="preserve">
+    <value>Haga clic aquí</value>
+    <comment>Click here</comment>
+  </data>
+  <data name="Clickheretoviewdetailsandapprovethisorder" xml:space="preserve">
+    <value />
+    <comment>Click here to view details and approve this order</comment>
+  </data>
+  <data name="ComfirmMsg1" xml:space="preserve">
+    <value>¡Gracias! Su solicitud ha sido enviado a su vendedor.</value>
+    <comment>Thank you! Your request has been sent to your sales rep.</comment>
+  </data>
+  <data name="ComfirmMsg2" xml:space="preserve">
+    <value>Su enlace es inválido.</value>
+    <comment>Your link is invalid.</comment>
+  </data>
+  <data name="ComfirmMsg3" xml:space="preserve">
+    <value>¡Nuestro sistema en línea ha sido actualizado!</value>
+    <comment>Our online system has been upgraded!</comment>
+  </data>
+  <data name="ComfirmMsg4" xml:space="preserve">
+    <value>Por favor vaya a {0} para acceder nuestro nuevo sistema en línea y use el mismo correo y contraseña para iniciar sesión.</value>
+    <comment>Please go to {0} to access our new online system and use the same your email address and password to login.</comment>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Empresa</value>
+    <comment>Company</comment>
+  </data>
+  <data name="CONFIRM" xml:space="preserve">
+    <value>CONFIRMAR</value>
+    <comment>CONFIRM</comment>
+  </data>
+  <data name="Confirmationemailhasbeensenttoyou" xml:space="preserve">
+    <value>Correo de confirmación ha sido enviado a usted.</value>
+    <comment>Confirmation email has been sent to you.</comment>
+  </data>
+  <data name="ConfirmBankAccount" xml:space="preserve">
+    <value>Confirmar Cuenta de Banco</value>
+    <comment>Confirm Bank Account</comment>
+  </data>
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Confirmar Supresión</value>
+    <comment>Confirm Deletion</comment>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+    <comment>Country</comment>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>Crear Cuenta</value>
+    <comment>Create Account</comment>
+  </data>
+  <data name="CreatePaymentAccount" xml:space="preserve">
+    <value>Crear Cuenta de Pago</value>
+    <comment>Create Payment Account</comment>
+  </data>
+  <data name="CREDIT" xml:space="preserve">
+    <value>CRÉDITO</value>
+    <comment>CREDIT</comment>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Cliente</value>
+    <comment>Customer</comment>
+  </data>
+  <data name="CustomerItemDescription" xml:space="preserve">
+    <value>Descripción de Producto Cliente</value>
+    <comment>Customer Item Description</comment>
+  </data>
+  <data name="CustomerItemNum" xml:space="preserve">
+    <value>Código de Producto Cliente</value>
+    <comment>Customer Item #</comment>
+  </data>
+  <data name="CustomerPortal" xml:space="preserve">
+    <value>Portal de Cliente</value>
+    <comment>Customer Portal</comment>
+  </data>
+  <data name="CustPO" xml:space="preserve">
+    <value>Número de Clinete Orden de Compra</value>
+    <comment>Cust PO #</comment>
+  </data>
+  <data name="Date1" xml:space="preserve">
+    <value>Fecha</value>
+    <comment>Date</comment>
+  </data>
+  <data name="DateNewtoold" xml:space="preserve">
+    <value>Fecha: Nueva a Vieja</value>
+    <comment>Date: New to old</comment>
+  </data>
+  <data name="DateOldtonew" xml:space="preserve">
+    <value>Fecha: Vieja a Nueva</value>
+    <comment>Date: Old to new</comment>
+  </data>
+  <data name="Dear" xml:space="preserve">
+    <value>Estimado(a) </value>
+    <comment>Dear</comment>
+  </data>
+  <data name="DEDUCTION" xml:space="preserve">
+    <value>Deducción</value>
+    <comment>Deduction</comment>
+  </data>
+  <data name="Deleteaccount" xml:space="preserve">
+    <value>Eliminar cuenta</value>
+    <comment>Delete account</comment>
+  </data>
+  <data name="Delivery" xml:space="preserve">
+    <value>Entrega</value>
+    <comment>Delivery</comment>
+  </data>
+  <data name="DeliveryL" xml:space="preserve">
+    <value>entrega</value>
+    <comment>delivery</comment>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción</value>
+    <comment>Description</comment>
+  </data>
+  <data name="Detailof" xml:space="preserve">
+    <value>Descripción de {0}</value>
+    <comment>Detail of {0}</comment>
+  </data>
+  <data name="DetailofPaymentAccount" xml:space="preserve">
+    <value>detalle de cuanta de pago</value>
+    <comment>Detail of Payment Account</comment>
+  </data>
+  <data name="DISCOUNT" xml:space="preserve">
+    <value>Descuento</value>
+    <comment>Discount</comment>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Documento</value>
+    <comment>Document</comment>
+  </data>
+  <data name="DocumentType" xml:space="preserve">
+    <value>Tipo de Documento</value>
+    <comment>Document Type</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Descargar</value>
+    <comment>Download</comment>
+  </data>
+  <data name="DownloadDocument" xml:space="preserve">
+    <value>Descargar Documento</value>
+    <comment>Download Document</comment>
+  </data>
+  <data name="Dry" xml:space="preserve">
+    <value>Seco</value>
+    <comment>Dry</comment>
+  </data>
+  <data name="EachPrice" xml:space="preserve">
+    <value>Precio por Pieza</value>
+    <comment>Each Price</comment>
+  </data>
+  <data name="Editaccounts" xml:space="preserve">
+    <value>Editar cuentas...</value>
+    <comment>Edit accounts...</comment>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Correo Electrónico</value>
+    <comment>Email</comment>
+  </data>
+  <data name="Emailaddressisinvalid" xml:space="preserve">
+    <value>Correo electrónico {0} es inválid.</value>
+    <comment>Email address {0} is invalid.</comment>
+  </data>
+  <data name="EmailInvitationMsg1" xml:space="preserve">
+    <value>¡Gracias por inscribirse a JFC {0}! Su cuenta ha sido creada y lista para usar.</value>
+    <comment>Thank you for signing up for JFC {0}! Your account has been set up and ready to use.</comment>
+  </data>
+  <data name="EmailInvitationMsg10" xml:space="preserve">
+    <value>(disponible del siguiente día de solicitud)</value>
+    <comment>(available on the next day upon request)</comment>
+  </data>
+  <data name="EmailInvitationMsg11" xml:space="preserve">
+    <value>Realizar pago en línea usando cheque o guardando cuenta</value>
+    <comment>Make payments online using checking or saving account</comment>
+  </data>
+  <data name="EmailInvitationMsg12" xml:space="preserve">
+    <value>Ver catálogo de JFC y consultar precio de producto</value>
+    <comment>View catalog for JFC items and inquire about item price</comment>
+  </data>
+  <data name="EmailInvitationMsg13" xml:space="preserve">
+    <value>Información de nuevos productos y promoción</value>
+    <comment>Information on new products and promotion</comment>
+  </data>
+  <data name="EmailInvitationMsg14" xml:space="preserve">
+    <value>Checar estado de orden y ver historia de orden</value>
+    <comment>Check order status and view order history</comment>
+  </data>
+  <data name="EmailInvitationMsg15" xml:space="preserve">
+    <value>Por favor cantacte a su vendedor si tiene alguna duda o comentario sobre nuestro {0}</value>
+    <comment>Please contact your sales rep if you have any questions or feedback regarding our {0}</comment>
+  </data>
+  <data name="EmailInvitationMsg2" xml:space="preserve">
+    <value>Por favor siga las siguientes instrucciones para generar contraseña.</value>
+    <comment>Please follow the instruction below to set your password.</comment>
+  </data>
+  <data name="EmailInvitationMsg3" xml:space="preserve">
+    <value>Introduzca siguiente correo y haga clic en buzón de enviar</value>
+    <comment>Enter the following email address and click submit button.</comment>
+  </data>
+  <data name="EmailInvitationMsg4" xml:space="preserve">
+    <value>Correo Eléctronico</value>
+    <comment>Email Address</comment>
+  </data>
+  <data name="EmailInvitationMsg5" xml:space="preserve">
+    <value>Revise su correo y use el enlace de correo para generar la contraseña.</value>
+    <comment>Check your email and use the link in your email to set your password.</comment>
+  </data>
+  <data name="EmailInvitationMsg6" xml:space="preserve">
+    <value>Una vez generado la contraseña, puede ir a {0} para iniciar sesión.</value>
+    <comment>Once you set your password, you can go to {0} to login from next time.</comment>
+  </data>
+  <data name="EmailInvitationMsg7" xml:space="preserve">
+    <value>O puede descargar nuestra aplicación en {0} o {1}.</value>
+    <comment>Or you can download our app from {0} (Apple App Store) or {1} (Google Play Store)</comment>
+  </data>
+  <data name="EmailInvitationMsg8" xml:space="preserve">
+    <value>Nuestra {0} proporciona siguientes características;</value>
+    <comment>Our {0} provides the following features;</comment>
+  </data>
+  <data name="EmailInvitationMsg9" xml:space="preserve">
+    <value>Realizar orden en línea</value>
+    <comment>Place orders online</comment>
+  </data>
+  <data name="EmailInvoices" xml:space="preserve">
+    <value>Mandar Facturas por Correo</value>
+    <comment>Email Invoices</comment>
+  </data>
+  <data name="EmailMsg1" xml:space="preserve">
+    <value>Gracias por consulta de precio. Su vendedor responderá en cuanto reciba consulta.</value>
+    <comment>Thank you for submitting the price inquiry. Your sales rep will contact you as soon as this is received.</comment>
+  </data>
+  <data name="EmailMsg10" xml:space="preserve">
+    <value>Una orden ha sido eliminada.</value>
+    <comment>An order has been deleted.</comment>
+  </data>
+  <data name="EmailMsg14" xml:space="preserve">
+    <value>Gracias por consulta de precio. Su vendedor va a contactar a usted en cuanto reciba su consulta.</value>
+    <comment>Thank you for submitting the price inquiry. Your sales rep will contact you as soon as this is received.</comment>
+  </data>
+  <data name="EmailMsg15" xml:space="preserve">
+    <value>Gracias por su pago automático. Su pago de {0} ha aprobado y {1} ha sido negado.  Su pago ID es {2}.</value>
+    <comment>Thank you for your auto payment. Your payment of {0} has been approved and {1} has been declined. Your payment ID is {2}.</comment>
+  </data>
+  <data name="EmailMsg16" xml:space="preserve">
+    <value>Por favor considere que pago aplicará en 1 o 2 días laborales.</value>
+    <comment>Please note that it may take 1 to 2 business days to process your payment.</comment>
+  </data>
+  <data name="EmailMsg17" xml:space="preserve">
+    <value>Gracias por pago automatico de {0}. Su pago ID es {1}.</value>
+    <comment>Thank you for your auto payment of {0}. Your payment ID is {1} </comment>
+  </data>
+  <data name="EmailMsg18" xml:space="preserve">
+    <value>Siguiente pago automático ha sido realizado.</value>
+    <comment>The following auto payment has been submitted.</comment>
+  </data>
+  <data name="EmailMsg181" xml:space="preserve">
+    <value>Pago automático {0} ha sido generado</value>
+    <comment>Auto Payment '{0}' has been submitted</comment>
+  </data>
+  <data name="EmailMsg19" xml:space="preserve">
+    <value>Le recordamos que hora límite para orden está a punto. Si  desea ordenar, por favor vaya a {0}.</value>
+    <comment>This is a friendly reminder that the deadline for your order is coming up. If you are planning to order, please go to {0}</comment>
+  </data>
+  <data name="EmailMsg2" xml:space="preserve">
+    <value>Siguiente consulta de precio ha sido enviado por {0} de {1}</value>
+    <comment>The following price inquiry was submitted by {0} from {1}</comment>
+  </data>
+  <data name="EmailMsg20" xml:space="preserve">
+    <value>Si desea &lt;b&gt;saltar&lt;/b&gt; esta orden, por favor {0}.</value>
+    <comment>If you would like to &lt;b&gt;skip&lt;/b&gt; this order, please {0}.</comment>
+  </data>
+  <data name="EmailMsg21" xml:space="preserve">
+    <value>Gracias por siguiente consulta de precio. Su vendedor va a contactar a usted en cuento reciba consulta.</value>
+    <comment>Thank you for the following price inquiry. Your sales rep will contact you as soon as this is received.</comment>
+  </data>
+  <data name="EmailMsg3" xml:space="preserve">
+    <value>Haga clic aquí para ver detalle de consulta de precio</value>
+    <comment>Click here to view details of the price inquiry</comment>
+  </data>
+  <data name="EmailMsg7" xml:space="preserve">
+    <value>Gracias por su orden. Su orden ha sido enviado a su vendedor.</value>
+    <comment>Thank you for placing an order. Your order has been sent to your sales rep.</comment>
+  </data>
+  <data name="EmailMsg8" xml:space="preserve">
+    <value>Una orden ha sido realizada por {0}</value>
+    <comment>An order has been created by {0}</comment>
+  </data>
+  <data name="EmailMsg9" xml:space="preserve">
+    <value>Una orden ha sido actualizada por {0}</value>
+    <comment>An order has been updated by {0}</comment>
+  </data>
+  <data name="Emailorpasswordisinvalid" xml:space="preserve">
+    <value>Correo electrónico o contraseña está inválido</value>
+    <comment>Email or password is invalid</comment>
+  </data>
+  <data name="Emailusecommatoseparatemultipleemail" xml:space="preserve">
+    <value>Correo electrónico (usa coma para separar varios correos)</value>
+    <comment>Email (use comma to separate multiple email)</comment>
+  </data>
+  <data name="Error1" xml:space="preserve">
+    <value>Error</value>
+    <comment>Error</comment>
+  </data>
+  <data name="Errored" xml:space="preserve">
+    <value>Error</value>
+    <comment>Errored</comment>
+  </data>
+  <data name="ExpirationDate" xml:space="preserve">
+    <value>Fecha de Expiración</value>
+    <comment>Expiration Date</comment>
+  </data>
+  <data name="Expirationdatecannotbepast" xml:space="preserve">
+    <value>Fecha de expiración no puede haber pasado.</value>
+    <comment>Expiration date cannot be past</comment>
+  </data>
+  <data name="Fax" xml:space="preserve">
+    <value>Fax</value>
+    <comment>Fax</comment>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Nombre</value>
+    <comment>First Name</comment>
+  </data>
+  <data name="Frozen" xml:space="preserve">
+    <value>Congelado</value>
+    <comment>Frozen</comment>
+  </data>
+  <data name="Gobacktopaymentaccountlist" xml:space="preserve">
+    <value>&lt;&lt; Regresar a lista de cuenta de pago...</value>
+    <comment>&lt;&lt; Go back to payment account list...</comment>
+  </data>
+  <data name="Gobacktotransactionhistory" xml:space="preserve">
+    <value>&lt;&lt; Regresar a historia de transacción...</value>
+    <comment>&lt;&lt; Go back to transaction history...</comment>
+  </data>
+  <data name="Gobacktowebpaymenthistory" xml:space="preserve">
+    <value>&lt;&lt; Regresar a histroria de pago Web...</value>
+    <comment>&lt;&lt; Go back to web payment history...</comment>
+  </data>
+  <data name="GoPaperless" xml:space="preserve">
+    <value>Sin papel</value>
+    <comment>Go Paperless</comment>
+  </data>
+  <data name="Goto" xml:space="preserve">
+    <value>Ir a</value>
+    <comment>Go to</comment>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Grupo</value>
+    <comment>Group</comment>
+  </data>
+  <data name="HereareournewitemsFordetailspleasegoto" xml:space="preserve">
+    <value>¡Nuestros nuevos productos! Para más detalles, por favor vaya a</value>
+    <comment>Here are our new items! For details, please go to</comment>
+  </data>
+  <data name="Hereistheremainingbalance" xml:space="preserve">
+    <value>Hay saldo pendiente</value>
+    <comment>Here is the remaining balance</comment>
+  </data>
+  <data name="Hideliquorinterest" xml:space="preserve">
+    <value>Ocultar interes de alcohol</value>
+    <comment>Hide liquor interest</comment>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+    <comment>ID</comment>
+  </data>
+  <data name="Interest" xml:space="preserve">
+    <value>Interes</value>
+    <comment>Interest</comment>
+  </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>Inválido</value>
+    <comment>Invalid</comment>
+  </data>
+  <data name="Invalidbankaccount" xml:space="preserve">
+    <value>Número de cuenta de banco inválido </value>
+    <comment>Invalid bank account #</comment>
+  </data>
+  <data name="Invalidcardnumber" xml:space="preserve">
+    <value>Número de tarjeta está invalido</value>
+    <comment>Invalid card number</comment>
+  </data>
+  <data name="Invalidformat" xml:space="preserve">
+    <value>Formato Inválido</value>
+    <comment>Invalid format</comment>
+  </data>
+  <data name="Invalidrouting" xml:space="preserve">
+    <value>Número de ruta está inválido.</value>
+    <comment>Invalid routing #</comment>
+  </data>
+  <data name="Invalidsecuritycode" xml:space="preserve">
+    <value>Código de seguridad está inválido.</value>
+    <comment>Invalid security code</comment>
+  </data>
+  <data name="INVOICE" xml:space="preserve">
+    <value>Factura</value>
+    <comment>Invoice</comment>
+  </data>
+  <data name="InvoiceAmount" xml:space="preserve">
+    <value>Monto de factura</value>
+    <comment>Invoice Amount</comment>
+  </data>
+  <data name="InvoiceandStatement" xml:space="preserve">
+    <value>Facturas y Estado</value>
+    <comment>Invoice and Statement</comment>
+  </data>
+  <data name="Invoiced" xml:space="preserve">
+    <value>Facturado</value>
+    <comment>Invoiced</comment>
+  </data>
+  <data name="ItemNum" xml:space="preserve">
+    <value>Código de Producto</value>
+    <comment>Item #</comment>
+  </data>
+  <data name="Itempriceislessthanbottomprice" xml:space="preserve">
+    <value />
+    <comment>Item price is less than bottom price</comment>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>Productos</value>
+    <comment>Items</comment>
+  </data>
+  <data name="JFCAccount" xml:space="preserve">
+    <value>Cuenta de JFC</value>
+    <comment>JFC Account</comment>
+  </data>
+  <data name="JFCAccountMsg1" xml:space="preserve">
+    <value>Seleccione Sí para recibir solo PDF (sin físico)</value>
+    <comment>Select Yes to receive PDF statements only (no mail)</comment>
+  </data>
+  <data name="JFCAccountMsg2" xml:space="preserve">
+    <value>Seleccione Sí para recibir copia de facturas por siguiente correo</value>
+    <comment>Select Yes to receive copy of invoices by following email</comment>
+  </data>
+  <data name="JFCAccountNum" xml:space="preserve">
+    <value>Número de Cuenta JFC</value>
+    <comment>JFC Account #</comment>
+  </data>
+  <data name="JFCItemDescription" xml:space="preserve">
+    <value>Descripción de Producto JFC</value>
+    <comment>JFC Item Description</comment>
+  </data>
+  <data name="JFCItemNum" xml:space="preserve">
+    <value>Código de Producto JFC</value>
+    <comment>JFC Item #</comment>
+  </data>
+  <data name="KocusAPIMsg1" xml:space="preserve">
+    <value>En carrito hay productos que están agotados, y estos productos podrían tener sustitutos.</value>
+    <comment>Out of stock items exist in your cart, and these items may be replaced.</comment>
+  </data>
+  <data name="KocusAPIMsg10" xml:space="preserve">
+    <value>Su orden {0} (Número de Cliente Orden de Compra {1}) fue procedido</value>
+    <comment>Your order {0} (Cust PO # {1})  was processed</comment>
+  </data>
+  <data name="KocusAPIMsg11" xml:space="preserve">
+    <value>Dirección de origen no está especializada</value>
+    <comment>From address is not specified</comment>
+  </data>
+  <data name="KocusAPIMsg12" xml:space="preserve">
+    <value>No puede eliminar esta orden.</value>
+    <comment>You cannot delete this order.</comment>
+  </data>
+  <data name="KocusAPIMsg13" xml:space="preserve">
+    <value>Orden está vacía. Por favor añada al menos un producto a su orden.</value>
+    <comment>Order is empty. Please add at least one item to your order</comment>
+  </data>
+  <data name="KocusAPIMsg14" xml:space="preserve">
+    <value>No puede editar esta orden. </value>
+    <comment>You cannot edit this order.</comment>
+  </data>
+  <data name="KocusAPIMsg15" xml:space="preserve">
+    <value>Cantidad de código de producto {0} debe ser 0 o número positivo</value>
+    <comment>Qty for item # {0} has to be 0 or a positive number</comment>
+  </data>
+  <data name="KocusAPIMsg16" xml:space="preserve">
+    <value>Cantidad de código de producto {0} debe ser 0 o múltiplo de {1}.</value>
+    <comment>Each qty for item # {0} has to be 0 or multiple of {1}.</comment>
+  </data>
+  <data name="KocusAPIMsg17" xml:space="preserve">
+    <value>Monto total de esta orden es ${0}.  Para actualizar orden, monto total debe ser más de {1}.</value>
+    <comment>The total amount for this order is ${0}. To update your order, the total amount has to be at least {1}.</comment>
+  </data>
+  <data name="KocusAPIMsg18" xml:space="preserve">
+    <value>(Acción Requerida) Usted ha recibido orden actualizada {0} (número de clinete PO {1})</value>
+    <comment>[Action Required] You received a updated order {0} (Cust PO # {1})</comment>
+  </data>
+  <data name="KocusAPIMsg19" xml:space="preserve">
+    <value>Usted ha recibido orden actualizada de {0}. Por favor use SFA o sitio de vendedor para aprobar esta orden.</value>
+    <comment> You received a updated order from {0}. Please use SFA or salesman site to approve this order. *** Please do NOT reply to this automated message. ***</comment>
+  </data>
+  <data name="KocusAPIMsg2" xml:space="preserve">
+    <value>Consulta de precio no se pudo enviado a JFC y sigue quedando en su lista de compra. Por favor intente más tarde.</value>
+    <comment>Price inquiry could not be sent to JFC and the list still remains in your shopping list. Please try again later.</comment>
+  </data>
+  <data name="KocusAPIMsg20" xml:space="preserve">
+    <value>Envió correo de orden</value>
+    <comment>Sent order email</comment>
+  </data>
+  <data name="KocusAPIMsg21" xml:space="preserve">
+    <value>Falló envio de correo de orden</value>
+    <comment>Failed to send order email</comment>
+  </data>
+  <data name="KocusAPIMsg22" xml:space="preserve">
+    <value>Por favor ingrese un producto y aségrese hacer clic en buzón de  "obtener producto" déspues de ingresar un producto.</value>
+    <comment>Please enter an item. Make sure to click on ""Get Item"" button after entering an item</comment>
+  </data>
+  <data name="KocusAPIMsg23" xml:space="preserve">
+    <value>¡Error! Productos que están en orden {0} está en orden. Solo puede agregar productos que están en misma orden.</value>
+    <comment>Error! Items that belong to order form {0} are in the order. You can only add items from the same order form.</comment>
+  </data>
+  <data name="KocusAPIMsg24" xml:space="preserve">
+    <value>¡Error! Por favor intoroduzca cantidad</value>
+    <comment>Error! Please enter qty</comment>
+  </data>
+  <data name="KocusAPIMsg25" xml:space="preserve">
+    <value>¡Error! Cantidad debe ser 0 o número positivo</value>
+    <comment>Error! Qty has to be 0 or a positive number</comment>
+  </data>
+  <data name="KocusAPIMsg26" xml:space="preserve">
+    <value>¡Error! Cantidad debe ser 0 o múltiplo de {0}</value>
+    <comment>Error! Each qty has to be 0 or multiple of {0}</comment>
+  </data>
+  <data name="KocusAPIMsg27" xml:space="preserve">
+    <value>Correo no se ha mandado.</value>
+    <comment>Email could not be sent</comment>
+  </data>
+  <data name="KocusAPIMsg28" xml:space="preserve">
+    <value>Correo no se encuentra.</value>
+    <comment>Email address cannot be found.</comment>
+  </data>
+  <data name="KocusAPIMsg29" xml:space="preserve">
+    <value>Por favor haga clic a este vínculo para generar contraseña.</value>
+    <comment>Please click this link to set your password.</comment>
+  </data>
+  <data name="KocusAPIMsg3" xml:space="preserve">
+    <value>Ha recibido consulta de precio de {0}. Por favor revise los detalles en {1}.  *** Por favor NO responda a este correo. *** </value>
+    <comment>You received a price inquiry from {0}. Please view details at {1}. *** Please do NOT reply to this automated message. ***</comment>
+  </data>
+  <data name="KocusAPIMsg30" xml:space="preserve">
+    <value>Generar contraseña</value>
+    <comment>Set your password</comment>
+  </data>
+  <data name="KocusAPIMsg31" xml:space="preserve">
+    <value>Contraseña debe tener 5 a 26 letras con más de un número.</value>
+    <comment>Password has to be more than 5 and less than 26 characters long with at least one number.</comment>
+  </data>
+  <data name="KocusAPIMsg32" xml:space="preserve">
+    <value>Contraseña de un solo uso no está correcta.</value>
+    <comment>One Time password is not correct .</comment>
+  </data>
+  <data name="KocusAPIMsg33" xml:space="preserve">
+    <value>Carrito está vacío</value>
+    <comment>Shopping cart is empty</comment>
+  </data>
+  <data name="KocusAPIMsg34" xml:space="preserve">
+    <value>Dirección de la entrega no puede ser vacía.</value>
+    <comment>Shipping destination cannot be empty.</comment>
+  </data>
+  <data name="KocusAPIMsg35" xml:space="preserve">
+    <value>Fecha de entrega no está creada para {0}</value>
+    <comment>Delivery date is not set up for {0}</comment>
+  </data>
+  <data name="KocusAPIMsg36" xml:space="preserve">
+    <value>No puede iniciar sesión (no se encuentra tipo de inicio de sesión)</value>
+    <comment>You cannot login (no login type found)</comment>
+  </data>
+  <data name="KocusAPIMsg37" xml:space="preserve">
+    <value>¡Gracias! Su consulta de precio va a ser enviado a su vendedor en breve.</value>
+    <comment>Thank you! Your price inquiry will be sent to your sales rep shortly.</comment>
+  </data>
+  <data name="KocusAPIMsg38" xml:space="preserve">
+    <value>Vínculo ha expirado. Por favor reajuste contraseña de nuevo.</value>
+    <comment>Your link has expired. Please reset your password again.</comment>
+  </data>
+  <data name="KocusAPIMsg39" xml:space="preserve">
+    <value>Por favor use siguiente código de verificación para iniciar sesión.</value>
+    <comment>Please use the following verification code to log in. </comment>
+  </data>
+  <data name="KocusAPIMsg4" xml:space="preserve">
+    <value>[Acción Requerida] Consulta de precio de {0}</value>
+    <comment>[Action Required] Price inquiry from {0}</comment>
+  </data>
+  <data name="KocusAPIMsg40" xml:space="preserve">
+    <value>Código de verificación: {0}</value>
+    <comment>Secure verification code: {0}</comment>
+  </data>
+  <data name="KocusAPIMsg41" xml:space="preserve">
+    <value>Por favor note que este código estará expirado en 20 minutos.</value>
+    <comment>Please note that this code will expire in 20 minutes.</comment>
+  </data>
+  <data name="KocusAPIMsg42" xml:space="preserve">
+    <value>Por favor use siguiente código de verificación para iniciar sesión.</value>
+    <comment>Please use the following verification code to login JFC App</comment>
+  </data>
+  <data name="KocusAPIMsg43" xml:space="preserve">
+    <value>Código de verficación ha sido enviado a {0} y {1}.</value>
+    <comment>A verification code has been sent to {0} and {1}. </comment>
+  </data>
+  <data name="KocusAPIMsg44" xml:space="preserve">
+    <value>Por favor introduzca código que recibió a menos de 20 minutos.</value>
+    <comment>Please enter the code that you received within 20 minutes.</comment>
+  </data>
+  <data name="KocusAPIMsg45" xml:space="preserve">
+    <value>Por favor considere que {0} aplicará por un cheque devuelto</value>
+    <comment>Please note that {0} will be charged for a returned check</comment>
+  </data>
+  <data name="KocusAPIMsg46" xml:space="preserve">
+    <value>El monto total de esta orden sería ${0}. Para proceder tu orden, el monto total tiene que ser más de ${1}.</value>
+    <comment>The total amount for this order is ${0}. To process your order, the total amount has to be at least ${1}.</comment>
+  </data>
+  <data name="KocusAPIMsg47" xml:space="preserve">
+    <value>Su orden ha sido generada.  Sin embargo, debido a que tiene pago atrasado, esta orden podría no ser procedida hasta que recibamos su pago. Si no ha pagado, por favor realice pago lo más antes posible.</value>
+    <comment>Your order has been placed. But as your payment is overdue, this order may not be processed until we receive your payment. If you haven’t, please make a payment as soon as possible.</comment>
+  </data>
+  <data name="KocusAPIMsg5" xml:space="preserve">
+    <value>Lista de consulta de precio está vacía.</value>
+    <comment>Price inquiry list is empty.</comment>
+  </data>
+  <data name="KocusAPIMsg6" xml:space="preserve">
+    <value>Web orden {0} no existe.</value>
+    <comment>Web order {0} doesn't exist.</comment>
+  </data>
+  <data name="KocusAPIMsg7" xml:space="preserve">
+    <value>Web orden {0} ha sido aprobado.</value>
+    <comment>Web order {0} has been approved.</comment>
+  </data>
+  <data name="KocusAPIMsg8" xml:space="preserve">
+    <value>Web orden {0} no ha sido descargado.</value>
+    <comment>Web order {0} has not been downloaded.</comment>
+  </data>
+  <data name="KocusAPIMsg9" xml:space="preserve">
+    <value>Web orden {0} ha sidoeliminado.</value>
+    <comment>Web order {0} has been deleted.</comment>
+  </data>
+  <data name="langugae" xml:space="preserve">
+    <value>Idioma</value>
+    <comment>language</comment>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Apellido</value>
+    <comment>Last Name</comment>
+  </data>
+  <data name="LastUpdated" xml:space="preserve">
+    <value>Última Actualización</value>
+    <comment>Last Updated</comment>
+  </data>
+  <data name="LbPrice" xml:space="preserve">
+    <value>Precio por Libras</value>
+    <comment>Lb Price</comment>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>Vínculo</value>
+    <comment>Link</comment>
+  </data>
+  <data name="Liquor" xml:space="preserve">
+    <value>Alcohol</value>
+    <comment>Liquor</comment>
+  </data>
+  <data name="LIQUORINTEREST" xml:space="preserve">
+    <value>INTERES DE ALCOHOL</value>
+    <comment>LIQUOR INTEREST</comment>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Mensaje</value>
+    <comment>Message</comment>
+  </data>
+  <data name="MessagetoJFC" xml:space="preserve">
+    <value>Mensaje para JFC</value>
+    <comment>Message to JFC</comment>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>Mi Cuenta</value>
+    <comment>My Account</comment>
+  </data>
+  <data name="MyAccountMsg1" xml:space="preserve">
+    <value>No puede eliminar esta cuenta de pago porque está usada por pago automático.</value>
+    <comment>You cannot delete this payment account because it is used for auto payment.</comment>
+  </data>
+  <data name="MyAccountMsg2" xml:space="preserve">
+    <value>Para cambiar si cuenta de pago automático, por favor vaya a Pago y haga clic en buzón de 'Generar pago automático'.</value>
+    <comment>To change your auto payment account, please go to Payment and click on 'Set Auto Payment' button.</comment>
+  </data>
+  <data name="MyAccountMsg3" xml:space="preserve">
+    <value>¿Está seguro de eliminar {0}?</value>
+    <comment>Are you sure you want to delete {0}?</comment>
+  </data>
+  <data name="MyAccountMsg4" xml:space="preserve">
+    <value>Por favor ingrese correo electrónico que quiere recibir facturas.</value>
+    <comment>Please enter email address where you want to receive your invoices.</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+    <comment>Name</comment>
+  </data>
+  <data name="NameonAccount" xml:space="preserve">
+    <value>Nombre de cuenta</value>
+    <comment>Name on Account</comment>
+  </data>
+  <data name="Nameonaccountcannotexceed50characters" xml:space="preserve">
+    <value>Nombre de cuenta no puede pasar 50 letras</value>
+    <comment>Name on account cannot exceed 50 characters</comment>
+  </data>
+  <data name="Nameonyourbankaccount" xml:space="preserve">
+    <value>Nombre de tu cuenta de banco</value>
+    <comment>Name on your bank account</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuevo</value>
+    <comment>New</comment>
+  </data>
+  <data name="NewAccount" xml:space="preserve">
+    <value>Nueva Cuenta</value>
+    <comment>New Account</comment>
+  </data>
+  <data name="Newamount" xml:space="preserve">
+    <value>Monto nuevo</value>
+    <comment>New amount</comment>
+  </data>
+  <data name="NewItem" xml:space="preserve">
+    <value>Nuevo Producto</value>
+    <comment>New Item</comment>
+  </data>
+  <data name="Noautopayment" xml:space="preserve">
+    <value>Sin pago auntomático</value>
+    <comment>No auto payment</comment>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Nota</value>
+    <comment>Note</comment>
+  </data>
+  <data name="Notfound" xml:space="preserve">
+    <value>No encontrado</value>
+    <comment>Not found</comment>
+  </data>
+  <data name="OfficePhone" xml:space="preserve">
+    <value>Teléfono de Oficina</value>
+    <comment>Office Phone</comment>
+  </data>
+  <data name="Onetimeverificationcode" xml:space="preserve">
+    <value>código de verificación de un solo uso</value>
+    <comment>One time verification code</comment>
+  </data>
+  <data name="Orderby" xml:space="preserve">
+    <value>Realice orden antes de las {0}</value>
+    <comment>Order by {0}</comment>
+  </data>
+  <data name="OrderbyTODAY" xml:space="preserve">
+    <value>Realice orden HOY antes de las {0}</value>
+    <comment>Order by TODAY {0}</comment>
+  </data>
+  <data name="OrderDatefrom" xml:space="preserve">
+    <value>Fecha de Orden (inicio)</value>
+    <comment>Order Date from</comment>
+  </data>
+  <data name="OrderDatehastobeinformat" xml:space="preserve">
+    <value>Fecha de orden debe estar en formato de {0}</value>
+    <comment>Order Date has to be in {0} format</comment>
+  </data>
+  <data name="OrderDateto" xml:space="preserve">
+    <value>Fecha de Orden (termino)</value>
+    <comment>Order Date to</comment>
+  </data>
+  <data name="OrderDeadline" xml:space="preserve">
+    <value>Hora Límite para Orden</value>
+    <comment>Order Deadline</comment>
+  </data>
+  <data name="Orderdelivery" xml:space="preserve">
+    <value>Entrega de Orden</value>
+    <comment>Order delivery</comment>
+  </data>
+  <data name="Orderedon" xml:space="preserve">
+    <value>Ordenado en</value>
+    <comment>Ordered on</comment>
+  </data>
+  <data name="OrderForm" xml:space="preserve">
+    <value>Formato de Orden</value>
+    <comment>Order Form</comment>
+  </data>
+  <data name="OrderHistoryMsg1" xml:space="preserve">
+    <value>Demostrar ordenes pendentes solo ordenados por fecha de entrega</value>
+    <comment>Show non-approved orders only sorted by delivery date</comment>
+  </data>
+  <data name="OrderID" xml:space="preserve">
+    <value>Orden ID</value>
+    <comment>Order ID</comment>
+  </data>
+  <data name="OrderIDorPO" xml:space="preserve">
+    <value>Orden ID o Orden de Compra</value>
+    <comment>Order ID or PO</comment>
+  </data>
+  <data name="OrderInfo" xml:space="preserve">
+    <value>Información de Orden</value>
+    <comment>Order Info</comment>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>Número de Orden</value>
+    <comment>Order #</comment>
+  </data>
+  <data name="Orderplaced" xml:space="preserve">
+    <value>Orden realizada</value>
+    <comment>Order placed</comment>
+  </data>
+  <data name="OrderReminderfromJFC" xml:space="preserve">
+    <value>JFC Recordatorio de orden</value>
+    <comment>Order Reminder from JFC</comment>
+  </data>
+  <data name="orreplytocontactyoursalesrep" xml:space="preserve">
+    <value>o responda para contactar a su vendedor.</value>
+    <comment>or reply to contact your sales rep.</comment>
+  </data>
+  <data name="OutofStock" xml:space="preserve">
+    <value />
+    <comment>Out of stock</comment>
+  </data>
+  <data name="PaidAmount" xml:space="preserve">
+    <value>Monto pagado</value>
+    <comment>Paid Amount</comment>
+  </data>
+  <data name="PaidAmount1" xml:space="preserve">
+    <value>Monto de pago realizado</value>
+    <comment>Paid Amount</comment>
+  </data>
+  <data name="PaidAmountConfirmed" xml:space="preserve">
+    <value>Monto de pago (Confirmado)</value>
+    <comment>Paid Amount (Confirmed)</comment>
+  </data>
+  <data name="PaidAmountPending" xml:space="preserve">
+    <value>Monto de pago (Pendiente)</value>
+    <comment>Paid Amount (Pending)</comment>
+  </data>
+  <data name="Paidby" xml:space="preserve">
+    <value>Pagado por</value>
+    <comment>Paid by</comment>
+  </data>
+  <data name="Paidon" xml:space="preserve">
+    <value>Pagado en</value>
+    <comment>Paid on</comment>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+    <comment>Password</comment>
+  </data>
+  <data name="PayBalanceforJFC" xml:space="preserve">
+    <value>Estado de Cuenta JFC</value>
+    <comment>Pay Balance for JFC</comment>
+  </data>
+  <data name="Paydifferentamount" xml:space="preserve">
+    <value>Pagar diferente cantidad </value>
+    <comment>Pay different amount</comment>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Pago</value>
+    <comment>PAYMENT</comment>
+  </data>
+  <data name="PaymentAccount" xml:space="preserve">
+    <value>Cuenta de Pago</value>
+    <comment>Payment Account</comment>
+  </data>
+  <data name="Paymentacountnolongerexists" xml:space="preserve">
+    <value>Cuenta de pago ya no existe</value>
+    <comment>Payment acount no longer exists</comment>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>Monto de Pago</value>
+    <comment>Payment Amount</comment>
+  </data>
+  <data name="PaymentConfirmation" xml:space="preserve">
+    <value>Confirmación de Pago</value>
+    <comment>Payment Confirmation</comment>
+  </data>
+  <data name="PaymentDtlMsg1" xml:space="preserve">
+    <value>Ya no puede cancelar este pago</value>
+    <comment>You cannot void this payment any more</comment>
+  </data>
+  <data name="PaymentDtlMsg2" xml:space="preserve">
+    <value>No pudo cancelar pago. Mensaje de procesador de pago es {0}.</value>
+    <comment>Could not void this payment. The error message from the payment processor was {0}.</comment>
+  </data>
+  <data name="Paymenthasfailed" xml:space="preserve">
+    <value>Pago {0} ha fallado.</value>
+    <comment>Payment {0} has failed</comment>
+  </data>
+  <data name="PaymentID" xml:space="preserve">
+    <value>Pago ID</value>
+    <comment>Payment ID</comment>
+  </data>
+  <data name="PaymentInfo" xml:space="preserve">
+    <value>Información de Pago</value>
+    <comment>Payment Info</comment>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>Tipo de Pago</value>
+    <comment>Payment Type</comment>
+  </data>
+  <data name="PaymentVoided" xml:space="preserve">
+    <value>Pago Cancelado</value>
+    <comment>Payment Voided</comment>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pendiente</value>
+    <comment>Pending</comment>
+  </data>
+  <data name="PendingMsg" xml:space="preserve">
+    <value>Tardaría 1 o 2 días laborales para proceder su pago.</value>
+    <comment>It may take 1 to 2 business days to process your payment.</comment>
+  </data>
+  <data name="PendingPayment" xml:space="preserve">
+    <value>Pago Pendiente</value>
+    <comment>Pending Payment</comment>
+  </data>
+  <data name="PendingWebPayment" xml:space="preserve">
+    <value>Pago Web pendiente</value>
+    <comment>Pending Web Payment</comment>
+  </data>
+  <data name="PendingWebPayments" xml:space="preserve">
+    <value>Pago Web Pendiente</value>
+    <comment>Pending Web Payments</comment>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Periodo</value>
+    <comment>Period</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Teléfono</value>
+    <comment>Phone</comment>
+  </data>
+  <data name="Pleasechooseone" xml:space="preserve">
+    <value>Por favor eliga una</value>
+    <comment>Please choose one</comment>
+  </data>
+  <data name="PleasedoNotreplytothisautomatedmessage" xml:space="preserve">
+    <value>Por favor NO responda a este mensaje, es envío automático.</value>
+    <comment>Please do NOT reply to this automated message.</comment>
+  </data>
+  <data name="Pleaseenterfaxnumberintheformat" xml:space="preserve">
+    <value>Por favor ingrese número de fax en formato: </value>
+    <comment>Please enter fax number in the format:</comment>
+  </data>
+  <data name="Pleaseenternameonthisaccount" xml:space="preserve">
+    <value>Por favor introduzca nombre de la cuenta</value>
+    <comment>Please enter name on this account</comment>
+  </data>
+  <data name="Pleaseenterphonenumberintheformat" xml:space="preserve">
+    <value>Por favor ingrese número de teléfono en formato:</value>
+    <comment>Please enter phone number in the format:</comment>
+  </data>
+  <data name="Pleaseselect" xml:space="preserve">
+    <value>por favor selecciona...</value>
+    <comment>Please select...</comment>
+  </data>
+  <data name="Pleaseselectabankaccount" xml:space="preserve">
+    <value>Por favor seleccione una cuenta de banco</value>
+    <comment>Please select a bank account</comment>
+  </data>
+  <data name="Pleaseselectacardtype" xml:space="preserve">
+    <value>Por favor eliga tipo de tarjeta</value>
+    <comment>Please select a card type</comment>
+  </data>
+  <data name="Pleaseselectanaccount" xml:space="preserve">
+    <value>Por favor seleccione una cuenta</value>
+    <comment>Please select an account</comment>
+  </data>
+  <data name="Pleaseselectapaymenttype" xml:space="preserve">
+    <value>Por favor eliga tipo de pagamiento</value>
+    <comment>Please select a payment type</comment>
+  </data>
+  <data name="Pleasewait" xml:space="preserve">
+    <value>Por favor espere...</value>
+    <comment>Please wait...</comment>
+  </data>
+  <data name="Preparedforshipping" xml:space="preserve">
+    <value>Preparado para entrega</value>
+    <comment>Prepared for shipping</comment>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Precio</value>
+    <comment>Price</comment>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>En proceso</value>
+    <comment>Processing</comment>
+  </data>
+  <data name="PromoItem" xml:space="preserve">
+    <value>Producto en Promoción</value>
+    <comment>Promo Item</comment>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>Cantidad</value>
+    <comment>Qty</comment>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Razón</value>
+    <comment>Reason</comment>
+  </data>
+  <data name="ReceivedbyJFC" xml:space="preserve">
+    <value>Recibido por JFC</value>
+    <comment>Received by JFC</comment>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Referencia</value>
+    <comment>Reference</comment>
+  </data>
+  <data name="RemainBalance" xml:space="preserve">
+    <value>Permanecer Saldo</value>
+    <comment>Remain Balance</comment>
+  </data>
+  <data name="RemainingBalance" xml:space="preserve">
+    <value>Saldo Pendiente</value>
+    <comment>Remaining Balance</comment>
+  </data>
+  <data name="RememberthisAccount" xml:space="preserve">
+    <value>Recordar esta Cuenta</value>
+    <comment>Remember this Account</comment>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Requerido</value>
+    <comment>Required</comment>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resultado</value>
+    <comment>Result</comment>
+  </data>
+  <data name="RETURNCHECK" xml:space="preserve">
+    <value>Cheque Devuelto</value>
+    <comment>Return Check</comment>
+  </data>
+  <data name="Routing9digits" xml:space="preserve">
+    <value>Número de ruta (9 dígitos)</value>
+    <comment>Routing # (9 digits)</comment>
+  </data>
+  <data name="SavingsAccount" xml:space="preserve">
+    <value>Cuenta de Ahorros</value>
+    <comment>Savings Account</comment>
+  </data>
+  <data name="SecurityCodeBackofCard" xml:space="preserve">
+    <value>Código de Seguridad (Atrás de Tarjeta)</value>
+    <comment>Security Code (Back of Card)</comment>
+  </data>
+  <data name="Setautopayment" xml:space="preserve">
+    <value>Actualizar pago auntomática...</value>
+    <comment>Set auto payment...</comment>
+  </data>
+  <data name="ShipDate" xml:space="preserve">
+    <value>Fecha de Entrega</value>
+    <comment>Ship Date</comment>
+  </data>
+  <data name="ShippingAddress" xml:space="preserve">
+    <value>Dirección de Entrega</value>
+    <comment>Shipping Address</comment>
+  </data>
+  <data name="ShippingName" xml:space="preserve">
+    <value>Nombre de Entrega</value>
+    <comment>Shipping Name</comment>
+  </data>
+  <data name="Shipto" xml:space="preserve">
+    <value>Entregar en</value>
+    <comment>Ship to</comment>
+  </data>
+  <data name="Showliquoronly" xml:space="preserve">
+    <value>Demostrar solo alcohol</value>
+    <comment>Show liquor only</comment>
+  </data>
+  <data name="Showwebordersonly" xml:space="preserve">
+    <value>Demostrar solo Web ordenes</value>
+    <comment>Show web orders only</comment>
+  </data>
+  <data name="Sortby" xml:space="preserve">
+    <value>Ordenar por</value>
+    <comment>Sort by</comment>
+  </data>
+  <data name="Specifiedordercouldnotbefound" xml:space="preserve">
+    <value>No encuentra orden específica</value>
+    <comment>Specified order could not be found</comment>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Estado</value>
+    <comment>State</comment>
+  </data>
+  <data name="STATEMENT" xml:space="preserve">
+    <value>Estado</value>
+    <comment>Statement</comment>
+  </data>
+  <data name="StateZip" xml:space="preserve">
+    <value>Código Postal</value>
+    <comment>State Zip</comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estado</value>
+    <comment>Status</comment>
+  </data>
+  <data name="SubmitPayment" xml:space="preserve">
+    <value>Enviar pago</value>
+    <comment>Submit Payment</comment>
+  </data>
+  <data name="Successfullydeleted" xml:space="preserve">
+    <value>Eliminado exitosamente</value>
+    <comment>Successfully deleted</comment>
+  </data>
+  <data name="Successfullysaved" xml:space="preserve">
+    <value>Guardado exitosamente</value>
+    <comment>Successfully saved</comment>
+  </data>
+  <data name="Successfullyupdated" xml:space="preserve">
+    <value>Actualizado exitosamente</value>
+    <comment>Successfully updated</comment>
+  </data>
+  <data name="Successfullyvoided" xml:space="preserve">
+    <value>Anulado exitosamente</value>
+    <comment>Successfully voided</comment>
+  </data>
+  <data name="TextMsg1" xml:space="preserve">
+    <value>Esto es JFC recordatorio de orden para su orden en {0}. Por favor realice orden antes de {1} en {2}.</value>
+    <comment>This is a JFC order reminder for your order on {0}. Please place your order by {1} at {2}.</comment>
+  </data>
+  <data name="Thisitemisnotavailable" xml:space="preserve">
+    <value>Este producto no está disponible.</value>
+    <comment>This item is not available</comment>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>Monto Total</value>
+    <comment>Total Amount</comment>
+  </data>
+  <data name="TotalPaidAmount" xml:space="preserve">
+    <value>Monto Total de Pago</value>
+    <comment>Total Paid Amount</comment>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Fecha de Transacción</value>
+    <comment>Transaction Date</comment>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transacciones</value>
+    <comment>Transactions</comment>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+    <comment>Type</comment>
+  </data>
+  <data name="Underprocessing" xml:space="preserve">
+    <value>En proceso</value>
+    <comment>Under processing</comment>
+  </data>
+  <data name="UpdateChanges" xml:space="preserve">
+    <value>Actualizar Cambios</value>
+    <comment>Update Changes</comment>
+  </data>
+  <data name="Useanotheraccount" xml:space="preserve">
+    <value>Usar otra cuenta...</value>
+    <comment>Use another account...</comment>
+  </data>
+  <data name="Usecommatoentermultiplefax" xml:space="preserve">
+    <value>Use coma para poner varios fax.</value>
+    <comment>Use comma to enter multiple fax #.</comment>
+  </data>
+  <data name="Usecommatoentermultiplephone" xml:space="preserve">
+    <value>Use coma para poner varios teléfonos.</value>
+    <comment>Use comma to enter multiple phone #.</comment>
+  </data>
+  <data name="usecommatoseparatemultipleemail" xml:space="preserve">
+    <value>Use coma para poner varios correos.</value>
+    <comment>use comma to separate multiple email</comment>
+  </data>
+  <data name="UsedforAutoPayment" xml:space="preserve">
+    <value>Usada por Pago Automático</value>
+    <comment>Used for Auto Payment</comment>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Usuario</value>
+    <comment>User</comment>
+  </data>
+  <data name="UsethisAccount" xml:space="preserve">
+    <value>Usar esta Cuenta</value>
+    <comment>Use this Account</comment>
+  </data>
+  <data name="Vendor" xml:space="preserve">
+    <value>Vendedor</value>
+    <comment>Vendor</comment>
+  </data>
+  <data name="ViewPayment" xml:space="preserve">
+    <value>Ver Pago</value>
+    <comment>View Payment</comment>
+  </data>
+  <data name="Voided" xml:space="preserve">
+    <value>Cancelado</value>
+    <comment>Voided</comment>
+  </data>
+  <data name="VoidPayment" xml:space="preserve">
+    <value>Cancelar Pago</value>
+    <comment>Void Payment</comment>
+  </data>
+  <data name="WebDiscount" xml:space="preserve">
+    <value>Wub descuento</value>
+    <comment>Web Discount</comment>
+  </data>
+  <data name="WebEarlyPaymentDiscount" xml:space="preserve">
+    <value>Descuento por Pronto Pago Web</value>
+    <comment>Web Early Payment Discount</comment>
+  </data>
+  <data name="WebOrderID" xml:space="preserve">
+    <value>Web Orden ID</value>
+    <comment>Web Order ID</comment>
+  </data>
+  <data name="WebPayHistory" xml:space="preserve">
+    <value>Histroria de Pago Web</value>
+    <comment>Web Pay History</comment>
+  </data>
+  <data name="WebPaymentHistorywithJFC" xml:space="preserve">
+    <value>Histroria de Pago Web con JFC</value>
+    <comment>Web Payment History with JFC</comment>
+  </data>
+  <data name="WelcometoJFC" xml:space="preserve">
+    <value>Bienvenido a JFC</value>
+    <comment>Welcome to JFC </comment>
+  </data>
+  <data name="Youcannotvoidthispaymentanymore" xml:space="preserve">
+    <value>Ya no puede cancelar este pago</value>
+    <comment>You cannot void this payment any more</comment>
+  </data>
+  <data name="Youhavevoidedyourpayment" xml:space="preserve">
+    <value>Usted ha cancelado pago</value>
+    <comment>You have voided your payment</comment>
+  </data>
+  <data name="YourAccounts" xml:space="preserve">
+    <value>Sus Cuentas</value>
+    <comment>Your Accounts</comment>
+  </data>
+  <data name="Yourorderhasbeencanceled" xml:space="preserve">
+    <value>Su pedido ha sido cancelado.</value>
+    <comment>Your order has been canceled.</comment>
+  </data>
+  <data name="Yourorderhasbeendeleted" xml:space="preserve">
+    <value>Su pedido ha sido eliminado</value>
+    <comment>Your order has been deleted</comment>
+  </data>
+  <data name="Yourorderhasbeenprocessedat" xml:space="preserve">
+    <value>Su orden ha sido procedida.</value>
+    <comment>Your order has been processed.</comment>
+  </data>
+  <data name="Yourorderhasbeenprocessedon" xml:space="preserve">
+    <value>Su pedido ha sido procesado por {0}</value>
+    <comment>Your order has been processed on {0}</comment>
+  </data>
+  <data name="Yourorderhasbeenupdated" xml:space="preserve">
+    <value>Su orden ha sido cargada.</value>
+    <comment>Your order has been updated.</comment>
+  </data>
+  <data name="Yourorderwascanceled" xml:space="preserve">
+    <value>Su orden {0} fue cancelada</value>
+    <comment>Your order {0} was canceled</comment>
+  </data>
+  <data name="Yourorderwasplaced" xml:space="preserve">
+    <value>Su orden {0} fue realizada</value>
+    <comment>Your order {0} was placed</comment>
+  </data>
+  <data name="Yourorderwasupdated" xml:space="preserve">
+    <value>Su orden {0} fue actualizada</value>
+    <comment>Your order {0} was updated</comment>
+  </data>
+  <data name="YourorderwithJFC" xml:space="preserve">
+    <value>Su orden con JFC</value>
+    <comment>Your order with JFC</comment>
+  </data>
+  <data name="YourPayments" xml:space="preserve">
+    <value>Sus Pagos</value>
+    <comment>Your Payments</comment>
+  </data>
+  <data name="Yourpriceinquirywassent" xml:space="preserve">
+    <value>Consulta de precio ha sido enviado</value>
+    <comment>Your price inquiry was sent</comment>
+  </data>
+  <data name="Zip" xml:space="preserve">
+    <value>Código Postal</value>
+    <comment>Zip</comment>
+  </data>
+  <data name="CANNEDFOOD" xml:space="preserve">
+    <value>CANNED FOOD</value>
+    <comment>CANNED FOOD</comment>
+  </data>
+  <data name="CONFECTIONERIES" xml:space="preserve">
+    <value>CONFITERÍA</value>
+    <comment>CONFECTIONERIES</comment>
+  </data>
+  <data name="DEPOSIT" xml:space="preserve">
+    <value>DEPÓSITO</value>
+    <comment>DEPOSIT</comment>
+  </data>
+  <data name="DIRECTIMPORTFORHAPI" xml:space="preserve">
+    <value>IMPORTACIÓN DIRECTA POR HAPI</value>
+    <comment>DIRECT IMPORT FOR HAPI</comment>
+  </data>
+  <data name="DRINK" xml:space="preserve">
+    <value>BEBIDA</value>
+    <comment>DRINK</comment>
+  </data>
+  <data name="EGGMILK" xml:space="preserve">
+    <value>HUEVO, LECHE</value>
+    <comment>EGG, MILK</comment>
+  </data>
+  <data name="Fri" xml:space="preserve">
+    <value>Vier.</value>
+    <comment>Fri</comment>
+  </data>
+  <data name="Friday" xml:space="preserve">
+    <value>Viernes</value>
+    <comment>Friday</comment>
+  </data>
+  <data name="FROZENFOOD" xml:space="preserve">
+    <value>ALIMENTO CONGELADO</value>
+    <comment>FROZEN FOOD</comment>
+  </data>
+  <data name="GRAIN" xml:space="preserve">
+    <value>GRANO</value>
+    <comment>GRAIN</comment>
+  </data>
+  <data name="HAPIINGREDIENTS" xml:space="preserve">
+    <value>HAPI INGREDIENTES</value>
+    <comment>HAPI INGREDIENTS</comment>
+  </data>
+  <data name="HAPIPACKAGEMATERIALS" xml:space="preserve">
+    <value>HAPI MATERIAL DE PAQUETE</value>
+    <comment>HAPI PACKAGE MATERIALS</comment>
+  </data>
+  <data name="MEAT" xml:space="preserve">
+    <value>CARNE</value>
+    <comment>MEAT</comment>
+  </data>
+  <data name="Mon" xml:space="preserve">
+    <value>Lun.</value>
+    <comment>Mon</comment>
+  </data>
+  <data name="Monday" xml:space="preserve">
+    <value>Lunes</value>
+    <comment>Monday</comment>
+  </data>
+  <data name="NONFOOD" xml:space="preserve">
+    <value>NO ALIMENTARIO</value>
+    <comment>NON FOOD</comment>
+  </data>
+  <data name="NONREGULARITEM" xml:space="preserve">
+    <value>NO REGULAR PRODUCTO</value>
+    <comment>NON REGULAR ITEM</comment>
+  </data>
+  <data name="NOODLE" xml:space="preserve">
+    <value>FIDEOS</value>
+    <comment>NOODLE</comment>
+  </data>
+  <data name="OILSEASONING" xml:space="preserve">
+    <value>ACEITE, SAZONADOR</value>
+    <comment>OIL, SEASONING</comment>
+  </data>
+  <data name="PREPAREDFOOD" xml:space="preserve">
+    <value>ALIMENTO PREPARADO</value>
+    <comment>PREPARED FOOD</comment>
+  </data>
+  <data name="Requestfordeliverynotguaranteed" xml:space="preserve">
+    <value>Solicitud de entrega en {0} (no gagarantizada) / Request for {0} delivery (not guaranteed)</value>
+    <comment>Request for {0} delivery (not guaranteed) (e.g. Request for 2/20 delivery (not guaranteed)</comment>
+  </data>
+  <data name="Sat" xml:space="preserve">
+    <value>Sáb.</value>
+    <comment>Sat</comment>
+  </data>
+  <data name="Saturday" xml:space="preserve">
+    <value>Sábado</value>
+    <comment>Saturday</comment>
+  </data>
+  <data name="SEAFOOD" xml:space="preserve">
+    <value>MARISCO</value>
+    <comment>SEAFOOD</comment>
+  </data>
+  <data name="SEAWEED" xml:space="preserve">
+    <value>ALGA MARINA</value>
+    <comment>SEAWEED</comment>
+  </data>
+  <data name="Sun" xml:space="preserve">
+    <value>Dom.</value>
+    <comment>Sun</comment>
+  </data>
+  <data name="Sunday" xml:space="preserve">
+    <value>Domingo</value>
+    <comment>Sunday</comment>
+  </data>
+  <data name="Thu" xml:space="preserve">
+    <value>Juev.</value>
+    <comment>Thu</comment>
+  </data>
+  <data name="Thursday" xml:space="preserve">
+    <value>Jueves</value>
+    <comment>Thursday</comment>
+  </data>
+  <data name="TOFUAGEKONNAYKU" xml:space="preserve">
+    <value>TOFU, AGE Y KONNYAKU</value>
+    <comment>TOFU, AGE &amp; KONNAYKU</comment>
+  </data>
+  <data name="Tue" xml:space="preserve">
+    <value>Mar.</value>
+    <comment>Tue</comment>
+  </data>
+  <data name="Tuesday" xml:space="preserve">
+    <value>Martes</value>
+    <comment>Tuesday</comment>
+  </data>
+  <data name="VEGETABLEFRUIT" xml:space="preserve">
+    <value>VERDURA Y FRUTA</value>
+    <comment>VEGETABLE &amp; FRUIT</comment>
+  </data>
+  <data name="Wed" xml:space="preserve">
+    <value>MIér.</value>
+    <comment>Wed</comment>
+  </data>
+  <data name="Wednesday" xml:space="preserve">
+    <value>Miércoles</value>
+    <comment>Wednesday</comment>
+  </data>
+  <data name="WRAPPER" xml:space="preserve">
+    <value>PIEL</value>
+    <comment>WRAPPER</comment>
+  </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>Viejo</value>
+    <comment>Deadline</comment>
+  </data>
+  <data name="DeliveryOn" xml:space="preserve">
+    <value>Entregar en</value>
+    <comment>Delivery On</comment>
+  </data>
+  <data name="DescNew" xml:space="preserve">
+    <value>Nueva Descripción</value>
+    <comment>Desc New</comment>
+  </data>
+  <data name="EachCase" xml:space="preserve">
+    <value>Pieza / Caja</value>
+    <comment>Each/Case</comment>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Frecuencia</value>
+    <comment>Frequency</comment>
+  </data>
+  <data name="ItemNewNum" xml:space="preserve">
+    <value>Nuevo Número de Producto</value>
+    <comment>Item New #</comment>
+  </data>
+  <data name="Itemshavebeenadded" xml:space="preserve">
+    <value>Productos han sido agregados.</value>
+    <comment>Items have been added.</comment>
+  </data>
+  <data name="Itemwasadded" xml:space="preserve">
+    <value>Número de producto {0} fue agregado</value>
+    <comment>Item #{0} was added</comment>
+  </data>
+  <data name="Old" xml:space="preserve">
+    <value>Viejo</value>
+    <comment>Old</comment>
+  </data>
+  <data name="OrderBy1" xml:space="preserve">
+    <value>Orden Por</value>
+    <comment>Order By</comment>
+  </data>
+  <data name="Pleaseplaceaneworderifyouneedtheseitems" xml:space="preserve">
+    <value>Por favor ponga nueva orden si quiere estos productos.</value>
+    <comment>Please place a new order if you need these items.</comment>
+  </data>
+  <data name="Pleaseplaceaneworderifyouneedthisitem" xml:space="preserve">
+    <value>Por favor ponga nueva orden si quiere este producto.</value>
+    <comment>Please place a new order if you need this item.</comment>
+  </data>
+  <data name="Pleaseseethefollowingforyournewschedule" xml:space="preserve">
+    <value>Por favor vea siguiente para su nuevo calendario.</value>
+    <comment>Please see the following for your new schedule.</comment>
+  </data>
+  <data name="Regardingyourpriceinquiry" xml:space="preserve">
+    <value>Acerca de su consulta de precio</value>
+    <comment>Regarding your price inquiry</comment>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Comentario</value>
+    <comment>Remark</comment>
+  </data>
+  <data name="SendReminder" xml:space="preserve">
+    <value>Mandar Recordatorio</value>
+    <comment>Send Reminder</comment>
+  </data>
+  <data name="ShippingDestination" xml:space="preserve">
+    <value>Destino de Entrega</value>
+    <comment>Shipping Destination</comment>
+  </data>
+  <data name="Yourdeliveryinfohasbeenupdated" xml:space="preserve">
+    <value>Su información de entrega ha sido actualizada.</value>
+    <comment>Your delivery info has been updated.</comment>
+  </data>
+  <data name="Yourdeliveryinfowasupdated" xml:space="preserve">
+    <value>Su información de entrega fue actualizada</value>
+    <comment>Your delivery info was updated</comment>
+  </data>
+  <data name="Yourdeliveryschedulehasbeenadded" xml:space="preserve">
+    <value>Su calendario de entrega ha sido agregado.</value>
+    <comment>Your delivery schedule has been added.</comment>
+  </data>
+  <data name="Yourdeliveryschedulehasbeenupdated" xml:space="preserve">
+    <value>Su calendario ha sido actualizado.</value>
+    <comment>Your delivery schedule has been updated.</comment>
+  </data>
+  <data name="Yourdeliveryschedulewasupdated" xml:space="preserve">
+    <value>Su calendario de entrega fue actualizada (número {0})</value>
+    <comment>Your delivery schedule was updated (# {0})</comment>
+  </data>
+  <data name="Youriteminfohasbeenaddedupdated" xml:space="preserve">
+    <value>Su información de producto ha sido agregada / actualizada.</value>
+    <comment>Your item info has been added / updated.</comment>
+  </data>
+  <data name="Youriteminfowasupdated" xml:space="preserve">
+    <value>Su información de producto fue actualizado (número {0})</value>
+    <comment>Your item info was updated (#{0})</comment>
+  </data>
+  <data name="Yourpriceinquiryregardingitem" xml:space="preserve">
+    <value>Su consulta de precio acerca de número de producto {0}</value>
+    <comment>Your price inquiry regarding item# {0}</comment>
+  </data>
+  <data name="ItemInfo" xml:space="preserve">
+    <value>Información de preducto</value>
+    <comment>Item Info</comment>
+  </data>
+  <data name="DeliverySchedule" xml:space="preserve">
+    <value>Calendario de entrega</value>
+    <comment>Delivery Schedule</comment>
+  </data>
+  <data name="UpdateAutoPay" xml:space="preserve">
+    <value>Actualizar Pago Automático</value>
+    <comment>Update Auto Pay</comment>
+  </data>
+  <data name="Payment1" xml:space="preserve">
+    <value>Pago</value>
+    <comment>Payment</comment>
+  </data>
+  <data name="Totalitems" xml:space="preserve">
+    <value>Total: {0} productos</value>
+    <comment>Total: {0} items</comment>
+  </data>
+  <data name="EmailMsg22" xml:space="preserve">
+    <value>Todos los precios están sujetos a cambios sin previo aviso debido a circunstancias económicas imprevistas.</value>
+    <comment>All prices are subject to change without prior notice due to unforeseen economic circumstances.</comment>
+  </data>
+  <data name="PhoneStatement1" xml:space="preserve">
+    <value>Al ingresar mi número de teléfono celular, acepto recibir mensajes de texto importantes, como el código de verificación de inicio de sesión y recordatorios de pedidos. Pueden aplicar las tarifas de mensajes y de datos.</value>
+    <comment>By entering my cell phone #, I agree to receive important text messages such as login verification code and order reminders. Msg and data rates may apply.</comment>
+  </data>
+  <data name="PhoneStatement2" xml:space="preserve">
+    <value>Debido a que ingresó su número de teléfono celular, la casilla de verificación debe estar marcada.</value>
+    <comment>Because you entered your cell phone #, the check box must be checked.</comment>
+  </data>
+</root>

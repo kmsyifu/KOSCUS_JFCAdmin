@@ -1,0 +1,94 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeFile="JFCAdmin_Mobile.master.vb" Inherits="JFCAdmin_JFCAdmin_Mobile" %>
+<%@ Import Namespace="Common" %>
+<%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>--%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head id="Head1" runat="server">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0"/> 
+    <link href="~/Styles/Site.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/Koscus.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/dropdown.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/Site_Mobile.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
+    <%--Web icon for iPhone--%>
+    <link href="~/Images/Web/jfc-icon.png" rel="apple-touch-icon" />
+    <link href="~/Images/Web/jfc-icon-72x72.png" rel="apple-touch-icon" sizes="72x72" />
+    <link href="~/Images/Web/jfc-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
+    <link href="~/Images/Web/jfc-icon-114x114.png" rel="apple-touch-icon" sizes="114x114" />
+    <link href="~/Images/Web/jfc-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
+    <link href="~/Images/Web/jfc-icon-144x144.png" rel="apple-touch-icon" sizes="144x144" />
+    <link href="~/Images/Web/jfc-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
+    <%--Web icon for Android--%>
+    <link href="~/Images/Web/jfc-icon-152x152.png" rel="icon" sizes="152x152" />
+    <%--<link href="Images/jfc-icon-192x192.png" rel="icon" sizes="192x192" />--%>
+    <%--Favicon--%>
+    <link rel="shortcut icon" href="~/Images/Web/jfc-icon.ico" />
+
+    <asp:ContentPlaceHolder ID="DefContent" runat="server">
+        <script src="<%= ResolveClientUrl("~/Scripts/jquery-1.4.1.min.js") %>" type="text/javascript"></script>
+        <script src="<%= ResolveClientUrl("~/Scripts/jquery-ui-1.8.16.custom.min.js") %>" type="text/javascript"></script>
+        <script src="<%= ResolveClientUrl("~/Scripts/Common.js?v=" & Common.VERSION) %>" type="text/javascript"></script>
+        <script src="<%= ResolveClientUrl("~/Scripts/jquery.autocomplete.js?v=" & Common.VERSION) %>" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            var SystemDialogMessage = '';
+            var SystemDialogTitle = '';
+            var SystemDialogReturnURL = '';
+            var SystemDialogButton = '';
+            var SystemLineMessage = '';
+            var SystemLineType = '';
+            <%= GetJavaScript()%>
+            <%= JavaScript2 %>
+        </script>
+    </asp:ContentPlaceHolder>
+
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body class="body">
+    <form id="Form1" runat="server">
+    <input type="hidden" id="DialogResult" name="DialogResult" value="" />
+    <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></ajaxToolkit:ToolkitScriptManager>
+    <%--<asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>--%>
+
+    <div class="page">
+        <div class="headerTop">
+            <asp:ImageButton ID="ImageButton1" CssClass="sImgBtn hdrLeftBtn" runat="server" ImageUrl="~/Images/Web/menu.png" PostBackUrl="Home.aspx" Visible='<%# GetCurrentPageName() <> "home.aspx" %>' />
+            <%--<img alt="" src="<%= ResolveClientUrl("~/Images/Web/jfcLogo.gif") %>" />--%><%--Cannot use GetWebImgUrl() here--%>
+            <img alt="" src="<%= ResolveClientUrl("~/Images/Web/jfcLogo.png") %>" height="35px" />
+            <asp:ImageButton ID="btnLogout" CssClass="sImgBtn hdrRightBtn" runat="server" ImageUrl="~/Images/Web/lock.png" PostBackUrl="~/Login/Login.aspx" />
+         </div>
+        <div class="main turnOffFloat">
+            <%--Show progress popup during postback--%>
+            <script type="text/javascript">
+                $('form').live("submit", function () {
+                    if ( DoPageClientValidate("validgroup") && DoPageClientValidate("validgroupUser") && DoPageClientValidate("validgroupCompany") && DoPageClientValidate("Homepageupload"))
+                        showProgress();
+                });
+
+                function DoPageClientValidate(validationGroupName) {
+                    var result = Page_ClientValidate(validationGroupName);
+                    Page_BlockSubmit = false;
+                    return result;
+                }
+            </script>
+            <div class="loading popup_dialog" >
+                <h1><label>Processing</label></h1>
+                <p><img alt="" class="mImgBtn" src="<%= ResolveClientUrl("~/Images/Web/progress.gif") %>" />&nbsp;&nbsp;
+                    <label>Please wait...</label></p>
+            </div>
+
+            <%--Show content--%>
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
+        </div>
+        <div class="footer">
+            <p>(c) <asp:Label ID="Label1" Text='<%# Common.CURRENT_YEAR %>' runat="server" /> JFC International, Inc.・
+            <asp:LinkButton runat="server" id="lnkFullSite" Cssclass='linkcolor' Text="Full Site" />・<a runat="server" id="a15" class='linkcolor' href="~/Common/ShowFile.aspx?name=PrivacyPolicy.pdf" target="_blank">Privacy Policy</a></p>
+            <%--<a target="_blank" class='linkcolor' href='http://shop.jfc.com/Login/PrivacyPolicy.htm'>Privacy Policy</a>--%>
+        </div>
+    </div>
+    </form>
+</body>
+</html>

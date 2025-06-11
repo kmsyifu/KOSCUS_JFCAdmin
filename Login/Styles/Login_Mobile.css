@@ -1,0 +1,37 @@
+﻿/* Overwrites Login.css */
+
+.body   
+{
+    font-size: 13px;
+}
+.body         
+{ 
+    background-color: #FFFFFF; 
+}
+.headerTop
+{
+    text-align: center;
+}
+.headerBottom
+{
+    height: 2px;
+    background: #ddd;
+}
+.main
+{
+    padding: 20px;
+    margin: 0px;
+    min-height: 350px;
+}
+.footer         
+{ 
+    background-color: #FFFFFF;     
+    border-top: #ddd 1px solid; 
+    width: 90%;
+    font-size: 0.9em;
+}
+
+.cmd            { margin-left: 0px; }
+.info           { width: 100%; }
+.stdTxt         { width: 200px; }
+.drpList        { width: 200px; }

@@ -1,0 +1,290 @@
+﻿<%@ Page Language="VB" MasterPageFile="JFCAdmin.master" AutoEventWireup="false" CodeFile="JFCAdmin.aspx.vb" Inherits="JFCAdmin_JFCAdmin" %>
+<%@ Import Namespace="Common" %>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
+   <%-- <img alt="" class="cellXLImg" src="../Images/Web/construction.jpg" />--%>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tabs").tabs();
+            $("#tabs").removeClass("ui-widget");
+            $('#tabs').css('display', 'block'); //Display tabs when page finish loading
+            <%= JavaScript %>
+        });
+    </script>
+
+    <h1>JFC Settings</h1>
+
+    <div id="tabs" style="display: none;" > <%--Display tabs when page finish loading--%>
+       <ul>
+            <li><a href="#tabJfc">JFC Info</a></li>
+            <li><a href="#tabUserAcc">JFC User Account</a></li>
+            <li><a href="#tabJfcBranch">JFC Branch</a></li>
+            <li><a href="#tabCustCompany">Customer Company</a></li>
+            <li><a href="#tabVendorCompany">Vendor Company</a></li>
+        </ul>
+        <%----------------------------------------------------------------------------------------------------------------------
+            Manage company info
+        ----------------------------------------------------------------------------------------------------------------------%>
+        <div id="tabJfc">
+            <h2>JFC</h2>
+            <asp:Panel ID="Panel13" runat="server" DefaultButton="btnSaveJfc">
+                <asp:Panel ID="pnlCompany" CssClass="visiblePnl leftOnlyContent" Width="500px" runat="server">
+                    <h1>JFC Info</h1>
+                    <asp:Label ID="lblVendorCompanyID" runat="server" visible="false"/>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="rowHdr">Company Name</td>
+                                <td><asp:TextBox ID="txtCompanyName" CssClass="stdTxt size48" runat="server" /><asp:Label ID="lblStarCompanyName" CssClass="red" runat="server" Text="*"/></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Email</td>
+                                <td><asp:TextBox ID="txtCompanyEmail" CssClass="stdTxt size48" runat="server" /><asp:Label ID="Label1" CssClass="red" runat="server" Text="*"/></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Address 1</td>
+                                <td><asp:TextBox ID="txtCompanyAddress1" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Address 2</td>
+                                <td><asp:TextBox ID="txtCompanyAddress2" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">city</td>
+                                <td><asp:TextBox ID="txtCompanyCity" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">State</td>
+                                <td><asp:TextBox ID="txtCompanyState" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Zip</td>
+                                <td><asp:TextBox ID="txtCompanyZip" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Country</td>
+                                <td><asp:TextBox ID="txtCompanyCountry" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Phone</td>
+                                <td><asp:TextBox ID="txtCompanyPhone" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td class="rowHdr">Fax</td>
+                                <td><asp:TextBox ID="txtCompanyFax" CssClass="stdTxt size48" runat="server" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                </asp:Panel>
+                <br />
+                <asp:Label ID="Label8" CssClass="red" runat="server" Text="* Required"/>
+                <br />
+                <asp:Button ID="btnSaveJfc" CssClass="midButton" runat="server" Text="Update Changes" />
+            </asp:Panel>
+            <br /><br />
+        </div>
+
+        <%----------------------------------------------------------------------------------------------------------------------
+            Manage JFC user accounts
+        ----------------------------------------------------------------------------------------------------------------------%>
+        <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#subtabs_userAcc").tabs();
+                    $("#subtabs_userAcc").removeClass("ui-widget");
+                    <%= JavaScript %>
+                });
+        </script>
+
+        <div id="tabUserAcc">
+            <%--List of user account--%>
+            <asp:Panel runat="server" ID="pnlList_userAcc" >
+                <h2>User Account</h2>
+                <asp:Label ID="lblSortBy_userAcc" runat="server" Text="Sort by" CssClass="gray" />
+                <asp:DropDownList ID="lstOrderBy_userAcc" CssClass="largeDrpList" runat="server" AutoPostBack="True" />
+                <%--<asp:Label ID="Label40" CssClass="helpLabel" runat="server" Text="Click a user from the following list to view or edit" />--%>
+                <br /><br />
+                <asp:GridView ID="grdWebUser" runat="server" DataSourceID="dsWebUser" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Email" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32">
+                            <ItemTemplate>
+                                <%--TODO--%>
+                                <asp:Label runat="server" ID="lblEmail" Text='<%# Eval("email") %>' />
+                                <%--<asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkEmail" Text='<%# Eval("email") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("email")%>' />--%>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <%--<asp:BoundField HeaderText="Email" DataField="EMAIL" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" SortExpression="EMAIL" />--%>
+                        <%--<asp:BoundField HeaderText="Administrator" DataField="ISADMIN" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />--%>
+                        <asp:BoundField HeaderText="First Name" DataField="FIRSTNAME" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="Last Name" DataField="LASTNAME" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="Phone" DataField="PHONE" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="Cellular" DataField="CELLULAR" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="Fax" DataField="FAX" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <%--<asp:HyperLinkField Text="View / Edit" DataNavigateUrlFormatString="EditAdmin.aspx?TAB=1&CMD=WEBUSER&EMAIL={0}" DataNavigateUrlFields="EMAIL" HeaderStyle-CssClass="th size12" ItemStyle-CssClass="center12 tdLink" />--%>
+                        <asp:TemplateField ItemStyle-CssClass="center8">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnDelete" Tooltip="Delete user account" CommandName="DELETE_ROW" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' CommandArgument='<%# Eval("email")%>' runat="server" />
+                                </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="Not found"/>&nbsp;&nbsp;        
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:SqlDataSource ID="dsWebUser" runat="server"></asp:SqlDataSource>
+                <br />
+                <asp:Button ID="btnAddWebUser" CssClass="midButton" runat="server" Text="Create JFC User" />
+            </asp:Panel>
+            <%--Detail of user account--%>
+            <asp:Panel runat="server" ID="pnlDtl_userAcc" >
+                <%--TODO--%>
+            </asp:Panel>
+            <br />
+        </div>
+
+        <%----------------------------------------------------------------------------------------------------------------------
+            Manage JFC Branches
+        ----------------------------------------------------------------------------------------------------------------------%>
+        <div id="tabJfcBranch">
+            <%--List of JFC branch--%>
+            <asp:Panel runat="server" ID="pnlList_jfcBranch" >
+                <h2>JFC Branch</h2>
+                <%--<asp:Label ID="Label2" CssClass="helpLabel" runat="server" Text="Click a branch from the following list to view or edit" />--%>
+                <asp:GridView ID="grdJfcBranch" runat="server" DataSourceID="dsJfcBranch" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Branch" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32">
+                            <ItemTemplate>
+                                <asp:Label Visible="false" runat="server" ID="lblVendorID" Text='<%# Eval("vendor_id") %>' />
+                                <%--TODO--%>
+                                <asp:Label runat="server" ID="lblVendorName" Text='<%# Eval("vendorName") %>' />
+                                <%--<asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkVendorName" Text='<%# Eval("vendorName") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("vendor_id")%>' />--%>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField HeaderText="Branch #" DataField="JFCBRANCHNR" HeaderStyle-CssClass="th size10" ItemStyle-CssClass="size10" />
+                        <asp:BoundField HeaderText="Phone" DataField="PHONE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Fax" DataField="FAX" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Address 1" DataField="ADDRESS1" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />
+                        <asp:BoundField HeaderText="Address 2" DataField="ADDRESS2" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="City" DataField="CITY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="State" DataField="STATE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Zip" DataField="ZIP" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Country" DataField="COUNTRY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:TemplateField ItemStyle-CssClass="center4">
+                            <ItemTemplate>
+                               <asp:ImageButton ID="btnDelete" Tooltip="Delete category" CommandName="DELETE_ROW" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' CommandArgument='<%# Eval("vendor_id")%>' runat="server" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="Not found"/>&nbsp;&nbsp;        
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:SqlDataSource ID="dsJfcBranch" runat="server"></asp:SqlDataSource>
+                <br />
+                <asp:Button ID="btnAddJfcBranch" CssClass="midButton" runat="server" Text="Create JFC Branch" />
+            </asp:Panel>
+            <%--Detail of JFC branch--%>
+            <asp:Panel runat="server" ID="pnlDtl_JfcBranch" >
+                <%--TODO--%>
+            </asp:Panel>
+            <br />
+        </div>
+
+        <%----------------------------------------------------------------------------------------------------------------------
+            Manage customer companies
+        ----------------------------------------------------------------------------------------------------------------------%>
+        <div id="tabCustCompany">
+            <%--List of customer company--%>
+            <asp:Panel runat="server" ID="pnlList_custCompany" >
+                <h2>Customer Company</h2>
+                <%--<asp:Label ID="Label3" CssClass="helpLabel" runat="server" Text="Click a company from the following list to view or edit" />--%>
+                <asp:GridView ID="grdCustCompany" runat="server" DataSourceID="dsCustCompany" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Company" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48">
+                            <ItemTemplate>
+                                <asp:Label Visible="false" runat="server" ID="lblCustCompanyID" Text='<%# Eval("custCompany_id") %>' />
+                                <%--TODO--%>
+                                <asp:Label runat="server" ID="lblCustCompanyName" Text='<%# Eval("custCompanyName") %>' />
+                                <%--<asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkCustCompanyName" Text='<%# Eval("custCompanyName") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("custCompany_id")%>' />--%>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField HeaderText="Type" DataField="TYPE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Phone" DataField="PHONE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Fax" DataField="FAX" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Address 1" DataField="ADDRESS1" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />
+                        <asp:BoundField HeaderText="Address 2" DataField="ADDRESS2" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="City" DataField="CITY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="State" DataField="STATE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Zip" DataField="ZIP" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Country" DataField="COUNTRY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:TemplateField ItemStyle-CssClass="center4">
+                            <ItemTemplate>
+                               <asp:ImageButton ID="btnDelete" Tooltip="Delete category" CommandName="DELETE_ROW" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' CommandArgument='<%# Eval("custCompany_id")%>' runat="server" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="Not found"/>&nbsp;&nbsp;        
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:SqlDataSource ID="dsCustCompany" runat="server"></asp:SqlDataSource>
+                <br />
+                <asp:Button ID="btnAddCustCompany" CssClass="midButton" runat="server" Text="Create Customer Company" />
+            </asp:Panel>
+            <%--Detail of customer company--%>
+            <asp:Panel runat="server" ID="pnlDtl_custCompany" >
+                <%--TODO--%>
+            </asp:Panel>
+            <br />
+        </div>
+
+        <%----------------------------------------------------------------------------------------------------------------------
+            Manage vendor companies
+        ----------------------------------------------------------------------------------------------------------------------%>
+        <div id="tabVendorCompany">
+            <%--List of customer company--%>
+            <asp:Panel runat="server" ID="pnlList_vendorCompany" >
+                <h2>Vendor Company</h2>
+                <%--<asp:Label ID="Label4" CssClass="helpLabel" runat="server" Text="Click a company from the following list to view or edit" />--%>
+                <asp:GridView ID="grdVendorCompany" runat="server" DataSourceID="dsVendorCompany" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false">
+                    <Columns>
+                        <asp:TemplateField HeaderText="Company" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48">
+                            <ItemTemplate>
+                                <asp:Label Visible="false" runat="server" ID="lblVendorCompanyID" Text='<%# Eval("vendorCompany_id") %>' />
+                                <%--TODO--%>
+                                <asp:Label runat="server" ID="lblVendorCompanyName" Text='<%# Eval("vendorCompanyName") %>' />
+                                <%--<asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkVendorCompanyName" Text='<%# Eval("vendorCompanyName") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("vendorCompany_id")%>' />--%>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField HeaderText="Phone" DataField="PHONE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Fax" DataField="FAX" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Address 1" DataField="ADDRESS1" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />
+                        <asp:BoundField HeaderText="Address 2" DataField="ADDRESS2" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                        <asp:BoundField HeaderText="City" DataField="CITY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="State" DataField="STATE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Zip" DataField="ZIP" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:BoundField HeaderText="Country" DataField="COUNTRY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                        <asp:TemplateField ItemStyle-CssClass="center4">
+                            <ItemTemplate>
+                               <asp:ImageButton ID="btnDelete" Tooltip="Delete category" CommandName="DELETE_ROW" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' CommandArgument='<%# Eval("vendorCompany_id")%>' runat="server" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="Not found"/>&nbsp;&nbsp;        
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:SqlDataSource ID="dsVendorCompany" runat="server"></asp:SqlDataSource>
+                <br />
+                <asp:Button ID="btnAddVendorCompany" CssClass="midButton" runat="server" Text="Create Vendor Company" />
+            </asp:Panel>
+            <%--Detail of customer company--%>
+            <asp:Panel runat="server" ID="pnlDtl_vendorCompany" >
+                <%--TODO--%>
+            </asp:Panel>
+            <br />
+        </div>
+    </div>
+
+</asp:Content>
+

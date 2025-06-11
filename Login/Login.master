@@ -1,0 +1,103 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeFile="Login.master.vb" Inherits="Login_Login" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+    <title></title>
+    <%--Cannot access ~/Styles, ~/Scripts and ~/Images directory--%>
+    <link href="Styles/Login.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
+    <%--<link href="~/Styles/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />--%>
+    <%--Favicon--%>
+    <link rel="shortcut icon" href="Images/jfc-icon.ico" />
+
+    <asp:ContentPlaceHolder ID="DefContent" runat="server">
+        <script src="<%= ResolveClientUrl("Scripts/jquery-1.4.1.min.js") %>" type="text/javascript"></script>
+        <script src="<%= ResolveClientUrl("Scripts/jquery.password-strength.min.js") %>" type="text/javascript"></script>
+        <script src="<%= ResolveClientUrl("~/Scripts/Notification.js") %>" type="text/javascript"></script>
+        <%--<script src="<%= ResolveClientUrl("~/Scripts/jquery-ui-1.8.16.custom.min.js") %>" type="text/javascript"></script>--%>
+        <%--<script src="<%= ResolveClientUrl("~/Scripts/Common.js?v=" & Common.VERSION) %>" type="text/javascript"></script>--%><%--Cannot use Common.js--%>
+
+        <script type="text/javascript">
+            var SystemDialogMessage = '';
+            var SystemDialogTitle = '';
+            var SystemDialogReturnURL = '';
+            var SystemDialogButton = '';
+            var SystemLineMessage = '';
+            var SystemLineType = '';
+            var myVar;
+            <%= GetJavaScript()%>
+            /************************** Show progress ***************************/
+            function showProgress() {
+          
+                   myVar = setTimeout(function () {
+                        var modal = $('<div />');
+                        modal.addClass("modal");
+                        $('body').append(modal);
+                        var loading = $(".loading");
+                        loading.show();
+                        var top = Math.max($(window).height() / 2 - loading[0].offsetHeight / 2, 0);
+                        var left = Math.max($(window).width() / 2 - loading[0].offsetWidth / 2, 0);
+                        loading.css({ top: top, left: left });
+                    }, 200);
+                
+            }
+            function stopShowProgress(){
+                clearTimeout(myVar);
+            }
+           
+
+        </script>
+    </asp:ContentPlaceHolder>
+
+   <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body class="body">
+    <form runat="server">
+    <input type="hidden" id="DialogResult" name="DialogResult" value="" />
+    <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></ajaxToolkit:ToolkitScriptManager>
+
+    <div class="page">
+        <div id="divPageMsg" style="visibility:hidden;"></div>
+        <%--<div id="divPageMsg" style="position: absolute; top: 388px;"></div>--%>
+        <div class="headerTop">
+            <%--<img alt="" src="<%= ResolveClientUrl("~/Images/Web/jfcLogo.gif") %>" />--%><%--Doesn't work--%>
+            <%--<img alt="" src='Images/jfcLogo.gif' />--%>
+            <img alt="" src='Images/jfcLogo.png' height="35px" />
+        </div>
+        <div class="headerBottom"><h1>Welcome to JFC Salesman Site</h1></div>
+        <div class="main">
+            <%--Show progress popup during postback--%>
+            <script type="text/javascript">
+                $('form').live("submit", function () {
+                    showProgress();
+                });
+            </script>
+            <div class="loading popup_dialog" >
+                <h1><label>Processing</label></h1>
+                <p><img alt="" class="mImgBtn" src='Images/progress.gif' />&nbsp;&nbsp;
+                    <label>Please wait...</label></p>
+            </div>
+
+            <%--Show content--%>
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
+        </div>
+        <div class="footer">
+            <p>Copyright (c) <asp:Label ID="Label1" Text='<%# Common.CURRENT_YEAR %>' runat="server" /> JFC International, Inc.・<asp:LinkButton runat="server" id="lnkMobileSite" Visible='<%# Common.ENABLE_MOBILE_VERSION %>' Cssclass='linkcolor' Text="Mobile Site" />
+                ・<a runat="server" id="a15" href="~/Login/ShowFile.aspx?name=PrivacyPolicy.pdf" target="_blank">Privacy Policy</a></p><%--<a target="_blank" href='http://shop.jfc.com/Login/PrivacyPolicy.htm'>Privacy Policy</a>--%>
+        </div>
+    </div>
+
+    <%--Show privacy policy popup--%>
+    <div class="footer-notification" style="display: none">
+      <p class="footer-notification-contents">
+        This website uses cookies in accordance with our <a runat="server" href="~/Login/ShowFile.aspx?name=PrivacyPolicy.pdf" title="link to privacy policy" target="_blank">privacy policy</a> to ensure you get the best experience on our site.
+        Please read our privacy policy to learn more about what information we collect through our site. You may have certain rights over the information we collect from you.
+        <div>
+            <button id="cookies-accept">&nbsp;&nbsp;Accept&nbsp;&nbsp;</button>
+        </div>
+      </p>
+    </div>
+
+    </form>
+</body>
+</html>

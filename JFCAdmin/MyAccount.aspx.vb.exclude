@@ -1,0 +1,85 @@
+﻿Imports System.Data
+Imports Common
+Imports DBUpdate
+
+Partial Class JFCAdmin_MyAccount
+    Inherits System.Web.UI.Page
+    Protected JavaScript As String = ""
+
+    Protected Sub Page_PreInit(sender As Object, e As System.EventArgs) Handles Me.PreInit
+        Dim p As Page = TryCast(Me.Context.Handler, Page)
+        If p IsNot Nothing Then
+            ' set master page
+            If IsMobile() = True Then
+                p.MasterPageFile = "JFCAdmin_Mobile.master"
+            Else
+                p.MasterPageFile = "JFCAdmin.master"
+            End If
+        End If
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        'If page is refreshed, show the current page without executing the previous event
+        'If IsPostBack = False Then
+        '    'First load
+        '    Session("POST_ID_" & Page.GetType().Name) = "1001"
+        '    ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        'Else
+        '    If Common.CString(ViewState("POST_ID_" & Page.GetType().Name)) = Common.CString(Session("POST_ID_" & Page.GetType().Name)) Then
+        '        'Postback
+        '        Session("POST_ID_" & Page.GetType().Name) = Common.CString(Convert.ToInt16(Session("POST_ID_" & Page.GetType().Name)) + 1)
+        '        ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        '    Else
+        '        'Refreshed 'Response.Write("refreshed")
+        '        ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        '        Response.Redirect(Request.RawUrl)
+        '    End If
+        'End If
+
+        'Show confirmation msg if needed (passed from OrderDtl)
+        If Session("MSG") <> "" Then
+            If Session("MSG_TYPE") <> "" Then
+                MessageLine(Session("MSG_TYPE"), Session("MSG"))
+                Session("MSG_TYPE") = ""
+            Else
+                MessageLine("CONFIRM", Session("MSG"))
+            End If
+            Session("MSG") = ""
+        End If
+
+        If IsPostBack = False Then
+            'Init
+            DataBind()
+            'Pass parameters to CustDtl
+            'Dim availTabs As New List(Of Integer)(New Integer() {MyAccount_Tab.USERACC, MyAccount_Tab.PAYMENTACC})
+            Dim availTabs As New List(Of Integer)(New Integer() {MyAccount_Tab.USERACC})
+            Session("MY_ACCOUNT_AVAIL_TABS") = availTabs
+            'If [Enum].TryParse(Request.QueryString("TAB"), Session("MY_ACCOUNT_TAB")) = False OrElse [Enum].IsDefined(TAB.GetType(), Session("MY_ACCOUNT_TAB")) = False Then Session("MY_ACCOUNT_TAB") = CustDtl_Tab.VENDOR
+            Session("MY_ACCOUNT_TAB") = IIf(Request.QueryString("TAB") <> "", Request.QueryString("TAB"), MyAccount_Tab.USERACC)
+
+            'Select tab
+            setJavaScript(Session("MY_ACCOUNT_TAB"))
+        End If
+    End Sub
+
+    Protected Sub ctrMyAccount_PreRender(sender As Object, e As System.EventArgs) Handles ctrMyAccount.PreRender
+        'Select tab
+        setJavaScript(Session("MY_ACCOUNT_TAB"))
+    End Sub
+
+    Private Sub setJavaScript(ByVal tab As CustDtl_Tab)
+        JavaScript = "$('#tabs').tabs('select', " & convertToLocalTab(tab) & ");" 'selectSubmenu(" & tab & ");"
+        'JavaScript &= "scrollTo(0, 0);" 'TODO: Doesn't work
+    End Sub
+
+    Private Function convertToLocalTab(ByVal tab As CustDtl_Tab) As Integer
+        Select Case tab
+            Case MyAccount_Tab.USERACC
+                Return 0
+                'Case MyAccount_Tab.PAYMENTACC
+                '    Return 1
+        End Select
+        Return 0
+    End Function
+
+End Class

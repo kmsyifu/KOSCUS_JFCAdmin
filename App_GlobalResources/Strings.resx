@@ -1,0 +1,1767 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+    <comment>アカウント</comment>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Account Name</value>
+    <comment>アカウント名</comment>
+  </data>
+  <data name="ActionRequired" xml:space="preserve">
+    <value>Action Required</value>
+  </data>
+  <data name="Addadvancepayment" xml:space="preserve">
+    <value>Add advance payment</value>
+    <comment>事前支払の追加</comment>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+    <comment>住所</comment>
+  </data>
+  <data name="Address1" xml:space="preserve">
+    <value>Address 1</value>
+    <comment>住所1</comment>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Address 2</value>
+    <comment>住所2</comment>
+  </data>
+  <data name="AdvancePayment" xml:space="preserve">
+    <value>Advance Payment</value>
+    <comment>事前お支払</comment>
+  </data>
+  <data name="Aging" xml:space="preserve">
+    <value>Aging</value>
+    <comment>経過日数</comment>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+    <comment>全て</comment>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+    <comment>金額</comment>
+  </data>
+  <data name="Anorderhasbeencanceled" xml:space="preserve">
+    <value>An order has been canceled.</value>
+  </data>
+  <data name="API" xml:space="preserve">
+    <value />
+  </data>
+  <data name="App" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+    <comment>適応する</comment>
+  </data>
+  <data name="AutoPaymentConfirmation" xml:space="preserve">
+    <value>Auto Payment Confirmation</value>
+    <comment>自動決済が実施されました</comment>
+  </data>
+  <data name="Autopaymentfailed" xml:space="preserve">
+    <value>Auto payment failed</value>
+    <comment>自動決済が失敗しました</comment>
+  </data>
+  <data name="AutoPaymentMsg1" xml:space="preserve">
+    <value>Please note that when a credit memo is issued, it will not be refunded to your bank immediately. Instead, its negative balance will be included in your next auto payment for your future invoices.</value>
+    <comment>クレジットメモが発行されても、すぐに銀行口座へ返金されません。今後のご請求の自動支払の中からこの分が引かれます。</comment>
+  </data>
+  <data name="AutoPaymentMsg2" xml:space="preserve">
+    <value>Terms and Conditions</value>
+    <comment>規約と条件</comment>
+  </data>
+  <data name="AutoPaymentMsg3" xml:space="preserve">
+    <value>By requesting this Auto Payment service, you authorize us to automatically transfer the amount of the payment you requested above, from your bank account indicated above, and to JFC. You acknowledge that the origination of automatic payment transactions to JFC must comply with the provisions of U.S. law. This authorization is to remain in full force and in effect until we have received written or online notification from you to cancel this authorization.</value>
+    <comment>自動決済サービスをリクエストすることにより、お客様は、リクエストしたお支払い金額を、お客様の銀行口座から JFC に自動引落しすることを許可するものとします。お客様は、米国法の規定に則り、JFCへの自動支払い取引の開始が遵守しなければならないことに同意するものとします。 この承認を取り消すための書面またはオンライン通知を当社が受け取るまで、完全な効力を持ち続けます。</comment>
+  </data>
+  <data name="AutoPaymentMsg4" xml:space="preserve">
+    <value>I agree to the Terms and Conditions</value>
+    <comment>規約と条件に関して了承します</comment>
+  </data>
+  <data name="AutoPaymentMsg5" xml:space="preserve">
+    <value>Auto payment (all) - Automatically deduct the total amount within 24 hours after your invoice and credit memo has been created.    </value>
+    <comment>自動決済（全て）- インボイス及びクレジットメモが作成されて24時間以内に合計金額が自動的に引落されます。</comment>
+  </data>
+  <data name="AutoPaymentMsg6" xml:space="preserve">
+    <value>{0}% discount is applied for employees.</value>
+    <comment>従業員向け{0}％割引</comment>
+  </data>
+  <data name="AutoPaymentMsg7" xml:space="preserve">
+    <value>Auto payment (liquor only) - Automatically deduct the total amount for liquor including liquor interest within 24 hours after your invoice has been created.</value>
+    <comment>自動決済（リカーのみ）- リカーやリカーインタレスのトインボイス及びクレジットメモが作成されて24時間以内に合計金額が自動的に引落されます。</comment>
+  </data>
+  <data name="AutoPaymentSettings" xml:space="preserve">
+    <value>Auto Payment Settings</value>
+  </data>
+  <data name="Avail" xml:space="preserve">
+    <value>Avail</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance</value>
+    <comment>お支払残高</comment>
+  </data>
+  <data name="BalanceDtlMsg1" xml:space="preserve">
+    <value>Thank you! Your payment has been approved.</value>
+    <comment>お支払い、ありがとうございます</comment>
+  </data>
+  <data name="BalanceDtltitle" xml:space="preserve">
+    <value>Transaction History with JFC</value>
+    <comment>お取引履歴</comment>
+  </data>
+  <data name="BalanceforJFC" xml:space="preserve">
+    <value>Balance for JFC</value>
+    <comment>JFCへのお支払残高</comment>
+  </data>
+  <data name="BalanceMsg1" xml:space="preserve">
+    <value>This card exists in your account list. Please go to your account if you need to modify</value>
+    <comment>このカードはすでに登録済です。修正が必要であれば口座登録情報へお進みください</comment>
+  </data>
+  <data name="BalanceMsg2" xml:space="preserve">
+    <value>This bank account # has already exist in your list. Please go to your account if you need to modify</value>
+    <comment>この銀行口座はすでに登録済です。修正が必要であれば「マイアカウント」へお進みください</comment>
+  </data>
+  <data name="BalanceMsg3" xml:space="preserve">
+    <value>Please enter reason in note field for each line if payment amount is less than balance.</value>
+    <comment>残高よりも少ないお支払をする場合、各行の備考欄に理由を記載ください</comment>
+  </data>
+  <data name="BalanceMsg4" xml:space="preserve">
+    <value>Payment amount cannot be greater than remainding balance.</value>
+    <comment>残高よりも多くお支払金額を入力することはできません</comment>
+  </data>
+  <data name="BankAccount" xml:space="preserve">
+    <value>Bank Account</value>
+    <comment>銀行口座</comment>
+  </data>
+  <data name="Bankaccountdoesnotmatch" xml:space="preserve">
+    <value>Bank account # does not match</value>
+    <comment>銀行口座番号が合いません</comment>
+  </data>
+  <data name="BankAccountUpto17digits" xml:space="preserve">
+    <value>Bank Account # (Up to 17 digits)</value>
+    <comment>銀行口座番号（17文字まで）</comment>
+  </data>
+  <data name="Batch_FortePaymentSync" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Batch_FortePaymentSync1" xml:space="preserve">
+    <value>The card you use for auto payment has been expired. Please register another card at app.jfc.com.</value>
+    <comment>自動決済に使用しているカードの有効期限が切れています。 app.jfc.com で別のカードを登録してください。</comment>
+  </data>
+  <data name="Batch_FortePaymentSync2" xml:space="preserve">
+    <value>Cannot find your bank account for auto payment. If you would like to use auto payment, please set it up at https://app.jfc.com.</value>
+    <comment>自動決済用の銀行口座が見つかりません。 自動決済をご利用になりたい場合は、https://app.jfc.com で設定してください。</comment>
+  </data>
+  <data name="Batch_FortePaymentSync3" xml:space="preserve">
+    <value>The auto payment was declined. The error message from the payment processor was {0}. Please check your account for auto payment at app.jfc.com.</value>
+    <comment>自動決済が拒否されました。 支払処理業者からのエラー メッセージは {0} でした。 app.jfc.com で自動決済に使われている口座を確認してください。</comment>
+  </data>
+  <data name="Batch_FortePaymentSync4" xml:space="preserve">
+    <value>The following payment you made has failed.</value>
+    <comment>次の支払いは失敗しました。</comment>
+  </data>
+  <data name="Batch_FortePaymentSync5" xml:space="preserve">
+    <value>As a result, your paid amount will be added back to your account in 1 to 2 business days. Please visit our website at {0} in a few business days and make a payment again.</value>
+    <comment>その結果、お支払い金額は 1 ～ 2 営業日でお客様のアカウントに追加されます。 数営業日後に弊社のウェブサイト {0} にアクセスして、もう一度お支払いください。</comment>
+  </data>
+  <data name="Bestregards" xml:space="preserve">
+    <value>Best regards</value>
+    <comment>敬具</comment>
+  </data>
+  <data name="btnAutoPay" xml:space="preserve">
+    <value>Set Auto Payment</value>
+    <comment>自動決済を設定</comment>
+  </data>
+  <data name="btnPay" xml:space="preserve">
+    <value>View &amp; Pay Balance</value>
+    <comment>残高確認とお支払</comment>
+  </data>
+  <data name="Cannotopenthedocument" xml:space="preserve">
+    <value>Cannot open the document</value>
+    <comment>文書を開けません</comment>
+  </data>
+  <data name="CardNumber" xml:space="preserve">
+    <value>Card Number</value>
+    <comment>カード番号</comment>
+  </data>
+  <data name="CardType" xml:space="preserve">
+    <value>Card Type</value>
+    <comment>カードの種類</comment>
+  </data>
+  <data name="CasePrice" xml:space="preserve">
+    <value>Case Price</value>
+  </data>
+  <data name="CellPhone" xml:space="preserve">
+    <value>Cell Phone</value>
+    <comment>携帯電話</comment>
+  </data>
+  <data name="Changepassword" xml:space="preserve">
+    <value>Change password...</value>
+    <comment>パスワードを変更する...</comment>
+  </data>
+  <data name="CheckingAccount" xml:space="preserve">
+    <value>Checking Account</value>
+    <comment>Checking口座</comment>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+    <comment>市</comment>
+  </data>
+  <data name="Clickhere" xml:space="preserve">
+    <value>Click here</value>
+    <comment>ここをクリックしてください</comment>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Company</value>
+    <comment>会社</comment>
+  </data>
+  <data name="ConfirmBankAccount" xml:space="preserve">
+    <value>Confirm Bank Account</value>
+    <comment>銀行口座番号の確認</comment>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+    <comment>国</comment>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>Create Account</value>
+    <comment>口座を作る</comment>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Customer</value>
+    <comment>お客様</comment>
+  </data>
+  <data name="CustomerItemDescription" xml:space="preserve">
+    <value>Customer Item Description</value>
+  </data>
+  <data name="CustomerItemNum" xml:space="preserve">
+    <value>Customer Item #</value>
+  </data>
+  <data name="CustomerPortal" xml:space="preserve">
+    <value>Customer Portal</value>
+  </data>
+  <data name="CustPO" xml:space="preserve">
+    <value>Cust PO #</value>
+    <comment>お客様PO番号</comment>
+  </data>
+  <data name="Date1" xml:space="preserve">
+    <value>Date</value>
+    <comment>日付</comment>
+  </data>
+  <data name="DateNewtoold" xml:space="preserve">
+    <value>Date: New to old</value>
+    <comment>日付：新しいもの順</comment>
+  </data>
+  <data name="DateOldtonew" xml:space="preserve">
+    <value>Date: Old to new</value>
+    <comment>日付：古いもの順</comment>
+  </data>
+  <data name="Dear" xml:space="preserve">
+    <value>Dear</value>
+    <comment>To：</comment>
+  </data>
+  <data name="Deleteaccount" xml:space="preserve">
+    <value>Delete account</value>
+    <comment>口座を削除する</comment>
+  </data>
+  <data name="Delivery" xml:space="preserve">
+    <value>Delivery</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DetailofPaymentAccount" xml:space="preserve">
+    <value>Detail of Payment Account</value>
+    <comment>お支払口座の詳細</comment>
+  </data>
+  <data name="DocumentType" xml:space="preserve">
+    <value>Document Type</value>
+    <comment>文書の種類</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+    <comment>ダウンロード</comment>
+  </data>
+  <data name="DownloadDocument" xml:space="preserve">
+    <value>Download Document</value>
+  </data>
+  <data name="EachPrice" xml:space="preserve">
+    <value>Each Price</value>
+  </data>
+  <data name="Editaccounts" xml:space="preserve">
+    <value>Edit accounts...</value>
+    <comment>口座を編集...</comment>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+    <comment>Eメール</comment>
+  </data>
+  <data name="EmailInvitationMsg1" xml:space="preserve">
+    <value>Thank you for signing up for JFC {0}! Your account has been set up and ready to use.</value>
+  </data>
+  <data name="EmailInvitationMsg10" xml:space="preserve">
+    <value>(available on the next day upon request)</value>
+  </data>
+  <data name="EmailInvitationMsg11" xml:space="preserve">
+    <value>Make payments online using checking or saving account</value>
+  </data>
+  <data name="EmailInvitationMsg12" xml:space="preserve">
+    <value>View catalog for JFC items and inquire about item price</value>
+  </data>
+  <data name="EmailInvitationMsg13" xml:space="preserve">
+    <value>Information on new products and promotion</value>
+  </data>
+  <data name="EmailInvitationMsg14" xml:space="preserve">
+    <value>Check order status and view order history</value>
+  </data>
+  <data name="EmailInvitationMsg15" xml:space="preserve">
+    <value>Please contact your sales rep if you have any questions or feedback regarding our {0}</value>
+  </data>
+  <data name="EmailInvitationMsg2" xml:space="preserve">
+    <value>Please follow the instruction below to set your password.</value>
+  </data>
+  <data name="EmailInvitationMsg3" xml:space="preserve">
+    <value>Enter the following email address and click submit button.</value>
+  </data>
+  <data name="EmailInvitationMsg4" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="EmailInvitationMsg5" xml:space="preserve">
+    <value>Check your email and use the link in your email to set your password.</value>
+  </data>
+  <data name="EmailInvitationMsg6" xml:space="preserve">
+    <value>Once you set your password, you can go to {0} to login from next time.</value>
+  </data>
+  <data name="EmailInvitationMsg7" xml:space="preserve">
+    <value>Or you can download our app from {0} or {1}</value>
+  </data>
+  <data name="EmailInvitationMsg8" xml:space="preserve">
+    <value>Our {0} provides the following features;</value>
+  </data>
+  <data name="EmailInvitationMsg9" xml:space="preserve">
+    <value>Place orders online</value>
+  </data>
+  <data name="EmailInvoices" xml:space="preserve">
+    <value>Email Invoices</value>
+    <comment>インボイスをEmailする</comment>
+  </data>
+  <data name="EmailMsg1" xml:space="preserve">
+    <value>Thank you for submitting the price inquiry. Your sales rep will contact you as soon as this is received.</value>
+    <comment>価格に関するお問合せ、ありがとうございます。受取次第、営業担当者よりご連絡させていただきます。</comment>
+  </data>
+  <data name="EmailMsg10" xml:space="preserve">
+    <value>An order has been deleted.</value>
+    <comment>ご発注は削除されました。</comment>
+  </data>
+  <data name="EmailMsg14" xml:space="preserve">
+    <value>Thank you for submitting the price inquiry. Your sales rep will contact you as soon as this is received.</value>
+    <comment>価格に関するお問合せ、ありがとうございます。受取次第、営業担当者よりご連絡させていただきます。</comment>
+  </data>
+  <data name="EmailMsg15" xml:space="preserve">
+    <value>Thank you for your auto payment. Your payment of {0} has been approved and {1} has been declined. Your payment ID is {2}.</value>
+    <comment>自動決済いただき、ありがとうございます。{0} は承認され、 {1}は否認されました。お客様の支払IDは{2}です。</comment>
+  </data>
+  <data name="EmailMsg16" xml:space="preserve">
+    <value>Please note that it may take 1 to 2 business days to process your payment.</value>
+    <comment>お客様のお支払が処理されるのに1‐2営業日時間がかかります、ご了承ください。</comment>
+  </data>
+  <data name="EmailMsg17" xml:space="preserve">
+    <value>Thank you for your auto payment of {0}. Your payment ID is {1} </value>
+    <comment>{0} の自動決済いただき、ありがとうございます。お客様の支払IDは{1}です。</comment>
+  </data>
+  <data name="EmailMsg18" xml:space="preserve">
+    <value>The following auto payment has been submitted.</value>
+    <comment>以下の自動決済が実施されました</comment>
+  </data>
+  <data name="EmailMsg181" xml:space="preserve">
+    <value>Auto Payment '{0}' has been submitted</value>
+    <comment>自動決済{0}が実施されました</comment>
+  </data>
+  <data name="EmailMsg19" xml:space="preserve">
+    <value>This is a friendly reminder that the deadline for your order is coming up. If you are planning to order, please go to {0}.</value>
+    <comment>お客様のご発注締切時間が近づいてきていることをお知らせします。もしオーダーをされるようでしたら、 {0}へお願いします。</comment>
+  </data>
+  <data name="EmailMsg2" xml:space="preserve">
+    <value>The following price inquiry was submitted by {0} from {1}</value>
+    <comment>下記価格に関するお問合せは{1}から{0}によって行われました</comment>
+  </data>
+  <data name="EmailMsg20" xml:space="preserve">
+    <value>If you would like to &lt;b&gt;skip&lt;/b&gt; this order, please {0}.</value>
+    <comment>もしご発注を&lt;b&gt;スキップ&lt;/b&gt;するのであれば、{0}.</comment>
+  </data>
+  <data name="EmailMsg21" xml:space="preserve">
+    <value>Thank you for the following price inquiry. Your sales rep will contact you as soon as this is received.</value>
+  </data>
+  <data name="EmailMsg3" xml:space="preserve">
+    <value>Click here to view details of the price inquiry</value>
+    <comment>価格に関するお問合せの詳細を見るにはこちらを押してください</comment>
+  </data>
+  <data name="EmailMsg7" xml:space="preserve">
+    <value>Thank you for placing an order. Your order has been sent to your sales rep.</value>
+    <comment>ご発注いただき、ありがとうございます。ご発注は営業担当者へ送付されました。</comment>
+  </data>
+  <data name="EmailMsg8" xml:space="preserve">
+    <value>An order has been created by {0}</value>
+    <comment>{0}によってご注文が作成されました。</comment>
+  </data>
+  <data name="EmailMsg9" xml:space="preserve">
+    <value>An order has been updated by {0}</value>
+    <comment>{0}によってご注文が更新されました。</comment>
+  </data>
+  <data name="Emailusecommatoseparatemultipleemail" xml:space="preserve">
+    <value>Email (use comma to separate multiple email)</value>
+    <comment>Email（コンマを使って複数のEmailを区切ってください）</comment>
+  </data>
+  <data name="Error1" xml:space="preserve">
+    <value>Error</value>
+    <comment>エラー</comment>
+  </data>
+  <data name="ExpirationDate" xml:space="preserve">
+    <value>Expiration Date</value>
+    <comment>有効期限</comment>
+  </data>
+  <data name="Expirationdatecannotbepast" xml:space="preserve">
+    <value>Expiration date cannot be past</value>
+    <comment>使用期限を過ぎたものはご使用いただけません</comment>
+  </data>
+  <data name="Fax" xml:space="preserve">
+    <value>Fax</value>
+    <comment>FAX</comment>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First Name</value>
+    <comment>名</comment>
+  </data>
+  <data name="Gobacktopaymentaccountlist" xml:space="preserve">
+    <value>&lt;&lt; Go back to payment account list...</value>
+    <comment>&lt;&lt;お支払口座リストへ戻る...</comment>
+  </data>
+  <data name="Gobacktotransactionhistory" xml:space="preserve">
+    <value>&lt;&lt; Go back to transaction history...</value>
+    <comment>&lt;&lt; 取引履歴に戻る...</comment>
+  </data>
+  <data name="Gobacktowebpaymenthistory" xml:space="preserve">
+    <value>&lt;&lt; Go back to web payment history...</value>
+    <comment>&lt;&lt; Web決済履歴に戻る...</comment>
+  </data>
+  <data name="GoPaperless" xml:space="preserve">
+    <value>Go Paperless</value>
+    <comment>ペーパーレス</comment>
+  </data>
+  <data name="Goto" xml:space="preserve">
+    <value>Go to</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
+    <comment>グループ</comment>
+  </data>
+  <data name="HereareournewitemsFordetailspleasegoto" xml:space="preserve">
+    <value>Here are our new items! For details, please go to</value>
+    <comment>新商品があります。詳しくはこちらへ</comment>
+  </data>
+  <data name="Hereistheremainingbalance" xml:space="preserve">
+    <value>Here is the remaining balance</value>
+    <comment>お支払残高がございます</comment>
+  </data>
+  <data name="Hideliquorinterest" xml:space="preserve">
+    <value>Hide liquor interest</value>
+    <comment>リカーインタレストを隠す</comment>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+    <comment>ID</comment>
+  </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>Invalid</value>
+    <comment>無効</comment>
+  </data>
+  <data name="Invalidcardnumber" xml:space="preserve">
+    <value>Invalid card number</value>
+    <comment>カード番号が無効です</comment>
+  </data>
+  <data name="Invalidformat" xml:space="preserve">
+    <value>Invalid format</value>
+    <comment>フォーマットが正しくありません</comment>
+  </data>
+  <data name="Invalidrouting" xml:space="preserve">
+    <value>Invalid routing #</value>
+    <comment>Routing番号が無効です</comment>
+  </data>
+  <data name="Invalidsecuritycode" xml:space="preserve">
+    <value>Invalid security code</value>
+    <comment>セキュリティー番号が無効です</comment>
+  </data>
+  <data name="INVOICE" xml:space="preserve">
+    <value>INVOICE</value>
+    <comment>請求書</comment>
+  </data>
+  <data name="InvoiceAmount" xml:space="preserve">
+    <value>Invoice Amount</value>
+    <comment>請求書金額</comment>
+  </data>
+  <data name="InvoiceandStatement" xml:space="preserve">
+    <value>Invoice and Statement</value>
+  </data>
+  <data name="ItemNum" xml:space="preserve">
+    <value>Item #</value>
+  </data>
+  <data name="Itempriceislessthanbottomprice" xml:space="preserve">
+    <value>Item price is less than bottom price</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>Items</value>
+    <comment>商品</comment>
+  </data>
+  <data name="JFCAccount" xml:space="preserve">
+    <value>JFC Account</value>
+    <comment>JFCアカウント</comment>
+  </data>
+  <data name="JFCAccountMsg1" xml:space="preserve">
+    <value>Select Yes to receive PDF statements only (no mail)</value>
+    <comment>PDFで取引明細書を受け取りたい場合はYesを選んでください（郵送明細書なし）</comment>
+  </data>
+  <data name="JFCAccountMsg2" xml:space="preserve">
+    <value>Select Yes to receive copy of invoices by following email</value>
+    <comment>以下のメールでインボイスのコピーを受け取りたい場合Yesを選んでください</comment>
+  </data>
+  <data name="JFCAccountNum" xml:space="preserve">
+    <value>JFC Account #</value>
+    <comment>JFC口座番号</comment>
+  </data>
+  <data name="JFCItemDescription" xml:space="preserve">
+    <value>JFC Item Description</value>
+  </data>
+  <data name="JFCItemNum" xml:space="preserve">
+    <value>JFC Item #</value>
+  </data>
+  <data name="KocusAPIMsg1" xml:space="preserve">
+    <value>Out of stock items exist in your cart, and these items may be replaced.</value>
+    <comment>Out of stockの商品がカートの中にあります。これらの商品は取り換えられる可能性があります。</comment>
+  </data>
+  <data name="KocusAPIMsg10" xml:space="preserve">
+    <value>Your order {0} (Cust PO # {1})  was processed</value>
+    <comment>お客様のご発注{0} (お客様 PO 番号 {1})は処理されました</comment>
+  </data>
+  <data name="KocusAPIMsg11" xml:space="preserve">
+    <value>From address is not specified</value>
+    <comment>差出人Emailが指定されていません</comment>
+  </data>
+  <data name="KocusAPIMsg12" xml:space="preserve">
+    <value>You cannot delete this order.</value>
+    <comment>ご発注を削除できません</comment>
+  </data>
+  <data name="KocusAPIMsg13" xml:space="preserve">
+    <value>Order is empty. Please add at least one item to your order</value>
+    <comment>ご発注商品がありません。最低1品ご発注に加えてください。</comment>
+  </data>
+  <data name="KocusAPIMsg14" xml:space="preserve">
+    <value>You cannot edit this order.</value>
+    <comment>この発注は編集できません。</comment>
+  </data>
+  <data name="KocusAPIMsg15" xml:space="preserve">
+    <value>Qty for item # {0} has to be 0 or a positive number</value>
+    <comment>アイテム番号 {0} の数量は 0 または正の数でなければなりません</comment>
+  </data>
+  <data name="KocusAPIMsg16" xml:space="preserve">
+    <value>Each qty for item # {0} has to be 0 or multiple of {1}.</value>
+    <comment>アイテム番号 {0} の個数は、0 または {1} の倍数でなければなりません</comment>
+  </data>
+  <data name="KocusAPIMsg17" xml:space="preserve">
+    <value>The total amount for this order is ${0}. To update your order, the total amount has to be at least {1}.</value>
+    <comment>この注文の合計金額は ${0} です。 ご発注を更新するには、合計金額が {1} 以上である必要があります。</comment>
+  </data>
+  <data name="KocusAPIMsg18" xml:space="preserve">
+    <value>[Action Required] You received a updated order {0} (Cust PO # {1})</value>
+    <comment>［要対応］更新された注文 {0} を受け取りました (お客様 PO 番号 {1})</comment>
+  </data>
+  <data name="KocusAPIMsg19" xml:space="preserve">
+    <value> You received a updated order from {0}. Please use SFA or salesman site to approve this order. *** Please do NOT reply to this automated message. ***</value>
+    <comment>{0} から更新されたご発注を受け取りました。 この発注を承認するには、SFA またはセールスマン サイトを使用してください。 *** この自動メッセージには返信しないでください。 ***</comment>
+  </data>
+  <data name="KocusAPIMsg2" xml:space="preserve">
+    <value>Price inquiry could not be sent to JFC and the list still remains in your shopping list. Please try again later.</value>
+    <comment>価格に関する問合せがJFCへ送られておらず買い物かごに残っています。後ほどお試しください。</comment>
+  </data>
+  <data name="KocusAPIMsg20" xml:space="preserve">
+    <value>Sent order email</value>
+    <comment>発注メールを送信しました</comment>
+  </data>
+  <data name="KocusAPIMsg21" xml:space="preserve">
+    <value>Failed to send order email</value>
+    <comment>発注メールを送信失敗しました</comment>
+  </data>
+  <data name="KocusAPIMsg22" xml:space="preserve">
+    <value>Please enter an item. Make sure to click on ""Get Item"" button after entering an item</value>
+    <comment>商品を入力してください。 商品入力後は必ず「Get Item」ボタンをクリックしてください。</comment>
+  </data>
+  <data name="KocusAPIMsg23" xml:space="preserve">
+    <value>Error! Items that belong to order form {0} are in the order. You can only add items from the same order form.</value>
+    <comment>エラー！ 発注フォーム {0} に属するアイテムは注文中です。 この発注フォームにある商品しか追加することができません。</comment>
+  </data>
+  <data name="KocusAPIMsg24" xml:space="preserve">
+    <value>Error! Please enter qty</value>
+    <comment>エラー！ 数量を入力してください</comment>
+  </data>
+  <data name="KocusAPIMsg25" xml:space="preserve">
+    <value>Error! Qty has to be 0 or a positive number</value>
+    <comment>エラー！ 数量は 0 または正の数でなければなりません</comment>
+  </data>
+  <data name="KocusAPIMsg26" xml:space="preserve">
+    <value>Error! Each qty has to be 0 or multiple of {0}</value>
+    <comment>エラー！ 個数は 0 または {0} の倍数でなければなりません</comment>
+  </data>
+  <data name="KocusAPIMsg27" xml:space="preserve">
+    <value>Email could not be sent</value>
+    <comment>メールが送れませんでした</comment>
+  </data>
+  <data name="KocusAPIMsg28" xml:space="preserve">
+    <value>Email address cannot be found.</value>
+    <comment>メールアドレスが見当たりません</comment>
+  </data>
+  <data name="KocusAPIMsg29" xml:space="preserve">
+    <value>Please click this link to set your password.</value>
+    <comment>パスワードを設定するためこのリンクを押してください</comment>
+  </data>
+  <data name="KocusAPIMsg3" xml:space="preserve">
+    <value>You received a price inquiry from {0}. Please view details at {1}. *** Please do NOT reply to this automated message. ***</value>
+    <comment>{0}から価格に関する問合せがきました。詳細は{1}でご覧ください。*** この自動メッセージには返信しないでください。 ***</comment>
+  </data>
+  <data name="KocusAPIMsg30" xml:space="preserve">
+    <value>Set your password</value>
+    <comment>パスワードを設定する</comment>
+  </data>
+  <data name="KocusAPIMsg31" xml:space="preserve">
+    <value>Password has to be more than 5 and less than 26 characters long with at least one number.</value>
+    <comment>パスワードは 6 文字以上 26 文字未満で、少なくとも 1 つの数字を含む必要があります。</comment>
+  </data>
+  <data name="KocusAPIMsg32" xml:space="preserve">
+    <value>One Time password is not correct .</value>
+    <comment>ワンタイムパスワードが正しくありません</comment>
+  </data>
+  <data name="KocusAPIMsg33" xml:space="preserve">
+    <value>Shopping cart is empty</value>
+    <comment>ショッピングカートが空です</comment>
+  </data>
+  <data name="KocusAPIMsg34" xml:space="preserve">
+    <value>Shipping destination cannot be empty.</value>
+    <comment>配送先を空欄にすることはできません。</comment>
+  </data>
+  <data name="KocusAPIMsg35" xml:space="preserve">
+    <value>Delivery date is not set up for {0}</value>
+    <comment>{0} の配送日が設定されていません</comment>
+  </data>
+  <data name="KocusAPIMsg36" xml:space="preserve">
+    <value>You cannot login (no login type found)</value>
+    <comment>ログインできません (ログインアカウントが見つかりません)</comment>
+  </data>
+  <data name="KocusAPIMsg37" xml:space="preserve">
+    <value>Thank you! Your price inquiry will be sent to your sales rep shortly.</value>
+    <comment>ありがとうございました！ 価格に関するお問合わせは、まもなく営業担当者に送信されます。</comment>
+  </data>
+  <data name="KocusAPIMsg38" xml:space="preserve">
+    <value>Your link has expired. Please reset your password again.</value>
+    <comment>リンクの有効期限が切れています。 パスワードを再設定してください。</comment>
+  </data>
+  <data name="KocusAPIMsg39" xml:space="preserve">
+    <value>Please use the following verification code to log in. </value>
+    <comment>以下の認証コードを使用してログインしてください。</comment>
+  </data>
+  <data name="KocusAPIMsg4" xml:space="preserve">
+    <value>[Action Required] Price inquiry from {0}</value>
+    <comment>［要対応］ {0}からの価格に関する問合せ</comment>
+  </data>
+  <data name="KocusAPIMsg40" xml:space="preserve">
+    <value>Secure verification code: {0}</value>
+    <comment>認証コード: {0}</comment>
+  </data>
+  <data name="KocusAPIMsg41" xml:space="preserve">
+    <value>Please note that this code will expire in 20 minutes.</value>
+    <comment>このコードは 20 分で期限切れになります。</comment>
+  </data>
+  <data name="KocusAPIMsg42" xml:space="preserve">
+    <value>Please use the following verification code to login JFC App</value>
+    <comment>JFCアプリにログインするには、次の認証コードを使用してください</comment>
+  </data>
+  <data name="KocusAPIMsg43" xml:space="preserve">
+    <value>A verification code has been sent to {0} and {1}. </value>
+    <comment>確認コードが {0} と {2} に送信されました。</comment>
+  </data>
+  <data name="KocusAPIMsg44" xml:space="preserve">
+    <value>Please enter the code that you received within 20 minutes.</value>
+    <comment>受け取ったコードを 20 分以内に入力してください。</comment>
+  </data>
+  <data name="KocusAPIMsg45" xml:space="preserve">
+    <value>Please note that {0} will be charged for a returned check</value>
+    <comment>チェックが返された場合は{0}かかりますのでご了承ください</comment>
+  </data>
+  <data name="KocusAPIMsg46" xml:space="preserve">
+    <value>The total amount for this order is ${0}. To process your order, the total amount has to be at least ${1}.</value>
+  </data>
+  <data name="KocusAPIMsg5" xml:space="preserve">
+    <value>Price inquiry list is empty.</value>
+    <comment>価格に関する問合せリストが空です</comment>
+  </data>
+  <data name="KocusAPIMsg6" xml:space="preserve">
+    <value>Web order {0} doesn't exist.</value>
+    <comment>Web発注{0} はありません</comment>
+  </data>
+  <data name="KocusAPIMsg7" xml:space="preserve">
+    <value>Web order {0} has been approved.</value>
+    <comment>Web発注{0} は承認されました</comment>
+  </data>
+  <data name="KocusAPIMsg8" xml:space="preserve">
+    <value>Web order {0} has not been downloaded.</value>
+    <comment>Web発注{0} はダウンロードされていません</comment>
+  </data>
+  <data name="KocusAPIMsg9" xml:space="preserve">
+    <value>Web order {0} has been deleted.</value>
+    <comment>Web発注{0} は削除されました</comment>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last Name</value>
+    <comment>姓</comment>
+  </data>
+  <data name="LastUpdated" xml:space="preserve">
+    <value>Last Updated</value>
+    <comment>前回の更新</comment>
+  </data>
+  <data name="LbPrice" xml:space="preserve">
+    <value>Lb Price</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>Link</value>
+    <comment>リンク</comment>
+  </data>
+  <data name="Liquor" xml:space="preserve">
+    <value>Liquor</value>
+    <comment>リカー</comment>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="MessagetoJFC" xml:space="preserve">
+    <value>Message to JFC</value>
+    <comment>JFCへのメッセージ</comment>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>My Account</value>
+    <comment>マイアカウント</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+    <comment>名前</comment>
+  </data>
+  <data name="NameonAccount" xml:space="preserve">
+    <value>Name on Account</value>
+    <comment>口座のお名前</comment>
+  </data>
+  <data name="Nameonaccountcannotexceed50characters" xml:space="preserve">
+    <value>Name on account cannot exceed 50 characters</value>
+    <comment>口座のお名前は50文字以下にしてください</comment>
+  </data>
+  <data name="NewAccount" xml:space="preserve">
+    <value>New Account</value>
+    <comment>新しい口座</comment>
+  </data>
+  <data name="NewItem" xml:space="preserve">
+    <value>New Item</value>
+  </data>
+  <data name="Noautopayment" xml:space="preserve">
+    <value>No auto payment</value>
+    <comment>自動決済はありません</comment>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note</value>
+    <comment>備考</comment>
+  </data>
+  <data name="Notfound" xml:space="preserve">
+    <value>Not found</value>
+    <comment>未検出</comment>
+  </data>
+  <data name="OfficePhone" xml:space="preserve">
+    <value>Office Phone</value>
+    <comment>オフィス電話番号</comment>
+  </data>
+  <data name="Onetimeverificationcode" xml:space="preserve">
+    <value>One time verification code</value>
+  </data>
+  <data name="OrderDatefrom" xml:space="preserve">
+    <value>Order Date from</value>
+    <comment>注文日（スタート）</comment>
+  </data>
+  <data name="OrderDatehastobeinformat" xml:space="preserve">
+    <value>Order Date has to be in {0} format</value>
+    <comment>オーダー日は｛0｝のフォーマットで入力してください。</comment>
+  </data>
+  <data name="OrderDateto" xml:space="preserve">
+    <value>Order Date to</value>
+    <comment>注文日（エンド）</comment>
+  </data>
+  <data name="OrderDeadline" xml:space="preserve">
+    <value>Order Deadline</value>
+    <comment>ご発注締切</comment>
+  </data>
+  <data name="Orderdelivery" xml:space="preserve">
+    <value>Order delivery</value>
+    <comment>納品</comment>
+  </data>
+  <data name="Orderedon" xml:space="preserve">
+    <value>Ordered on</value>
+    <comment>発注日</comment>
+  </data>
+  <data name="OrderForm" xml:space="preserve">
+    <value>Order Form</value>
+    <comment>発注フォーム</comment>
+  </data>
+  <data name="OrderHistoryMsg1" xml:space="preserve">
+    <value>Show non-approved orders only sorted by delivery date</value>
+    <comment>未承認オーダーを配達日でソートして表示</comment>
+  </data>
+  <data name="OrderID" xml:space="preserve">
+    <value>Order ID</value>
+    <comment>オーダーID</comment>
+  </data>
+  <data name="OrderIDorPO" xml:space="preserve">
+    <value>Order ID or PO</value>
+    <comment>オーダーIDまたはPO</comment>
+  </data>
+  <data name="OrderInfo" xml:space="preserve">
+    <value>Order Info</value>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>Order #</value>
+  </data>
+  <data name="OrderReminderfromJFC" xml:space="preserve">
+    <value>Order Reminder from JFC</value>
+    <comment>JFCからのご発注リマインド</comment>
+  </data>
+  <data name="orreplytocontactyoursalesrep" xml:space="preserve">
+    <value>or reply to contact your sales rep.</value>
+  </data>
+  <data name="OutofStock" xml:space="preserve">
+    <value>Out of stock</value>
+  </data>
+  <data name="PaidAmount" xml:space="preserve">
+    <value>Paid Amount</value>
+    <comment>お支払額</comment>
+  </data>
+  <data name="PaidAmount1" xml:space="preserve">
+    <value>Paid Amount</value>
+    <comment>支払金額</comment>
+  </data>
+  <data name="PaidAmountConfirmed" xml:space="preserve">
+    <value>Paid Amount (Confirmed)</value>
+    <comment>お支払金額（処理済）</comment>
+  </data>
+  <data name="PaidAmountPending" xml:space="preserve">
+    <value>Paid Amount (Pending)</value>
+    <comment>お支払金額（保留中）</comment>
+  </data>
+  <data name="Paidby" xml:space="preserve">
+    <value>Paid by</value>
+    <comment>支払者</comment>
+  </data>
+  <data name="Paidon" xml:space="preserve">
+    <value>Paid on</value>
+    <comment>お支払日</comment>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+    <comment>パスワードを設定する</comment>
+  </data>
+  <data name="PayBalanceforJFC" xml:space="preserve">
+    <value>Pay Balance for JFC</value>
+    <comment>JFCへの支払残高</comment>
+  </data>
+  <data name="Paydifferentamount" xml:space="preserve">
+    <value>Pay different amount</value>
+    <comment>異なる金額のお支払</comment>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>PAYMENT</value>
+    <comment>お支払</comment>
+  </data>
+  <data name="PaymentAccount" xml:space="preserve">
+    <value>Payment Account</value>
+    <comment>お支払口座</comment>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>Payment Amount</value>
+    <comment>お支払額</comment>
+  </data>
+  <data name="PaymentDtlMsg1" xml:space="preserve">
+    <value>You cannot void this payment any more</value>
+    <comment>もうこのお支払を取り消すことができません</comment>
+  </data>
+  <data name="PaymentDtlMsg2" xml:space="preserve">
+    <value>Could not void this payment. The error message from the payment processor was {0}.</value>
+    <comment>このお支払を取り消すことができません。支払処理業者からのエラー メッセージは {0} でした。 </comment>
+  </data>
+  <data name="Paymenthasfailed" xml:space="preserve">
+    <value>Payment {0} has failed</value>
+    <comment>{0} の支払いは失敗しました</comment>
+  </data>
+  <data name="PaymentID" xml:space="preserve">
+    <value>Payment ID</value>
+    <comment>お支払いID</comment>
+  </data>
+  <data name="PaymentInfo" xml:space="preserve">
+    <value>Payment Info</value>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>Payment Type</value>
+    <comment>決済方法</comment>
+  </data>
+  <data name="PaymentVoided" xml:space="preserve">
+    <value>Payment Voided</value>
+  </data>
+  <data name="PendingMsg" xml:space="preserve">
+    <value>It may take 1 to 2 business days to process your payment.</value>
+    <comment>お支払処理に1～2営業日時間を要します</comment>
+  </data>
+  <data name="PendingPayment" xml:space="preserve">
+    <value>Pending Payment</value>
+    <comment>保留中のお支払い</comment>
+  </data>
+  <data name="PendingWebPayments" xml:space="preserve">
+    <value>Pending Web Payments</value>
+    <comment>保留中のWeb支払</comment>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Period</value>
+    <comment>期間</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+    <comment>電話番号</comment>
+  </data>
+  <data name="Pleasechooseone" xml:space="preserve">
+    <value>Please choose one</value>
+    <comment>一つお選びください</comment>
+  </data>
+  <data name="PleasedoNotreplytothisautomatedmessage" xml:space="preserve">
+    <value>Please do NOT reply to this automated message.</value>
+  </data>
+  <data name="Pleaseenterfaxnumberintheformat" xml:space="preserve">
+    <value>Please enter fax number in the format:</value>
+    <comment>FAX番号を{0}のフォーマットで入力してください</comment>
+  </data>
+  <data name="Pleaseenternameonthisaccount" xml:space="preserve">
+    <value>Please enter name on this account</value>
+    <comment>口座のお名前を記載ください</comment>
+  </data>
+  <data name="Pleaseenterphonenumberintheformat" xml:space="preserve">
+    <value>Please enter phone number in the format:</value>
+    <comment>電話番号を{0}のフォーマットで入力してください</comment>
+  </data>
+  <data name="Pleaseselectabankaccount" xml:space="preserve">
+    <value>Please select a bank account</value>
+  </data>
+  <data name="Pleaseselectacardtype" xml:space="preserve">
+    <value>Please select a card type</value>
+    <comment>カードの種類を選んでください</comment>
+  </data>
+  <data name="Pleaseselectapaymenttype" xml:space="preserve">
+    <value>Please select a payment type</value>
+    <comment>決済方法をご選択ください</comment>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="PromoItem" xml:space="preserve">
+    <value>Promo Item</value>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>Qty</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Reason</value>
+    <comment>理由</comment>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Reference</value>
+    <comment>備考</comment>
+  </data>
+  <data name="RemainBalance" xml:space="preserve">
+    <value>Remain Balance</value>
+    <comment>残高</comment>
+  </data>
+  <data name="RemainingBalance" xml:space="preserve">
+    <value>Remaining Balance</value>
+    <comment>お支払残高</comment>
+  </data>
+  <data name="RememberthisAccount" xml:space="preserve">
+    <value>Remember this Account</value>
+    <comment>この口座を記憶する</comment>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+    <comment>必須</comment>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
+    <comment>結果</comment>
+  </data>
+  <data name="Routing9digits" xml:space="preserve">
+    <value>Routing # (9 digits)</value>
+    <comment>Routing番号（9文字）</comment>
+  </data>
+  <data name="SavingsAccount" xml:space="preserve">
+    <value>Savings Account</value>
+    <comment>Saving口座</comment>
+  </data>
+  <data name="SecurityCodeBackofCard" xml:space="preserve">
+    <value>Security Code (Back of Card)</value>
+    <comment>セキュリティー番号（カード裏面）</comment>
+  </data>
+  <data name="Setautopayment" xml:space="preserve">
+    <value>Set auto payment...</value>
+    <comment>自動決済を設定...</comment>
+  </data>
+  <data name="ShipDate" xml:space="preserve">
+    <value>Ship Date</value>
+    <comment>配送日</comment>
+  </data>
+  <data name="ShippingAddress" xml:space="preserve">
+    <value>Shipping Address</value>
+    <comment>送付先住所</comment>
+  </data>
+  <data name="ShippingName" xml:space="preserve">
+    <value>Shipping Name</value>
+    <comment>送付先名</comment>
+  </data>
+  <data name="Shipto" xml:space="preserve">
+    <value>Ship to</value>
+    <comment>送付先</comment>
+  </data>
+  <data name="Showliquoronly" xml:space="preserve">
+    <value>Show liquor only</value>
+    <comment>リカーのみ表示</comment>
+  </data>
+  <data name="Showwebordersonly" xml:space="preserve">
+    <value>Show web orders only</value>
+    <comment>Webオーダーのみ表示</comment>
+  </data>
+  <data name="Sortby" xml:space="preserve">
+    <value>Sort by</value>
+    <comment>並び替え</comment>
+  </data>
+  <data name="Specifiedordercouldnotbefound" xml:space="preserve">
+    <value>Specified order could not be found</value>
+    <comment>ご指定のオーダーが見つかりません</comment>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>State</value>
+    <comment>州</comment>
+  </data>
+  <data name="STATEMENT" xml:space="preserve">
+    <value>STATEMENT</value>
+    <comment>明細書</comment>
+  </data>
+  <data name="StateZip" xml:space="preserve">
+    <value>State Zip</value>
+    <comment>郵便番号</comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+    <comment>状況</comment>
+  </data>
+  <data name="TextMsg1" xml:space="preserve">
+    <value>This is a JFC order reminder for your order on {0}. Please place your order by {1} at {2}.</value>
+    <comment>{0}のご発注のリマインド。{1} までに {2}へご発注ください。</comment>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>Total Amount</value>
+  </data>
+  <data name="TotalPaidAmount" xml:space="preserve">
+    <value>Total Paid Amount</value>
+    <comment>合計お支払額</comment>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Transaction Date</value>
+    <comment>取引日</comment>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transactions</value>
+    <comment>取引</comment>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+    <comment>タイプ</comment>
+  </data>
+  <data name="UpdateChanges" xml:space="preserve">
+    <value>Update Changes</value>
+    <comment>更新</comment>
+  </data>
+  <data name="Useanotheraccount" xml:space="preserve">
+    <value>Use another account...</value>
+    <comment>他の口座を使用...</comment>
+  </data>
+  <data name="Usecommatoentermultiplefax" xml:space="preserve">
+    <value>Use comma to enter multiple fax #.</value>
+    <comment>複数のFAX番号を入力する際、カンマを使用ください</comment>
+  </data>
+  <data name="Usecommatoentermultiplephone" xml:space="preserve">
+    <value>Use comma to enter multiple phone #.</value>
+    <comment>複数の電話番号を入力する際、カンマを使用ください</comment>
+  </data>
+  <data name="usecommatoseparatemultipleemail" xml:space="preserve">
+    <value>use comma to separate multiple email</value>
+    <comment>複数のEmailを分ける際、カンマを使用ください</comment>
+  </data>
+  <data name="UsedforAutoPayment" xml:space="preserve">
+    <value>Used for Auto Payment</value>
+    <comment>自動決済に使用されている</comment>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+    <comment>ユーザー</comment>
+  </data>
+  <data name="UsethisAccount" xml:space="preserve">
+    <value>Use this Account</value>
+    <comment>この口座を使用する</comment>
+  </data>
+  <data name="Vendor" xml:space="preserve">
+    <value>Vendor</value>
+    <comment>ベンダー</comment>
+  </data>
+  <data name="VoidPayment" xml:space="preserve">
+    <value>Void Payment</value>
+    <comment>お支払取り消し</comment>
+  </data>
+  <data name="WebDiscount" xml:space="preserve">
+    <value>Web Discount</value>
+    <comment>Web割引</comment>
+  </data>
+  <data name="WebEarlyPaymentDiscount" xml:space="preserve">
+    <value>Web Early Payment Discount</value>
+    <comment>Web早期支払割引</comment>
+  </data>
+  <data name="WebOrderID" xml:space="preserve">
+    <value>Web Order ID</value>
+  </data>
+  <data name="WebPayHistory" xml:space="preserve">
+    <value>Web Pay History</value>
+    <comment>Web支払履歴</comment>
+  </data>
+  <data name="WebPaymentHistorywithJFC" xml:space="preserve">
+    <value>Web Payment History with JFC</value>
+    <comment>JFC Web決済履歴</comment>
+  </data>
+  <data name="WelcometoJFC" xml:space="preserve">
+    <value>Welcome to JFC </value>
+  </data>
+  <data name="Youcannotvoidthispaymentanymore" xml:space="preserve">
+    <value>You cannot void this payment any more</value>
+    <comment>もうこのお支払を取り消すことができません</comment>
+  </data>
+  <data name="Youhavevoidedyourpayment" xml:space="preserve">
+    <value>You have voided your payment</value>
+    <comment>お支払が取り消されました</comment>
+  </data>
+  <data name="YourAccounts" xml:space="preserve">
+    <value>Your Accounts</value>
+    <comment>マイアカウント</comment>
+  </data>
+  <data name="Yourorderhasbeencanceled" xml:space="preserve">
+    <value>Your order has been canceled.</value>
+    <comment>お客様のご発注は取消されました</comment>
+  </data>
+  <data name="Yourorderhasbeendeleted" xml:space="preserve">
+    <value>Your order has been deleted</value>
+    <comment>お客様のご発注は削除されました。</comment>
+  </data>
+  <data name="Yourorderhasbeenprocessedat" xml:space="preserve">
+    <value>Your order has been processed.</value>
+  </data>
+  <data name="Yourorderhasbeenprocessedon" xml:space="preserve">
+    <value>Your order has been processed on {0}.</value>
+    <comment>お客様のご発注は{0}に処理されました。</comment>
+  </data>
+  <data name="Yourorderhasbeenupdated" xml:space="preserve">
+    <value>Your order has been updated.</value>
+  </data>
+  <data name="Yourorderwasplaced" xml:space="preserve">
+    <value>Your order {0} was placed</value>
+  </data>
+  <data name="YourPayments" xml:space="preserve">
+    <value>Your Payments</value>
+    <comment>お支払</comment>
+  </data>
+  <data name="Yourpriceinquirywassent" xml:space="preserve">
+    <value>Your price inquiry was sent</value>
+    <comment>価格に関するお問合せを送信しました</comment>
+  </data>
+  <data name="Zip" xml:space="preserve">
+    <value>Zip</value>
+    <comment>郵便番号</comment>
+  </data>
+  <data name="BalanceMsg10" xml:space="preserve">
+    <value>Payment amount cannot exceed ${0}. If you want to pay more than ${1}, please divide it to multiple payments.</value>
+  </data>
+  <data name="BalanceMsg11" xml:space="preserve">
+    <value>It appears that you have made a payment with the same amount within 2 hours. This payment cannot be processed as it might be duplicate payment. If you want to make another payment, please change your payment amount.</value>
+  </data>
+  <data name="BalanceMsg12" xml:space="preserve">
+    <value>The card you selected has been expired. Please use another account.</value>
+  </data>
+  <data name="BalanceMsg13" xml:space="preserve">
+    <value>Cannot find your payment account.</value>
+  </data>
+  <data name="BalanceMsg14" xml:space="preserve">
+    <value>The transaction was declined. The error message from the payment processor was {0}. Please check your payment account or use another account.</value>
+  </data>
+  <data name="BalanceMsg15" xml:space="preserve">
+    <value>Please agree to the Terms and Conditions.</value>
+  </data>
+  <data name="BalanceMsg5" xml:space="preserve">
+    <value>Advance Payment amount cannot be negative</value>
+  </data>
+  <data name="BalanceMsg6" xml:space="preserve">
+    <value>Payment amount cannot be negative</value>
+  </data>
+  <data name="BalanceMsg7" xml:space="preserve">
+    <value>Please check at least one invoice that you would like to pay.</value>
+  </data>
+  <data name="BalanceMsg8" xml:space="preserve">
+    <value>If you would like to pay different amount, please use 'Apply' button to apply the amount you entered to the payment amount.</value>
+  </data>
+  <data name="BalanceMsg9" xml:space="preserve">
+    <value>{0} or use another payment account</value>
+  </data>
+  <data name="CONFIRM" xml:space="preserve">
+    <value>CONFIRM</value>
+  </data>
+  <data name="CreatePaymentAccount" xml:space="preserve">
+    <value>Create Payment Account</value>
+  </data>
+  <data name="Pleaseselectanaccount" xml:space="preserve">
+    <value>Please select an account</value>
+  </data>
+  <data name="Successfullyupdated" xml:space="preserve">
+    <value>Successfully updated</value>
+  </data>
+  <data name="BalanceMsg16" xml:space="preserve">
+    <value>Thank you for your payment of {0}.</value>
+  </data>
+  <data name="BalanceMsg17" xml:space="preserve">
+    <value>Thank you for your payment.</value>
+  </data>
+  <data name="BalanceMsg18" xml:space="preserve">
+    <value>Your payment of {0} has been approved and {1} has been declined.</value>
+  </data>
+  <data name="BalanceMsg19" xml:space="preserve">
+    <value>Your payment ID is {0}.</value>
+  </data>
+  <data name="BalanceMsg20" xml:space="preserve">
+    <value>Payment amount has to be a positive number</value>
+  </data>
+  <data name="clickhereL" xml:space="preserve">
+    <value>click here</value>
+  </data>
+  <data name="Confirmationemailhasbeensenttoyou" xml:space="preserve">
+    <value>Confirmation email has been sent to you.</value>
+  </data>
+  <data name="Invalidbankaccount" xml:space="preserve">
+    <value>Invalid bank account #</value>
+  </data>
+  <data name="DeliveryL" xml:space="preserve">
+    <value>delivery</value>
+  </data>
+  <data name="Detailof" xml:space="preserve">
+    <value>Detail of {0}</value>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Document</value>
+  </data>
+  <data name="Emailorpasswordisinvalid" xml:space="preserve">
+    <value>Email or password is invalid</value>
+  </data>
+  <data name="KocusAPIMsg47" xml:space="preserve">
+    <value>Your order has been placed. But as your payment is overdue, this order may not be processed until we receive your payment. If you haven’t, please make a payment as soon as possible.</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>language</value>
+  </data>
+  <data name="Nameonyourbankaccount" xml:space="preserve">
+    <value>Name on your bank account</value>
+  </data>
+  <data name="Orderby" xml:space="preserve">
+    <value>Order by {0}</value>
+  </data>
+  <data name="OrderbyTODAY" xml:space="preserve">
+    <value>Order by TODAY {0}</value>
+  </data>
+  <data name="Pleaseselect" xml:space="preserve">
+    <value>Please select...</value>
+  </data>
+  <data name="Pleasewait" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="SubmitPayment" xml:space="preserve">
+    <value>Submit Payment</value>
+  </data>
+  <data name="Successfullyvoided" xml:space="preserve">
+    <value>Successfully voided</value>
+  </data>
+  <data name="Thisitemisnotavailable" xml:space="preserve">
+    <value>This item is not available</value>
+  </data>
+  <data name="Interest" xml:space="preserve">
+    <value>Interest</value>
+  </data>
+  <data name="LIQUORINTEREST" xml:space="preserve">
+    <value>LIQUOR INTEREST</value>
+  </data>
+  <data name="Newamount" xml:space="preserve">
+    <value>New amount</value>
+  </data>
+  <data name="CREDIT" xml:space="preserve">
+    <value />
+    <comment>CREDIT</comment>
+  </data>
+  <data name="Bounced" xml:space="preserve">
+    <value>Bounced</value>
+  </data>
+  <data name="Chilled" xml:space="preserve">
+    <value>Chilled</value>
+  </data>
+  <data name="Dry" xml:space="preserve">
+    <value>Dry</value>
+  </data>
+  <data name="Errored" xml:space="preserve">
+    <value>Errored</value>
+  </data>
+  <data name="Frozen" xml:space="preserve">
+    <value>Frozen</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Orderplaced" xml:space="preserve">
+    <value>Order placed</value>
+  </data>
+  <data name="PaymentConfirmation" xml:space="preserve">
+    <value>Payment Confirmation</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="ReceivedbyJFC" xml:space="preserve">
+    <value>Received by JFC</value>
+  </data>
+  <data name="Voided" xml:space="preserve">
+    <value>Voided</value>
+  </data>
+  <data name="Yourorderwascanceled" xml:space="preserve">
+    <value>Your order {0} was canceled</value>
+  </data>
+  <data name="ADJUSTMENT" xml:space="preserve">
+    <value>Adjustment</value>
+  </data>
+  <data name="BOUNCEDPAYMENT" xml:space="preserve">
+    <value>Bounced Payment</value>
+  </data>
+  <data name="DEDUCTION" xml:space="preserve">
+    <value>Deduction</value>
+  </data>
+  <data name="DISCOUNT" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="PendingWebPayment" xml:space="preserve">
+    <value>Pending Web Payment</value>
+  </data>
+  <data name="RETURNCHECK" xml:space="preserve">
+    <value>Return Check</value>
+  </data>
+  <data name="Yourorderwasupdated" xml:space="preserve">
+    <value>Your order {0} was updated</value>
+  </data>
+  <data name="Canceled" xml:space="preserve">
+    <value>Canceled</value>
+  </data>
+  <data name="Invoiced" xml:space="preserve">
+    <value>Invoiced</value>
+  </data>
+  <data name="Preparedforshipping" xml:space="preserve">
+    <value>Prepared for shipping</value>
+  </data>
+  <data name="Underprocessing" xml:space="preserve">
+    <value>Under processing</value>
+  </data>
+  <data name="YourorderwithJFC" xml:space="preserve">
+    <value>Your order with JFC</value>
+  </data>
+  <data name="ComfirmMsg1" xml:space="preserve">
+    <value>Thank you! Your request has been sent to your sales rep.</value>
+  </data>
+  <data name="ComfirmMsg2" xml:space="preserve">
+    <value>Your link is invalid.</value>
+  </data>
+  <data name="ComfirmMsg3" xml:space="preserve">
+    <value>Our online system has been upgraded!</value>
+  </data>
+  <data name="ComfirmMsg4" xml:space="preserve">
+    <value>Please go to {0} to access our new online system and use the same your email address and password to login.</value>
+  </data>
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Confirm Deletion</value>
+  </data>
+  <data name="MyAccountMsg1" xml:space="preserve">
+    <value>You cannot delete this payment account because it is used for auto payment.</value>
+  </data>
+  <data name="MyAccountMsg2" xml:space="preserve">
+    <value>To change your auto payment account, please go to Payment and click on 'Set Auto Payment' button.</value>
+  </data>
+  <data name="MyAccountMsg3" xml:space="preserve">
+    <value>Are you sure you want to delete {0}(Account)?</value>
+  </data>
+  <data name="Paymentacountnolongerexists" xml:space="preserve">
+    <value>Payment acount no longer exists</value>
+  </data>
+  <data name="Successfullysaved" xml:space="preserve">
+    <value>Successfully saved</value>
+  </data>
+  <data name="Successfullydeleted" xml:space="preserve">
+    <value>Successfully deleted</value>
+  </data>
+  <data name="Emailaddressisinvalid" xml:space="preserve">
+    <value>Email address {0} is invalid.</value>
+  </data>
+  <data name="MyAccountMsg4" xml:space="preserve">
+    <value>Please enter email address where you want to receive your invoices.</value>
+  </data>
+  <data name="ViewPayment" xml:space="preserve">
+    <value>View Payment</value>
+  </data>
+  <data name="CANNEDFOOD" xml:space="preserve">
+    <value>CANNED FOOD</value>
+  </data>
+  <data name="CONFECTIONERIES" xml:space="preserve">
+    <value>CONFECTIONERIES</value>
+  </data>
+  <data name="DEPOSIT" xml:space="preserve">
+    <value>DEPOSIT</value>
+  </data>
+  <data name="DIRECTIMPORTFORHAPI" xml:space="preserve">
+    <value>DIRECT IMPORT FOR HAPI</value>
+  </data>
+  <data name="DRINK" xml:space="preserve">
+    <value>DRINK</value>
+  </data>
+  <data name="EGGMILK" xml:space="preserve">
+    <value>EGG, MILK</value>
+  </data>
+  <data name="Fri" xml:space="preserve">
+    <value>Fri</value>
+  </data>
+  <data name="Friday" xml:space="preserve">
+    <value>Friday</value>
+  </data>
+  <data name="FROZENFOOD" xml:space="preserve">
+    <value>FROZEN FOOD</value>
+  </data>
+  <data name="GRAIN" xml:space="preserve">
+    <value>GRAIN</value>
+  </data>
+  <data name="HAPIINGREDIENTS" xml:space="preserve">
+    <value>HAPI INGREDIENTS</value>
+  </data>
+  <data name="HAPIPACKAGEMATERIALS" xml:space="preserve">
+    <value>HAPI PACKAGE MATERIALS</value>
+  </data>
+  <data name="MEAT" xml:space="preserve">
+    <value>MEAT</value>
+  </data>
+  <data name="Mon" xml:space="preserve">
+    <value>Mon</value>
+  </data>
+  <data name="Monday" xml:space="preserve">
+    <value>Monday</value>
+  </data>
+  <data name="NONFOOD" xml:space="preserve">
+    <value>NON FOOD</value>
+  </data>
+  <data name="NONREGULARITEM" xml:space="preserve">
+    <value>NON REGULAR ITEM</value>
+  </data>
+  <data name="NOODLE" xml:space="preserve">
+    <value>NOODLE</value>
+  </data>
+  <data name="OILSEASONING" xml:space="preserve">
+    <value>OIL, SEASONING</value>
+  </data>
+  <data name="PREPAREDFOOD" xml:space="preserve">
+    <value>PREPARED FOOD</value>
+  </data>
+  <data name="Requestfordeliverynotguaranteed" xml:space="preserve">
+    <value>Request for {0} delivery (not guaranteed)</value>
+  </data>
+  <data name="Sat" xml:space="preserve">
+    <value>Sat</value>
+  </data>
+  <data name="Saturday" xml:space="preserve">
+    <value>Saturday</value>
+  </data>
+  <data name="SEAFOOD" xml:space="preserve">
+    <value>SEAFOOD</value>
+  </data>
+  <data name="SEAWEED" xml:space="preserve">
+    <value>SEAWEED</value>
+  </data>
+  <data name="Sun" xml:space="preserve">
+    <value>Sun</value>
+  </data>
+  <data name="Sunday" xml:space="preserve">
+    <value>Sunday</value>
+  </data>
+  <data name="Thu" xml:space="preserve">
+    <value>Thu</value>
+  </data>
+  <data name="Thursday" xml:space="preserve">
+    <value>Thursday</value>
+  </data>
+  <data name="TOFUAGEKONNAYKU" xml:space="preserve">
+    <value>TOFU, AGE &amp; KONNAYKU</value>
+  </data>
+  <data name="Tue" xml:space="preserve">
+    <value>Tue</value>
+  </data>
+  <data name="Tuesday" xml:space="preserve">
+    <value>Tuesday</value>
+  </data>
+  <data name="VEGETABLEFRUIT" xml:space="preserve">
+    <value>VEGETABLE &amp; FRUIT</value>
+  </data>
+  <data name="Wed" xml:space="preserve">
+    <value>Wed</value>
+  </data>
+  <data name="Wednesday" xml:space="preserve">
+    <value>Wednesday</value>
+  </data>
+  <data name="WRAPPER" xml:space="preserve">
+    <value>WRAPPER</value>
+  </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>Deadline</value>
+  </data>
+  <data name="DeliveryOn" xml:space="preserve">
+    <value>Delivery On</value>
+  </data>
+  <data name="DescNew" xml:space="preserve">
+    <value>Desc New</value>
+  </data>
+  <data name="EachCase" xml:space="preserve">
+    <value>Each/Case</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Frequency</value>
+  </data>
+  <data name="ItemNewNum" xml:space="preserve">
+    <value>Item New #</value>
+  </data>
+  <data name="Itemshavebeenadded" xml:space="preserve">
+    <value>Items have been added.</value>
+  </data>
+  <data name="Itemwasadded" xml:space="preserve">
+    <value>Item #{0} was added</value>
+  </data>
+  <data name="Old" xml:space="preserve">
+    <value>Old</value>
+  </data>
+  <data name="OrderBy1" xml:space="preserve">
+    <value>Order By</value>
+  </data>
+  <data name="Pleaseplaceaneworderifyouneedtheseitems" xml:space="preserve">
+    <value>Please place a new order if you need these items.</value>
+  </data>
+  <data name="Pleaseplaceaneworderifyouneedthisitem" xml:space="preserve">
+    <value>Please place a new order if you need this item.</value>
+  </data>
+  <data name="Pleaseseethefollowingforyournewschedule" xml:space="preserve">
+    <value>Please see the following for your new schedule.</value>
+  </data>
+  <data name="Regardingyourpriceinquiry" xml:space="preserve">
+    <value>Regarding your price inquiry</value>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Remark</value>
+  </data>
+  <data name="SendReminder" xml:space="preserve">
+    <value>Send Reminder</value>
+  </data>
+  <data name="ShippingDestination" xml:space="preserve">
+    <value>Shipping Destination</value>
+  </data>
+  <data name="Yourdeliveryinfohasbeenupdated" xml:space="preserve">
+    <value>Your delivery info has been updated.</value>
+  </data>
+  <data name="Yourdeliveryinfowasupdated" xml:space="preserve">
+    <value>Your delivery info was updated</value>
+  </data>
+  <data name="Yourdeliveryschedulehasbeenadded" xml:space="preserve">
+    <value>Your delivery schedule has been added.</value>
+  </data>
+  <data name="Yourdeliveryschedulehasbeenupdated" xml:space="preserve">
+    <value>Your delivery schedule has been updated.</value>
+  </data>
+  <data name="Yourdeliveryschedulewasupdated" xml:space="preserve">
+    <value>Your delivery schedule was updated (# {0})</value>
+  </data>
+  <data name="Youriteminfohasbeenaddedupdated" xml:space="preserve">
+    <value>Your item info has been added / updated.</value>
+  </data>
+  <data name="Youriteminfowasupdated" xml:space="preserve">
+    <value>Your item info was updated (#{0})</value>
+  </data>
+  <data name="Yourpriceinquiryregardingitem" xml:space="preserve">
+    <value>Your price inquiry regarding item# {0}</value>
+  </data>
+  <data name="ItemInfo" xml:space="preserve">
+    <value>Item Info</value>
+  </data>
+  <data name="DeliverySchedule" xml:space="preserve">
+    <value>Delivery Schedule</value>
+  </data>
+  <data name="UpdateAutoPay" xml:space="preserve">
+    <value>Update Auto Pay</value>
+    <comment>自動決済を更新</comment>
+  </data>
+  <data name="Payment1" xml:space="preserve">
+    <value>Payment</value>
+    <comment>お支払</comment>
+  </data>
+  <data name="Totalitems" xml:space="preserve">
+    <value>Total: {0} items</value>
+  </data>
+  <data name="EmailMsg22" xml:space="preserve">
+    <value>All prices are subject to change without prior notice due to unforeseen economic circumstances.</value>
+  </data>
+  <data name="PhoneStatement1" xml:space="preserve">
+    <value>By entering my cell phone #, I agree to receive important text messages such as login verification code and order reminders. Msg and data rates may apply.</value>
+  </data>
+  <data name="PhoneStatement2" xml:space="preserve">
+    <value>Because you entered your cell phone #, the check box must be checked.</value>
+  </data>
+</root>

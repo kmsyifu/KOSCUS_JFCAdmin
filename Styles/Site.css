@@ -1,0 +1,235 @@
+﻿/* DEFAULTS
+----------------------------------------------------------*/
+
+* 									
+{ 
+    padding: 0;
+    margin: 0;
+}
+.body   
+{
+    /*background: #b6b7bc;*/
+    font-size: 12px;
+    font-family: Helvetica, Arial, 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+    /*font-family: "Arial", "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;*/
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    /*color: #696969;*/
+    /* light blue */
+    /*background: #64ABD1;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64ABD1', endColorstr='#FFFFFF');
+    background: -moz-linear-gradient(#64ABD1, #FFFFFF);
+    background: -webkit-gradient(linear, left top, left bottom, from(#64ABD1), to(#FFFFFF));*/
+    background-color: #FFFFFF;
+    /* IE only in CSS3 */
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='DarkOrange', endColorstr='#FFD700');*/
+    /* Gecko based browsers (Firefox 3.6+) */
+    /*background: -moz-linear-gradient(DarkOrange, #FFD700);*/
+    /* Webkit based browsers (eg Safari, Chrome)*/
+    /*background: -webkit-gradient(linear, left top, left bottom, from(DarkOrange), to(#FFD700));*/
+    
+    /* background: DarkOrange;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='DarkOrange', endColorstr='#FFFFFF');
+    background: -moz-linear-gradient(DarkOrange, #FFFFFF);
+    background: -webkit-gradient(linear, left top, left bottom, from(DarkOrange), to(#FFFFFF)); */
+}
+.body_print
+{
+    font-size: 8pt;
+    font-family: Helvetica, Arial, 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+}
+
+/* PRIMARY LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+.page
+{
+    width: 100%;
+    background-color: #FFFFFF;
+}
+
+.headerTop
+{
+    /*position: relative;*/
+    background: #FFFFFF;
+    /*width: 100%;*/
+    height: 35px;
+    padding: 5px 0px 0px 20px;
+    font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+}
+/*.headerBottom
+{
+    background: #FFFFFF;
+    width: 100%;
+    height: 15px;
+}*/
+/*.header h1
+{
+    font-weight: 700;
+    margin: 0px;
+    padding: 0px 0px 0px 20px;
+    color: #f9f9f9;
+    border: none;
+    line-height: 1.5em;
+    font-size: 3em;
+}*/
+
+.main
+{
+    padding: 0px 12px;
+    margin: 12px 8px 8px 8px;
+    min-height: 550px;
+    background-color: #FFFFFF;
+}
+
+.footer
+{
+    margin: 3px 20px;
+    text-align: center;
+    line-height: normal;
+    background-color: #FFFFFF;
+    border-top: #ddd 1px solid;
+    color: #666666;
+    /*-webkit-box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1), 0px -3px 8px rgba(0, 0, 0, 0.08);
+    -moz-box-shadow:    0px -2px 4px rgba(0, 0, 0, 0.1), 0px -3px 8px rgba(0, 0, 0, 0.08);
+    box-shadow:         0px -2px 4px rgba(0, 0, 0, 0.1), 0px -3px 8px rgba(0, 0, 0, 0.08);*/
+}
+
+.sidebar  
+{
+    padding-right: 10px; 
+    width: 200px; 
+    float: left;
+    border-width: thin;
+    border-style: none solid none none;
+    border-color: #C0C0C0;
+    min-height: 450px;
+    background-color: #FFFFFF;
+}
+
+.mainContent
+{
+    padding: 0px 8px 0px 8px;
+    margin-left: 216px;
+    background-color: #FFFFFF;
+}
+.leftContent
+{
+    float: left;
+    margin-right: 10px;
+}
+.leftOnlyContent
+{
+    margin-right: 10px;
+}
+.turnOffFloat
+{
+    clear:both;
+}
+
+/* FORM ELEMENTS   
+----------------------------------------------------------*/
+
+/*fieldset
+{
+    margin: 1em 0px;
+    padding: 1em;
+    border: 1px solid #ccc;
+}
+
+fieldset p 
+{
+    margin: 2px 12px 10px 10px;
+}
+
+fieldset.login label, fieldset.register label, fieldset.changePassword label
+{
+    display: block;
+}
+
+fieldset label.inline 
+{
+    display: inline;
+}
+
+legend 
+{
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 2px 4px 8px 4px;
+}
+
+input.textEntry 
+{
+    width: 320px;
+    border: 1px solid #ccc;
+}
+
+input.passwordEntry 
+{
+    width: 320px;
+    border: 1px solid #ccc;
+}
+
+div.accountInfo
+{
+    width: 42%;
+}*/
+
+/* MISC  
+----------------------------------------------------------*/
+
+/*.clear
+{
+    clear: both;
+}
+
+.title
+{
+    display: block;
+    float: left;
+    text-align: left;
+    width: auto;
+}
+
+.loginDisplay
+{
+    font-size: 1.1em;
+    display: block;
+    text-align: right;
+    padding: 10px;
+    color: White;
+}
+
+.loginDisplay a:link
+{
+    color: white;
+}
+
+.loginDisplay a:visited
+{
+    color: white;
+}
+
+.loginDisplay a:hover
+{
+    color: white;
+}
+
+.failureNotification
+{
+    font-size: 1.2em;
+    color: Red;
+}
+
+.bold
+{
+    font-weight: bold;
+}
+
+.submitButton
+{
+    text-align: right;
+    padding-right: 10px;
+}*/

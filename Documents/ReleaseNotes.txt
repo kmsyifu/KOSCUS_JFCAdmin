@@ -1,0 +1,74 @@
+﻿----------------------------------------------------------------------------------------------------------------------------------
+Release Notes
+----------------------------------------------------------------------------------------------------------------------------------
+* 6/10/2025: <Item Search>Relaced itemWebDesc_roman with salesPoint.
+* 4/14/2025:
+<CustomerSetting> if customer motify deliver date do not insert delivery line number.
+<extend_delivery_dates> add deliverylinenumber in extend delivery date.
+* 3/25/2025: <Common> Stopped clearing pool during retry after ORA-03113 error occurs.
+* 3/24/2025: <Common> Removed "Max Pool Size=200;" from DB connection string
+* 3/11/2025: <Common> Added "Max Pool Size=200;" in DB connection string
+
+KOSCUS_JFCADMIN011 (3/8/2023, 1/2/2024)
+*<Common> If jets_price.itemDesc_branch exists, use this instead of jfcitem.itemDesc. (some part hasn't changed yet)
+*<Common> Changed from JFC International Inc. to JFC
+*<Common> Removed unneeded files and functions
+*<Common> Removed InsertEventLog when inserting and deleting delivery master and schedule.
+
+KOSUCS_JFCADMIN010 (02/10/2023)
+*<Common>Fix UpdateDeliveryCelendar with correct enddate setting. 
+*<DBUpdate> Fix Annually update master delivery schedule without enddate. 
+
+KOSUCS_JFCADMIN009 (12/29/2022)
+*<BranchSetting>Update to copy once from master sched date to customer sched date. Add 4 week shedule handing in add customer sched date. 
+*<CustomerSetting> Update and insert DeliverySched, no enddate. 
+*<Tool> Change excel report to 2007 xlsx.
+
+KOSUCS_JFCADMIN008 (03/04/2022)
+*<CustSetting> to delete users in the Salesman Site
+*<Order> to change back to Order Placed status or delete this order.
+*<CustItem> Show all customer's price inquiry.
+*<CustomerSetting> Save first allow order date in customer.AllowOrderCreateDate.
+
+KOSUCS_JFCADMIN007 (12/21/2021)
+*<CustSetting> Fix the lstPopCustGrpVendor add VendorID.
+
+KOSUCS_JFCADMIN006 (12/1/2021)
+*<Confirm> add new all digital error checking for the one time password.
+*<BranchSetting> add the New Frequency Every four week in the Detail of Delivery Schedule Master .
+*<Order> In order history, show canceled orders by JETS (sohdr_jets.orderState = 'U' or 'D') if it's an online order.
+
+KOSUCS_JFCADMIN005 (11/1/2021)
+*<CustItem> add all delete checked items on price inquiry list.
+*<CustItem> add copy reg price for checked items on price inquiry list.
+*<CustItem> change the regualr price column display in the moblie mode.
+*<OrderHistory> add total number of orders in the orders page.
+
+
+KOSUCS_JFCADMIN004 (10/3/2021)
+*<CustSetting> Hide/show Delivery Calendar.
+*<CustSetting> fix the enable/disenable update change button.
+*<CustSetting> add delivery Schedule in the customer setting page.
+*<CustSetting> create new delivery Schedule detail list on the setting page.
+
+
+KOSUCS_JFCADMIN003 (9/3/2021)
+*<CustItem> Allowed Salesman to add price in price inquire list and add the cost, bottom and regular price in price inquire list .
+*<CustSetting> add ship off set number in the customer setting.
+*<OrderHistory> add ship date instead of the delivery date for the salesman.
+*<OrderHistory> Update the search feature in order history page.
+*<JFCAdmin_Mobile> Fix the mobile font is bigger.
+
+KOSUCS_JFCADMIN002 (8/4/2021)
+*<CustItem> Allowed Salesman to Copy selected item to another customer.
+*<CustSetting> Disable uptate button for customer setting if it don't have any changed.
+
+
+KOSUCS_JFCADMIN001 (6/8/2021)
+*<BranchSetting> Allowed Salesman to organize and manage delivery time in the deliverymaster tab. 
+*<Tool> Allowed Salesman got report from Report table.
+*<CustItem> Allowed salesman add or delete promotional item for each custermer.
+*<BranchSetting> Allowed Salesman to add promotional item for each branch. The customers will got same promotional item as their branch setting.
+
+
+----------------------------------------------------------------------------------------------------------------------------------

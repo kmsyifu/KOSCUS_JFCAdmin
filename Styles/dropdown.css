@@ -1,0 +1,152 @@
+﻿/** 									
+{ 
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+body					 
+{
+    font-size: 12px;
+    font-family: "Arial", "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;
+}
+#page-wrap							{ width: 800px; margin: 25px auto; } 
+.kosmos                             { width: 100%; background-color: Black }*/
+
+.menubar                            
+{ 
+    height: 38px; /*40px;*/ 
+    margin: 0px 20px;
+    border-bottom: 1px solid #E6E6FA;
+    /*-webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1), 0px 3px 10px rgba(0, 0, 0, 0.08);
+    -moz-box-shadow:    0px 2px 4px rgba(0, 0, 0, 0.1), 0px 3px 10px rgba(0, 0, 0, 0.08);
+    box-shadow:         0px 2px 4px rgba(0, 0, 0, 0.1), 0px 3px 10px rgba(0, 0, 0, 0.08);*/
+    /*top: 35px*/ /*40px;*/ 
+    /* White Font and Black Navibar */
+    /*color: #FFFFFF;
+    background-color: #434343;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#999999', endColorstr='#000000');
+    background: -moz-linear-gradient(#999999, #000000);
+    background: -webkit-gradient(linear, left top, left bottom, from(#999999), to(#000000));*/
+    /* White font and blue Navibar */
+    /*color: #FFFFFF;
+    background-color: #64ABD1;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#B0E0E6', endColorstr='#64ABD1');
+    background: -moz-linear-gradient(#B0E0E6, #64ABD1);
+    background: -webkit-gradient(linear, left top, left bottom, from(#B0E0E6), to(#64ABD1));*/
+    /* White font and orange vavibar */
+    /*color: #FFFFFF;
+    background-color: #FF7600; 
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='DarkOrange', endColorstr='#FF7600');
+    background: -moz-linear-gradient(DarkOrange, #FF7600);
+    background: -webkit-gradient(linear, left top, left bottom, from(DarkOrange), to(#FF7600));
+    background: -ms-linear-gradient(top, DarkOrange, #FF7600); *//* IE10 */
+    /* Black font and silver button */
+    /*color: #000000;
+    background-color: #C0C0C0;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#E6E6FA');
+    background: -moz-linear-gradient(#FFFFFF, #E6E6FA);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#E6E6FA));
+    background: -ms-linear-gradient(top, #FFFFFF, #E6E6FA);*/ /* IE10 */
+    /*border-top: thin solid #E6E6FA;
+    border-bottom: none;*/
+}
+
+/* 
+	LEVEL ONE
+*/
+ul.dropdown                       
+{ 
+    top: 0px; 
+    left: 0px; 
+    /*position: relative;*/  /* Commented for showing msg on top of the page */ 
+}
+ul.dropdown li                      
+{ 
+    float: left; 
+    font-size: 1.1em;
+    font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+    /*font-weight: bold;*/
+    /*border-style: none solid none none;
+    border-color: #FFFFFF;
+    border-width: thin;*/
+    /* White font and blue Navibar */
+    /*color: #FFFFFF;
+    background-color: #64ABD1;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#B0E0E6', endColorstr='#64ABD1');
+    background: -moz-linear-gradient(#B0E0E6, #64ABD1);
+    background: -webkit-gradient(linear, left top, left bottom, from(#B0E0E6), to(#64ABD1));*/
+    /* White font and orange vavibar */
+    /*color: #FFFFFF;
+    background-color: #FF7600; 
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='DarkOrange', endColorstr='#FF7600');
+    background: -moz-linear-gradient(DarkOrange, #FF7600);
+    background: -webkit-gradient(linear, left top, left bottom, from(DarkOrange), to(#FF7600));
+    background: -ms-linear-gradient(top, DarkOrange, #FF7600);*/ /* IE10 */
+    /* Black font and silver button */
+    /* color: #000000;*/
+    /*background-color: #C0C0C0;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#E6E6FA');
+    background: -moz-linear-gradient(#FFFFFF, #E6E6FA);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#E6E6FA));
+    background: -ms-linear-gradient(top, #FFFFFF, #E6E6FA);*/ /* IE10 */
+}
+/*ul.dropdown a:active,*/
+ul.dropdown a:hover,
+.menuSelected
+{ 
+    /* White font and red vavibar */
+    /*color: #FFFFFF;
+    background-color: #FD7279;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FD7279', endColorstr='#A61700');
+    background: -moz-linear-gradient(#FD7279, #A61700);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FD7279), to(#A61700));*/
+    /* White font and orange vavibar */
+    /*color: #FFFFFF;
+    background-color: DarkOrange; 
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFD700', endColorstr='DarkOrange');
+    background: -moz-linear-gradient(#FFD700, DarkOrange);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFD700), to(DarkOrange));*/
+    /* White font and red background */
+    /*color: #FFFFFF;
+    background-color: Red;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='Red', endColorstr='#FFFFFF');
+    background: -moz-linear-gradient(Red, #FFFFFF);
+    background: -webkit-gradient(linear, left top, left bottom, from(Red), to(#FFFFFF));
+    background: -ms-linear-gradient(top, Red, #FFFFFF);*/ /* IE10 */
+    /* White font and orange background */
+    /*color: #FFFFFF;
+    background-color: Orange;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFCD73', endColorstr='#FF8C00');
+    background: -moz-linear-gradient(#FFCD73, #FF8C00);
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFCD73), to(#FF8C00));
+    background: -ms-linear-gradient(top, #FFCD73, #FF8C00);*/ /* IE10 */
+    color: Orange;
+    border-bottom: 3px solid Orange;
+}
+ul.dropdown li a                    { display: block; padding: 10px; margin: 0px; text-align: center; width: 120px; } /* color: gray; padding: 12px; */
+ul.dropdown li:last-child a         { border-right: none; } /* Doesn't work in IE */
+/*ul.dropdown li.hover,
+ul.dropdown li:hover                { background: #434343; color: #FFFFFF; z-index: 99999999; }
+ul.dropdown li.hover a              { color: #FFFFFF; }*/
+
+
+/* 
+	LEVEL TWO
+*/
+ul.dropdown ul 						{ width: 220px; visibility: hidden; position: absolute; top: 100%; left: 0; }
+ul.dropdown ul li 					{ font-weight: normal; background: Orange; color: #000; 
+									  border-bottom: 1px solid #ccc; float: none; z-index: 9999999999; }
+									  
+                                    /* IE 6 & 7 Needs Inline Block */
+ul.dropdown ul li a					{ border-right: none; width: 100%; display: inline-block; } 
+
+/* 
+	LEVEL THREE
+*/
+ul.dropdown ul ul 					{ left: 100%; top: 0; }
+ul.dropdown li:hover > ul 			{ visibility: visible; }
+
+
+

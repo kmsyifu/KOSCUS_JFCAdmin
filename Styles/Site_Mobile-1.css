@@ -1,0 +1,52 @@
+﻿/* Overwrites Site.css, Koscus.css and jquery-ui-1.8.16.custom.css */
+
+.body   
+{
+    font-size: 13px;
+}
+.headerTop
+{
+    text-align: center;
+    border-bottom: #ddd 2px solid;     
+}
+.hdrLeftBtn
+{
+    left: 10px;
+    top: 5px;
+    position: absolute;
+}
+.hdrRightBtn
+{
+    right: 10px;
+    top: 5px;
+    position: absolute;
+}
+.main
+{
+    padding: 3px; /*10px;*/
+    margin: 0px;
+    min-height: 350px;
+}
+.menuLink
+{
+    padding: 10px;
+    border-bottom: #ddd 1px solid; 
+    width: 90%;
+    font-size: 1.4em; 
+}
+.menuLink_small
+{
+    padding: 10px 10px 0px 10px;
+    width: 90%;
+    font-size: 1.1em; 
+}
+h1 /* Page Header */
+{
+    margin: 0px 0px 10px 0px;
+}
+.footer         
+{ 
+    font-size: 0.9em;
+}
+
+.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 0.5em; background: none; } /*padding: 1em 1.4em;*/

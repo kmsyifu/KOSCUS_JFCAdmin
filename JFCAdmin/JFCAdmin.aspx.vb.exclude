@@ -1,0 +1,294 @@
+﻿Imports System.Data
+Imports Common
+Imports DBUpdate
+
+Partial Class JFCAdmin_JFCAdmin
+    Inherits System.Web.UI.Page
+    Protected JavaScript As String = ""
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        'If page is refreshed, show the current page without executing the previous event
+        'If IsPostBack = False Then
+        '    'First load
+        '    Session("POST_ID_" & Page.GetType().Name) = "1001"
+        '    ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        'Else
+        '    If Common.CString(ViewState("POST_ID_" & Page.GetType().Name)) = Common.CString(Session("POST_ID_" & Page.GetType().Name)) Then
+        '        'Postback
+        '        Session("POST_ID_" & Page.GetType().Name) = Common.CString(Convert.ToInt16(Session("POST_ID_" & Page.GetType().Name)) + 1)
+        '        ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        '    Else
+        '        'Refreshed 'Response.Write("refreshed")
+        '        ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        '        Response.Redirect(Request.RawUrl)
+        '    End If
+        'End If
+
+        Using DB As New DBHelper
+            If IsPostBack = False Then
+                'Init
+                DataBind()
+                setJavaScript(IIf(Request.QueryString("TAB") <> "", Request.QueryString("TAB"), JfcAdmin_Tab.JFC))
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show JFC info
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show jfc info
+                showJfcInfo()
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show JFC web user
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show sort by
+                lstOrderBy_userAcc.Items.Clear()
+                lstOrderBy_userAcc.Items.Add(New ListItem("Email", "email"))
+                lstOrderBy_userAcc.Items.Add(New ListItem("First Name", "firstName, lastName, email"))
+                lstOrderBy_userAcc.Items.Add(New ListItem("Last Name", "lastName, firstName, email"))
+                'Show JFC user list
+                showJfcUserList()
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show JFC vendor
+                '--------------------------------------------------------------------------------------------------------------------
+                showJfcBranchList()
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show customer company
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show customer company list
+                showCustCompanyList()
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show vendor company
+                '--------------------------------------------------------------------------------------------------------------------
+                'Show vendor company list
+                showVendorCompanyList()
+
+            End If
+        End Using
+    End Sub
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'Show JFC info
+    '--------------------------------------------------------------------------------------------------------------------
+    Protected Sub btnSaveJfc_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSaveJfc.Click
+        Using DB As New DBHelper
+            setJavaScript(JfcAdmin_Tab.JFC)
+            'Check error
+            If txtCompanyName.Text = "" Then
+                MessageBox("Company name cannot be empty", "Error", DB)
+                Exit Sub
+            End If
+
+            'Save company info
+            UpdateVendorCompany(DB, lblVendorCompanyID.Text, txtCompanyName.Text, txtCompanyAddress1.Text, txtCompanyAddress2.Text, txtCompanyCity.Text, txtCompanyState.Text, txtCompanyZip.Text, txtCompanyCountry.Text, _
+                         txtCompanyPhone.Text, txtCompanyFax.Text, txtCompanyEmail.Text)
+
+            'Refresh
+            showJfcInfo()
+            InsertEventLog(DB, "Saved JFC info", txtCompanyName.Text, Nothing, Nothing, True)
+            MessageLine("CONFIRM", "Successfully saved")
+        End Using
+    End Sub
+
+    Private Sub showJfcInfo()
+        Dim SQL As String
+        Dim r As DataReader
+
+        Using DB As New DBHelper
+            'Show company info
+            SQL = "SELECT * FROM vendorCompany WHERE vendorCompany_id = 'JFC'"
+            r = DB.GetReader(SQL)
+            If r.Read() Then
+                lblVendorCompanyID.Text = CString(r("vendorCompany_ID"))
+                txtCompanyName.Text = CString(r("vendorCompanyName"))
+                txtCompanyAddress1.Text = CString(r("address1"))
+                txtCompanyAddress2.Text = CString(r("address2"))
+                txtCompanyCity.Text = CString(r("city"))
+                txtCompanyState.Text = CString(r("state"))
+                txtCompanyZip.Text = CString(r("zip"))
+                txtCompanyCountry.Text = CString(r("country"))
+                txtCompanyPhone.Text = CString(r("phone"))
+                txtCompanyFax.Text = CString(r("fax"))
+                txtCompanyEmail.Text = CString(r("email"))
+            End If
+            r.close()
+        End Using
+    End Sub
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'Show JFC user
+    '--------------------------------------------------------------------------------------------------------------------
+    'TODO
+    Protected Sub grdWebUser_RowCommand(sender As Object, e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles grdWebUser.RowCommand
+        setJavaScript(JfcAdmin_Tab.USERACC)
+        If e.CommandName = "EDIT_ROW" Then
+            'setSubJavaScript(0, JfcAdmin_Tab.USERACC)
+            'showWebUserDtl(Convert.ToString(e.CommandArgument))
+        ElseIf e.CommandName = "DELETE_ROW" Then
+            MessageBox("I am sorry. This pagae is still under development... ", "Message")
+            'Delete user
+            'deleteWebUserRow(Convert.ToString(e.CommandArgument))
+        End If
+    End Sub
+
+    Protected Sub lstOrderBy_userAcc_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstOrderBy_userAcc.SelectedIndexChanged
+        setJavaScript(JfcAdmin_Tab.USERACC)
+        'Refresh JFC user list
+        showJfcUserList()
+    End Sub
+
+    'TODO
+    Protected Sub btnAddWebUser_Click(sender As Object, e As System.EventArgs) Handles btnAddWebUser.Click
+        setJavaScript(JfcAdmin_Tab.USERACC)
+        MessageBox("I am sorry. This pagae is still under development... ", "Message")
+    End Sub
+
+    Private Sub showJfcUserList()
+        Dim SQL As String
+
+        Using DB As New DBHelper
+            'Show user account list
+            pnlList_userAcc.Visible = True
+            pnlDtl_userAcc.Visible = False
+
+            SQL = "SELECT u.email, u.firstName, u.lastName, u.phone, u.cellular, u.fax " & _
+                   "FROM webuser u, webuser_vendor v " & _
+                   "WHERE u.email = v.email " & _
+                   " AND v.vendorCompany_id = 'JFC' AND v.userCompany_id IN ('JFC', 'JFC_HO') " & _
+                   "GROUP BY u.email, u.email, u.firstName, u.lastName, u.phone, u.cellular, u.fax"
+            '" AND c.email <> " & DB.SqlEsc(GetUserEmail(DB)) & " " & _
+            dsWebUser.ProviderName = "System.Data.OracleClient"
+            dsWebUser.ConnectionString = DB.GetConnectionString
+            dsWebUser.SelectCommand = SQL
+            grdWebUser.DataSourceID = "dsWebUser"
+            grdWebUser.Sort(lstOrderBy_userAcc.SelectedValue, SortDirection.Ascending)
+            grdWebUser.DataBind()
+        End Using
+    End Sub
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'Show JFC Branch
+    '--------------------------------------------------------------------------------------------------------------------
+    'TODO
+    Protected Sub grdJfcBranch_RowCommand(sender As Object, e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles grdJfcBranch.RowCommand
+        setJavaScript(JfcAdmin_Tab.JFCBRANCH)
+        If e.CommandName = "DELETE_ROW" Then
+            MessageBox("I am sorry. This pagae is still under development... ", "Message")
+        End If
+    End Sub
+
+    'TODO
+    Protected Sub btnAddJfcBranch_Click(sender As Object, e As System.EventArgs) Handles btnAddJfcBranch.Click
+        setJavaScript(JfcAdmin_Tab.JFCBRANCH)
+        MessageBox("I am sorry. This pagae is still under development... ", "Message")
+    End Sub
+
+    Private Sub showJfcBranchList()
+        Dim SQL As String
+
+        Using DB As New DBHelper
+            'Show JFC branch list
+            pnlList_jfcBranch.Visible = True
+            pnlDtl_JfcBranch.Visible = False
+
+            SQL = "SELECT * FROM jfcVendor "
+            dsJfcBranch.ProviderName = "System.Data.OracleClient"
+            dsJfcBranch.ConnectionString = DB.GetConnectionString
+            dsJfcBranch.SelectCommand = SQL
+            grdJfcBranch.DataSourceID = "dsJfcBranch"
+            grdJfcBranch.Sort("VENDORNAME", SortDirection.Ascending)
+            grdJfcBranch.DataBind()
+        End Using
+    End Sub
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'Show customer company
+    '--------------------------------------------------------------------------------------------------------------------
+    'TODO
+    Protected Sub grdCustCompany_RowCommand(sender As Object, e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles grdCustCompany.RowCommand
+        setJavaScript(JfcAdmin_Tab.CUSTCOMPANY)
+        If e.CommandName = "DELETE_ROW" Then
+            MessageBox("I am sorry. This pagae is still under development... ", "Message")
+        End If
+    End Sub
+
+    'TODO
+    Protected Sub btnAddCustCompany_Click(sender As Object, e As System.EventArgs) Handles btnAddCustCompany.Click
+        setJavaScript(JfcAdmin_Tab.CUSTCOMPANY)
+        MessageBox("I am sorry. This pagae is still under development... ", "Message")
+    End Sub
+
+    Private Sub showCustCompanyList()
+        Dim SQL As String
+
+        Using DB As New DBHelper
+            'Show customer company list
+            pnlList_custCompany.Visible = True
+            pnlDtl_custCompany.Visible = False
+
+            SQL = "SELECT c.*, " & _
+                    " (SELECT codeDesc FROM codemaster WHERE codeGrp = 'CUSTCOMPANY_TYPE' AND code_id = c.type_id) AS type " & _
+                    "FROM custCompany c"
+            dsCustCompany.ProviderName = "System.Data.OracleClient"
+            dsCustCompany.ConnectionString = DB.GetConnectionString
+            dsCustCompany.SelectCommand = SQL
+            grdCustCompany.DataSourceID = "dsCustCompany"
+            grdCustCompany.Sort("CUSTCOMPANYNAME", SortDirection.Ascending)
+            grdCustCompany.DataBind()
+        End Using
+
+    End Sub
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'Show vendor company
+    '--------------------------------------------------------------------------------------------------------------------
+    'TODO
+    Protected Sub grdVendorCompany_RowCommand(sender As Object, e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles grdVendorCompany.RowCommand
+        setJavaScript(JfcAdmin_Tab.VENDORCOMPANY)
+        If e.CommandName = "DELETE_ROW" Then
+            MessageBox("I am sorry. This pagae is still under development... ", "Message")
+        End If
+    End Sub
+
+    'TODO
+    Protected Sub btnAddVendorCompany_Click(sender As Object, e As System.EventArgs) Handles btnAddVendorCompany.Click
+        setJavaScript(JfcAdmin_Tab.VENDORCOMPANY)
+        MessageBox("I am sorry. This pagae is still under development... ", "Message")
+    End Sub
+
+    Private Sub showVendorCompanyList()
+        Dim SQL As String
+
+        Using DB As New DBHelper
+            'Show vendor list
+            pnlList_vendorCompany.Visible = True
+            pnlDtl_vendorCompany.Visible = False
+
+            SQL = "SELECT * FROM vendorCompany"
+            dsVendorCompany.ProviderName = "System.Data.OracleClient"
+            dsVendorCompany.ConnectionString = DB.GetConnectionString
+            dsVendorCompany.SelectCommand = SQL
+            grdVendorCompany.DataSourceID = "dsVendorCompany"
+            grdVendorCompany.Sort("VENDORCOMPANYNAME", SortDirection.Ascending)
+            grdVendorCompany.DataBind()
+        End Using
+    End Sub
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'Common routine
+    '--------------------------------------------------------------------------------------------------------------------
+    Private Sub setJavaScript(ByVal tab As JfcAdmin_Tab)
+        JavaScript = "$('#tabs').tabs('select', " & tab & ");"
+    End Sub
+
+    Private Sub setSubJavaScript(ByVal subtab As Integer, ByVal curTab As JfcAdmin_Tab)
+        Select Case curTab
+            Case JfcAdmin_Tab.USERACC
+                JavaScript = "$('#subtabs_userAcc').tabs('select', " & subtab & ");"
+                'Case CustAdmin_Tab.CUSTGRP
+                '    JavaScript = "$('#subtabs_custGrp').tabs('select', " & subtab & ");"
+        End Select
+    End Sub
+
+End Class

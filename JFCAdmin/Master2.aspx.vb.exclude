@@ -1,0 +1,63 @@
+﻿Imports System.Data
+Imports Common
+Imports DBUpdate
+
+Partial Class JFCAdmin_Master
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_PreInit(sender As Object, e As System.EventArgs) Handles Me.PreInit
+        Dim p As Page = TryCast(Me.Context.Handler, Page)
+        If p IsNot Nothing Then
+            ' set master page
+            If IsMobile() = True Then
+                p.MasterPageFile = "JFCAdmin_Mobile.master"
+            Else
+                p.MasterPageFile = "JFCAdmin.master"
+            End If
+        End If
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        'If page is refreshed, show the current page without executing the previous event
+        'If IsPostBack = False Then
+        '    'First load
+        '    Session("POST_ID_" & Page.GetType().Name) = "1001"
+        '    ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        'Else
+        '    If Common.CString(ViewState("POST_ID_" & Page.GetType().Name)) = Common.CString(Session("POST_ID_" & Page.GetType().Name)) Then
+        '        'Postback
+        '        Session("POST_ID_" & Page.GetType().Name) = Common.CString(Convert.ToInt16(Session("POST_ID_" & Page.GetType().Name)) + 1)
+        '        ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        '    Else
+        '        'Refreshed 'Response.Write("refreshed")
+        '        ViewState("POST_ID_" & Page.GetType().Name) = Common.CString(Session("POST_ID_" & Page.GetType().Name))
+        '        Response.Redirect(Request.RawUrl)
+        '    End If
+        'End If
+
+        'Show confirmation msg if needed (passed from OrderDtl)
+        If Session("MSG") <> "" Then
+            If Session("MSG_TYPE") <> "" Then
+                MessageLine(Session("MSG_TYPE"), Session("MSG"))
+                Session("MSG_TYPE") = ""
+            Else
+                MessageLine("CONFIRM", Session("MSG"))
+            End If
+            Session("MSG") = ""
+        End If
+
+        If IsPostBack = False Then
+            'Init
+            DataBind()
+            'Pass parameters to OrderHistory
+            Session("ORDER_HISTORY_CMD") = "JFCADMIN"
+        End If
+    End Sub
+
+    'Used for sending grdview through email in ctrOrderDtl
+    'As calling GridView.RenderControl(htmlTextWriter), the page raises an exception that a Server-Control was rendered outside of a Form. Avoid this execption by overriding VerifyRenderingInServerForm
+    Overrides Sub VerifyRenderingInServerForm(control As Control)
+        'Confirms that an HtmlForm control is rendered for the specified ASP.NET server control at run time. 
+    End Sub
+
+End Class

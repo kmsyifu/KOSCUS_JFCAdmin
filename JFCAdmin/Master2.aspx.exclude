@@ -1,0 +1,86 @@
+﻿<%@ Page Language="VB" MasterPageFile="JFCAdmin.master" AutoEventWireup="false" CodeFile="Master2.aspx.vb" Inherits="JFCAdmin_Master" %>
+<%@ Import Namespace="Common" %>
+<%--%@ Register Tagprefix="uc" Tagname="OrderHistory" Src="~/Common/OrderHistory.ascx" --%>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
+   <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tabs").tabs();
+            $("#tabs").removeClass("ui-widget");
+            $('#tabs').css('display', 'block'); //Display tabs when page finish loading
+          
+        });
+    </script>
+    <h1>Master</h1>
+    
+    <div id="tabs" style="display: none;"> <%--Display tabs when page finish loading--%>
+       <ul>
+            <li><a href="#tabSchedule">Delivery Schedule</a></li>
+            <%--li><a href="#tabCustItem">???</a></li--%>
+        </ul>
+    </div>
+           <asp:Panel runat="server" ID="pnlTabSchedule" >
+            <div id="tabSchedule">
+            <h2>Delivery Schedule</h2>
+                    <asp:CheckBox runat="server" ID="chkShowAll_schedule" Visible="false" class="fontsize-1" Text="&nbsp;Show all customers'" AutoPostBack="true" />
+                   
+                    <asp:DropDownList ID="lstCustCompany_schedule" CssClass="drpList" runat="server" AutoPostBack="True" />--%>
+                    <asp:Panel runat="server" ID="Panel21" Visible='<%# Not SMALL_CUST_ONLY %>' style="display:inline;">
+                        <asp:Label ID="Label20" runat="server" Text='<%# GetCustCompanyType() & " Group" %>' CssClass="gray" />
+                        <asp:DropDownList ID="lstCustGrp_schedule" CssClass="largeDrpList" runat="server" AutoPostBack="True" />
+                        <asp:Label ID="Label22" runat="server" Text='<%# GetCustCompanyType() %>' CssClass="gray" />
+                        <asp:DropDownList ID="lstCust_schedule" CssClass="largeDrpList" runat="server" AutoPostBack="True" />
+                    </asp:Panel>
+                    <asp:Label ID="lblShipPoint" runat="server" Text="Shipping Destination" CssClass="gray" />
+                    <asp:DropDownList ID="lstShipPoint" CssClass="largeDrpList" runat="server" AutoPostBack="True" />
+                    <%--<asp:Label ID="Label20" CssClass="helpLabel" runat="server" Text="Click an item from the following list to view or edit" />--%>
+                    <br /><br />
+                    <%--List of delivery schedule--%>
+                    <asp:GridView ID="grdActiveSchedule" runat="server" DataSourceID="dsActiveSchedule" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false">
+                        <Columns>
+                            <%--<asp:BoundField HeaderText="Company" DataField="custCompanyName" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />
+                            <asp:BoundField HeaderText="Group" DataField="custGrpName" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />--%>
+                            <asp:BoundField HeaderText="Customer" DataField="customerName" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />
+                            <%--<asp:BoundField HeaderText="Shipping Destination" DataField="shipName" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />--%>
+                            <asp:TemplateField HeaderText="Shipping Destination" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32">
+                                <ItemTemplate>
+                                    <asp:Label Visible="false" runat="server" ID="lblDeliverySchedID" Text='<%# Eval("deliverySched_id") %>' />
+                                    <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkShipName" Text='<%# Eval("shipName") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("deliverySched_id")%>' />
+                                    <%--<asp:LinkButton ID="lnkSelectRow" Visible="false" runat="server" CommandName="EDIT_ROW" CommandArgument='<%# Eval("deliverySched_id")%>' />--%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField HeaderText="Vendor" DataField="vendorName" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" />
+        <%--                    <asp:TemplateField HeaderText="Vendor" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32">
+                                <ItemTemplate>
+                                    <asp:Label Visible="false" runat="server" ID="lblDeliverySchedID" Text='<%# Eval("deliverySched_id") %>' />
+                                    <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkVendorName" Text='<%# Eval("vendorName") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("deliverySched_id")%>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>--%>
+                            <%--<asp:BoundField HeaderText="Vendor" DataField="VENDORNAME" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48" />--%>
+                            <asp:BoundField HeaderText="Master" DataField="deliveryMasterName" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                            <asp:BoundField HeaderText="Frequency" DataField="FREQUENCY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                            <asp:BoundField HeaderText="Delivery Day" DataField="DELIVERYDAY" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" />
+                            <asp:BoundField HeaderText="Order By" DataField="orderByDayTime" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />
+                            <asp:TemplateField HeaderText="Send Reminder" HeaderStyle-CssClass="th center16" ItemStyle-CssClass="center16">
+                                <ItemTemplate>
+                                    <asp:Image ID="Image1" CssClass="xxxsImgBtn" ImageUrl='<%# GetWebImgUrl("check.png") %>' Visible='<%# CString(Eval("sendReminder")) = "Y" %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField HeaderText="Starting" DataField="STARTDATE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" Visible="false" />
+                            <asp:BoundField HeaderText="Ending" DataField="ENDDATE" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16" Visible="false" />
+                            <asp:TemplateField ItemStyle-CssClass="center4">
+                                <ItemTemplate>
+                                   <asp:ImageButton ID="btnDelete" Tooltip="Delete delivery schedule" CommandName="DELETE_ROW" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' CommandArgument='<%# Eval("deliverySched_id")%>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="Not found"/>&nbsp;&nbsp;        
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                    <asp:SqlDataSource ID="dsActiveSchedule" runat="server"></asp:SqlDataSource>
+                    <br />
+                    <asp:Button ID="btnAddSchedule" CssClass="midButton" runat="server" Text="Add Schedule" />
+            </div>
+            </asp:Panel>
+</asp:Content>

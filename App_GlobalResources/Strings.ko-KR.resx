@@ -1,0 +1,1970 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>어카운트</value>
+    <comment>Account</comment>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>어카운트 명</value>
+    <comment>Account Name</comment>
+  </data>
+  <data name="ActionRequired" xml:space="preserve">
+    <value>행동조치 필요</value>
+    <comment>Action Required</comment>
+  </data>
+  <data name="Addadvancepayment" xml:space="preserve">
+    <value>사전결제 추가</value>
+    <comment>Add advance payment</comment>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>주소</value>
+    <comment>Address</comment>
+  </data>
+  <data name="Address1" xml:space="preserve">
+    <value>주소 1</value>
+    <comment>Address 1</comment>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>주소 2</value>
+    <comment>Address 2</comment>
+  </data>
+  <data name="AdvancePayment" xml:space="preserve">
+    <value>조기 결제</value>
+    <comment>Advance Payment</comment>
+  </data>
+  <data name="Aging" xml:space="preserve">
+    <value>경과일수</value>
+    <comment>Aging</comment>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>모든 </value>
+    <comment>All</comment>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>금액</value>
+    <comment>Amount</comment>
+  </data>
+  <data name="Anorderhasbeencanceled" xml:space="preserve">
+    <value>오더취소완료</value>
+    <comment>An order has been canceled.</comment>
+  </data>
+  <data name="API" xml:space="preserve">
+    <value />
+  </data>
+  <data name="App" xml:space="preserve">
+    <value>앱</value>
+    <comment>App</comment>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>신청</value>
+    <comment>Apply</comment>
+  </data>
+  <data name="AutoPaymentConfirmation" xml:space="preserve">
+    <value>자동 결제 확인 </value>
+    <comment>Auto Payment Confirmation</comment>
+  </data>
+  <data name="Autopaymentfailed" xml:space="preserve">
+    <value>자동 결제 실패</value>
+    <comment>Auto payment failed</comment>
+  </data>
+  <data name="AutoPaymentMsg1" xml:space="preserve">
+    <value>크레딧 메모가 작성되었을시  은행어카운트로 즉시 환불되지 않습니다,  크레딧금액은 다음 청구서에 자동 결제에  포함, 계산됩니다</value>
+    <comment>Please note that when a credit memo is issued, it will not be refunded to your bank immediately. Instead, its negative balance will be included in your next auto payment for your future invoices.</comment>
+  </data>
+  <data name="AutoPaymentMsg2" xml:space="preserve">
+    <value>기간 &amp; 조건</value>
+    <comment>Terms and Conditions</comment>
+  </data>
+  <data name="AutoPaymentMsg3" xml:space="preserve">
+    <value>이 자동 결제 서비스를 요청함으로써  고객님은 위에서 요청한 결제 금액을 위에 표시된 귀하의 은행 계좌에서 JFC.로 자동 이체할 수 있는 권한을 당사에 승인합니다.
+고객님은 JFC 에 대한 자동 결제 거래의 실행이 미국 법률 조항을 준수 함을 인정합니다.
+이 승인은 당사가 귀하로부터 이 승인을 취소하라는 서면 또는 온라인 통지를 받을 때까지 완전한 효력을 유지하고 유효합니다.</value>
+    <comment>By requesting this Auto Payment service, you authorize us to automatically transfer the amount of the payment you requested above, from your bank account indicated above, and to JFC. You acknowledge that the origination of automatic payment transactions to JFC must comply with the provisions of U.S. law. This authorization is to remain in full force and in effect until we have received written or online notification from you to cancel this authorization.</comment>
+  </data>
+  <data name="AutoPaymentMsg4" xml:space="preserve">
+    <value>규약과 조건에 관하여 동의합니다</value>
+    <comment>I agree to the Terms and Conditions</comment>
+  </data>
+  <data name="AutoPaymentMsg5" xml:space="preserve">
+    <value>자동결제(전체) - 인보이스 및 크레딧 메모 생성 후 24시간 이내에 총액을 자동으로 차감합니다.</value>
+    <comment>Auto payment (all) - Automatically deduct the total amount within 24 hours after your invoice and credit memo has been created.    </comment>
+  </data>
+  <data name="AutoPaymentMsg6" xml:space="preserve">
+    <value>직원  {0}% 할인이 적용되었습니다</value>
+    <comment>{0}% discount is applied for employees.</comment>
+  </data>
+  <data name="AutoPaymentMsg7" xml:space="preserve">
+    <value>자동 결제(주류만 해당) - 인보이스 생성 후 24시간 이내에 주류 이자를 포함한 총 금액을 자동으로 차감합니다.</value>
+    <comment>Auto payment (liquor only) - Automatically deduct the total amount for liquor including liquor interest within 24 hours after your invoice has been created.</comment>
+  </data>
+  <data name="AutoPaymentSettings" xml:space="preserve">
+    <value>자동 결제 설정</value>
+    <comment>Auto Payment Settings</comment>
+  </data>
+  <data name="Avail" xml:space="preserve">
+    <value>가능</value>
+    <comment>Avail</comment>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>결제잔액</value>
+    <comment>Balance</comment>
+  </data>
+  <data name="BalanceDtlMsg1" xml:space="preserve">
+    <value>감사합니다! 결제가 승인되었습니다</value>
+    <comment>Thank you! Your payment has been approved.</comment>
+  </data>
+  <data name="BalanceDtltitle" xml:space="preserve">
+    <value>JFC 구매내역</value>
+    <comment>Transaction History with JFC</comment>
+  </data>
+  <data name="BalanceforJFC" xml:space="preserve">
+    <value>JFC  결제잔액</value>
+    <comment>Balance for JFC</comment>
+  </data>
+  <data name="BalanceMsg1" xml:space="preserve">
+    <value>이 카드는  어카운트 목록에 있습니다. 수정이 필요한 경우 어카운트로 이동하세요.</value>
+    <comment>This card exists in your account list. Please go to your account if you need to modify</comment>
+  </data>
+  <data name="BalanceMsg2" xml:space="preserve">
+    <value>이 은행 계좌는 이미 목록에 있습니다. 수정이 필요한 경우 어카운트로 이동하세요.</value>
+    <comment>This bank account # has already exist in your list. Please go to your account if you need to modify</comment>
+  </data>
+  <data name="BalanceMsg3" xml:space="preserve">
+    <value>결제 금액이 잔액 미만인 경우 각 라인의 비고란에 이유를 입력하세요.</value>
+    <comment>Please enter reason in note field for each line if payment amount is less than balance</comment>
+  </data>
+  <data name="BalanceMsg4" xml:space="preserve">
+    <value>결제 금액은 잔액보다 클 수 없습니다.</value>
+    <comment>Payment amount cannot be greater than remainding balance.</comment>
+  </data>
+  <data name="BankAccount" xml:space="preserve">
+    <value>은행 어카운트</value>
+    <comment>Bank Account</comment>
+  </data>
+  <data name="Bankaccountdoesnotmatch" xml:space="preserve">
+    <value>은행 어카운트 # 가 일치하지 않습니다</value>
+    <comment>Bank account # does not match</comment>
+  </data>
+  <data name="BankAccountUpto17digits" xml:space="preserve">
+    <value>은행 어카운트 #(17자리수까지)</value>
+    <comment>Bank Account # (Up to 17 digits)</comment>
+  </data>
+  <data name="Batch_FortePaymentSync" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Batch_FortePaymentSync1" xml:space="preserve">
+    <value>자동 결제에 사용하는 카드의 유효기간이 만료되었습니다. app.jfc.com에서 다른 카드를 등록하세요.</value>
+    <comment>The card you use for auto payment has been expired. Please register another card at app.jfc.com.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync2" xml:space="preserve">
+    <value>자동 결제를 위한 은행 어카운트를 찾을 수 없습니다. 자동결제를 이용하시려면 https://app.jfc.com에서 설정해주세요.</value>
+    <comment>Cannot find your bank account for auto payment. If you would like to use auto payment, please set it up at https://app.jfc.com.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync3" xml:space="preserve">
+    <value>자동 결제가 거부되었습니다. 결제 프로세서의 오류 메시지는 {0}입니다. app.jfc.com에서 자동 결제 계정을 확인하세요.</value>
+    <comment>The auto payment was declined. The error message from the payment processor was {0}. Please check your account for auto payment at app.jfc.com.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync4" xml:space="preserve">
+    <value>다음 결제가 실패했습니다.</value>
+    <comment>The following payment you made has failed.</comment>
+  </data>
+  <data name="Batch_FortePaymentSync5" xml:space="preserve">
+    <value>결과에 따라 고객님의 결제 금액이 영업일 기준 1~2일 이내에 계정에 다시 추가됩니다. 영업일 기준 며칠 내에 {0} 웹사이트를 방문하여 다시 결제해 주십시오</value>
+    <comment>As a result, your paid amount will be added back to your account in 1 to 2 business days. Please visit our website at {0} in a few business days and make a payment again.</comment>
+  </data>
+  <data name="Bestregards" xml:space="preserve">
+    <value>친애하는  </value>
+    <comment>Best regards</comment>
+  </data>
+  <data name="btnAutoPay" xml:space="preserve">
+    <value>자동결제 설정</value>
+    <comment>Set Auto Payment</comment>
+  </data>
+  <data name="btnPay" xml:space="preserve">
+    <value>잔액확인 &amp; 결제</value>
+    <comment>View &amp; Pay Balance</comment>
+  </data>
+  <data name="Cannotopenthedocument" xml:space="preserve">
+    <value>문서를 열수 없습니다 </value>
+    <comment>Cannot open the document</comment>
+  </data>
+  <data name="CardNumber" xml:space="preserve">
+    <value>카드 번호</value>
+    <comment>Card Number</comment>
+  </data>
+  <data name="CardType" xml:space="preserve">
+    <value>카드 타입</value>
+    <comment>Card Type</comment>
+  </data>
+  <data name="CasePrice" xml:space="preserve">
+    <value>CS 가격</value>
+    <comment>Case Price</comment>
+  </data>
+  <data name="CellPhone" xml:space="preserve">
+    <value>휴대전화</value>
+    <comment>Cell Phone</comment>
+  </data>
+  <data name="Changepassword" xml:space="preserve">
+    <value>비밀번호 변경</value>
+    <comment>Change password...</comment>
+  </data>
+  <data name="CheckingAccount" xml:space="preserve">
+    <value>체킹 어카운트</value>
+    <comment>Checking Account</comment>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>시 </value>
+    <comment>City</comment>
+  </data>
+  <data name="Clickhere" xml:space="preserve">
+    <value>여기를 클릭하세요</value>
+    <comment>Click here</comment>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>회사</value>
+    <comment>Company</comment>
+  </data>
+  <data name="ConfirmBankAccount" xml:space="preserve">
+    <value>은행 어카운트 확인</value>
+    <comment>Confirm Bank Account</comment>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>국가</value>
+    <comment>Country</comment>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>어카운트 등록</value>
+    <comment>Create Account</comment>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>고객명</value>
+    <comment>Customer</comment>
+  </data>
+  <data name="CustomerItemDescription" xml:space="preserve">
+    <value>Customer Item Description</value>
+    <comment>Customer Item Description</comment>
+  </data>
+  <data name="CustomerItemNum" xml:space="preserve">
+    <value>고객 아이템 #</value>
+    <comment>Customer Item #</comment>
+  </data>
+  <data name="CustomerPortal" xml:space="preserve">
+    <value>Customer Portal</value>
+    <comment>Customer Portal</comment>
+  </data>
+  <data name="CustPO" xml:space="preserve">
+    <value>고객 PO#</value>
+    <comment>Cust PO #</comment>
+  </data>
+  <data name="Date1" xml:space="preserve">
+    <value>날짜</value>
+    <comment>Date</comment>
+  </data>
+  <data name="DateNewtoold" xml:space="preserve">
+    <value>날짜: 최근 부터 이전</value>
+    <comment>Date: New to old</comment>
+  </data>
+  <data name="DateOldtonew" xml:space="preserve">
+    <value>날짜: 이전 부터 최근</value>
+    <comment>Date: Old to new</comment>
+  </data>
+  <data name="Dear" xml:space="preserve">
+    <value>친애하는  </value>
+    <comment>Dear</comment>
+  </data>
+  <data name="Deleteaccount" xml:space="preserve">
+    <value>어카운트 삭제</value>
+    <comment>Delete account</comment>
+  </data>
+  <data name="Delivery" xml:space="preserve">
+    <value>배송</value>
+    <comment>Delivery</comment>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>설명</value>
+    <comment>Description</comment>
+  </data>
+  <data name="DetailofPaymentAccount" xml:space="preserve">
+    <value>결제 어카운트의 상세내용</value>
+    <comment>Detail of Payment Account</comment>
+  </data>
+  <data name="DocumentType" xml:space="preserve">
+    <value>문서 타입</value>
+    <comment>Document Type</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>다운로드</value>
+    <comment>Download</comment>
+  </data>
+  <data name="DownloadDocument" xml:space="preserve">
+    <value>설명</value>
+    <comment>Download Document</comment>
+  </data>
+  <data name="EachPrice" xml:space="preserve">
+    <value>개당 가격</value>
+    <comment>Each Price</comment>
+  </data>
+  <data name="Editaccounts" xml:space="preserve">
+    <value>어카운트 수정</value>
+    <comment>Edit accounts...</comment>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>이메일</value>
+    <comment>Email</comment>
+  </data>
+  <data name="EmailInvitationMsg1" xml:space="preserve">
+    <value>JFC {0}에 등록을 감사드립니다. 고객님의 어카운트가 설정완료되어 사용가능합니다</value>
+    <comment>Thank you for signing up for JFC {0}! Your account has been set up and ready to use.</comment>
+  </data>
+  <data name="EmailInvitationMsg10" xml:space="preserve">
+    <value>(요청에 의한 익일 가능)</value>
+    <comment>(available on the next day upon request)</comment>
+  </data>
+  <data name="EmailInvitationMsg11" xml:space="preserve">
+    <value>체킹 또는 세이빙 어카운트를 사용하여 온라인 결제하기</value>
+    <comment>Make payments online using checking or saving account</comment>
+  </data>
+  <data name="EmailInvitationMsg12" xml:space="preserve">
+    <value>제품과 가격확인을 위해 카다로그 보기</value>
+    <comment>View catalog for JFC items and inquire about item price</comment>
+  </data>
+  <data name="EmailInvitationMsg13" xml:space="preserve">
+    <value>새상품과  제품 행사 안내</value>
+    <comment>Information on new products and promotion</comment>
+  </data>
+  <data name="EmailInvitationMsg14" xml:space="preserve">
+    <value>오더 내역과 진행상황 확인</value>
+    <comment>Check order status and view order history</comment>
+  </data>
+  <data name="EmailInvitationMsg15" xml:space="preserve">
+    <value>당사 {0}에 관한 질문 또는 의견이 있으시면 담당 세일즈에 연락하여 주세요</value>
+    <comment>Please contact your sales rep if you have any questions or feedback regarding our (system)</comment>
+  </data>
+  <data name="EmailInvitationMsg2" xml:space="preserve">
+    <value>다음의 비밀번호 설정의 지시사항을 따라주세요</value>
+    <comment>Please follow the instruction below to set your password.</comment>
+  </data>
+  <data name="EmailInvitationMsg3" xml:space="preserve">
+    <value>다음의 이메일 주소를 입력하고 submit 버튼을 클릭해주세요</value>
+    <comment>Enter the following email address and click submit button.</comment>
+  </data>
+  <data name="EmailInvitationMsg4" xml:space="preserve">
+    <value>이메일 주소</value>
+    <comment>Email Address</comment>
+  </data>
+  <data name="EmailInvitationMsg5" xml:space="preserve">
+    <value>이메일을 확인하고 비밀번호 설정을 위해 링크를 사용해주세요</value>
+    <comment>Check your email and use the link in your email to set your password.</comment>
+  </data>
+  <data name="EmailInvitationMsg6" xml:space="preserve">
+    <value>비밀번호 설정후 다음부터  {0}으로 로그인 할수 있습니다</value>
+    <comment>Once you set your password, you can go to {0} to login from next time.</comment>
+  </data>
+  <data name="EmailInvitationMsg7" xml:space="preserve">
+    <value>또는 {0} 또는 {1} 에서 App을 다운로드 받을 수 있습니다</value>
+    <comment>Or you can download our app from {0} or {1}</comment>
+  </data>
+  <data name="EmailInvitationMsg8" xml:space="preserve">
+    <value>{0}은 다음 의 기능을 제공합니다</value>
+    <comment>Our {0}(system) provides the following features;</comment>
+  </data>
+  <data name="EmailInvitationMsg9" xml:space="preserve">
+    <value>온라인에서 주문합니다</value>
+    <comment>Place orders online</comment>
+  </data>
+  <data name="EmailInvoices" xml:space="preserve">
+    <value>이메일 청구서 </value>
+    <comment>Email Invoices</comment>
+  </data>
+  <data name="EmailMsg1" xml:space="preserve">
+    <value>가격문의를 해 주셔서 감사합니다. 고객님의 영업 담당자가 확인 후 곧 연락을 드립니다</value>
+    <comment>Thank you for submitting the price inquiry. Your sales rep will contact you as soon as this is received.</comment>
+  </data>
+  <data name="EmailMsg10" xml:space="preserve">
+    <value>주문이 삭제되었습니다</value>
+    <comment>An order has been deleted.</comment>
+  </data>
+  <data name="EmailMsg14" xml:space="preserve">
+    <value>가격문의를 해 주셔서 감사합니다. 고객님의 영업 담당자가 확인 후 곧 연락을 드립니다</value>
+    <comment>Thank you for submitting the price inquiry. Your sales rep will contact you as soon as this is received.</comment>
+  </data>
+  <data name="EmailMsg15" xml:space="preserve">
+    <value>자동결제를 감사드립니다. 고객님의 {0} 결제가 승인되었고 {1}이(가) 거부되었습니다. 결제 ID는 {2}입니다.</value>
+    <comment>Thank you for your auto payment. Your payment of {0} has been approved and {1} has been declined. Your payment ID is {2}.</comment>
+  </data>
+  <data name="EmailMsg16" xml:space="preserve">
+    <value>결제 처리에는 영업일 기준 1~2일이 소요될 수 있습니다.</value>
+    <comment>Please note that it may take 1 to 2 business days to process your payment.</comment>
+  </data>
+  <data name="EmailMsg17" xml:space="preserve">
+    <value>{0}의 자동 결제에 감사드립니다. 결제 ID는 {1}입니다.</value>
+    <comment>Thank you for your auto payment of {0}. Your payment ID is {1} </comment>
+  </data>
+  <data name="EmailMsg18" xml:space="preserve">
+    <value>다음의 자동 결제가 샐행되었습니다.</value>
+    <comment>The following auto payment has been submitted.</comment>
+  </data>
+  <data name="EmailMsg181" xml:space="preserve">
+    <value>자동 결제 '{0}'이(가) 실행되었습니다.</value>
+    <comment>Auto Payment '{0}' has been submitted</comment>
+  </data>
+  <data name="EmailMsg19" xml:space="preserve">
+    <value>주문 마감시간이 다가오고 있음을 알려드립니다. 주문계획이 있으시면  {0}로 이동하세요.</value>
+    <comment>This is a friendly reminder that the deadline for your order is coming up. If you are planning to order, please go to {0}</comment>
+  </data>
+  <data name="EmailMsg2" xml:space="preserve">
+    <value>다음의 가격 문의는 {1}로 부터  {0}에 의해 이루어졌습니다</value>
+    <comment>The following price inquiry was submitted by {0} from {1}</comment>
+  </data>
+  <data name="EmailMsg20" xml:space="preserve">
+    <value>이 주문을 &lt;b&gt;건너뛰려면&lt;/b&gt; {0}.</value>
+    <comment>If you would like to &lt;b&gt;skip&lt;/b&gt; this order, please {0}.</comment>
+  </data>
+  <data name="EmailMsg21" xml:space="preserve">
+    <value>가격문의를 해 주셔서 감사합니다. 고객님의 영업 담당자가 확인 후 곧 연락을 드립니다</value>
+    <comment>Thank you for the following price inquiry. Your sales rep will contact you as soon as this is received.</comment>
+  </data>
+  <data name="EmailMsg3" xml:space="preserve">
+    <value>가격 문의에 대한 자세한 내용을 보려면 여기를 클릭하십시오</value>
+    <comment>Click here to view details of the price inquiry</comment>
+  </data>
+  <data name="EmailMsg7" xml:space="preserve">
+    <value>주문해 주셔서 감사합니다. 주문이 영업 담당자에게 전송되었습니다</value>
+    <comment>Thank you for placing an order. Your order has been sent to your sales rep.</comment>
+  </data>
+  <data name="EmailMsg8" xml:space="preserve">
+    <value>{0}에 의해 주문이 작성되었습니다</value>
+    <comment>An order has been created by {0}</comment>
+  </data>
+  <data name="EmailMsg9" xml:space="preserve">
+    <value>{0}에 의해 주문이 업데이트되었습니다</value>
+    <comment>An order has been updated by {0}</comment>
+  </data>
+  <data name="Emailusecommatoseparatemultipleemail" xml:space="preserve">
+    <value>이메일 (복수의 이메일은 comma를 사용하십시오</value>
+    <comment>Email (use comma to separate multiple email)</comment>
+  </data>
+  <data name="Error1" xml:space="preserve">
+    <value>오류발생</value>
+    <comment>Error</comment>
+  </data>
+  <data name="ExpirationDate" xml:space="preserve">
+    <value>유효기간 </value>
+    <comment>Expiration Date</comment>
+  </data>
+  <data name="Expirationdatecannotbepast" xml:space="preserve">
+    <value>만료일이 지난것은 사용할 수 없습니다 </value>
+    <comment>Expiration date cannot be past</comment>
+  </data>
+  <data name="Fax" xml:space="preserve">
+    <value>팩스</value>
+    <comment>Fax</comment>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>이름 </value>
+    <comment>First Name</comment>
+  </data>
+  <data name="Gobacktopaymentaccountlist" xml:space="preserve">
+    <value>&lt;&lt; 결제 어카운트 리스트로 돌아가기...</value>
+    <comment>Go back to payment account list</comment>
+  </data>
+  <data name="Gobacktotransactionhistory" xml:space="preserve">
+    <value>&lt;&lt;거래내역으로 돌아가기...</value>
+    <comment>&lt;&lt; Go back to transaction history...</comment>
+  </data>
+  <data name="Gobacktowebpaymenthistory" xml:space="preserve">
+    <value>&lt;&lt;결제내역으로 돌아가세요...</value>
+    <comment>&lt;&lt; Go back to web payment history...</comment>
+  </data>
+  <data name="GoPaperless" xml:space="preserve">
+    <value>Go Paperless</value>
+    <comment>Go Paperless</comment>
+  </data>
+  <data name="Goto" xml:space="preserve">
+    <value>이동</value>
+    <comment>Go to</comment>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>그룹</value>
+    <comment>Group</comment>
+  </data>
+  <data name="HereareournewitemsFordetailspleasegoto" xml:space="preserve">
+    <value>신상품이 있습니다!  자세한 내용은 다음을 참조하십시오.</value>
+    <comment>Here are our new items! For details, please go to</comment>
+  </data>
+  <data name="Hereistheremainingbalance" xml:space="preserve">
+    <value>미결제 잔액이 남아있습니다</value>
+    <comment>Here is the remaining balance</comment>
+  </data>
+  <data name="Hideliquorinterest" xml:space="preserve">
+    <value>주류제품  이자  숨기기</value>
+    <comment>Hide liquor interest</comment>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+    <comment>ID</comment>
+  </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>무효</value>
+    <comment>Invalid</comment>
+  </data>
+  <data name="Invalidcardnumber" xml:space="preserve">
+    <value>무효카드 넘버</value>
+    <comment>Invalid card number</comment>
+  </data>
+  <data name="Invalidformat" xml:space="preserve">
+    <value>포멧이 올바르지 않습니다 </value>
+    <comment>Invalid format</comment>
+  </data>
+  <data name="Invalidrouting" xml:space="preserve">
+    <value>무효한 Routing 넘버</value>
+    <comment>Invalid routing #</comment>
+  </data>
+  <data name="Invalidsecuritycode" xml:space="preserve">
+    <value>무효한 보안 코드</value>
+    <comment>Invalid security code</comment>
+  </data>
+  <data name="INVOICE" xml:space="preserve">
+    <value>청구서</value>
+    <comment>Invoice</comment>
+  </data>
+  <data name="InvoiceAmount" xml:space="preserve">
+    <value>청구서 금액</value>
+    <comment>Invoice Amount</comment>
+  </data>
+  <data name="InvoiceandStatement" xml:space="preserve">
+    <value>인보이스 와 명세서</value>
+    <comment>Invoice and Statement</comment>
+  </data>
+  <data name="ItemNum" xml:space="preserve">
+    <value>아이템 #</value>
+    <comment>Item #</comment>
+  </data>
+  <data name="Itempriceislessthanbottomprice" xml:space="preserve">
+    <value>상품가격이 최저설정가격보다 낮습니다</value>
+    <comment>Item price is less than bottom price</comment>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>상품</value>
+    <comment>Items</comment>
+  </data>
+  <data name="JFCAccount" xml:space="preserve">
+    <value>JFC 어카운트</value>
+    <comment>JFC Account</comment>
+  </data>
+  <data name="JFCAccountMsg1" xml:space="preserve">
+    <value>PDF 명세서만 받으려면 Yes를 선택하십시오(우편우송 없음).</value>
+    <comment>Select Yes to receive PDF statements only (no mail)</comment>
+  </data>
+  <data name="JFCAccountMsg2" xml:space="preserve">
+    <value>다음 이메일로 인보이스 사본을 받으려면 Yes를 선택하십시오.</value>
+    <comment>Select Yes to receive copy of invoices by following email</comment>
+  </data>
+  <data name="JFCAccountNum" xml:space="preserve">
+    <value>JFC 어카운트</value>
+    <comment>JFC Account #</comment>
+  </data>
+  <data name="JFCItemDescription" xml:space="preserve">
+    <value>JFC 아이템 설명</value>
+    <comment>JFC Item Description</comment>
+  </data>
+  <data name="JFCItemNum" xml:space="preserve">
+    <value>JFC 아이템 #</value>
+    <comment>JFC Item #</comment>
+  </data>
+  <data name="KocusAPIMsg1" xml:space="preserve">
+    <value>장바구니에 재고가 없는 품목이 있으며 이러한 품목은 교체될 수 있습니다.</value>
+    <comment>Out of stock items exist in your cart, and these items may be replaced.</comment>
+  </data>
+  <data name="KocusAPIMsg10" xml:space="preserve">
+    <value>주문 {0}(Cust PO # {1})가 처리되었습니다</value>
+    <comment>Your order {0} (Cust PO # {1})  was processed</comment>
+  </data>
+  <data name="KocusAPIMsg11" xml:space="preserve">
+    <value>발신인 주소가 지정되지 않았습니다</value>
+    <comment>From address is not specified</comment>
+  </data>
+  <data name="KocusAPIMsg12" xml:space="preserve">
+    <value>이 오더를 삭제할수 없습니다</value>
+    <comment>You cannot delete this order.</comment>
+  </data>
+  <data name="KocusAPIMsg13" xml:space="preserve">
+    <value>주문이 비어 있습니다. 주문에 하나 이상의 항목을 추가하십시오</value>
+    <comment>Order is empty. Please add at least one item to your order</comment>
+  </data>
+  <data name="KocusAPIMsg14" xml:space="preserve">
+    <value>이 주문은 편집할 수 없습니다.</value>
+    <comment>You cannot edit this order.</comment>
+  </data>
+  <data name="KocusAPIMsg15" xml:space="preserve">
+    <value>항목 번호 {0}의 수량은 0 또는 양수여야 합니다.</value>
+    <comment>Qty for item # {0} has to be 0 or a positive number</comment>
+  </data>
+  <data name="KocusAPIMsg16" xml:space="preserve">
+    <value>항목 번호 {0}의 각 수량은 0이거나 {1}의 배수여야 합니다.</value>
+    <comment>Each qty for item # {0} has to be 0 or multiple of {1}.</comment>
+  </data>
+  <data name="KocusAPIMsg17" xml:space="preserve">
+    <value>이 주문의 총 금액은 ${0}입니다. 주문을 업데이트하려면 총 금액이 {1} 이상이어야 합니다.</value>
+    <comment>The total amount for this order is ${0}. To update your order, the total amount has to be at least {1}.</comment>
+  </data>
+  <data name="KocusAPIMsg18" xml:space="preserve">
+    <value>[행동조치 필요] 업데이트된 주문 {0}을 받았습니다(고객 PO 번호 {1}).</value>
+    <comment>[Action Required] You received a updated order {0} (Cust PO # {1})</comment>
+  </data>
+  <data name="KocusAPIMsg19" xml:space="preserve">
+    <value>{0}로부터 업데이트된 주문을 받았습니다. 이 주문을 승인하려면 SFA 또는 세일즈맨 사이트를 이용하십시오. *** 이 자동 메시지에 회신하지 마십시오. ***</value>
+    <comment> You received a updated order from {0}. Please use SFA or salesman site to approve this order. *** Please do NOT reply to this automated message. ***</comment>
+  </data>
+  <data name="KocusAPIMsg2" xml:space="preserve">
+    <value>가격 조회를가 JFC로 전송되지 않았으며  목록이 여전히 쇼핑 목록에 남아 있습니다. 나중에 다시 시도 해주십시오.</value>
+    <comment>Price inquiry could not be sent to JFC and the list still remains in your shopping list. Please try again later.</comment>
+  </data>
+  <data name="KocusAPIMsg20" xml:space="preserve">
+    <value>주문 이메일을 발송하였습니다</value>
+    <comment>Sent order email</comment>
+  </data>
+  <data name="KocusAPIMsg21" xml:space="preserve">
+    <value>주문 이메일 발송이 실패하였습니다</value>
+    <comment>Failed to send order email</comment>
+  </data>
+  <data name="KocusAPIMsg22" xml:space="preserve">
+    <value>항목을 입력하세요. 항목을 입력한 후 반드시 ""Get Item"" 버튼을 클릭하십시오.</value>
+    <comment>Please enter an item. Make sure to click on ""Get Item"" button after entering an item</comment>
+  </data>
+  <data name="KocusAPIMsg23" xml:space="preserve">
+    <value>오류! 주문 양식 {0}에 속한 항목이 주문되었습니다. 동일한 주문 양식의 항목만 추가할 수 있습니다.</value>
+    <comment>Error! Items that belong to order form {0} are in the order. You can only add items from the same order form.</comment>
+  </data>
+  <data name="KocusAPIMsg24" xml:space="preserve">
+    <value>오류! 수량을 입력하세요</value>
+    <comment>Error! Please enter qty</comment>
+  </data>
+  <data name="KocusAPIMsg25" xml:space="preserve">
+    <value>오류! 수량은 0 또는 양수여야 합니다.</value>
+    <comment>Error! Qty has to be 0 or a positive number</comment>
+  </data>
+  <data name="KocusAPIMsg26" xml:space="preserve">
+    <value>오류! 각 수량은 0 또는 {0}의 배수여야 합니다.</value>
+    <comment>Error! Each qty has to be 0 or multiple of {0}</comment>
+  </data>
+  <data name="KocusAPIMsg27" xml:space="preserve">
+    <value>이메일이 발송되지 않았습니다</value>
+    <comment>Email could not be sent</comment>
+  </data>
+  <data name="KocusAPIMsg28" xml:space="preserve">
+    <value>이메일 주소를 찾을 수 없습니다.</value>
+    <comment>Email address cannot be found.</comment>
+  </data>
+  <data name="KocusAPIMsg29" xml:space="preserve">
+    <value>비밀번호를 설정하려면 이 링크를 클릭하십시오.</value>
+    <comment>Please click this link to set your password.</comment>
+  </data>
+  <data name="KocusAPIMsg3" xml:space="preserve">
+    <value>고객님은 {0}로부터 가격 문의를 받았습니다. {1}에서 자세한 내용을 확인하십시오.  *** 이 자동 메시지에 회신하지 마십시오. ***</value>
+    <comment>You received a price inquiry from {0}. Please view details at {1}. *** Please do NOT reply to this automated message. ***</comment>
+  </data>
+  <data name="KocusAPIMsg30" xml:space="preserve">
+    <value>비밀번호를 설정하세요</value>
+    <comment>Set your password</comment>
+  </data>
+  <data name="KocusAPIMsg31" xml:space="preserve">
+    <value>비밀번호는 5자 이상 26자 이내로 숫자를 1개 이상 포함해야 합니다.</value>
+    <comment>Password has to be more than 5 and less than 26 characters long with at least one number.</comment>
+  </data>
+  <data name="KocusAPIMsg32" xml:space="preserve">
+    <value>일회용 비밀번호가 맞지 않습니다.</value>
+    <comment>One Time password is not correct .</comment>
+  </data>
+  <data name="KocusAPIMsg33" xml:space="preserve">
+    <value>장바구니가 비었습니다</value>
+    <comment>Shopping cart is empty</comment>
+  </data>
+  <data name="KocusAPIMsg34" xml:space="preserve">
+    <value>배송지를 공란으로 할 수 없습니다 </value>
+    <comment>Shipping destination cannot be empty.</comment>
+  </data>
+  <data name="KocusAPIMsg35" xml:space="preserve">
+    <value>{0}에 대한 배송 날짜가 설정되지 않았습니다</value>
+    <comment>Delivery date is not set up for {0}</comment>
+  </data>
+  <data name="KocusAPIMsg36" xml:space="preserve">
+    <value>로그인할 수 없습니다(로그인 type을 찾을 수 없음)</value>
+    <comment>You cannot login (no login type found)</comment>
+  </data>
+  <data name="KocusAPIMsg37" xml:space="preserve">
+    <value>감사합니다! 가격 문의가 곧 영업 담당자에게 전송됩니다</value>
+    <comment>Thank you! Your price inquiry will be sent to your sales rep shortly.</comment>
+  </data>
+  <data name="KocusAPIMsg38" xml:space="preserve">
+    <value>링크가 만료되었습니다. 비밀번호를 다시 재설정해주세요</value>
+    <comment>Your link has expired. Please reset your password again.</comment>
+  </data>
+  <data name="KocusAPIMsg39" xml:space="preserve">
+    <value>다음 인증 코드를 사용하여 로그인하십시오.</value>
+    <comment>Please use the following verification code to log in. </comment>
+  </data>
+  <data name="KocusAPIMsg4" xml:space="preserve">
+    <value>[행동조치 필요] {0} 로 부터 가격 문의</value>
+    <comment>[Action Required] Price inquiry from {0}</comment>
+  </data>
+  <data name="KocusAPIMsg40" xml:space="preserve">
+    <value>보안 인증 코드: {0}</value>
+    <comment>Secure verification code: {0}</comment>
+  </data>
+  <data name="KocusAPIMsg41" xml:space="preserve">
+    <value>이 코드는 20분 후에 사용만료됩니다.</value>
+    <comment>Please note that this code will expire in 20 minutes.</comment>
+  </data>
+  <data name="KocusAPIMsg42" xml:space="preserve">
+    <value>다음 인증 코드를 사용하여 JFC 앱에 로그인하세요.</value>
+    <comment>Please use the following verification code to login JFC App</comment>
+  </data>
+  <data name="KocusAPIMsg43" xml:space="preserve">
+    <value>인증 코드가 {0} 과 {1}로 전송되었습니다.</value>
+    <comment>A verification code has been sent to {0} and {1}. </comment>
+  </data>
+  <data name="KocusAPIMsg44" xml:space="preserve">
+    <value>20분 이내에 받은 코드를 입력하세요.</value>
+    <comment>Please enter the code that you received within 20 minutes.</comment>
+  </data>
+  <data name="KocusAPIMsg45" xml:space="preserve">
+    <value>부도처리된  Check에 {0}이 청구됨을 알려드립니다 </value>
+    <comment>Please note that {0} will be charged for a returned check</comment>
+  </data>
+  <data name="KocusAPIMsg46" xml:space="preserve">
+    <value>오더의 합계금액은 ${0} 입니다. 오더진행을 위해 , 합계금액이 ${1} 이상이 되어야 합니다.</value>
+    <comment>The total amount for this order is ${0}. To process your order, the total amount has to be at least ${1}.</comment>
+  </data>
+  <data name="KocusAPIMsg5" xml:space="preserve">
+    <value>가격문의 목록이 비어있습니다.</value>
+    <comment>Price inquiry list is empty.</comment>
+  </data>
+  <data name="KocusAPIMsg6" xml:space="preserve">
+    <value>웹 주문 {0}이 없습니다 </value>
+    <comment>Web order {0} doesn't exist.</comment>
+  </data>
+  <data name="KocusAPIMsg7" xml:space="preserve">
+    <value>웹 주문 {0}이 승인되었습니다 </value>
+    <comment>Web order {0} has been approved.</comment>
+  </data>
+  <data name="KocusAPIMsg8" xml:space="preserve">
+    <value>웹 주문 {0}이 다운로드되지 않았습니다</value>
+    <comment>Web order {0} has not been downloaded.</comment>
+  </data>
+  <data name="KocusAPIMsg9" xml:space="preserve">
+    <value>웹 주문 {0}이 삭제되었습니다</value>
+    <comment>Web order {0} has been deleted.</comment>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>성</value>
+    <comment>Last Name</comment>
+  </data>
+  <data name="LastUpdated" xml:space="preserve">
+    <value>마지막 업데이트</value>
+    <comment>Last Updated</comment>
+  </data>
+  <data name="LbPrice" xml:space="preserve">
+    <value>파운드 가격</value>
+    <comment>Lb Price</comment>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>링크</value>
+    <comment>Link</comment>
+  </data>
+  <data name="Liquor" xml:space="preserve">
+    <value>주류</value>
+    <comment>Liquor</comment>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>메세지</value>
+    <comment>Message</comment>
+  </data>
+  <data name="MessagetoJFC" xml:space="preserve">
+    <value>JFC로의 메세지</value>
+    <comment>Message to JFC</comment>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>내 어카운트</value>
+    <comment>My Account</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>이름 </value>
+    <comment>Name</comment>
+  </data>
+  <data name="NameonAccount" xml:space="preserve">
+    <value>어카운트 명</value>
+    <comment>Name on Account</comment>
+  </data>
+  <data name="Nameonaccountcannotexceed50characters" xml:space="preserve">
+    <value>어카운트 명은 50자이상을 넘을 수 없습니다</value>
+    <comment>Name on account cannot exceed 50 characters</comment>
+  </data>
+  <data name="NewAccount" xml:space="preserve">
+    <value>새 어카운트</value>
+    <comment>New Account</comment>
+  </data>
+  <data name="NewItem" xml:space="preserve">
+    <value>새 상품</value>
+    <comment>New Item</comment>
+  </data>
+  <data name="Noautopayment" xml:space="preserve">
+    <value>자동 결제가 아닙니다 </value>
+    <comment>No auto payment</comment>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>비고</value>
+    <comment>Note</comment>
+  </data>
+  <data name="Notfound" xml:space="preserve">
+    <value>검색결과 없음</value>
+    <comment>Not found</comment>
+  </data>
+  <data name="OfficePhone" xml:space="preserve">
+    <value>회사 전화</value>
+    <comment>OfficePhone</comment>
+  </data>
+  <data name="Onetimeverificationcode" xml:space="preserve">
+    <value>1회용 인증코드</value>
+    <comment>One time verification code</comment>
+  </data>
+  <data name="OrderDatefrom" xml:space="preserve">
+    <value>주문일 (시작)</value>
+    <comment>Order Date from</comment>
+  </data>
+  <data name="OrderDatehastobeinformat" xml:space="preserve">
+    <value>주문 날짜는 {0} 형식이어야 합니다.</value>
+    <comment>Order Date has to be in {0} format</comment>
+  </data>
+  <data name="OrderDateto" xml:space="preserve">
+    <value>주문일 (종료)</value>
+    <comment>Order Date to</comment>
+  </data>
+  <data name="OrderDeadline" xml:space="preserve">
+    <value>주문 마감시간</value>
+    <comment>Order Deadline</comment>
+  </data>
+  <data name="Orderdelivery" xml:space="preserve">
+    <value>주문 배송 </value>
+    <comment>Order delivery</comment>
+  </data>
+  <data name="Orderedon" xml:space="preserve">
+    <value>주문일 </value>
+    <comment>Ordered on</comment>
+  </data>
+  <data name="OrderForm" xml:space="preserve">
+    <value>오더 폼 </value>
+    <comment>Order Form</comment>
+  </data>
+  <data name="OrderHistoryMsg1" xml:space="preserve">
+    <value>미승인 오더만  배송 날짜별로 표시</value>
+    <comment>Show non-approved orders only sorted by delivery date</comment>
+  </data>
+  <data name="OrderID" xml:space="preserve">
+    <value>주문 ID</value>
+    <comment>Order ID</comment>
+  </data>
+  <data name="OrderIDorPO" xml:space="preserve">
+    <value>오더 ID 또는 PO</value>
+    <comment>Order ID or PO</comment>
+  </data>
+  <data name="OrderInfo" xml:space="preserve">
+    <value>오더 정보</value>
+    <comment>Order Info</comment>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>오더 #</value>
+    <comment>Order #</comment>
+  </data>
+  <data name="OrderReminderfromJFC" xml:space="preserve">
+    <value>JFC에서 주문 알림</value>
+    <comment>Order Reminder from JFC</comment>
+  </data>
+  <data name="orreplytocontactyoursalesrep" xml:space="preserve">
+    <value>또는  담당세일즈에 응답하세요</value>
+    <comment>or reply to contact your sales rep.</comment>
+  </data>
+  <data name="OutofStock" xml:space="preserve">
+    <value>품절</value>
+    <comment>Out of stock</comment>
+  </data>
+  <data name="PaidAmount" xml:space="preserve">
+    <value>결제 금액</value>
+    <comment>Paid Amount</comment>
+  </data>
+  <data name="PaidAmount1" xml:space="preserve">
+    <value>결제된 금액 </value>
+    <comment>Paid Amount</comment>
+  </data>
+  <data name="PaidAmountConfirmed" xml:space="preserve">
+    <value>결제된 금액(처리완료)</value>
+    <comment>Paid Amount (Confirmed)</comment>
+  </data>
+  <data name="PaidAmountPending" xml:space="preserve">
+    <value>결제된 금액(처리중)</value>
+    <comment>Paid Amount (Pending)</comment>
+  </data>
+  <data name="Paidby" xml:space="preserve">
+    <value>지불인 </value>
+    <comment>Paid by</comment>
+  </data>
+  <data name="Paidon" xml:space="preserve">
+    <value>결제일 </value>
+    <comment>Paid on</comment>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>비밀번호</value>
+    <comment>Password</comment>
+  </data>
+  <data name="PayBalanceforJFC" xml:space="preserve">
+    <value>JFC 결제잔액</value>
+    <comment>Pay Balance for JFC</comment>
+  </data>
+  <data name="Paydifferentamount" xml:space="preserve">
+    <value>다른 금액 결제</value>
+    <comment>Pay different amount</comment>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>결제</value>
+    <comment>Payment</comment>
+  </data>
+  <data name="PaymentAccount" xml:space="preserve">
+    <value>결제 어카운트 </value>
+    <comment>Payment Account</comment>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>결제 금액</value>
+    <comment>Payment Amount</comment>
+  </data>
+  <data name="PaymentDtlMsg1" xml:space="preserve">
+    <value>더이상 이 결제를 취소할수 없습니다</value>
+    <comment>You cannot void this payment any more</comment>
+  </data>
+  <data name="PaymentDtlMsg2" xml:space="preserve">
+    <value>이 결제를 취소할 수 없습니다. 결제 처리자의 오류 메시지는 {0}입니다</value>
+    <comment>Could not void this payment. The error message from the payment processor was {0}.</comment>
+  </data>
+  <data name="Paymenthasfailed" xml:space="preserve">
+    <value>결제 {0}이 실패하였습니다</value>
+    <comment>Payment {0} has failed</comment>
+  </data>
+  <data name="PaymentID" xml:space="preserve">
+    <value>결제 ID</value>
+    <comment>Payment ID</comment>
+  </data>
+  <data name="PaymentInfo" xml:space="preserve">
+    <value>결제 정보</value>
+    <comment>Payment Info</comment>
+  </data>
+  <data name="PaymentType" xml:space="preserve">
+    <value>결제 방법</value>
+    <comment>Payment Type</comment>
+  </data>
+  <data name="PaymentVoided" xml:space="preserve">
+    <value>결제취소완료</value>
+    <comment>Payment Voided</comment>
+  </data>
+  <data name="PendingMsg" xml:space="preserve">
+    <value>결제 처리까지 영업일 기준 1~2일이 소요될 수 있습니다.</value>
+    <comment>It may take 1 to 2 business days to process your payment.</comment>
+  </data>
+  <data name="PendingPayment" xml:space="preserve">
+    <value>보류중인 결제</value>
+    <comment>Pending Payment</comment>
+  </data>
+  <data name="PendingWebPayments" xml:space="preserve">
+    <value>Web Payment  보류중</value>
+    <comment>Pending Web Payments</comment>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>기간</value>
+    <comment>Period</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>전화</value>
+    <comment>Phone</comment>
+  </data>
+  <data name="Pleasechooseone" xml:space="preserve">
+    <value>하나를 선택해 주세요</value>
+    <comment>Please choose one</comment>
+  </data>
+  <data name="PleasedoNotreplytothisautomatedmessage" xml:space="preserve">
+    <value>이 자동 메세지에 응답하지 마십시오</value>
+    <comment>Please do Not reply to this automated message.</comment>
+  </data>
+  <data name="Pleaseenterfaxnumberintheformat" xml:space="preserve">
+    <value>포멧에 팩스번호를 입력하십시오:</value>
+    <comment>Please enter fax number in the format:</comment>
+  </data>
+  <data name="Pleaseenternameonthisaccount" xml:space="preserve">
+    <value>어카운트 명을 입력해 주세요</value>
+    <comment>Please enter name on this account</comment>
+  </data>
+  <data name="Pleaseenterphonenumberintheformat" xml:space="preserve">
+    <value>포멧에 전화번호를 입력하십시오:</value>
+    <comment>Please enter phone number in the format:</comment>
+  </data>
+  <data name="Pleaseselectabankaccount" xml:space="preserve">
+    <value>은행 계좌를 선택해 주세요</value>
+    <comment>Please select a bank account</comment>
+  </data>
+  <data name="Pleaseselectacardtype" xml:space="preserve">
+    <value>카드 타입을 선택해 주세요</value>
+    <comment>Please select a card type</comment>
+  </data>
+  <data name="Pleaseselectapaymenttype" xml:space="preserve">
+    <value>결제방법을 선택해 주세요</value>
+    <comment>Please select a payment type</comment>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>가격</value>
+    <comment>Price</comment>
+  </data>
+  <data name="PromoItem" xml:space="preserve">
+    <value>행사 제품</value>
+    <comment>Promo Item</comment>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>수량</value>
+    <comment>Qty</comment>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>이유</value>
+    <comment>Reason</comment>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>참고 </value>
+    <comment>Reference</comment>
+  </data>
+  <data name="RemainBalance" xml:space="preserve">
+    <value>잔액</value>
+    <comment>Remain Balance</comment>
+  </data>
+  <data name="RemainingBalance" xml:space="preserve">
+    <value>미결제 잔액</value>
+    <comment>Remaining Balance</comment>
+  </data>
+  <data name="RememberthisAccount" xml:space="preserve">
+    <value>이 어카운트를 기억하세요</value>
+    <comment>Remember this Account</comment>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>요구됨</value>
+    <comment>required</comment>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>결과</value>
+    <comment>Result</comment>
+  </data>
+  <data name="Routing9digits" xml:space="preserve">
+    <value>Routing # (9자리수)</value>
+    <comment>Routing # (9 digits)</comment>
+  </data>
+  <data name="SavingsAccount" xml:space="preserve">
+    <value>세이빙 어카운트</value>
+    <comment>Savings Account</comment>
+  </data>
+  <data name="SecurityCodeBackofCard" xml:space="preserve">
+    <value>보안 코드( 카드 뒷면)</value>
+    <comment>Security Code (Back of Card)</comment>
+  </data>
+  <data name="Setautopayment" xml:space="preserve">
+    <value>자동결제 설정...</value>
+    <comment>Set auto payment...</comment>
+  </data>
+  <data name="ShipDate" xml:space="preserve">
+    <value>배송일 </value>
+    <comment>Ship Date</comment>
+  </data>
+  <data name="ShippingAddress" xml:space="preserve">
+    <value>배송 주소</value>
+    <comment>Shipping Address</comment>
+  </data>
+  <data name="ShippingName" xml:space="preserve">
+    <value>배송 이름 </value>
+    <comment>Shipping Name</comment>
+  </data>
+  <data name="Shipto" xml:space="preserve">
+    <value>배송지</value>
+    <comment>Ship to</comment>
+  </data>
+  <data name="Showliquoronly" xml:space="preserve">
+    <value>주류제품만  표시</value>
+    <comment>Show liquor only</comment>
+  </data>
+  <data name="Showwebordersonly" xml:space="preserve">
+    <value>Web 오더만 표시</value>
+    <comment>Show web orders only</comment>
+  </data>
+  <data name="Sortby" xml:space="preserve">
+    <value>상세검색</value>
+    <comment>Sort by</comment>
+  </data>
+  <data name="Specifiedordercouldnotbefound" xml:space="preserve">
+    <value>지정된 주문을 찾을 수 없습니다</value>
+    <comment>Specified order could not be found</comment>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>주 </value>
+    <comment>State</comment>
+  </data>
+  <data name="STATEMENT" xml:space="preserve">
+    <value>명세서</value>
+    <comment>Statement</comment>
+  </data>
+  <data name="StateZip" xml:space="preserve">
+    <value>주 우편</value>
+    <comment>State Zip</comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>상황</value>
+    <comment>Status</comment>
+  </data>
+  <data name="TextMsg1" xml:space="preserve">
+    <value>이것은 {0} 주문에 대한 JFC 주문 알림입니다.  {1}까지 {2} 에서 주문하십시오.</value>
+    <comment>This is a JFC order reminder for your order on {0}. Please place your order by {1} at {2}.</comment>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>총 금액</value>
+    <comment>Total Amount</comment>
+  </data>
+  <data name="TotalPaidAmount" xml:space="preserve">
+    <value>총 결제금액</value>
+    <comment>Total Paid Amount</comment>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>거래날짜</value>
+    <comment>Transaction Date</comment>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>거래</value>
+    <comment>Transactions</comment>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>타입</value>
+    <comment>Type</comment>
+  </data>
+  <data name="UpdateChanges" xml:space="preserve">
+    <value>변경사항 업데이트</value>
+    <comment>Update Changes</comment>
+  </data>
+  <data name="Useanotheraccount" xml:space="preserve">
+    <value>다른 어카운트를 이용해주세요</value>
+    <comment>Use another account...</comment>
+  </data>
+  <data name="Usecommatoentermultiplefax" xml:space="preserve">
+    <value>복수 팩스번호 입력시 Comma(,)를 사용하세요</value>
+    <comment>Use comma to enter multiple fax #.</comment>
+  </data>
+  <data name="Usecommatoentermultiplephone" xml:space="preserve">
+    <value>복수 전화번호 입력시 Comma(,)를 사용하세요</value>
+    <comment>Use comma to enter multiple phone #.</comment>
+  </data>
+  <data name="usecommatoseparatemultipleemail" xml:space="preserve">
+    <value>복수 이메일 사용시 Comma(,)를 사용하세요</value>
+    <comment>use comma to separate multiple email</comment>
+  </data>
+  <data name="UsedforAutoPayment" xml:space="preserve">
+    <value>자동결제에 사용됨</value>
+    <comment>Used for Auto Payment</comment>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>사용자</value>
+    <comment>User</comment>
+  </data>
+  <data name="UsethisAccount" xml:space="preserve">
+    <value>이 어카운트를 사용하세요</value>
+    <comment>Use this Account</comment>
+  </data>
+  <data name="Vendor" xml:space="preserve">
+    <value>공급업체</value>
+    <comment>Vendor</comment>
+  </data>
+  <data name="VoidPayment" xml:space="preserve">
+    <value>결제 취소</value>
+    <comment>Void Payment</comment>
+  </data>
+  <data name="WebDiscount" xml:space="preserve">
+    <value>Web 할인</value>
+    <comment>Web Discount</comment>
+  </data>
+  <data name="WebEarlyPaymentDiscount" xml:space="preserve">
+    <value>Web 조기결제 할인</value>
+    <comment>Web Early Payment Discount</comment>
+  </data>
+  <data name="WebOrderID" xml:space="preserve">
+    <value>Web Order ID</value>
+    <comment>Web Order ID</comment>
+  </data>
+  <data name="WebPayHistory" xml:space="preserve">
+    <value>Web 결제 내역</value>
+    <comment>Web Pay History</comment>
+  </data>
+  <data name="WebPaymentHistorywithJFC" xml:space="preserve">
+    <value>JFC Web 결제내역</value>
+    <comment>Web Payment History with JFC</comment>
+  </data>
+  <data name="WelcometoJFC" xml:space="preserve">
+    <value>JFC에 오신것을 환영합니다</value>
+    <comment>Welcome to JFC </comment>
+  </data>
+  <data name="Youcannotvoidthispaymentanymore" xml:space="preserve">
+    <value>더이상 이 결제를 취소할수 없습니다</value>
+    <comment>You cannot void this payment any more</comment>
+  </data>
+  <data name="Youhavevoidedyourpayment" xml:space="preserve">
+    <value>결제취소완료</value>
+    <comment>You have voided your payment</comment>
+  </data>
+  <data name="YourAccounts" xml:space="preserve">
+    <value>어카운트</value>
+    <comment>Your Accounts</comment>
+  </data>
+  <data name="Yourorderhasbeencanceled" xml:space="preserve">
+    <value>주문이 취소 되었습니다 </value>
+    <comment>Your order has been canceled.</comment>
+  </data>
+  <data name="Yourorderhasbeendeleted" xml:space="preserve">
+    <value>주문이 삭제되었습니다</value>
+    <comment>Your order has been deleted</comment>
+  </data>
+  <data name="Yourorderhasbeenprocessedat" xml:space="preserve">
+    <value>오더 처리 완료.</value>
+    <comment>Your order has been processed.</comment>
+  </data>
+  <data name="Yourorderhasbeenprocessedon" xml:space="preserve">
+    <value>주문이 {0}에 처리되었습니다.</value>
+    <comment>Your order has been processed on {0}</comment>
+  </data>
+  <data name="Yourorderhasbeenupdated" xml:space="preserve">
+    <value>오더가 업데이트 되었습니다</value>
+    <comment>Your order has been updated.</comment>
+  </data>
+  <data name="Yourorderwasplaced" xml:space="preserve">
+    <value>오더 {0}가 되었습니다</value>
+    <comment>Your order {0} was placed</comment>
+  </data>
+  <data name="YourPayments" xml:space="preserve">
+    <value>결제</value>
+    <comment>Your Payments</comment>
+  </data>
+  <data name="Yourpriceinquirywassent" xml:space="preserve">
+    <value>가격 문의가 전송되었습니다</value>
+    <comment>Your price inquiry was sent</comment>
+  </data>
+  <data name="Zip" xml:space="preserve">
+    <value>우편번호</value>
+    <comment>Zip</comment>
+  </data>
+  <data name="BalanceMsg10" xml:space="preserve">
+    <value>결제금액은 ${0}을 초과할 수 없습니다.  ${1}이상의 금액의 결제를 원하시면 여러번으로  나누어 결제 해 주세요</value>
+    <comment>Payment amount cannot exceed ${0}. If you want to pay more than ${1}, please divide it to multiple payments.</comment>
+  </data>
+  <data name="BalanceMsg11" xml:space="preserve">
+    <value>2시간내에 동일한 금액의  결제가 표시됩니다. 이 결제는 중복결제로 인하여 실행되지 않습니다. 다른 결제를 원하시면 결제금액을 변경해 주세요</value>
+    <comment>It appears that you have made a payment with the same amount within 2 hours. This payment cannot be processed as it might be duplicate payment. If you want to make another payment, please change your payment amount.</comment>
+  </data>
+  <data name="BalanceMsg12" xml:space="preserve">
+    <value>선택된 카드는 유효기간이 경과되었습니다 .  다른 어카운트를 사용해 주세요</value>
+    <comment>The card you selected has been expired. Please use another account.</comment>
+  </data>
+  <data name="BalanceMsg13" xml:space="preserve">
+    <value>결제 어카운트를 찾을 수 없습니다</value>
+    <comment>Cannot find your payment account.</comment>
+  </data>
+  <data name="BalanceMsg14" xml:space="preserve">
+    <value>거래 승인이 거부되었습니다. 거래 승인 거부 메세지는 {0}입니다. 고객님을 결제 어카운트를 확인하거나 다른 어카운트를 사용해 주세요</value>
+    <comment>The transaction was declined. The error message from the payment processor was {0}. Please check your payment account or use another account.</comment>
+  </data>
+  <data name="BalanceMsg15" xml:space="preserve">
+    <value>기간과 조건(Term and Conditions)을 동의해 주세요</value>
+    <comment>Please agree to the Terms and Conditions.</comment>
+  </data>
+  <data name="BalanceMsg5" xml:space="preserve">
+    <value>사전 결제 금액은 $0.00  이하가 될 수 없습니다</value>
+    <comment>Advance Payment amount cannot be negative</comment>
+  </data>
+  <data name="BalanceMsg6" xml:space="preserve">
+    <value>결제금액은 $0.00 이하가 될 수 없습니다</value>
+    <comment>Payment amount cannot be negative</comment>
+  </data>
+  <data name="BalanceMsg7" xml:space="preserve">
+    <value>결제를 위한 최소 한 개 이상의 인보이스를 선택해 주세요</value>
+    <comment>Please check at least one invoice that you would like to pay.</comment>
+  </data>
+  <data name="BalanceMsg8" xml:space="preserve">
+    <value>다른 금액의 결제를 원하는 경우, 'Apply' 버튼을 사용 , 금액을 기입하여 결제하여 주세요</value>
+    <comment>If you would like to pay different amount, please use 'Apply' button to apply the amount you entered to the payment amount.</comment>
+  </data>
+  <data name="BalanceMsg9" xml:space="preserve">
+    <value>{0} 또는 다른 결제 어카운트</value>
+    <comment>{0} or use another payment account</comment>
+  </data>
+  <data name="CONFIRM" xml:space="preserve">
+    <value>확인</value>
+    <comment>CONFIRM</comment>
+  </data>
+  <data name="CreatePaymentAccount" xml:space="preserve">
+    <value>결제 어카운트 등록</value>
+    <comment>Create Payment Account</comment>
+  </data>
+  <data name="Pleaseselectanaccount" xml:space="preserve">
+    <value>어카운트를 선택해 주세요</value>
+    <comment>Please select an account</comment>
+  </data>
+  <data name="Successfullyupdated" xml:space="preserve">
+    <value>업데이트가 성공적으로 진행되었습니다</value>
+    <comment>Successfully updated</comment>
+  </data>
+  <data name="BalanceMsg16" xml:space="preserve">
+    <value>결제{0}을 해 주셔서 감사합니다</value>
+    <comment>Thank you for your payment of {0}.</comment>
+  </data>
+  <data name="BalanceMsg17" xml:space="preserve">
+    <value>결제해 주셔서 감사합니다</value>
+    <comment>Thank you for your payment.</comment>
+  </data>
+  <data name="BalanceMsg18" xml:space="preserve">
+    <value>고객님의 결제 {0}이 승인되었고  {1}은 거부되었습니다</value>
+    <comment>Your payment of {0} has been approved and {1} has been declined.</comment>
+  </data>
+  <data name="BalanceMsg19" xml:space="preserve">
+    <value>고객님의 결제 ID는  {0}입니다</value>
+    <comment>Your payment ID is {0}.</comment>
+  </data>
+  <data name="BalanceMsg20" xml:space="preserve">
+    <value>결제 금액은 $0.00 이상이 되어야 합니다</value>
+    <comment>Payment amount has to be a positive number</comment>
+  </data>
+  <data name="Confirmationemailhasbeensenttoyou" xml:space="preserve">
+    <value>확인 이메일이 발송되었습니다</value>
+    <comment>Confirmation email has been sent to you.</comment>
+  </data>
+  <data name="Invalidbankaccount" xml:space="preserve">
+    <value>사용불가능 은행 어카운트 #</value>
+    <comment>Invalid bank account #</comment>
+  </data>
+  <data name="clickhereL" xml:space="preserve">
+    <value>여기를 클릭하세요</value>
+    <comment>click here</comment>
+  </data>
+  <data name="DeliveryL" xml:space="preserve">
+    <value>배송</value>
+    <comment>delivery</comment>
+  </data>
+  <data name="Detailof" xml:space="preserve">
+    <value>상세내용 {0}</value>
+    <comment>Detail of {0}</comment>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>서류</value>
+    <comment>Document</comment>
+  </data>
+  <data name="Emailorpasswordisinvalid" xml:space="preserve">
+    <value>이메일 또는 비밀번호가 틀립니다 </value>
+    <comment>Email or password is invalid</comment>
+  </data>
+  <data name="KocusAPIMsg47" xml:space="preserve">
+    <value>오더가 진행되었습니다. 그러나 미결제 잔액을 결제가 처리될때까지 오더는 처리되지 않습니다. 가능한한 빨리 결제를 진행하여 주세요.</value>
+    <comment>Your order has been placed. But as your payment is overdue, this order may not be processed until we receive your payment. If you haven’t, please make a payment as soon as possible.</comment>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>언어</value>
+    <comment>language</comment>
+  </data>
+  <data name="Nameonyourbankaccount" xml:space="preserve">
+    <value>고객은행계좌 이름</value>
+    <comment>Name on your bank account</comment>
+  </data>
+  <data name="Orderby" xml:space="preserve">
+    <value>{0}까지 오더</value>
+    <comment>Order by {0}</comment>
+  </data>
+  <data name="OrderbyTODAY" xml:space="preserve">
+    <value>오늘까지 오더{0}</value>
+    <comment>Order by TODAY</comment>
+  </data>
+  <data name="Pleaseselect" xml:space="preserve">
+    <value>선택해 주세요...</value>
+    <comment>Please select...</comment>
+  </data>
+  <data name="Pleasewait" xml:space="preserve">
+    <value>기다려 주세요...</value>
+    <comment>Please wait...</comment>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>진행</value>
+    <comment>Processing</comment>
+  </data>
+  <data name="SubmitPayment" xml:space="preserve">
+    <value>결제 신청</value>
+    <comment>Submit Payment</comment>
+  </data>
+  <data name="Successfullyvoided" xml:space="preserve">
+    <value>취소완료</value>
+    <comment>Successfully voided</comment>
+  </data>
+  <data name="Thisitemisnotavailable" xml:space="preserve">
+    <value>이 제품은 품절상태입니다</value>
+    <comment>This item is not available</comment>
+  </data>
+  <data name="Interest" xml:space="preserve">
+    <value>이자</value>
+    <comment>Interest</comment>
+  </data>
+  <data name="LIQUORINTEREST" xml:space="preserve">
+    <value>주류제품 이자</value>
+    <comment>LIQUOR INTEREST</comment>
+  </data>
+  <data name="Newamount" xml:space="preserve">
+    <value>새 금액</value>
+    <comment>New amount</comment>
+  </data>
+  <data name="CREDIT" xml:space="preserve">
+    <value>크레딧</value>
+    <comment>CREDIT</comment>
+  </data>
+  <data name="Bounced" xml:space="preserve">
+    <value>부도처리되었습니다</value>
+    <comment>Bounced</comment>
+  </data>
+  <data name="Chilled" xml:space="preserve">
+    <value>냉장</value>
+    <comment>Chilled</comment>
+  </data>
+  <data name="Dry" xml:space="preserve">
+    <value>Dry</value>
+    <comment>Dry</comment>
+  </data>
+  <data name="Errored" xml:space="preserve">
+    <value>오류발생</value>
+    <comment>Errored</comment>
+  </data>
+  <data name="Frozen" xml:space="preserve">
+    <value>냉동</value>
+    <comment>Frozen</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>새</value>
+    <comment>New</comment>
+  </data>
+  <data name="Orderplaced" xml:space="preserve">
+    <value>오더되었습니다</value>
+    <comment>Order placed</comment>
+  </data>
+  <data name="PaymentConfirmation" xml:space="preserve">
+    <value>결제 확인</value>
+    <comment>Payment Confirmation</comment>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>보류중</value>
+    <comment>Pending</comment>
+  </data>
+  <data name="ReceivedbyJFC" xml:space="preserve">
+    <value>접수완료</value>
+    <comment>Recevied by JFC</comment>
+  </data>
+  <data name="Voided" xml:space="preserve">
+    <value>취소되었습니다</value>
+    <comment>Voided</comment>
+  </data>
+  <data name="Yourorderwascanceled" xml:space="preserve">
+    <value>{0} 오더 취소완료</value>
+    <comment>Your order {0} was canceled</comment>
+  </data>
+  <data name="ADJUSTMENT" xml:space="preserve">
+    <value>조정</value>
+    <comment>Adjustment</comment>
+  </data>
+  <data name="BOUNCEDPAYMENT" xml:space="preserve">
+    <value>부도처리되었습니다</value>
+    <comment>Bounced Payment</comment>
+  </data>
+  <data name="DEDUCTION" xml:space="preserve">
+    <value>공제</value>
+    <comment>Deduction</comment>
+  </data>
+  <data name="DISCOUNT" xml:space="preserve">
+    <value>할인</value>
+    <comment>Discount</comment>
+  </data>
+  <data name="PendingWebPayment" xml:space="preserve">
+    <value>Web 결제 처리중</value>
+    <comment>Pending Web Payment</comment>
+  </data>
+  <data name="RETURNCHECK" xml:space="preserve">
+    <value>수표 부도처리됨</value>
+    <comment>Return Check</comment>
+  </data>
+  <data name="Yourorderwasupdated" xml:space="preserve">
+    <value>오더{0}이 업데이트 되었습니다</value>
+    <comment>Your order {0} was updated</comment>
+  </data>
+  <data name="Canceled" xml:space="preserve">
+    <value>취소완료</value>
+    <comment>Canceled</comment>
+  </data>
+  <data name="Invoiced" xml:space="preserve">
+    <value>청구되었습니다</value>
+    <comment>Invoiced</comment>
+  </data>
+  <data name="Preparedforshipping" xml:space="preserve">
+    <value>배송준비</value>
+    <comment>Prepared for shipping</comment>
+  </data>
+  <data name="Underprocessing" xml:space="preserve">
+    <value>처리중</value>
+    <comment>Under processing</comment>
+  </data>
+  <data name="YourorderwithJFC" xml:space="preserve">
+    <value>JFC에의 주문</value>
+    <comment>Your order with JFC</comment>
+  </data>
+  <data name="ComfirmMsg1" xml:space="preserve">
+    <value>감사합니다! 고객님의 요청이 영업담당자에 전달되었습니다</value>
+    <comment>Thank you! Your request has been sent to your sales rep.</comment>
+  </data>
+  <data name="ComfirmMsg2" xml:space="preserve">
+    <value>링크가 사용할 수 없습니다</value>
+    <comment>Your link is invalid.</comment>
+  </data>
+  <data name="ComfirmMsg3" xml:space="preserve">
+    <value>온라인 시스템이 업그레이드 되었습니다</value>
+    <comment>Our online system has been upgraded!</comment>
+  </data>
+  <data name="ComfirmMsg4" xml:space="preserve">
+    <value>{0}으로 가 새 온라인 시스템에 연결하여 고객님의 같은 이메일 주소와 비밀번호로 로그인하세요</value>
+    <comment>Please go to {0} to access our new online system and use the same your email address and password to login.</comment>
+  </data>
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>삭제 확인</value>
+    <comment>Confirm Deletion</comment>
+  </data>
+  <data name="MyAccountMsg1" xml:space="preserve">
+    <value>이 결제 어카운트는 자동결제로 사용되고 있어 취소가 불가능합니다</value>
+    <comment>You cannot delete this payment account because it is used for auto payment.</comment>
+  </data>
+  <data name="MyAccountMsg2" xml:space="preserve">
+    <value>자동 결제 어카운트 변경을 위해서, 결제로 이동 '자동결제설정' 버튼을 클릭해 주세요</value>
+    <comment>To change your auto payment account, please go to Payment and click on 'Set Auto Payment' button.</comment>
+  </data>
+  <data name="MyAccountMsg3" xml:space="preserve">
+    <value>{0}를 삭제하기를 위하십니까?</value>
+    <comment>Are you sure you want to delete {0}(Account)?</comment>
+  </data>
+  <data name="Paymentacountnolongerexists" xml:space="preserve">
+    <value>결제 어카운트가 더 이상 존재하지 아니합니다</value>
+    <comment>Payment acount no longer exists</comment>
+  </data>
+  <data name="Successfullysaved" xml:space="preserve">
+    <value>정상 저장되었습니다</value>
+    <comment>Successfully saved</comment>
+  </data>
+  <data name="Successfullydeleted" xml:space="preserve">
+    <value>삭제되었습니다</value>
+    <comment>Successfully deleted</comment>
+  </data>
+  <data name="Emailaddressisinvalid" xml:space="preserve">
+    <value>이메일 주소{0}가  무효합니다</value>
+    <comment>Email address {0} is invalid.</comment>
+  </data>
+  <data name="MyAccountMsg4" xml:space="preserve">
+    <value>청구서 수취를 위한 이메일 주소를 입력해 주세요</value>
+    <comment>Please enter email address where you want to receive your invoices.</comment>
+  </data>
+  <data name="ViewPayment" xml:space="preserve">
+    <value>결제보기</value>
+    <comment>View Payment</comment>
+  </data>
+  <data name="CANNEDFOOD" xml:space="preserve">
+    <value>통조림류</value>
+    <comment>CANNED FOOD</comment>
+  </data>
+  <data name="CONFECTIONERIES" xml:space="preserve">
+    <value>제과류</value>
+    <comment>CONFECTIONERIES</comment>
+  </data>
+  <data name="DEPOSIT" xml:space="preserve">
+    <value>예금</value>
+    <comment>DEPOSIT</comment>
+  </data>
+  <data name="DIRECTIMPORTFORHAPI" xml:space="preserve">
+    <value>HAPI 직수입</value>
+    <comment>DIRECT IMPORT FOR HAPI</comment>
+  </data>
+  <data name="DRINK" xml:space="preserve">
+    <value>음료</value>
+    <comment>DRINK</comment>
+  </data>
+  <data name="EGGMILK" xml:space="preserve">
+    <value>계란, 우유</value>
+    <comment>EGG, MILK</comment>
+  </data>
+  <data name="Fri" xml:space="preserve">
+    <value>Fri</value>
+    <comment>Fri</comment>
+  </data>
+  <data name="Friday" xml:space="preserve">
+    <value>금요일</value>
+    <comment>Friday</comment>
+  </data>
+  <data name="FROZENFOOD" xml:space="preserve">
+    <value>냉동 식품</value>
+    <comment>FROZEN FOOD</comment>
+  </data>
+  <data name="GRAIN" xml:space="preserve">
+    <value>곡물류</value>
+    <comment>GRAIN</comment>
+  </data>
+  <data name="HAPIINGREDIENTS" xml:space="preserve">
+    <value>HAPI 내용물</value>
+    <comment>HAPI INGREDIENTS</comment>
+  </data>
+  <data name="HAPIPACKAGEMATERIALS" xml:space="preserve">
+    <value>HAPI 포장제</value>
+    <comment>HAPI PACKAGE MATERIALS</comment>
+  </data>
+  <data name="MEAT" xml:space="preserve">
+    <value>육류</value>
+    <comment>MEAT</comment>
+  </data>
+  <data name="Mon" xml:space="preserve">
+    <value>Mon</value>
+    <comment>Mon</comment>
+  </data>
+  <data name="Monday" xml:space="preserve">
+    <value>월요일</value>
+    <comment>Monday</comment>
+  </data>
+  <data name="NONFOOD" xml:space="preserve">
+    <value>음식외 제품</value>
+    <comment>NON FOOD</comment>
+  </data>
+  <data name="NONREGULARITEM" xml:space="preserve">
+    <value>비정규품목</value>
+    <comment>NON REGULAR ITEM</comment>
+  </data>
+  <data name="NOODLE" xml:space="preserve">
+    <value>면류</value>
+    <comment>NOODLE</comment>
+  </data>
+  <data name="OILSEASONING" xml:space="preserve">
+    <value>오일, 양념류</value>
+    <comment>OIL, SEASONING</comment>
+  </data>
+  <data name="PREPAREDFOOD" xml:space="preserve">
+    <value>가공식품</value>
+    <comment>PREPARED FOOD</comment>
+  </data>
+  <data name="Requestfordeliverynotguaranteed" xml:space="preserve">
+    <value>{0} 배송 요청( 보장않됨) / Request for {0} delivery (not guaranteed)</value>
+    <comment>Request for {0} delivery (not guaranteed)</comment>
+  </data>
+  <data name="Sat" xml:space="preserve">
+    <value>Sat</value>
+    <comment>Sat</comment>
+  </data>
+  <data name="Saturday" xml:space="preserve">
+    <value>토요일</value>
+    <comment>Saturday</comment>
+  </data>
+  <data name="SEAFOOD" xml:space="preserve">
+    <value>해물류</value>
+    <comment>SEAFOOD</comment>
+  </data>
+  <data name="SEAWEED" xml:space="preserve">
+    <value>해초류</value>
+    <comment>SEAWEED</comment>
+  </data>
+  <data name="Sun" xml:space="preserve">
+    <value>Sun</value>
+    <comment>Sun</comment>
+  </data>
+  <data name="Sunday" xml:space="preserve">
+    <value>일요일</value>
+    <comment>Sunday</comment>
+  </data>
+  <data name="Thu" xml:space="preserve">
+    <value>Thu</value>
+    <comment>Thu</comment>
+  </data>
+  <data name="Thursday" xml:space="preserve">
+    <value>목요일</value>
+    <comment>Thursday</comment>
+  </data>
+  <data name="TOFUAGEKONNAYKU" xml:space="preserve">
+    <value>두부류 &amp;  곤약</value>
+    <comment>TOFU, AGE &amp; KONNAYKU</comment>
+  </data>
+  <data name="Tue" xml:space="preserve">
+    <value>Tue</value>
+    <comment>Tue</comment>
+  </data>
+  <data name="Tuesday" xml:space="preserve">
+    <value>화요일</value>
+    <comment>Tuesday</comment>
+  </data>
+  <data name="VEGETABLEFRUIT" xml:space="preserve">
+    <value>야채 &amp; 과일</value>
+    <comment>VEGETABLE &amp; FRUIT</comment>
+  </data>
+  <data name="Wed" xml:space="preserve">
+    <value>Wed</value>
+    <comment>Wed</comment>
+  </data>
+  <data name="Wednesday" xml:space="preserve">
+    <value>수요일</value>
+    <comment>Wednesday</comment>
+  </data>
+  <data name="WRAPPER" xml:space="preserve">
+    <value>각종피( 만두등)종류</value>
+    <comment>WRAPPER</comment>
+  </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>마감시간</value>
+    <comment>Deadline</comment>
+  </data>
+  <data name="DeliveryOn" xml:space="preserve">
+    <value>배송일</value>
+    <comment>Delivery On</comment>
+  </data>
+  <data name="DescNew" xml:space="preserve">
+    <value>Desc New</value>
+    <comment>Desc New</comment>
+  </data>
+  <data name="EachCase" xml:space="preserve">
+    <value>개별 /  박스</value>
+    <comment>Each/Case</comment>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>횟수</value>
+    <comment>Frequency</comment>
+  </data>
+  <data name="ItemNewNum" xml:space="preserve">
+    <value>새 상품 #</value>
+    <comment>Item New #</comment>
+  </data>
+  <data name="Itemshavebeenadded" xml:space="preserve">
+    <value>아이템이 추가되었습니다</value>
+    <comment>Items have been added.</comment>
+  </data>
+  <data name="Itemwasadded" xml:space="preserve">
+    <value>Item #{0} was added</value>
+    <comment>Item #{0} was added</comment>
+  </data>
+  <data name="Old" xml:space="preserve">
+    <value>Old</value>
+    <comment>Old</comment>
+  </data>
+  <data name="OrderBy1" xml:space="preserve">
+    <value>오더 실행자</value>
+    <comment>Order By:</comment>
+  </data>
+  <data name="Pleaseplaceaneworderifyouneedtheseitems" xml:space="preserve">
+    <value>이 상품을 원하시면  새 오더를 해주세요</value>
+    <comment>Please place a new order if you need these items.</comment>
+  </data>
+  <data name="Pleaseplaceaneworderifyouneedthisitem" xml:space="preserve">
+    <value>이 상품을 원하시면  새 오더를 해주세요</value>
+    <comment>Please place a new order if you need this item.</comment>
+  </data>
+  <data name="Pleaseseethefollowingforyournewschedule" xml:space="preserve">
+    <value>고객님의 새 배송일정을 위해 다음을 확인하세요</value>
+    <comment>Please see the following for your new schedule.</comment>
+  </data>
+  <data name="Regardingyourpriceinquiry" xml:space="preserve">
+    <value>고객님의 가격문의</value>
+    <comment>Regarding your price inquiry</comment>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Remark</value>
+    <comment>Remark</comment>
+  </data>
+  <data name="SendReminder" xml:space="preserve">
+    <value>알림 보내기</value>
+    <comment>Send Reminder</comment>
+  </data>
+  <data name="ShippingDestination" xml:space="preserve">
+    <value>배송지</value>
+    <comment>Shipping Destination</comment>
+  </data>
+  <data name="Yourdeliveryinfohasbeenupdated" xml:space="preserve">
+    <value>고객님의 배송정보가 업데이트 되었습니다</value>
+    <comment>Your delivery info has been updated.</comment>
+  </data>
+  <data name="Yourdeliveryinfowasupdated" xml:space="preserve">
+    <value>고객님의 배송정보가 업데이트되었습니다</value>
+    <comment>Your delivery info was updated</comment>
+  </data>
+  <data name="Yourdeliveryschedulehasbeenadded" xml:space="preserve">
+    <value>고객님의 배송일정이 추가되었습니다</value>
+    <comment>Your delivery schedule has been added.</comment>
+  </data>
+  <data name="Yourdeliveryschedulehasbeenupdated" xml:space="preserve">
+    <value>고객님의 배송일정이 업데이트 되었습니다</value>
+    <comment>Your delivery schedule has been updated.</comment>
+  </data>
+  <data name="Yourdeliveryschedulewasupdated" xml:space="preserve">
+    <value>고객님의 배송일정이 업데이트되었습니다(#{0})</value>
+    <comment>Your delivery schedule was updated (# {0})</comment>
+  </data>
+  <data name="Youriteminfohasbeenaddedupdated" xml:space="preserve">
+    <value>고객님의 아이템 정보가 추가 / 업데이트 되었습니다</value>
+    <comment>Your item info has been added / updated.</comment>
+  </data>
+  <data name="Youriteminfowasupdated" xml:space="preserve">
+    <value>고객님의 아이템정보가 업데이트 되었습니다(#{0})</value>
+    <comment>Your item info was updated (#{0})</comment>
+  </data>
+  <data name="Yourpriceinquiryregardingitem" xml:space="preserve">
+    <value>아이템#{0}에 관한 고객님의 가격문의</value>
+    <comment>Your price inquiry regarding item# {0}</comment>
+  </data>
+  <data name="ItemInfo" xml:space="preserve">
+    <value>상품정보</value>
+    <comment>Item Info</comment>
+  </data>
+  <data name="DeliverySchedule" xml:space="preserve">
+    <value>배송일정</value>
+    <comment>Delivery Schedule</comment>
+  </data>
+  <data name="UpdateAutoPay" xml:space="preserve">
+    <value>자동 결제 업데이트</value>
+    <comment>Update Auto Pay</comment>
+  </data>
+  <data name="Payment1" xml:space="preserve">
+    <value>결제</value>
+    <comment>Payment</comment>
+  </data>
+  <data name="Totalitems" xml:space="preserve">
+    <value>합계: {0}품목</value>
+    <comment>Total: {0} items</comment>
+  </data>
+  <data name="EmailMsg22" xml:space="preserve">
+    <value>모든 가격은 예측할 수 없는 경제 상황으로 인해 사전 통지 없이 변경될 수 있습니다.</value>
+    <comment>All prices are subject to change without prior notice due to unforeseen economic circumstances.</comment>
+  </data>
+  <data name="PhoneStatement1" xml:space="preserve">
+    <value>휴대폰 번호를 입력함으로써 로그인 인증코드, 주문알림 등 중요 문자 메시지 수신에 동의합니다. 메시지 및 데이터 요금이 적용될 수 있습니다.</value>
+  </data>
+  <data name="PhoneStatement2" xml:space="preserve">
+    <value>휴대폰 번호가 입력되어 있어 체크박스를 반드시 체크해야 합니다.</value>
+  </data>
+</root>

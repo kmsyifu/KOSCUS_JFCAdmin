@@ -1,0 +1,108 @@
+﻿Imports System.Data
+Imports Common
+
+Partial Class Common_ShowNotification
+    Inherits System.Web.UI.UserControl
+    Private mDB As New DBHelper
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+    End Sub
+
+    Public Sub showNotification()
+        Dim SQL As String
+        Dim showPnl As Boolean = False
+        Dim userType As String = Session("SYS_SESSION_USERTYPE")
+        Dim customerID As String = Session("SYS_SESSION_CUSTID")
+
+        'Check to see if entered already
+        If Session("SHOWNOTIFICATION_ENTERED") = "Y" Then Exit Sub
+        Session("SHOWNOTIFICATION_ENTERED") = "Y"
+
+        'Init
+        'invisibleAllPnl()
+        'pnlPopNotification.Visible = True
+        ClearCtrl({lblPopErrMsg})
+
+        'Set properties
+        pnlPopCustNotification.Visible = False
+        If userType = "CUSTOMER" Then
+            pnlPopCustNotification.Visible = True
+        End If
+
+        If pnlPopCustNotification.Visible = True Then
+            pnlPopPdfStatement.Visible = False
+            If Common.PdfStatement(mDB, customerID) = False Then
+                pnlPopPdfStatement.Visible = True
+                showPnl = True
+            End If
+            pnlPopEmailInvoice.Visible = False
+            If Common.EmailInvoice(mDB, customerID) = False Then
+                pnlPopEmailInvoice.Visible = True
+                SQL = "SELECT WM_CONCAT(email) FROM webuser_customer WHERE userCompany_id <> 'JFC' AND customer_id = :1"
+                lblInvoiceEmail.Text = CString(mDB.GetScalar(SQL, customerID))
+                SQL = "SELECT invoiceEmail FROM customer WHERE customer_id = :1"
+                txtInvoiceEmail.Text = CString(mDB.GetScalar(SQL, customerID))
+                showPnl = True
+            End If
+        End If
+
+        If showPnl = False Then
+            'No need to show notification
+            'Turn off ShowNotification
+            If userType = "CUSTOMER" Then
+                DBUpdate.UpdateShowNotification(mDB, userType, customerID, "N")
+            End If
+            'Do Nothing
+            Exit Sub
+        End If
+
+        'Show popup
+        popDialog.Show()
+    End Sub
+
+    Protected Sub btnPopSubmit_Click(sender As Object, e As System.EventArgs) Handles btnPopSubmit.Click
+        Dim userType As String = Session("SYS_SESSION_USERTYPE")
+        Dim customerID As String = Session("SYS_SESSION_CUSTID")
+
+        If pnlPopPdfStatement.Visible = True Then
+            If radPopPdfStatementYes.Checked = False AndAlso radPopPdfStatementNo.Checked = False Then
+                lblPopErrMsg.Text = "Please select either '" & radPopPdfStatementYes.Text & "' or '" & radPopPdfStatementNo.Text & "'."
+                popDialog.Show()
+                Exit Sub
+            End If
+        End If
+        If pnlPopEmailInvoice.Visible = True Then
+            If radPopEmailInvoiceYes.Checked = False AndAlso radPopEmailInvoiceNo.Checked = False Then
+                lblPopErrMsg.Text = "Please select either '" & radPopEmailInvoiceYes.Text & "' or '" & radPopEmailInvoiceNo.Text & "'."
+                popDialog.Show()
+                Exit Sub
+            End If
+            If radPopEmailInvoiceYes.Checked = True AndAlso IsEmail(txtInvoiceEmail.Text, True) = False Then
+                lblPopErrMsg.Text = "Email address " & txtInvoiceEmail.Text & " is invalid."
+                popDialog.Show()
+                Exit Sub
+            End If
+        End If
+
+        mDB.BeginTransaction()
+
+        'Set PDF statement and invoice email
+        If pnlPopPdfStatement.Visible = True Then DBUpdate.UpdatePdfStatement(mDB, customerID, IIf(radPopPdfStatementYes.Checked = True, "Y", "N"), False)
+        If pnlPopEmailInvoice.Visible = True Then DBUpdate.UpdateInvoiceEmail(mDB, customerID, IIf(radPopEmailInvoiceYes.Checked = True, IIf(txtInvoiceEmail.Text <> String.Empty, txtInvoiceEmail.Text, lblInvoiceEmail.Text), ""), False)
+
+        'Turn off ShowNotification
+        If userType = "CUSTOMER" Then
+            DBUpdate.UpdateShowNotification(mDB, userType, customerID, "N", False)
+        End If
+
+        mDB.CommitTransaction()
+    End Sub
+
+    Protected Sub lnkPopNoChange_Click(sender As Object, e As System.EventArgs) Handles lnkPopNoChange.Click
+        'Do nothing and close popup
+    End Sub
+
+    'Private Sub invisibleAllPnl()
+    '    pnlPopNotification.Visible = False
+    'End Sub
+End Class

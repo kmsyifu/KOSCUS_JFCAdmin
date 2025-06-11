@@ -1,0 +1,52 @@
+﻿<%@ Control Language="VB" AutoEventWireup="false" CodeFile="ShowNotification.ascx.vb" Inherits="Common_ShowNotification" %>
+<%@ Import Namespace="Common" %>
+
+<asp:LinkButton ID="btnPopupTmp"  runat="server" />
+<ajaxToolKit:ModalPopupExtender ID="popDialog" runat="server"
+            BehaviorID="popDialog" 
+            TargetControlID="btnPopupTmp"
+            PopupControlID="pnlPopNotification"
+            BackgroundCssClass="modalBackground" >
+    <Animations>
+        <OnShown><FadeIn Duration="0.5" Fps="25" /></OnShown>
+        <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
+    </Animations>
+</ajaxToolKit:ModalPopupExtender>
+<%--CancelControlID="btnPopClose"--%>
+
+<asp:Panel ID="pnlPopNotification" style="display:none;" runat="server" CssClass="popup_dialog fontsize2">
+    <div class="inner">
+        <%--<asp:LinkButton ID="btnPopClose" CssClass="popClose" runat="server" Text="x" />--%><%--Use LinkButton instead of ImageButton because progress bar shows after closed in some browser.--%>
+        <%= IIf(IsMobile(), "", "<br />")%>
+        <asp:Label ID="lblPopErrMsg" CssClass="bold red" runat="server" />
+        <asp:Panel ID="pnlPopCustNotification" runat="server" >
+            <asp:Panel ID="pnlPopPdfStatement" runat="server" >
+                <p><span class="bold">Do you want to go paperless by receiving PDF statements (no mail)?</span></p>
+                &nbsp;&nbsp;&nbsp;&nbsp; 
+                <asp:RadioButton ID="radPopPdfStatementYes" CssClass="radiobtn bold green" runat="server" GroupName="papaerless" Text="Go paperless (PDF statements only)" />&nbsp;&nbsp;
+                <asp:Image ID="Image1" CssClass="lImgBtn" ImageUrl='<%# Common.GetWebImgUrl("paperless.png") %>' runat="server" /><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <asp:RadioButton ID="radPopPdfStatementNo" CssClass="radiobtn" runat="server" GroupName="papaerless" Text="No, thank you" />
+                <%= IIf(IsMobile(), "", "<br />")%><br /><br /><hr />
+            </asp:Panel>
+            <asp:Panel ID="pnlPopEmailInvoice" runat="server" >
+                <p><span class="bold">Do you want to receive copy of invoices by email?</span></p>
+                &nbsp;&nbsp;&nbsp;&nbsp; 
+                <asp:RadioButton ID="radPopEmailInvoiceYes" CssClass="radiobtn bold" runat="server" GroupName="emailInvoice" Text="Receive copy of invoices by email" /><br /><br />
+                <asp:Panel ID="Panel1" Visible='<%# Not IsMobile() %>' runat="server" >
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Send invoices to:</span>&nbsp;&nbsp;<asp:Label ID="lblInvoiceEmail" runat="server" /><br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OR&nbsp;<asp:TextBox ID="txtInvoiceEmail" CssClass='<%# "largeTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" />
+                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender2" runat="server" TargetControlID="txtInvoiceEmail" WatermarkText="Use comma to separate multiple email" WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size48") %>' /><br /><br />
+                </asp:Panel>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <asp:RadioButton ID="radPopEmailInvoiceNo" CssClass="radiobtn" runat="server" GroupName="emailInvoice" Text="No, thank you" /><br />
+                <%= IIf(IsMobile(), "", "<br /><br />")%><br /><hr />
+            </asp:Panel>
+            You can change these in your account settings later.
+            <br /><br />
+            <asp:Button ID="btnPopSubmit" CssClass="midButton" Text="Submit" runat="server" />&nbsp;&nbsp;
+            <asp:LinkButton runat="server" CssClass="linkLabel bottom" ID="lnkPopNoChange" Text="Ask me later" />   
+        </asp:Panel>  
+        <br />
+    </div>
+</asp:Panel>

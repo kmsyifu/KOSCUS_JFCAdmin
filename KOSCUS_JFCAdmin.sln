@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32901.82
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "KOSCUS_JFCAdmin", ".", "{24B849D8-353D-4C40-9F7A-04B70D0AA393}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51250"
+		Debug.AspNetCompiler.PhysicalPath = "..\KOSCUS_JFCAdmin\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51250\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51250"
+		Release.AspNetCompiler.PhysicalPath = "..\KOSCUS_JFCAdmin\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51250\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51250"
+		SlnRelativePath = "..\KOSCUS_JFCAdmin\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24B849D8-353D-4C40-9F7A-04B70D0AA393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24B849D8-353D-4C40-9F7A-04B70D0AA393}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {880949ED-2D03-4F9A-A085-0EFFFCA7B995}
+	EndGlobalSection
+EndGlobal
