@@ -1,7 +1,8 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
-* 6/10/2025: <Item Search>Relaced itemWebDesc_roman with salesPoint.
+* 6/11/2025 <New Items> Stopped using openAcctDate_branch or openAcctDate to determine new items. Only use newItemDate.
+* 6/10/2025: <Item Search> Relaced itemWebDesc_roman with salesPoint.
 * 4/14/2025:
 <CustomerSetting> if customer motify deliver date do not insert delivery line number.
 <extend_delivery_dates> add deliverylinenumber in extend delivery date.

@@ -518,35 +518,36 @@ Partial Class Common_EmailBody
 
             'Show new items
             useCustomerCtg = Common.UseCustomerCtg(DB, customerID)
-            SQL = "SELECT * FROM (" & _
-                    "SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY NVL(p.newItemDate, NVL(p.openAcctDate_branch, a.openAcctDate)) DESC) As no, " & _
-                    " i.custGrpItem_id, i.custGrp_ID, i.vendor_id, i.itemGrp_id, g.itemGrpName, i.item_id, i.CustItemDesc, v.vendorName, " & _
-                    " " & IIf(hidePrice = True, "0 AS csPrice, 0 AS eaPrice, 0 AS lbPrice_OrderByWgt, 0 AS lbPrice_OrderByQty", "ci.csPrice, ci.eaPrice, ci.lbPrice_OrderByWgt, ci.lbPrice_OrderByQty") & ", " & _
-                    " ci.eaPerCs, p.outOfStock, TO_CHAR(p.arrivDate, " & DB.SqlEsc(SHORTDATE_FMT) & ") AS arrivDate_fmt, TRIM(i.jfcRemark || ' ' || cc.custRemark) AS jfcRemark, " & _
-                    " CASE WHEN i.jfcitem = 'Y' THEN 'JFCItems' ELSE 'OtherItems' END itemType, " & _
-                    " CASE WHEN " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " IS NULL THEN i.item_id ELSE " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " END AS itemIdNr_view, " & _
-                    " CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL THEN SUBSTR(NVL(p.itemDesc_branch, a.itemDesc), 1, 48) ELSE SUBSTR(i.custItemDesc, 1, 48) END AS itemDesc_view, " & _
-                    " jctgGrp.ctgGrpDesc AS ctgName_view, jctgGrp.ctgGrpDesc AS jfcCtgName, " & _
-                    " CASE WHEN i.jfcitem = 'Y' THEN a.pointPerCs ELSE NULL END pointPerCs, " & _
-                    " CASE WHEN ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0 THEN 'Y' ELSE 'N' END askPrice " & _
-                    "FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(smallCustomer = True, IIf(IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-                    "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " & _
-                    IIf(useCustomerCtg = False, "LEFT OUTER JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " & _
-                                                "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id ", "") & _
-                    IIf(useCustomerCtg = True, "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = GetCtgGrpID(" & DB.SqlEsc(customerID) & ", i.item_id, 'N') ", "") & _
-                    "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = " & DB.SqlEsc(jfcBranchNr) & " AND cp.customerid = " & DB.SqlEsc(jfcCustomerNr) & " " & _
-                    "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)) & " " & _
-                    "LEFT OUTER JOIN customer_lastOrderedQty q ON q.custGrpItem_id = i.custGrpItem_id AND q.customer_id = " & DB.SqlEsc(customerID) & " " & _
-                    "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.custGrpItem_id AND cc.customer_id = " & DB.SqlEsc(customerID) & " " & _
-                    "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " & _
-                    "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " & _
-                    "  AND i.custGrpItem_id = ci.custGrpItem_id " & _
-                    "  AND g.custgrp_id = " & DB.SqlEsc(Common.GetCustGrpID(DB, customerID)) & _
-                    "  AND ci.customer_id = " & DB.SqlEsc(customerID) & _
-                    "  AND i.jfcitem = 'Y' " & _
-                    "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " & _
-                    "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " & _
-                    ") z WHERE no <= " & NR_NEW_ITMES & _
+            'Mod from NVL(p.newItemDate, NVL(p.openAcctDate_branch, a.openAcctDate)) to p.newItemDate by jzhou on 6/11/2025
+            SQL = "SELECT * FROM (" &
+                    "SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY p.newItemDate DESC) As no, " &
+                    " i.custGrpItem_id, i.custGrp_ID, i.vendor_id, i.itemGrp_id, g.itemGrpName, i.item_id, i.CustItemDesc, v.vendorName, " &
+                    " " & IIf(hidePrice = True, "0 AS csPrice, 0 AS eaPrice, 0 AS lbPrice_OrderByWgt, 0 AS lbPrice_OrderByQty", "ci.csPrice, ci.eaPrice, ci.lbPrice_OrderByWgt, ci.lbPrice_OrderByQty") & ", " &
+                    " ci.eaPerCs, p.outOfStock, TO_CHAR(p.arrivDate, " & DB.SqlEsc(SHORTDATE_FMT) & ") AS arrivDate_fmt, TRIM(i.jfcRemark || ' ' || cc.custRemark) AS jfcRemark, " &
+                    " CASE WHEN i.jfcitem = 'Y' THEN 'JFCItems' ELSE 'OtherItems' END itemType, " &
+                    " CASE WHEN " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " IS NULL THEN i.item_id ELSE " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " END AS itemIdNr_view, " &
+                    " CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL THEN SUBSTR(NVL(p.itemDesc_branch, a.itemDesc), 1, 48) ELSE SUBSTR(i.custItemDesc, 1, 48) END AS itemDesc_view, " &
+                    " jctgGrp.ctgGrpDesc AS ctgName_view, jctgGrp.ctgGrpDesc AS jfcCtgName, " &
+                    " CASE WHEN i.jfcitem = 'Y' THEN a.pointPerCs ELSE NULL END pointPerCs, " &
+                    " CASE WHEN ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0 THEN 'Y' ELSE 'N' END askPrice " &
+                    "FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(smallCustomer = True, IIf(IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+                    "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " &
+                    IIf(useCustomerCtg = False, "LEFT OUTER JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
+                                                "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id ", "") &
+                    IIf(useCustomerCtg = True, "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = GetCtgGrpID(" & DB.SqlEsc(customerID) & ", i.item_id, 'N') ", "") &
+                    "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = " & DB.SqlEsc(jfcBranchNr) & " AND cp.customerid = " & DB.SqlEsc(jfcCustomerNr) & " " &
+                    "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)) & " " &
+                    "LEFT OUTER JOIN customer_lastOrderedQty q ON q.custGrpItem_id = i.custGrpItem_id AND q.customer_id = " & DB.SqlEsc(customerID) & " " &
+                    "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.custGrpItem_id AND cc.customer_id = " & DB.SqlEsc(customerID) & " " &
+                    "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " &
+                    "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " &
+                    "  AND i.custGrpItem_id = ci.custGrpItem_id " &
+                    "  AND g.custgrp_id = " & DB.SqlEsc(Common.GetCustGrpID(DB, customerID)) &
+                    "  AND ci.customer_id = " & DB.SqlEsc(customerID) &
+                    "  AND i.jfcitem = 'Y' " &
+                    "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " &
+                    "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " &
+                    ") z WHERE no <= " & NR_NEW_ITMES &
                   ") ORDER BY ctgName_view, vendorName, itemDesc_view, itemGrpName"
             'Copy image to a folder under Login
             r = DB.GetReader(SQL)
