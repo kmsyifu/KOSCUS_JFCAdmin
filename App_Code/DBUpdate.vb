@@ -408,8 +408,8 @@ Public Class DBUpdate
             DeleteDeliveryDate(DB, customerID, custGrpVendorID, shipPointID, newDeliveryDate, False)
         End If
 
-        SQL = "UPDATE customer_deliveryDate SET deliveryDate = TO_DATE(:1, :2), orderByDate = TO_DATE(:3, :4), sendReminder = :5, " & IIf(keeplinerNumber, "", "DELIVERYSCHEDLINENR = NULL ") &
-                "WHERE customer_id = :6 AND shipPoint_id = :7 AND custGrpVendor_id = :8 AND deliveryDate = TO_DATE(:9, :10)"
+        SQL = "UPDATE customer_deliveryDate SET deliveryDate = TO_DATE(:1, :2), orderByDate = TO_DATE(:3, :4), sendReminder = :5 " & IIf(keeplinerNumber, "", ",DELIVERYSCHEDLINENR = NULL ") &
+                " WHERE customer_id = :6 AND shipPoint_id = :7 AND custGrpVendor_id = :8 AND deliveryDate = TO_DATE(:9, :10)"
         DB.ExecuteNonQuery(SQL, newDeliveryDate, DATE_FMT, orderByDateTime, DATETIME_SQLFMT, sendReminder, customerID, shipPointID, custGrpVendorID, oldDeliveryDate, DATE_FMT)
         InsertEventLog(DB, "UPDATE customer_deliveryDate", customerID, shipPointID, custGrpVendorID, False, False)
 
