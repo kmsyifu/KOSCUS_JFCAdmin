@@ -31,7 +31,17 @@ Partial Class Common_OrderDtl
             'If Session("CUSTDTL_CMD") = "VIEW" Then pageLoad()
         End If
     End Sub
+    Private pendingDialogCommand As String = Nothing
+    Private pendingDialogArg1 As String = Nothing
+    Private pendingDialogArg2 As String = Nothing
 
+    'Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+    '    ' REMOVE all the DialogResult processing - we don't need it anymore!
+
+    '    If IsPostBack = False Then
+    '        'If Session("CUSTDTL_CMD") = "VIEW" Then pageLoad()
+    '    End If
+    'End Sub
     Public Sub pageLoad()
         Dim reason As String = ""
 
@@ -322,6 +332,8 @@ Partial Class Common_OrderDtl
         Session("CHANGE_NEWSTATUS") = False
         Using DB As New DBHelper
             Select Case dialogCmd
+
+
                 Case "DELETE_ITEM"
                     webOrderID = ViewState("ORDER_ID")
                     orderState = GetOrderState(DB, webOrderID)
@@ -1008,6 +1020,99 @@ Partial Class Common_OrderDtl
 
         End Using
     End Sub
+    Private Sub PerformOrderUpdate(ByVal senderID As String)
+        Using DB As New DBHelper
+            Dim txtCsQty, txtEaQty, txtLbs, txtCsQty_vp, txtEaQty_vp, txtCsQty_sp, txtEaQty_sp, txtVpMemo As TextBox
+            Dim lbl As Label
+            Dim webOrderID As String = ViewState("ORDER_ID")
+            Dim emailBody As String = ""
+            Dim errMsg As String = ""
+            Dim userEmailFailed As Boolean = False
+            Dim userEmail As String = GetUserEmail(DB)
+            Dim customerEmail As String
+            Dim subject As String
+            Dim vendorEmail, custOrderNr As String
+
+            ' Perform the update
+            updateOrder(webOrderID, IIf(senderID = "btnConfirmAndEmail", True, False))
+
+            customerEmail = GetOrderEmail(DB, webOrderID, "CUSTOMER")
+            vendorEmail = GetOrderEmail(DB, webOrderID, "VENDOR")
+            custOrderNr = GetCustOrderNr(DB, webOrderID)
+
+            If ViewState("ORDER_CMD") = "CUST" Then
+                ci = New CultureInfo(Common.GetLangauge(DB, userEmail))
+                Thread.CurrentThread.CurrentCulture = ci
+                Thread.CurrentThread.CurrentUICulture = ci
+
+                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "UPDATED", txtEmailMsg.Text)
+                subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
+
+                If Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg) > 0 Then
+                    userEmailFailed = True
+                Else
+                    UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
+                End If
+
+                Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
+                Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
+
+                If SendOrderEmailToVendor(DB, webOrderID) = True Then
+                    CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "VENDOR", "UPDATED", txtEmailMsg.Text)
+                    If Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "[Action Required] You received a updated order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty), emailBody, Nothing, True, errMsg) > 0 Then
+                        userEmailFailed = True
+                    Else
+                        UpSertOrderEmail(DB, webOrderID, "VENDOR", "S", userEmail)
+                    End If
+                End If
+
+                If userEmailFailed = False Then
+                    InsertEventLog(DB, "Saved order and sent confirmation email", webOrderID, Nothing, Nothing, True)
+                    MessageLine("CONFIRM", "Successfully updated. Confirmation email for this update has been sent to you and your sales rep.")
+                Else
+                    InsertEventLog(DB, "Saved order but failed to send confirmation email to your sales rep", webOrderID, Nothing, Nothing, True)
+                    errMsg = "Successfully updated, but confirmation email could not be sent to your sales rep. Please resend the email or contact your sales rep."
+                    MessageBox(errMsg, "Warning", DB)
+                End If
+
+            ElseIf ViewState("ORDER_CMD") = "JFCADMIN" Then
+                ci = New CultureInfo(Common.GetLangauge(DB, customerEmail))
+                Thread.CurrentThread.CurrentCulture = ci
+                Thread.CurrentThread.CurrentUICulture = ci
+
+                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", IIf(senderID = "btnConfirmAndEmail", "APPROVED_ORDER", "UPDATED"), txtEmailMsg.Text)
+
+                If senderID = "btnConfirmAndEmail" Then
+                    subject = String.Format(rm.GetString("KocusAPIMsg10", ci), "'" & webOrderID & "' ", custOrderNr)
+                    If custOrderNr = String.Empty Then subject = Regex.Replace(subject, "\([^()]*\)", String.Empty)
+                    subject = subject.Replace("  ", " ")
+                Else
+                    subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
+                End If
+
+                If Common.SendMail(SYSTEM_EMAIL, customerEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg, vendorEmail) > 0 Then
+                    userEmailFailed = True
+                Else
+                    UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
+                End If
+
+                If userEmailFailed = False Then
+                    InsertEventLog(DB, "Saved order and sent confirmation email", webOrderID, Nothing, Nothing, True)
+                    MessageLine("CONFIRM", "Successfully saved. Notification email has been sent to your customer.")
+                Else
+                    InsertEventLog(DB, "Saved order but failed to send notification email to your customer", webOrderID, Nothing, Nothing, True)
+                    errMsg = "Successfully updated, but notification email could not be sent to your customer. Please resend the email."
+                    MessageBox(errMsg, "Warning", DB)
+                End If
+            End If
+
+            Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
+            Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
+            CheckItemAvail()
+
+            Session("ORDERDTL_RETURNCMD") = "UPDATED"
+        End Using
+    End Sub
 
     'Update price for only JFC item
     Protected Sub btnPopUpdatePrice_Click(sender As Object, e As System.EventArgs) Handles btnPopUpdatePrice.Click
@@ -1121,11 +1226,22 @@ Partial Class Common_OrderDtl
             SQL = SetPrice(lstPopPriceUnit.Text, Val(txtPopPrice.Text), DB.SqlEsc(GetItemID(DB, lblNewCustGrpItemID.Text)), DB.SqlEsc(lblCustomerID.Text))
             r = DB.GetReader(SQL)
             If r.Read() Then
+                'If Val(r("csprice")) < Val(lblNewBtmCs.Text) Then
+                '    lblPopMsg_setPrice.Text = "Price has to be larger than bottom price."
+                '    popDialog_setPrice.Show()
+                '    CheckItemAvail()
+                '    Exit Sub
+                'End If
                 If Val(r("csprice")) < Val(lblNewBtmCs.Text) Then
-                    lblPopMsg_setPrice.Text = "Price has to be larger than bottom price."
-                    popDialog_setPrice.Show()
-                    CheckItemAvail()
-                    Exit Sub
+                    ' Change from error to warning - just show message but allow to continue
+                    lblPopMsg_setPrice.Text = "Warning: Price (" & String.Format("{0:C}", Val(r("csprice"))) & ") is lower than bottom price (" & String.Format("{0:C}", Val(lblNewBtmCs.Text)) & ")."
+                    lblPopMsg_setPrice.ForeColor = Drawing.Color.Orange
+                    ' Don't exit - allow the price update to continue
+                    ' popDialog_setPrice.Show()
+                    ' CheckItemAvail()
+                    ' Exit Sub
+                Else
+                    lblPopMsg_setPrice.Text = ""
                 End If
                 lblNewCsPrice.Text = Val(r("csprice"))
                 lblNewCsPrice_view.Text = String.Format("{0:C}", Val(r("csprice"))) & " / cs"
@@ -1219,26 +1335,243 @@ Partial Class Common_OrderDtl
 
     End Sub
 
-    Protected Sub btnUpdate_Click(sender As Object, e As System.EventArgs) Handles btnUpdate.Click, btnConfirmAndEmail.Click ' btnConfirm.Click, 
+    'Protected Sub btnUpdate_Click(sender As Object, e As System.EventArgs) Handles btnUpdate.Click, btnConfirmAndEmail.Click ' btnConfirm.Click, 
+    '    Using DB As New DBHelper
+    '        Dim txtCsQty, txtEaQty, txtLbs, txtCsQty_vp, txtEaQty_vp, txtCsQty_sp, txtEaQty_sp, txtVpMemo As TextBox
+    '        Dim lbl As Label
+    '        Dim lnk As LinkButton
+    '        Dim webOrderID As String = ViewState("ORDER_ID")
+    '        Dim emailBody As String = ""
+    '        Dim errMsg As String = ""
+    '        Dim userEmailFailed As Boolean = False
+    '        Dim vendorEmailFailed As Boolean = False
+    '        Dim userEmail As String = GetUserEmail(DB)
+    '        Dim customerEmail As String
+    '        Dim minSalCnt As Integer
+    '        Dim itemIdNr_view As String
+    '        Dim subject As String
+    '        'Dim orderState As String
+    '        Dim vendorEmail, custOrderNr As String
+    '        'Dim anytimeDelivery As Boolean = ApplyInCustomer(DB, lblCustomerID.Text, "AnytimeDelivery")
+    '        Dim deliveryDateRequired As Boolean = Not (ApplyInCustomer(DB, lblCustomerID.Text, "AnytimeDelivery") AndAlso lblJfcBranchNr.Text = "05") 'Not required for EXP
+    '        Dim jfcBranchNr As String = ""
+    '        Dim belowBottomPriceItems As String = ""
+    '        GetJFCBranchAndCustomerNr(DB, lblCustomerID.Text, jfcBranchNr, Nothing)
+    '        CheckItemAvail()
+
+    '        If canEditOrder(DB, webOrderID, errMsg) = False Then
+    '            MessageBox(errMsg, "Error", DB)
+    '            Exit Sub
+    '        End If
+    '        If GetNrItemInOrder(DB, webOrderID) = 0 Then
+    '            MessageBox("Order is empty. Please add at least one item to your order.", "Error", DB)
+    '            Exit Sub
+    '        End If
+    '        'orderState = GetOrderState(DB, webOrderID)
+    '        'If ViewState("ORDER_CMD") = "CUST" Then
+    '        '    If orderState <> "N" Then
+    '        '        'Cannot edit if order state NOT IN ('N') for customer
+    '        '        MessageBox("You cannot edit this order because this order has been " & IIf(orderState = "D", "canceled", "processed") & ".", "Error", DB)
+    '        '        Exit Sub
+    '        '    End If
+    '        If ViewState("ORDER_CMD") = "JFCADMIN" Then
+    '            'If orderState = "D" OrElse orderState = "S" OrElse orderState = "I" Then
+    '            '    'Cannot edit if order state IN ('D','S','I') for JFC admin
+    '            '    MessageBox("You cannot edit this order because this order has been " & GetCodeMaster(DB, "ORDERSTATE", orderState) & ".", "Error", DB)
+    '            '    Exit Sub
+    '            'End If
+    '            ''If anytimeDelivery = False OrElse (anytimeDelivery = True AndAlso txtDeliveryDate.Text <> String.Empty) Then
+    '            If deliveryDateRequired = True OrElse (deliveryDateRequired = False AndAlso txtDeliveryDate.Text <> String.Empty) Then
+    '                'Check delivery date
+    '                Dim dateVal As Date = Nothing
+    '                If DateTime.TryParseExact(txtDeliveryDate.Text, DATE_FMT, Nothing, Nothing, dateVal) = False Then
+    '                    MessageBox("Please enter ship date in " & DATE_FMT.ToLower & " format.", "Error", DB)
+    '                    Exit Sub
+    '                End If
+    '                If dateVal < FormatDateTime(Now.AddDays(GetServerDayOffset(DB, jfcBranchNr)), Microsoft.VisualBasic.DateFormat.ShortDate) Then 'Convert to date format (e.g. 6/11/2020) without time
+    '                    MessageBox("Ship date cannot be in the past.", "Error", DB)
+    '                    Exit Sub
+    '                End If
+    '            End If
+    '        End If
+
+    '        For i As Integer = 0 To grdItem_edit.Rows.Count - 1
+    '            lnk = grdItem_edit.Rows.Item(i).FindControl("lnkItemIdNrView")
+    '            itemIdNr_view = lnk.Text
+    '            'Check qty
+    '            txtCsQty = grdItem_edit.Rows.Item(i).FindControl("txtCsQty")
+    '            txtEaQty = grdItem_edit.Rows.Item(i).FindControl("txtEaQty")
+    '            txtLbs = grdItem_edit.Rows.Item(i).FindControl("txtLbs")
+    '            txtCsQty_vp = grdItem_edit.Rows.Item(i).FindControl("txtCsQty_vp")
+    '            txtEaQty_vp = grdItem_edit.Rows.Item(i).FindControl("txtEaQty_vp")
+    '            txtCsQty_sp = grdItem_edit.Rows.Item(i).FindControl("txtCsQty_sp")
+    '            txtEaQty_sp = grdItem_edit.Rows.Item(i).FindControl("txtEaQty_sp")
+    '            txtVpMemo = grdItem_edit.Rows.Item(i).FindControl("txtVpMemo")
+    '            If IsNumber(txtCsQty.Text, True) = False OrElse IsNumber(txtEaQty.Text, True) = False OrElse IsNumber(txtLbs.Text, True) = False _
+    '                    OrElse IsNumber(txtCsQty_vp.Text, True) = False OrElse IsNumber(txtEaQty_vp.Text, True) = False OrElse IsNumber(txtCsQty_sp.Text, True) = False OrElse IsNumber(txtEaQty_sp.Text, True) = False Then
+    '                MessageBox("Qty for item #" & itemIdNr_view & " has to be 0 or a positive number", "Error", DB)
+    '                Exit Sub
+    '            End If
+
+
+
+    '            Dim lblbottom As Label = grdItem_edit.Rows.Item(i).FindControl("lblbtmCs")
+    '            Dim lblprice As Label = grdItem_edit.Rows.Item(i).FindControl("lblCsPrice")
+    '            'If Val(lblprice.Text) < Val(lblbottom.Text) Then
+    '            '    MessageBox("Price " & lblprice.Text & " for item #" & itemIdNr_view & " has to be larger than the bottom price " & lblbottom.Text, "Error", DB)
+    '            '    Exit Sub
+    '            'End If
+    '            If Val(lblprice.Text) < Val(lblbottom.Text) Then
+    '                If belowBottomPriceItems <> "" Then belowBottomPriceItems &= ", "
+    '                belowBottomPriceItems &= "#" & itemIdNr_view & " (Price: " & lblprice.Text & ", Bottom: " & lblbottom.Text & ")"
+    '            End If
+
+    '            'If (Val(txtCsQty_vp.Text) + Val(txtCsQty_sp.Text)) > Val(txtCsQty.Text) OrElse (Val(txtEaQty_vp.Text) + Val(txtEaQty_sp.Text)) > Val(txtEaQty.Text) Then
+    '            '    MessageBox("Free qty for item #" & itemIdNr_view & " cannnot exceed ordered qty", "Error", DB)
+    '            '    Exit Sub
+    '            'End If
+    '            lbl = grdItem_edit.Rows.Item(i).FindControl("lblMinSalCnt")
+    '            minSalCnt = IIf(Val(lbl.Text) = 0, 1, Val(lbl.Text))
+    '            If Val(txtEaQty.Text) <> 0 AndAlso Val(txtEaQty.Text) Mod minSalCnt > 0 Then
+    '                MessageBox("Each qty for item #" & itemIdNr_view & " has to be 0 or multiple of " & minSalCnt & ".", "Error", DB)
+    '                Exit Sub
+    '            End If
+    '            If (Val(txtCsQty_vp.Text) > 0 OrElse Val(txtEaQty_vp.Text) > 0) AndAlso txtVpMemo.Text = String.Empty Then
+    '                MessageBox("Please enter VP memo for item #" & itemIdNr_view, "Error", DB)
+    '                Exit Sub
+    '            End If
+    '        Next
+    '        ' If there are items below bottom price, show warning dialog
+    '        If belowBottomPriceItems <> "" AndAlso Session("BYPASS_BOTTOM_PRICE_WARNING") <> "YES" Then
+    '            ViewState("DIALOG_CMD") = "BELOW_BOTTOM_PRICE_WARNING"
+    '            ViewState("DIALOG_ARG1") = sender.ID
+    '            MessageBoxYesNo("Warning: The following items have prices below the bottom price: " & belowBottomPriceItems & "<br /><br />Do you want to continue?", "Price Warning", DB)
+    '            Exit Sub
+    '        End If
+
+    '        ' Reset the bypass flag
+    '        Session("BYPASS_BOTTOM_PRICE_WARNING") = Nothing
+    '        'Update order header
+    '        updateOrder(webOrderID, IIf(sender.id = "btnConfirmAndEmail", True, False)) 'sender.id = "btnConfirm" OrElse 
+    '        customerEmail = GetOrderEmail(DB, webOrderID, "CUSTOMER")
+    '        vendorEmail = GetOrderEmail(DB, webOrderID, "VENDOR")
+    '        custOrderNr = GetCustOrderNr(DB, webOrderID)
+    '        If ViewState("ORDER_CMD") = "CUST" Then
+
+    '            ci = New CultureInfo(Common.GetLangauge(DB, userEmail))
+
+    '            Thread.CurrentThread.CurrentCulture = ci
+    '            Thread.CurrentThread.CurrentUICulture = ci
+    '            'Get email body for customer from email template in user control
+    '            CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "UPDATED", txtEmailMsg.Text)
+    '            'Send email to customer her / his self
+
+    '            '"Your order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty) & "was updated"
+
+    '            subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
+    '            If Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg) > 0 Then
+    '                userEmailFailed = True
+    '            Else
+    '                'Mark email as sent
+    '                UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
+    '            End If
+
+    '            Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
+    '            Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
+    '            If SendOrderEmailToVendor(DB, webOrderID) = True Then
+    '                'Get email body for vendor from email template in user control
+    '                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "VENDOR", "UPDATED", txtEmailMsg.Text)
+    '                'Send email from customer to vendor
+    '                If Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "[Action Required] You received a updated order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty), emailBody, Nothing, True, errMsg) > 0 Then
+    '                    vendorEmailFailed = True
+    '                Else
+    '                    'Mark email state back to sent even if the email was received
+    '                    UpSertOrderEmail(DB, webOrderID, "VENDOR", "S", userEmail)
+    '                End If
+    '            End If
+    '            If userEmailFailed = False AndAlso vendorEmailFailed = False Then
+    '                'Email sent ok
+    '                InsertEventLog(DB, "Saved order and sent confirmation email", webOrderID, Nothing, Nothing, True)
+    '                MessageLine("CONFIRM", "Successfully updated. Confirmation email for this update has been sent to you and your sales rep.")
+    '            Else
+    '                'Email sent failed
+    '                InsertEventLog(DB, "Saved order but failed to send confirmation email to your sales rep", webOrderID, Nothing, Nothing, True)
+    '                'If userEmailFailed = True Then errMsg &= "(1) Confirmation email could not be sent to you because " & userEmailErrMsg.ToLower & ". "
+    '                If vendorEmailFailed = True Then
+    '                    errMsg = "Successfully updated, but confirmation email could not be sent to your sales rep. Please resend the email or contact your sales rep."
+    '                    MessageBox(errMsg, "Warning", DB)
+    '                End If
+    '            End If
+    '        ElseIf ViewState("ORDER_CMD") = "JFCADMIN" Then
+    '            'If sender.id = "btnConfirm" Then
+    '            '    'No need to email customer
+    '            '    InsertEventLog(DB, "Saved order", webOrderID, Nothing, Nothing, True)
+    '            '    MessageLine("CONFIRM", "Successfully saved")
+    '            'Else
+    '            'Get email body for customer from email template in user control
+    '            ci = New CultureInfo(Common.GetLangauge(DB, customerEmail))
+
+    '            Thread.CurrentThread.CurrentCulture = ci
+    '            Thread.CurrentThread.CurrentUICulture = ci
+
+
+    '            CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", IIf(sender.id = "btnConfirmAndEmail", "APPROVED_ORDER", "UPDATED"), txtEmailMsg.Text)
+    '            'Send email from JFC Admin to customer
+
+    '            If sender.id = "btnConfirmAndEmail" Then
+    '                subject = String.Format(rm.GetString("KocusAPIMsg10", ci), "'" & webOrderID & "' ", custOrderNr)
+    '                If custOrderNr = String.Empty Then subject = Regex.Replace(subject, "\([^()]*\)", String.Empty)
+    '                subject = subject.Replace("  ", " ")
+    '            Else
+    '                subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
+    '            End If
+    '            '"Your order '" & webOrderID & "' " &
+    '            '                       IIf(custOrderNr <> String.Empty,
+    '            '                          "(Cust PO #" & custOrderNr & ") ", String.Empty) & "was " & IIf(sender.id = "btnConfirmAndEmail", "processed", "updated"),
+
+    '            If Common.SendMail(SYSTEM_EMAIL, customerEmail, vendorEmail, subject,
+    '                                    emailBody, Nothing, True, errMsg, vendorEmail) > 0 Then
+    '                userEmailFailed = True
+    '            Else
+    '                'Mark email as sent
+    '                UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
+    '            End If
+    '            If userEmailFailed = False Then
+    '                'Email sent ok
+    '                InsertEventLog(DB, "Saved order and sent confirmation email", webOrderID, Nothing, Nothing, True)
+    '                MessageLine("CONFIRM", "Successfully saved. Notification email has been sent to your customer.")
+    '            Else
+    '                'Email sent failed
+    '                InsertEventLog(DB, "Saved order but failed to send notification email to your customer", webOrderID, Nothing, Nothing, True)
+    '                errMsg = "Successfully updated, but notification email could not be sent to your customer. Please resend the email."
+    '                MessageBox(errMsg, "Warning", DB)
+    '            End If
+    '            'End If
+    '        End If
+    '        Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
+    '        Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
+    '        CheckItemAvail()
+    '        'Refresh order header and item list
+    '        'showOrderHdr()
+    '        'grdItem_RowDataCommand(Nothing, Nothing)
+
+    '        'Go back to order history
+    '        Session("ORDERDTL_RETURNCMD") = "UPDATED"
+    '    End Using
+    'End Sub
+    Protected Sub btnUpdate_Click(sender As Object, e As System.EventArgs) Handles btnUpdate.Click, btnConfirmAndEmail.Click
         Using DB As New DBHelper
             Dim txtCsQty, txtEaQty, txtLbs, txtCsQty_vp, txtEaQty_vp, txtCsQty_sp, txtEaQty_sp, txtVpMemo As TextBox
             Dim lbl As Label
             Dim lnk As LinkButton
             Dim webOrderID As String = ViewState("ORDER_ID")
-            Dim emailBody As String = ""
             Dim errMsg As String = ""
-            Dim userEmailFailed As Boolean = False
-            Dim vendorEmailFailed As Boolean = False
-            Dim userEmail As String = GetUserEmail(DB)
-            Dim customerEmail As String
             Dim minSalCnt As Integer
             Dim itemIdNr_view As String
-            Dim subject As String
-            'Dim orderState As String
-            Dim vendorEmail, custOrderNr As String
-            'Dim anytimeDelivery As Boolean = ApplyInCustomer(DB, lblCustomerID.Text, "AnytimeDelivery")
-            Dim deliveryDateRequired As Boolean = Not (ApplyInCustomer(DB, lblCustomerID.Text, "AnytimeDelivery") AndAlso lblJfcBranchNr.Text = "05") 'Not required for EXP
+            Dim deliveryDateRequired As Boolean = Not (ApplyInCustomer(DB, lblCustomerID.Text, "AnytimeDelivery") AndAlso lblJfcBranchNr.Text = "05")
             Dim jfcBranchNr As String = ""
+            Dim belowBottomPriceItems As String = ""
+            Dim checkBottomPrice As Boolean = hdnBypassBottomPriceCheck.Value <> "YES"
 
             GetJFCBranchAndCustomerNr(DB, lblCustomerID.Text, jfcBranchNr, Nothing)
             CheckItemAvail()
@@ -1247,42 +1580,31 @@ Partial Class Common_OrderDtl
                 MessageBox(errMsg, "Error", DB)
                 Exit Sub
             End If
+
             If GetNrItemInOrder(DB, webOrderID) = 0 Then
                 MessageBox("Order is empty. Please add at least one item to your order.", "Error", DB)
                 Exit Sub
             End If
-            'orderState = GetOrderState(DB, webOrderID)
-            'If ViewState("ORDER_CMD") = "CUST" Then
-            '    If orderState <> "N" Then
-            '        'Cannot edit if order state NOT IN ('N') for customer
-            '        MessageBox("You cannot edit this order because this order has been " & IIf(orderState = "D", "canceled", "processed") & ".", "Error", DB)
-            '        Exit Sub
-            '    End If
+
             If ViewState("ORDER_CMD") = "JFCADMIN" Then
-                'If orderState = "D" OrElse orderState = "S" OrElse orderState = "I" Then
-                '    'Cannot edit if order state IN ('D','S','I') for JFC admin
-                '    MessageBox("You cannot edit this order because this order has been " & GetCodeMaster(DB, "ORDERSTATE", orderState) & ".", "Error", DB)
-                '    Exit Sub
-                'End If
-                ''If anytimeDelivery = False OrElse (anytimeDelivery = True AndAlso txtDeliveryDate.Text <> String.Empty) Then
                 If deliveryDateRequired = True OrElse (deliveryDateRequired = False AndAlso txtDeliveryDate.Text <> String.Empty) Then
-                    'Check delivery date
                     Dim dateVal As Date = Nothing
                     If DateTime.TryParseExact(txtDeliveryDate.Text, DATE_FMT, Nothing, Nothing, dateVal) = False Then
                         MessageBox("Please enter ship date in " & DATE_FMT.ToLower & " format.", "Error", DB)
                         Exit Sub
                     End If
-                    If dateVal < FormatDateTime(Now.AddDays(GetServerDayOffset(DB, jfcBranchNr)), Microsoft.VisualBasic.DateFormat.ShortDate) Then 'Convert to date format (e.g. 6/11/2020) without time
+                    If dateVal < FormatDateTime(Now.AddDays(GetServerDayOffset(DB, jfcBranchNr)), Microsoft.VisualBasic.DateFormat.ShortDate) Then
                         MessageBox("Ship date cannot be in the past.", "Error", DB)
                         Exit Sub
                     End If
                 End If
             End If
 
+            ' Validate all items
             For i As Integer = 0 To grdItem_edit.Rows.Count - 1
                 lnk = grdItem_edit.Rows.Item(i).FindControl("lnkItemIdNrView")
                 itemIdNr_view = lnk.Text
-                'Check qty
+
                 txtCsQty = grdItem_edit.Rows.Item(i).FindControl("txtCsQty")
                 txtEaQty = grdItem_edit.Rows.Item(i).FindControl("txtEaQty")
                 txtLbs = grdItem_edit.Rows.Item(i).FindControl("txtLbs")
@@ -1291,147 +1613,55 @@ Partial Class Common_OrderDtl
                 txtCsQty_sp = grdItem_edit.Rows.Item(i).FindControl("txtCsQty_sp")
                 txtEaQty_sp = grdItem_edit.Rows.Item(i).FindControl("txtEaQty_sp")
                 txtVpMemo = grdItem_edit.Rows.Item(i).FindControl("txtVpMemo")
+
                 If IsNumber(txtCsQty.Text, True) = False OrElse IsNumber(txtEaQty.Text, True) = False OrElse IsNumber(txtLbs.Text, True) = False _
-                        OrElse IsNumber(txtCsQty_vp.Text, True) = False OrElse IsNumber(txtEaQty_vp.Text, True) = False OrElse IsNumber(txtCsQty_sp.Text, True) = False OrElse IsNumber(txtEaQty_sp.Text, True) = False Then
+                OrElse IsNumber(txtCsQty_vp.Text, True) = False OrElse IsNumber(txtEaQty_vp.Text, True) = False _
+                OrElse IsNumber(txtCsQty_sp.Text, True) = False OrElse IsNumber(txtEaQty_sp.Text, True) = False Then
                     MessageBox("Qty for item #" & itemIdNr_view & " has to be 0 or a positive number", "Error", DB)
                     Exit Sub
                 End If
 
-
-
-                Dim lblbottom As Label = grdItem_edit.Rows.Item(i).FindControl("lblbtmCs")
-                Dim lblprice As Label = grdItem_edit.Rows.Item(i).FindControl("lblCsPrice")
-                If Val(lblprice.Text) < Val(lblbottom.Text) Then
-                    MessageBox("Price " & lblprice.Text & " for item #" & itemIdNr_view & " has to be larger than the bottom price " & lblbottom.Text, "Error", DB)
-                    Exit Sub
+                ' Check if price is below bottom price - collect items for warning
+                If checkBottomPrice Then
+                    Dim lblbottom As Label = grdItem_edit.Rows.Item(i).FindControl("lblbtmCs")
+                    Dim lblprice As Label = grdItem_edit.Rows.Item(i).FindControl("lblCsPrice")
+                    If Val(lblprice.Text) > 0 AndAlso Val(lblbottom.Text) > 0 AndAlso Val(lblprice.Text) < Val(lblbottom.Text) Then
+                        If belowBottomPriceItems <> "" Then belowBottomPriceItems &= "<br />"
+                        belowBottomPriceItems &= "Item #" & itemIdNr_view & " - Price: " & String.Format("{0:C}", Val(lblprice.Text)) & ", Bottom: " & String.Format("{0:C}", Val(lblbottom.Text))
+                    End If
                 End If
 
-
-                'If (Val(txtCsQty_vp.Text) + Val(txtCsQty_sp.Text)) > Val(txtCsQty.Text) OrElse (Val(txtEaQty_vp.Text) + Val(txtEaQty_sp.Text)) > Val(txtEaQty.Text) Then
-                '    MessageBox("Free qty for item #" & itemIdNr_view & " cannnot exceed ordered qty", "Error", DB)
-                '    Exit Sub
-                'End If
                 lbl = grdItem_edit.Rows.Item(i).FindControl("lblMinSalCnt")
                 minSalCnt = IIf(Val(lbl.Text) = 0, 1, Val(lbl.Text))
                 If Val(txtEaQty.Text) <> 0 AndAlso Val(txtEaQty.Text) Mod minSalCnt > 0 Then
                     MessageBox("Each qty for item #" & itemIdNr_view & " has to be 0 or multiple of " & minSalCnt & ".", "Error", DB)
                     Exit Sub
                 End If
+
                 If (Val(txtCsQty_vp.Text) > 0 OrElse Val(txtEaQty_vp.Text) > 0) AndAlso txtVpMemo.Text = String.Empty Then
                     MessageBox("Please enter VP memo for item #" & itemIdNr_view, "Error", DB)
                     Exit Sub
                 End If
             Next
 
-            'Update order header
-            updateOrder(webOrderID, IIf(sender.id = "btnConfirmAndEmail", True, False)) 'sender.id = "btnConfirm" OrElse 
-            customerEmail = GetOrderEmail(DB, webOrderID, "CUSTOMER")
-            vendorEmail = GetOrderEmail(DB, webOrderID, "VENDOR")
-            custOrderNr = GetCustOrderNr(DB, webOrderID)
-            If ViewState("ORDER_CMD") = "CUST" Then
+            ' If there are items below bottom price, show custom warning dialog and stop
+            If belowBottomPriceItems <> "" Then
+                ' Use custom modal dialog instead of browser confirm() to avoid "prevent dialogs" checkbox
+                Dim safeMsg As String = belowBottomPriceItems.Replace("'", "\'")
+                Dim postbackRef As String = Page.ClientScript.GetPostBackEventReference(CType(sender, Control), "")
+                Dim script As String = "showBottomPriceWarning('Warning: The following items have prices below the bottom price:<br /><br />" & safeMsg & "<br /><br />Do you want to continue?', '" & hdnBypassBottomPriceCheck.ClientID & "', """ & postbackRef & """);"
 
-                ci = New CultureInfo(Common.GetLangauge(DB, userEmail))
-
-                Thread.CurrentThread.CurrentCulture = ci
-                Thread.CurrentThread.CurrentUICulture = ci
-                'Get email body for customer from email template in user control
-                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "UPDATED", txtEmailMsg.Text)
-                'Send email to customer her / his self
-               
-                '"Your order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty) & "was updated"
-
-                subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
-                If Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg) > 0 Then
-                    userEmailFailed = True
-                Else
-                    'Mark email as sent
-                    UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
-                End If
-
-                Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
-                Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
-                If SendOrderEmailToVendor(DB, webOrderID) = True Then
-                    'Get email body for vendor from email template in user control
-                    CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "VENDOR", "UPDATED", txtEmailMsg.Text)
-                    'Send email from customer to vendor
-                    If Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "[Action Required] You received a updated order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty), emailBody, Nothing, True, errMsg) > 0 Then
-                        vendorEmailFailed = True
-                    Else
-                        'Mark email state back to sent even if the email was received
-                        UpSertOrderEmail(DB, webOrderID, "VENDOR", "S", userEmail)
-                    End If
-                End If
-                If userEmailFailed = False AndAlso vendorEmailFailed = False Then
-                    'Email sent ok
-                    InsertEventLog(DB, "Saved order and sent confirmation email", webOrderID, Nothing, Nothing, True)
-                    MessageLine("CONFIRM", "Successfully updated. Confirmation email for this update has been sent to you and your sales rep.")
-                Else
-                    'Email sent failed
-                    InsertEventLog(DB, "Saved order but failed to send confirmation email to your sales rep", webOrderID, Nothing, Nothing, True)
-                    'If userEmailFailed = True Then errMsg &= "(1) Confirmation email could not be sent to you because " & userEmailErrMsg.ToLower & ". "
-                    If vendorEmailFailed = True Then
-                        errMsg = "Successfully updated, but confirmation email could not be sent to your sales rep. Please resend the email or contact your sales rep."
-                        MessageBox(errMsg, "Warning", DB)
-                    End If
-                End If
-            ElseIf ViewState("ORDER_CMD") = "JFCADMIN" Then
-                'If sender.id = "btnConfirm" Then
-                '    'No need to email customer
-                '    InsertEventLog(DB, "Saved order", webOrderID, Nothing, Nothing, True)
-                '    MessageLine("CONFIRM", "Successfully saved")
-                'Else
-                'Get email body for customer from email template in user control
-                ci = New CultureInfo(Common.GetLangauge(DB, customerEmail))
-
-                Thread.CurrentThread.CurrentCulture = ci
-                Thread.CurrentThread.CurrentUICulture = ci
-
-
-                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", IIf(sender.id = "btnConfirmAndEmail", "APPROVED_ORDER", "UPDATED"), txtEmailMsg.Text)
-                'Send email from JFC Admin to customer
-
-                If sender.id = "btnConfirmAndEmail" Then
-                    subject = String.Format(rm.GetString("KocusAPIMsg10", ci), "'" & webOrderID & "' ", custOrderNr)
-                    If custOrderNr = String.Empty Then subject = Regex.Replace(subject, "\([^()]*\)", String.Empty)
-                    subject = subject.Replace("  ", " ")
-                Else
-                    subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
-                End If
-                '"Your order '" & webOrderID & "' " &
-                '                       IIf(custOrderNr <> String.Empty,
-                '                          "(Cust PO #" & custOrderNr & ") ", String.Empty) & "was " & IIf(sender.id = "btnConfirmAndEmail", "processed", "updated"),
-
-                If Common.SendMail(SYSTEM_EMAIL, customerEmail, vendorEmail, subject,
-                                        emailBody, Nothing, True, errMsg, vendorEmail) > 0 Then
-                    userEmailFailed = True
-                Else
-                    'Mark email as sent
-                    UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
-                End If
-                If userEmailFailed = False Then
-                    'Email sent ok
-                    InsertEventLog(DB, "Saved order and sent confirmation email", webOrderID, Nothing, Nothing, True)
-                    MessageLine("CONFIRM", "Successfully saved. Notification email has been sent to your customer.")
-                Else
-                    'Email sent failed
-                    InsertEventLog(DB, "Saved order but failed to send notification email to your customer", webOrderID, Nothing, Nothing, True)
-                    errMsg = "Successfully updated, but notification email could not be sent to your customer. Please resend the email."
-                    MessageBox(errMsg, "Warning", DB)
-                End If
-                'End If
+                Page.ClientScript.RegisterStartupScript(Me.GetType(), "BottomPriceWarning", script, True)
+                Exit Sub
             End If
-            Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
-            Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
-            CheckItemAvail()
-            'Refresh order header and item list
-            'showOrderHdr()
-            'grdItem_RowDataCommand(Nothing, Nothing)
 
-            'Go back to order history
-            Session("ORDERDTL_RETURNCMD") = "UPDATED"
+            ' Reset the bypass flag
+            hdnBypassBottomPriceCheck.Value = "NO"
+
+            ' Perform the actual update - NO DIALOG PROCESSING, just direct call
+            PerformOrderUpdate(sender.ID)
         End Using
     End Sub
-
     Protected Sub btnEmail_Click(sender As Object, e As System.EventArgs) Handles btnEmailUser_edit.Click, btnEmailUser_view.Click, btnEmailOther_edit.Click, btnEmailOther_view.Click ', btnEmailUser_jetsView.Click
         Dim emailBody As String = ""
         Dim errMsg As String = ""
@@ -2170,7 +2400,20 @@ Partial Class Common_OrderDtl
 
     Protected Overrides Sub OnPreRender(e As System.EventArgs)
         MyBase.OnPreRender(e)
+
+
     End Sub
+
+    'Protected Sub btnHiddenDialogProcessor_Click(sender As Object, e As System.EventArgs) Handles btnHiddenDialogProcessor.Click
+    '    ' Get the dialog result from CommandArgument
+    '    Dim result As String = Request("__EVENTARGUMENT")
+
+    '    If result = "YES" Then
+    '        dialogResult_yes(ViewState("DIALOG_CMD"), ViewState("DIALOG_ARG1"), ViewState("DIALOG_ARG2"))
+    '    ElseIf result = "NO" Then
+    '        dialogResult_no(ViewState("DIALOG_CMD"))
+    '    End If
+    'End Sub
 
     Protected Sub btnChangeOrder_Click(sender As Object, e As System.EventArgs) Handles btnChangeOrder.Click
         Using DB As New DBHelper

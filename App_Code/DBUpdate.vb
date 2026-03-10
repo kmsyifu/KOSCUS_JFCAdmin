@@ -1481,11 +1481,12 @@ Public Class DBUpdate
         Return True
     End Function
 
-    Public Shared Function UpdateCustSetting(ByVal db As DBHelper, ByVal customerID As String, ByVal AllowCustOrder As String, HideItemPage As String, HidePaymentPage As String, HidePrice As String, anytimedelivery As String, TextPhones As String, ShowOutofStock As String, ShowAllExcepGrpItem As String, shipvia As String, shipdateoffset As Decimal, minOrderAmt As Integer, Optional ByVal isOneTrans As Boolean = True) As Boolean
+    Public Shared Function UpdateCustSetting(ByVal db As DBHelper, ByVal customerID As String, ByVal AllowCustOrder As String, HideItemPage As String, HidePaymentPage As String, HidePrice As String, anytimedelivery As String, TextPhones As String, ShowOutofStock As String, ShowAllExcepGrpItem As String, shipvia As String, shipdateoffset As Decimal, minOrderAmt As Integer, hideHomePage As String, Optional ByVal isOneTrans As Boolean = True) As Boolean
         Dim SQL As String
         If isOneTrans Then db.BeginTransaction()
-        SQL = "Update customer SET allowCustOrder = :1, hideItemPage =:2,hidePaymentPage =:3, hidePrice = :4, anytimedelivery = :5, textphones = :6, SHOWOUTOFSTOCK = :7,ShowAllExcepGrpItem = :8, SHIPVIA = :9, ShipDateOffset = " & shipdateoffset & ", minOrderAmt = " & minOrderAmt & " where customer_id = :11"
-        db.ExecuteNonQuery(SQL, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, TextPhones, ShowOutofStock, ShowAllExcepGrpItem, shipvia, customerID)
+        SQL = "Update customer SET allowCustOrder = :1, hideItemPage =:2,hidePaymentPage =:3, hidePrice = :4, anytimedelivery = :5, textphones = :6, SHOWOUTOFSTOCK = :7,ShowAllExcepGrpItem = :8, SHIPVIA = :9, ShipDateOffset = " &
+            shipdateoffset & ", minOrderAmt = " & minOrderAmt & ", hideHomePage =:10 where customer_id = :11"
+        db.ExecuteNonQuery(SQL, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, TextPhones, ShowOutofStock, ShowAllExcepGrpItem, shipvia, hideHomePage, customerID)
         If AllowCustOrder = "Y" Then
             SQL = "Update customer SET AllowOrderCreateDate = sysdate where customer_id = :1 and AllowOrderCreateDate is null"
             db.ExecuteNonQuery(SQL, customerID)
@@ -1563,7 +1564,7 @@ Public Class DBUpdate
     End Sub
 
     Public Shared Function UpsertHomepage(ByVal DB As DBHelper, ByVal HOMEPAGEIMG_ID As String, ByVal IMGNAME As String, ByVal FOLDERPATH As String, ByVal JFCBRANCHNR As String,
-                                          ByVal CREATEUSER As String, ByVal ImgUrl As String, ByVal Item_id As String, ByVal ImgCtg As String, Optional ByVal DISPORDER As Integer = 0, Optional ByVal isOneTrans As Boolean = True) As Boolean
+                                          ByVal CREATEUSER As String, ByVal ImgUrl As String, ByVal Item_id As String, ByVal ImgCtg As String, Optional ByVal DISPORDER As Nullable(Of Integer) = Nothing, Optional ByVal isOneTrans As Boolean = True) As Boolean
         Dim SQL As String
 
 
@@ -1571,26 +1572,43 @@ Public Class DBUpdate
         SQL = "Select HOMEPAGEIMG_ID from " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " where HOMEPAGEIMG_ID = :1 and JFCBRANCHNR = :2 "
         Dim IMG_ID = DB.GetScalar(SQL, HOMEPAGEIMG_ID, JFCBRANCHNR)
         If IMG_ID = "" Then
-           
 
-            SQL = "SELECT MAX(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
-            DISPORDER = Val(DB.GetScalar(SQL, JFCBRANCHNR, ImgCtg)) + 1
-            SQL = "INSERT INTO " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " (HOMEPAGEIMG_ID, IMGNAME, FOLDERPATH, " & _
-                         " JFCBRANCHNR, CREATEUSER, REDIRECTURL, Item_id, ImgCtg, CREATEDATE, " & _
-                         "DISPORDER ) " & _
+            If DISPORDER Is Nothing Then
+                SQL = "SELECT Max(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
+                DISPORDER = Val(DB.GetScalar(SQL, JFCBRANCHNR, ImgCtg)) + 1
+            End If
+            If DISPORDER = 0 Then
+                DISPORDER = -1
+            End If
+            SQL = "INSERT INTO " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " (HOMEPAGEIMG_ID, IMGNAME, FOLDERPATH, " &
+                         " JFCBRANCHNR, CREATEUSER, REDIRECTURL, Item_id, ImgCtg, CREATEDATE, " &
+                         "DISPORDER ) " &
                          "VALUES (:1,:2,:3,:4,:5,:6,:7,:8,sysdate,:9)"
             DB.ExecuteNonQuery(SQL, HOMEPAGEIMG_ID, IMGNAME, FOLDERPATH, JFCBRANCHNR, CREATEUSER, ImgUrl, Item_id, ImgCtg, DISPORDER)
+
+            If DISPORDER <= 0 Then
+                SQL = "UPDATE " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " h " &
+                      "SET h.DISPORDER = (" &
+                      " SELECT rn FROM (" &
+                      "   SELECT HOMEPAGEIMG_ID, ROW_NUMBER() OVER (ORDER BY DISPORDER, CREATEDATE desc) rn" &
+                      "   FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") &
+                      "   WHERE JFCBRANCHNR = :1 AND ImgCtg = :2" &
+                      " ) t WHERE t.HOMEPAGEIMG_ID = h.HOMEPAGEIMG_ID ) " &
+                      "WHERE h.JFCBRANCHNR = :3 AND h.ImgCtg = :4"
+                DB.ExecuteNonQuery(SQL, JFCBRANCHNR, ImgCtg, JFCBRANCHNR, ImgCtg)
+            End If
+
         Else
-            SQL = "UPDATE " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " SET IMGNAME = '" & IMGNAME & "',FOLDERPATH = " & DB.SqlEsc(FOLDERPATH) &
+                SQL = "UPDATE " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " SET IMGNAME = '" & IMGNAME & "',FOLDERPATH = " & DB.SqlEsc(FOLDERPATH) &
                 ", JFCBRANCHNR = " & DB.SqlEsc(JFCBRANCHNR) & ", MODDATE = sysdate, MODUSER= " & DB.SqlEsc(CREATEUSER) &
                 ", REDIRECTURL = " & DB.SqlEsc(ImgUrl) & ", Item_id = " & DB.SqlEsc(Item_id) & ", ImgCtg = " & DB.SqlEsc(ImgCtg) &
                 " WHERE HOMEPAGEIMG_ID = :1  "
-            DB.ExecuteNonQuery(SQL, HOMEPAGEIMG_ID)
-        End If
+                DB.ExecuteNonQuery(SQL, HOMEPAGEIMG_ID)
+            End If
 
-        InsertEventLog(DB, "InsertUpdate HOMEPAGEIMG", HOMEPAGEIMG_ID, "", Nothing, False, False)
-        If isOneTrans = True Then DB.CommitTransaction()
-        Return True
+            InsertEventLog(DB, "InsertUpdate HOMEPAGEIMG", HOMEPAGEIMG_ID, "", Nothing, False, False)
+            If isOneTrans = True Then DB.CommitTransaction()
+            Return True
     End Function
 
     Public Shared Function UpdateHomePage(ByVal DB As DBHelper, ByVal HOMEPAGEIMG_ID As String, ByVal IMGNAME As String,

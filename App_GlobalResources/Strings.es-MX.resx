@@ -1452,8 +1452,8 @@
     <comment>Savings Account</comment>
   </data>
   <data name="SecurityCodeBackofCard" xml:space="preserve">
-    <value>Código de Seguridad (Atrás de Tarjeta)</value>
-    <comment>Security Code (Back of Card)</comment>
+    <value>Código de Seguridad</value>
+    <comment>Security Code</comment>
   </data>
   <data name="Setautopayment" xml:space="preserve">
     <value>Actualizar pago auntomática...</value>
@@ -1966,5 +1966,70 @@
   <data name="PhoneStatement2" xml:space="preserve">
     <value>Debido a que ingresó su número de teléfono celular, la casilla de verificación debe estar marcada.</value>
     <comment>Because you entered your cell phone #, the check box must be checked.</comment>
+  </data>
+  <data name="BillingAddress" xml:space="preserve">
+    <value>Domicilio de Facturación</value>
+    <comment>BillingAddress</comment>
+  </data>
+  <data name="Pleaseenternameandbillingaddress" xml:space="preserve">
+    <value>Ingrese su nombre y dirección de facturación</value>
+    <comment>Please enter name and billing address</comment>
+  </data>
+  <data name="AllInvoice" xml:space="preserve">
+    <value>Todas las facturas</value>
+    <comment>All Invoice</comment>
+  </data>
+  <data name="BeerInvoice" xml:space="preserve">
+    <value>Factura de cerveza</value>
+    <comment>Beer Invoice</comment>
+  </data>
+  <data name="CCardMsg1" xml:space="preserve">
+    <value>Cobramos una comisión del {0}% sobre el monto de la transacción al pagar con tarjeta de crédito, esta comisión no es mayor al costo de aceptación.</value>
+    <comment>We impose a surcharge of {0}% on the transaction amount on credit card or debit card products, which is not greater than our cost of acceptance.</comment>
+  </data>
+  <data name="CODAUTOPAYMENTONTHEDELIVERYINVOICEDATE" xml:space="preserve">
+    <value>COD /El pago automático en la fecha de entrega o emisión.</value>
+    <comment>COD / auto payment on the delivery / invoice date</comment>
+  </data>
+  <data name="CreditCard" xml:space="preserve">
+    <value>Tarjeta de crédito</value>
+    <comment>Credit Card</comment>
+  </data>
+  <data name="DebitCard" xml:space="preserve">
+    <value>Tarjeta de débito</value>
+    <comment>Debit Card</comment>
+  </data>
+  <data name="LiquorInvoice" xml:space="preserve">
+    <value>Factura de bebida alcohólica</value>
+    <comment>Liquor Invoice</comment>
+  </data>
+  <data name="NonLiquorInvoice" xml:space="preserve">
+    <value>Factura bebida sin alcohol</value>
+    <comment>Non Liquor Invoice</comment>
+  </data>
+  <data name="WineInvoice" xml:space="preserve">
+    <value>Factura de vino</value>
+    <comment>Wine Invoice</comment>
+  </data>
+  <data name="Invalidbillingaddress" xml:space="preserve">
+    <value>Domicilio de Facturación no válida</value>
+    <comment>Invalid billing address</comment>
+  </data>
+  <data name="InvalidCVV" xml:space="preserve">
+    <value>CVV no válido</value>
+    <comment>Invalid CVV</comment>
+  </data>
+  <data name="Pleaseenterthenameusingonebytecharacters" xml:space="preserve">
+    <value>Por favor ingrese el nombre utilizando caracteres de ancho medio</value>
+    <comment>Please enter the name using one byte characters.</comment>
+  </data>
+  <data name="Autopaymentonthe15thofeachmonth" xml:space="preserve">
+    <value>Pago automático a mediados y a finales de cada mes (dos veces al mes)</value>
+  </data>
+  <data name="Autopaymentonthelastdayofeachmonth" xml:space="preserve">
+    <value>Pago automático al final de cada mes (una vez al mes)</value>
+  </data>
+  <data name="CashDiscountAmount" xml:space="preserve">
+    <value>Precio con descuento por pago en efectivo</value>
   </data>
 </root>

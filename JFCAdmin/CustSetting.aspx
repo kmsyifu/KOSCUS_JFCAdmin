@@ -414,6 +414,10 @@
                                     <td><asp:DropDownList ID="lstHidePrice" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' runat="server"    AutoPostBack="True" /><span class="red">*</span></td>
                                 </tr>
                                   <tr>
+                                      <td class="rowHdr">Home Page</td>
+                                      <td><asp:DropDownList ID="lstHideHomePage" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' runat="server"  onchange="javascript:EnableButton();"  /><span class="red">*</span></td>
+                                  </tr>
+                                  <tr>
                                     <td class="rowHdr">Delivery Anytime</td>
                                     <td><asp:DropDownList ID="lstDeliveryAnytime" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' runat="server"  AutoPostBack="True" /><span class="red">*</span><br />
                                         <span class="gray">If yes, no need to setup delivery schedule.</span></td>
@@ -425,7 +429,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class= "rowHdr">Show all items in exception price group</td>
+                                    <td class= "rowHdr">Show all exception price group items on Buy Again</td>
                                     <td><asp:DropDownList ID="lstAllExcepGrpItem" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' onchange="javascript:EnableButton();" runat="server"  /><span class="red">*</span>
                                     </td>
                                 </tr>

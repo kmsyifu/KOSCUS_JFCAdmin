@@ -251,7 +251,7 @@
     <div id="Alltab"  runat ="server"  >
     <div id="tabs" style="display: none;"> <%--Display tabs when page finish loading--%> 
         <ul>
-            <li><a href="#tabCustItem">Order Form</a></li>
+            <li><a href="#tabCustItem">Buy Again</a></li>
             <li><a href="#tabPromoItem">Promo Items</a></li>
         </ul>
     
@@ -402,7 +402,7 @@
                 <br />
                 <br />
                 <asp:HiddenField ID="lblTextChanged_custItem" runat="server" /> <%--Can be access from both server and client side--%>
-                <h2>Order Form &nbsp;&nbsp; </h2> 
+                <h2>Buy Again &nbsp;&nbsp; </h2> 
                 
                    
                     <asp:Panel  runat="server" Visible='<%# Not IsMobile() %>'>
@@ -440,7 +440,7 @@
                         <asp:DropDownList ID="lstCustGrp_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True" OnChange="javascript:showProgress();" /><asp:Label ID="lblPrevCustGrp_custItem" Visible="false" runat="server" />
                         <asp:Label ID="Label17" runat="server" Text='<%# GetCustCompanyType() %>' CssClass="gray" />
                         <asp:DropDownList ID="lstCust_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True" OnChange="javascript:showProgress();" /><asp:Label ID="lblPrevCust_custItem" runat="server" />
-                        <asp:Label ID="Label45" runat="server" Text="Order Form" CssClass="gray" />
+                        <asp:Label ID="Label45" runat="server" Text="Buy Again" CssClass="gray" />
                         <asp:DropDownList ID="lstItemGrpSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();"/>
                         <asp:Label ID="Label47" runat="server" Text="Vendor" CssClass="gray" />
                         <asp:DropDownList ID="lstVendorSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();"/>

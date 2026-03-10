@@ -1129,8 +1129,8 @@
     <comment>Saving口座</comment>
   </data>
   <data name="SecurityCodeBackofCard" xml:space="preserve">
-    <value>Security Code (Back of Card)</value>
-    <comment>セキュリティー番号（カード裏面）</comment>
+    <value>Security Code</value>
+    <comment>セキュリティー番号</comment>
   </data>
   <data name="Setautopayment" xml:space="preserve">
     <value>Set auto payment...</value>
@@ -1535,7 +1535,7 @@
     <value>To change your auto payment account, please go to Payment and click on 'Set Auto Payment' button.</value>
   </data>
   <data name="MyAccountMsg3" xml:space="preserve">
-    <value>Are you sure you want to delete {0}(Account)?</value>
+    <value>Are you sure you want to delete {0}?</value>
   </data>
   <data name="Paymentacountnolongerexists" xml:space="preserve">
     <value>Payment acount no longer exists</value>
@@ -1763,5 +1763,56 @@
   </data>
   <data name="PhoneStatement2" xml:space="preserve">
     <value>Because you entered your cell phone #, the check box must be checked.</value>
+  </data>
+  <data name="CCardMsg1" xml:space="preserve">
+    <value>We impose a surcharge of {0}% on the transaction amount on credit card products, which is not greater than our cost of acceptance.</value>
+  </data>
+  <data name="BillingAddress" xml:space="preserve">
+    <value>Billing Address</value>
+  </data>
+  <data name="AllInvoice" xml:space="preserve">
+    <value>All Invoice</value>
+  </data>
+  <data name="BeerInvoice" xml:space="preserve">
+    <value>Beer Invoice</value>
+  </data>
+  <data name="CODAUTOPAYMENTONTHEDELIVERYINVOICEDATE" xml:space="preserve">
+    <value>COD / auto payment on the delivery / invoice date</value>
+  </data>
+  <data name="CreditCard" xml:space="preserve">
+    <value>Credit Card</value>
+  </data>
+  <data name="DebitCard" xml:space="preserve">
+    <value>Debit Card</value>
+  </data>
+  <data name="LiquorInvoice" xml:space="preserve">
+    <value>Liquor Invoice</value>
+  </data>
+  <data name="NonLiquorInvoice" xml:space="preserve">
+    <value>Non Liquor Invoice</value>
+  </data>
+  <data name="Pleaseenternameandbillingaddress" xml:space="preserve">
+    <value>Please enter name and billing address</value>
+  </data>
+  <data name="WineInvoice" xml:space="preserve">
+    <value>Wine Invoice</value>
+  </data>
+  <data name="Invalidbillingaddress" xml:space="preserve">
+    <value>Invalid billing address</value>
+  </data>
+  <data name="InvalidCVV" xml:space="preserve">
+    <value>Invalid CVV</value>
+  </data>
+  <data name="Pleaseenterthenameusingonebytecharacters" xml:space="preserve">
+    <value>Please enter the name using one byte characters.</value>
+  </data>
+  <data name="Autopaymentonthe15thofeachmonth" xml:space="preserve">
+    <value>Auto payment in the middle and at the end of each month (twice a month)</value>
+  </data>
+  <data name="Autopaymentonthelastdayofeachmonth" xml:space="preserve">
+    <value>Auto payment at the end of each month (once a month)</value>
+  </data>
+  <data name="CashDiscountAmount" xml:space="preserve">
+    <value>Cash Discount Price</value>
   </data>
 </root>

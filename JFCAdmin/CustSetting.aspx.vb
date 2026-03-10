@@ -287,6 +287,7 @@ Partial Class JFCAdmin_CustSetting
             Dim HideItemPage = IIf(CString(lstHideItemPage.SelectedValue) = "Hide", "Y", "")
             Dim HidePaymentPage = IIf(CString(lstHidePaymentPage.SelectedValue) = "Hide", "Y", "")
             Dim HidePrice = IIf(CString(lstHidePrice.SelectedValue) = "Hide", "Y", "")
+            Dim HideHomePage = IIf(CString(lstHideHomePage.SelectedValue) = "Hide", "Y", "")
             Dim anytimedelivery = IIf(CString(lstDeliveryAnytime.SelectedValue) = "Yes", "Y", "")
             Dim OutofStock As String = IIf(CString(lstOutofStock.SelectedValue) = "Show", "Y", "")
             Dim ShowAllExcepGrpItem As String = IIf(CString(lstAllExcepGrpItem.SelectedValue) = "Yes", "Y", "")
@@ -295,7 +296,7 @@ Partial Class JFCAdmin_CustSetting
             Dim Shipvia = CString(txtShipvia.Text.Trim())
             Dim Shipdateoffset As Decimal = Val(txtShipDateOffset.Text)
             Dim minOrderAmt As Integer = Val(txtMinOrderAmt.Text)
-            UpdateCustSetting(DB, customerID, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, Textphones, OutofStock, ShowAllExcepGrpItem, Shipvia, Shipdateoffset, minOrderAmt)
+            UpdateCustSetting(DB, customerID, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, Textphones, OutofStock, ShowAllExcepGrpItem, Shipvia, Shipdateoffset, minOrderAmt, HideHomePage)
 
             For i As Integer = 0 To grdUser.Rows.Count - 1
                 Dim lblemail = CType(grdUser.Rows.Item(i).FindControl("lblEmail"), Label).Text
@@ -519,6 +520,7 @@ Partial Class JFCAdmin_CustSetting
             ShowCodeMasterListLocal(DB, "HIDE_N_SHOW_Y", lstOutofStock, True)
             ShowCodeMasterListLocal(DB, "YESNO", lstAllExcepGrpItem, True)
             ShowCodeMasterListLocal(DB, "YESNO", lstDeliveryAnytime, True)
+            ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lstHideHomePage, True)
 
             'Show customer info and settings
             SQL = "SELECT c.* FROM customer c WHERE c.customer_id = :1"
@@ -564,10 +566,12 @@ Partial Class JFCAdmin_CustSetting
                 lstAllowCustOrder.Text = IIf(CString(r("allowCustOrder")) = "Y", "Allow", "Not Allow")
                 lstHideItemPage.Text = IIf(CString(r("hideItemPage")) = "Y", "Hide", "Show")
                 lstHidePaymentPage.Text = IIf(CString(r("hidePaymentPage")) = "Y", "Hide", "Show")
+                lstHideHomePage.Text = IIf(CString(r("hideHomePage")) = "Y", "Hide", "Show")
                 lstHidePrice.Text = IIf(CString(r("hidePrice")) = "Y", "Hide", "Show")
                 lstOutofStock.Text = IIf(CString(r("SHOWOUTOFSTOCK")) = "Y", "Show", "Hide")
                 lstAllExcepGrpItem.Text = IIf(CString(r("ShowAllExcepGrpItem")) = "Y", "Yes", "No")
                 lstDeliveryAnytime.Text = IIf(CString(r("anytimedelivery")) = "Y", "Yes", "No")
+
 
                 txtTextPhones.Text = CString(r("TextPhones"))
                 txtMinOrderAmt.Text = CString(r("MINORDERAMT"))
@@ -693,7 +697,7 @@ Partial Class JFCAdmin_CustSetting
                             "ORDER BY d.deliveryDate"
 
         'Dim startDate As DateTime = New DateTime(currentDate.Year, currentDate.Month, 1)
-        Dim endDate As DateTime = currentDate.AddMonths(1).AddDays(15)
+        Dim endDate As DateTime = currentDate.AddMonths(2)
 
         ' Execute the query for the entire month range
         Return DB.GetDataTable(SQL, SHORTDATETIME_DELFMT, shipPointID, customerID, currentDate.ToString(DATE_FMT), DATE_FMT, endDate.ToString(DATE_FMT), DATE_FMT)
@@ -1959,13 +1963,14 @@ Partial Class JFCAdmin_CustSetting
                     Dim HidePaymentPage = IIf(CString(lstHidePaymentPage.SelectedValue) = "Hide", "Y", "")
                     Dim HidePrice = IIf(CString(lstHidePrice.SelectedValue) = "Hide", "Y", "")
                     Dim anytimedelivery = IIf(CString(lstDeliveryAnytime.SelectedValue) = "Yes", "Y", "")
+                    Dim HideHomePage = IIf(CString(lstHideHomePage.SelectedValue) = "Hide", "Y", "")
                     Dim Textphones = txtTextPhones.Text.TrimEnd(",")
                     Dim outofstock = IIf(CString(lstOutofStock.SelectedValue) = "Show", "Y", "")
                     Dim ShowAllExcepGrpItem = IIf(CString(lstAllExcepGrpItem.SelectedValue) = "Yes", "Y", "")
                     Dim shipVia = CString(txtShipvia.Text)
                     Dim shipOffset = Val(txtShipDateOffset.Text)
                     Dim minOrderAmt = Val(txtMinOrderAmt.Text)
-                    UpdateCustSetting(db, lblCustomerID.Text, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, Textphones, outofstock, ShowAllExcepGrpItem, shipVia, shipOffset, minOrderAmt)
+                    UpdateCustSetting(db, lblCustomerID.Text, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, Textphones, outofstock, ShowAllExcepGrpItem, shipVia, shipOffset, minOrderAmt, HideHomePage)
                 End Using
             Case Else
         End Select

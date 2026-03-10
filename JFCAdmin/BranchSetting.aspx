@@ -18,7 +18,19 @@
                 checkboxes[i].checked = source.checked;
             }
         }
-    }
+       }
+       function validateFileSize() {
+           var fileInput = document.getElementById('<%= fuHomepage.ClientID %>');
+           if (fileInput.files.length > 0) {
+               var file = fileInput.files[0];
+               var maxSize = 4 * 1024 * 1024; // 4 MB
+               if (file.size > maxSize) {
+                   alert("The file is too large. Please upload a file smaller than 4 MB.");
+                   return false; // cancel postback
+               }
+           }
+           return true;
+       }
           
      function applySortable() {
             var timer; // Variable to store timer ID
@@ -128,7 +140,7 @@
               //});
             <%= JavaScript %>
         });
-    </script>
+   </script>
     <h1>Branch Settings&nbsp;&nbsp;</h1>
     <asp:Panel ID="pnlSearchCust"   CssClass="visiblePnl" runat="server" visiable="false"> 
       <asp:Label ID="lblGetCustCompanyType" runat="server" Text='Branch'  CssClass="gray" />
@@ -303,7 +315,7 @@
                     </asp:GridView>
                     <asp:SqlDataSource ID="dsHomepageImg" runat="server"></asp:SqlDataSource>
                     <br />
-                    <asp:Button ID="btnAddHomepageImg" CssClass="midButton" runat="server" Text="Add Image" />
+                    <asp:Button ID="btnAddHomepageImg" CssClass="midButton" runat="server" Text="Add Image"  />
                     <br /><br />            
 
                       <%--asp:TemplateField HeaderText="Send Reminder" HeaderStyle-CssClass="th center16" ItemStyle-CssClass="center16">
@@ -358,7 +370,7 @@
                                       <tr>
                                         <td class="rowHdr"><asp:Label ID ="lblURL" runat = "server" Text ="URL or Item ID" /></td>
                                         <td><asp:Textbox ID="txtImgUrl" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size32") %>' runat="server" autocomplete="off" />
-                                           <asp:Label ID ="lblOr" runat = "server" Text ="&nbsp; or &nbsp;" /> <asp:Textbox ID="txtItemId" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size8", "size12") %>' runat="server" autocomplete="off" />
+                                           <asp:Label ID ="lblOr" runat = "server" Text ="&nbsp; or &nbsp;" /> <asp:Textbox ID="txtItemId" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size8", "size8") %>' runat="server" autocomplete="off" />
                                         </td>
                                        </tr>
                                  </asp:Panel>
@@ -390,7 +402,7 @@
                         <%-- <asp:Label ID="Label27" CssClass="red" runat="server" Text="* Required"/>
                         asp:CheckBox  ID="chkEmailMaster" runat ="server" CssClass= "checkbox" text="Send email notification to customer about this change." class="fontsize-1"/ --%>
                         <br />
-                        <asp:Button ID="btnSaveHomePageImg" ValidationGroup = "Homepageupload" CssClass="midButton_green" runat="server" Text="Update Changes"  />
+                        <asp:Button ID="btnSaveHomePageImg" ValidationGroup = "Homepageupload" CssClass="midButton_green" runat="server" Text="Update Changes" OnClientClick="return validateFileSize();" />
                         <asp:Button ID="btnDeleteHomePageImg" CssClass="midButton" runat="server" Text="Delete" />
                     </asp:Panel>
                     <br />

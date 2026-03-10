@@ -12,6 +12,8 @@ Imports Twilio.Rest.Api.V2010.Account 'For texting
 Imports System.Globalization
 Imports System.Threading
 Imports System.Resources
+Imports System.Drawing
+Imports System.Drawing.Imaging
 
 Public Structure SessionInfo
     Public AssemblerID As String
@@ -260,15 +262,48 @@ Public Class Common
         s.ClientScript.RegisterStartupScript(s.GetType(), "MessageBox", script, True)
     End Sub
 
+    'Public Shared Sub MessageBoxYesNo(message As String, title As String, Optional DB As DBHelper = Nothing)
+    '    Dim s As System.Web.UI.Page = HttpContext.Current.Handler
+    '    Dim script As String
+
+    '    If DB IsNot Nothing Then InsertEventLog(DB, "MessageBoxYesNo", title, message, Nothing, True)
+
+    '    script = "SystemDialogTitle = '" & Replace(title, "'", "\'") & "'; SystemDialogMessage = '" & Replace(message, "'", "\'") & "'; SystemDialogButton = 'YesNo'; "
+    '    s.ClientScript.RegisterStartupScript(s.GetType(), "MessageBox", script, True)
+    'End Sub
+
     Public Shared Sub MessageBoxYesNo(message As String, title As String, Optional DB As DBHelper = Nothing)
         Dim s As System.Web.UI.Page = HttpContext.Current.Handler
         Dim script As String
-
         If DB IsNot Nothing Then InsertEventLog(DB, "MessageBoxYesNo", title, message, Nothing, True)
 
-        script = "SystemDialogTitle = '" & Replace(title, "'", "\'") & "'; SystemDialogMessage = '" & Replace(message, "'", "\'") & "'; SystemDialogButton = 'YesNo'; "
+        ' Properly escape special characters for JavaScript
+        Dim escapedTitle As String = EscapeJavaScriptString(title)
+        Dim escapedMessage As String = EscapeJavaScriptString(message)
+
+        script = "SystemDialogTitle = '" & escapedTitle & "'; SystemDialogMessage = '" & escapedMessage & "'; SystemDialogButton = 'YesNo'; "
         s.ClientScript.RegisterStartupScript(s.GetType(), "MessageBox", script, True)
     End Sub
+
+    ''' <summary>
+    ''' Escapes a string to be safely used in JavaScript string literals
+    ''' Handles quotes, backslashes, newlines, and other special characters
+    ''' </summary>
+    Private Shared Function EscapeJavaScriptString(input As String) As String
+        If String.IsNullOrEmpty(input) Then Return ""
+
+        ' Escape in correct order: backslash first, then other characters
+        Return input.Replace("\", "\\") _
+               .Replace("'", "\'") _
+               .Replace("""", "\""") _
+               .Replace(vbCrLf, "\n") _
+               .Replace(vbLf, "\n") _
+               .Replace(vbCr, "\n") _
+               .Replace(vbTab, "\t") _
+               .Replace(Chr(8), "\b") _
+               .Replace(Chr(12), "\f") _
+               .Replace(Chr(13), "\r")
+    End Function
 
     Public Shared Sub MessageSimpleBox(ByVal message As String, Optional DB As DBHelper = Nothing)
         Dim s As System.Web.UI.Page = HttpContext.Current.Handler
@@ -709,10 +744,10 @@ Public Class Common
     Public Shared Function IsJfcScaledItem(ByVal DB As DBHelper, ByVal customerID As String, ByVal custGrpItemID As String) As Boolean
         Dim SQL As String
 
-        SQL = "SELECT p.scaledItem FROM jets_price p, jets_customer jc, customer c, " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " i " & _
-                    "WHERE jc.bid = c.jfcBranchNr AND jc.customerid = c.jfcCustomerNr " & _
-                    "  AND p.pricegpid = jc.pricegpid AND i.item_id = p.itemcode AND i.jfcItem = 'Y' " & _
-                    "  AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _
+        SQL = "SELECT p.scaledItem FROM jets_price p, jets_customer jc, customer c, " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " i " &
+                    "WHERE jc.bid = c.jfcBranchNr AND jc.customerid = c.jfcCustomerNr " &
+                    "  AND p.pricegpid = jc.pricegpid AND i.item_id = p.itemcode AND i.jfcItem = 'Y' " &
+                    "  AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) &
                     "  AND i.custGrpItem_id = :1 AND c.customer_id = :2"
         '"  AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _ 'is added to improve the performance
         Return IIf(CString(DB.GetScalar(SQL, custGrpItemID, customerID)) = "Y", True, False)
@@ -730,7 +765,7 @@ Public Class Common
             Return True
         Else
             'Send email if flag is set for JFC
-            SQL = "SELECT h.webOrder_id FROM sohdr h, custGrp_vendor c, jfcVendor v " & _
+            SQL = "SELECT h.webOrder_id FROM sohdr h, custGrp_vendor c, jfcVendor v " &
                     "WHERE h.custGrpVendor_id = c.custGrpVendor_id AND c.vendor_id = v.vendor_id AND v.sendSoEmail = 'Y' AND h.webOrder_id = :1"
             Return IIf(CString(DB.GetScalar(SQL, webOrderID)) <> "", True, False)
         End If
@@ -984,7 +1019,7 @@ Public Class Common
     Public Shared Function GetWebUserCustParam(ByVal DB As DBHelper, ByVal paramName As String, ByVal email As String, ByVal customerID As String, ByVal valueIfEmpty As String) As String
         Dim SQL As String
         Dim value As String
-        SQL = "SELECT paramValue FROM webUser_custParam " & _
+        SQL = "SELECT paramValue FROM webUser_custParam " &
                 "WHERE paramName = " & DB.SqlEsc(paramName) & " AND email = " & DB.SqlEsc(email) & " AND customer_id = " & DB.SqlEsc(customerID)
         value = CString(DB.GetScalar(SQL))
         Return IIf(value <> String.Empty, value, valueIfEmpty)
@@ -1007,8 +1042,8 @@ Public Class Common
     Public Shared Function GetJfcEmail(ByVal DB As DBHelper, ByVal customerID As String, ByVal onlyCustJfcEmail As Boolean) As String
         Dim SQL As String
         Dim r As DataReader
-        SQL = "SELECT c.jfcEmail AS custJfcEmail, CASE WHEN c.jfcEmail IS NULL THEN j.email ELSE c.jfcEmail END AS jfcEmail " & _
-                "FROM customer c, jfcVendor j " & _
+        SQL = "SELECT c.jfcEmail AS custJfcEmail, CASE WHEN c.jfcEmail IS NULL THEN j.email ELSE c.jfcEmail END AS jfcEmail " &
+                "FROM customer c, jfcVendor j " &
                 "WHERE c.jfcBranchNr = j.jfcBranchNr AND c.customer_id = :1"
         r = DB.GetReader(SQL, customerID)
         If r.Read() Then
@@ -1020,9 +1055,9 @@ Public Class Common
 
     Public Shared Function GetCustomerEmailForPayment(ByVal DB As DBHelper, ByVal customerID As String) As String
         Dim SQL As String
-        SQL = "SELECT WM_CONCAT(w.email) " & _
-                "FROM webUser_customer wc, customer c, webUser w " & _
-                "WHERE wc.custCompany_id = wc.userCompany_id AND wc.customer_id = c.customer_id AND wc.email = w.email " & _
+        SQL = "SELECT WM_CONCAT(w.email) " &
+                "FROM webUser_customer wc, customer c, webUser w " &
+                "WHERE wc.custCompany_id = wc.userCompany_id AND wc.customer_id = c.customer_id AND wc.email = w.email " &
                 "  AND NVL(c.HidePaymentPage, ' ') <> 'Y' AND NVL(wc.HidePaymentPage, ' ') <> 'Y' AND c.customer_id = :1"
         Return CString(DB.GetScalar(SQL, customerID))
     End Function
@@ -1271,7 +1306,7 @@ Public Class Common
     Public Shared Function GetCustGrpItemID(ByVal DB As DBHelper, ByVal custGrpID As String, ByVal vendorID As String, ByVal itemGrpID As String, ByVal itemID As String) As String
         Dim SQL As String
 
-        SQL = "SELECT custGrpItem_id FROM " & IIf(IsSmallCustomer(DB, Nothing, custGrpID) = True, "v_custgrp_item_small", "custgrp_item") & " WHERE custGrp_id = :1" & _
+        SQL = "SELECT custGrpItem_id FROM " & IIf(IsSmallCustomer(DB, Nothing, custGrpID) = True, "v_custgrp_item_small", "custgrp_item") & " WHERE custGrp_id = :1" &
                     " AND vendor_id = :2 AND itemGrp_id = :3 AND item_id = :4"
         Return CString(DB.GetScalar(SQL, custGrpID, vendorID, itemGrpID, itemID))
     End Function
@@ -1331,13 +1366,13 @@ Public Class Common
         'Get JFC #
         GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, jfcCustomerNr)
         'Get number of items in cart
-        SQL = "SELECT COUNT(*) " & _
-                    "FROM sohdr_cart h, sodtl_cart d, " & IIf(IsSmallCustomer(DB, customerID) = True, IIf(IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-                    "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = :1 AND cp.customerid = :2 " & _
-                    "WHERE h.cart_id = d.cart_id AND h.createUser = :3 AND h.customer_id = :4 AND h.cartState = 'W'" & _
-                    "  AND d.custGrpItem_id = i.custGrpItem_id " & _
-                    "  AND i.custGrpItem_id = ci.custGrpItem_id AND ci.customer_id = h.customer_id " & _
-                    "  AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _
+        SQL = "SELECT COUNT(*) " &
+                    "FROM sohdr_cart h, sodtl_cart d, " & IIf(IsSmallCustomer(DB, customerID) = True, IIf(IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+                    "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = :1 AND cp.customerid = :2 " &
+                    "WHERE h.cart_id = d.cart_id AND h.createUser = :3 AND h.customer_id = :4 AND h.cartState = 'W'" &
+                    "  AND d.custGrpItem_id = i.custGrpItem_id " &
+                    "  AND i.custGrpItem_id = ci.custGrpItem_id AND ci.customer_id = h.customer_id " &
+                    "  AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) &
                     "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') "
         '"  AND g.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _ 'is added to improve the performance
         '"  AND (p.outOfStock IS NULL OR p.outOfStock = 'N') " & _
@@ -1352,7 +1387,7 @@ Public Class Common
 
     Public Shared Function GetNrPriceInquiry(ByVal DB As DBHelper, ByVal email As String, ByVal customerID As String) As Integer
         Dim SQL As String
-        SQL = "SELECT COUNT(*) FROM webUser_priceInquiry p, " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " i " & _
+        SQL = "SELECT COUNT(*) FROM webUser_priceInquiry p, " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " i " &
                     "WHERE p.sent = 'N' AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & " AND p.email = :1 AND p.customer_id = :2 AND p.custGrpItem_id = i.custGrpItem_id" 'In case item gets removed
         '"  AND g.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _ 'is added to improve the performance
         Return Val(DB.GetScalar(SQL, email, customerID))
@@ -1369,9 +1404,9 @@ Public Class Common
         Dim lbsPerEa As Decimal
         'Dim r As DataReader
 
-        SQL = "SELECT p.lbsPerEa " & _
-                "FROM jets_price p, jets_customer jc, customer c " & _
-                "WHERE jc.bid = c.jfcBranchNr And jc.customerid = c.jfcCustomerNr " & _
+        SQL = "SELECT p.lbsPerEa " &
+                "FROM jets_price p, jets_customer jc, customer c " &
+                "WHERE jc.bid = c.jfcBranchNr And jc.customerid = c.jfcCustomerNr " &
                 "  AND p.pricegpid = jc.pricegpid AND p.itemcode = " & DB.SqlEsc(GetItemID(DB, custGrpItemID)) & " AND c.customer_id = " & DB.SqlEsc(customerID)
         lbsPerEa = Val(DB.GetScalar(SQL))
         Return IIf(lbsPerEa = 0, 0.1, lbsPerEa)
@@ -1410,52 +1445,52 @@ Public Class Common
         GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, jfcCustomerNr)
 
         'Don't get eaCost and gp here 
-        SQL = "SELECT i.custGrpItem_id, i.custGrp_ID, i.vendor_id, i.itemGrp_id, g.itemGrpName, i.item_id, " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " AS itemNr, cc.CustItemDesc, " & _
-                      " v.vendorName, i.minSalCnt, TRIM(i.jfcRemark || ' ' || cc.custRemark) AS jfcRemark, i.jfcitem, " & _
-                      " ci.eaPerCs, ci.csPrice, ci.eaPrice, ci.lbPrice_OrderByWgt, ci.lbPrice_OrderByQty, p.outOfStock, TO_CHAR(p.arrivDate, " & DB.SqlEsc(SHORTDATE_FMT) & ") AS arrivDate_fmt, " & _
-                      " q.csQty AS lastCsQty, CASE WHEN NVL(q.pcQty, 0) > 0 THEN q.pcQty ELSE q.eaQty END AS lastEaQty, q.lbs AS lastLbs, " & _
-                      " CASE WHEN q.custGrpItem_id IS NOT NULL OR cp.regcsprice > 0 THEN 'Y' ELSE 'N' END ordered, " & _
-                      " NVL(p.csAvail, 0) || ' cs ' || NVL(p.eaAvail, 0) || ' ea available' AS qtyAvail, " & _
-                      " NVL(p.csCost, 0) AS csCost, " & _
-                      " NVL(p.BTMCSPRICE,0) AS btmcsPrice, " & _
-                      " NVL(vc.item_id,'') AS promoItemId, " & _
-                      " CASE WHEN ci.csPrice = 0 THEN 1 ELSE ROUND((ci.csPrice - NVL(p.csCost, 0)) / ci.csPrice, 2) END gp, " & _
-                      " nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, " & _
-                      " TO_CHAR(ROUND(NVL(a.grossWeight, 0), 2), 99999.99) AS grossWeight_lbs, TO_CHAR(ROUND(NVL(a.grossWeight, 0) / 2.2046, 2), 99999.99) AS grossWeight_kg, " & _
-                      " TO_CHAR(ROUND(NVL(a.caseWidth * a.caseDepth * a.caseHight, 0) / 1728, 3), 99999.999) AS caseVol_ft3, TO_CHAR(ROUND(ROUND(NVL(a.caseWidth, 0) * NVL(a.caseDepth, 0) * NVL(a.caseHight, 0) / 12 / 12 / 12, 8) / 35.314, 3), 99999.999) AS caseVol_m3, " & _
-                      " NVL(p.block, 0) AS block, NVL(p.high, 0) AS high, NVL(p.ingredient_branch, a.ingredient) ingredient, " & _
-                      " CASE WHEN i.jfcitem = 'Y' THEN 'JFCItems' ELSE 'OtherItems' END itemType, " & _
-                      " CASE WHEN " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " IS NULL THEN i.item_id ELSE " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " || ' (JFC item #' || i.item_id || ')' END AS itemIdNr_view, " & _
-                      " CASE WHEN i.jfcitem = 'Y' AND cc.custItemDesc IS NULL THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE cc.custItemDesc || ' (' || NVL(p.itemDesc_branch, a.itemDesc) || ')' END AS itemDesc_view, " & _
-                      " jctgGrp.ctgGrpDesc AS ctgName_view, jctgGrp.ctgGrpDesc AS jfcCtgName, " & _
-                      " CASE WHEN i.jfcitem = 'Y' THEN a.pointPerCs ELSE NULL END pointPerCs, " & _
-                      IIf(cartID <> "", " CASE WHEN cd.csQty IS NOT NULL THEN cd.csQty END AS cartCsQty, ", "'' cartCsQty, ") & _
-                      IIf(cartID <> "", " CASE WHEN cd.eaQty IS NOT NULL THEN cd.eaQty END AS cartEaQty, ", "'' cartEaQty, ") & _
-                      IIf(cartID <> "", " CASE WHEN cd.lbs IS NOT NULL THEN cd.lbs END AS cartLbs, ", "'' cartLbs, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.csQty IS NOT NULL THEN od.csQty END AS orderCsQty, ", "'' orderCsQty, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.eaQty IS NOT NULL THEN od.eaQty END AS orderEaQty, ", "'' orderEaQty, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.lbs IS NOT NULL THEN od.lbs END AS orderLbs, ", "'' orderLbs, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.csQty_vp IS NOT NULL THEN od.csQty_vp END AS orderCsQty_vp, ", "'' orderCsQty_vp, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.eaQty_vp IS NOT NULL THEN od.eaQty_vp END AS orderEaQty_vp, ", "'' orderEaQty_vp, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.csQty_sp IS NOT NULL THEN od.csQty_sp END AS orderCsQty_sp, ", "'' orderCsQty_sp, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.eaQty_sp IS NOT NULL THEN od.eaQty_sp END AS orderEaQty_sp, ", "'' orderEaQty_sp, ") & _
-                      IIf(webOrderID <> "", " CASE WHEN od.vpMemo IS NOT NULL THEN od.vpMemo END AS orderVpMemo ", "'' orderVpMemo ") & _
-                      "FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(smallCustomer = True, IIf(IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-                      "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " & _
-                      "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = GetCtgGrpID(" & DB.SqlEsc(customerID) & ", i.item_id, 'N') " & _
-                      "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = " & DB.SqlEsc(jfcBranchNr) & " AND cp.customerid = " & DB.SqlEsc(jfcCustomerNr) & " " & _
-                      "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)) & " " & _
-                      "LEFT OUTER JOIN customer_lastOrderedQty q ON q.custGrpItem_id = i.custGrpItem_id AND q.customer_id = " & DB.SqlEsc(customerID) & " " & _
-                      "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.custGrpItem_id AND cc.customer_id = " & DB.SqlEsc(customerID) & " " & _
-                      "LEFT OUTER JOIN v_customer_promoitem vc ON vc.item_id = i.item_id AND (vc.customer_id = " & DB.SqlEsc(customerID) & " or vc.customer_id is null) and vc.jfcbranchnr = " & DB.SqlEsc(jfcBranchNr) & " " & _
-                      IIf(cartID <> "", "LEFT OUTER JOIN sodtl_cart cd ON cd.custGrpItem_id = i.custGrpItem_id AND cd.cart_id = " & DB.SqlEsc(cartID) & " ", "") & _
-                      IIf(webOrderID <> "", "LEFT OUTER JOIN sodtl od ON od.custGrpItem_id = i.custGrpItem_id AND od.webOrder_id = " & DB.SqlEsc(webOrderID) & " ", "") & _
-                      "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " & _
-                      "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " & _
-                      "  AND g.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _
-                      "  AND i.custGrpItem_id = ci.custGrpItem_id " & _
-                      "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " & _
-                      "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " & _
+        SQL = "SELECT i.custGrpItem_id, i.custGrp_ID, i.vendor_id, i.itemGrp_id, g.itemGrpName, i.item_id, " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " AS itemNr, cc.CustItemDesc, " &
+                      " v.vendorName, i.minSalCnt, TRIM(i.jfcRemark || ' ' || cc.custRemark) AS jfcRemark, i.jfcitem, " &
+                      " ci.eaPerCs, ci.csPrice, ci.eaPrice, ci.lbPrice_OrderByWgt, ci.lbPrice_OrderByQty, p.outOfStock, TO_CHAR(p.arrivDate, " & DB.SqlEsc(SHORTDATE_FMT) & ") AS arrivDate_fmt, " &
+                      " q.csQty AS lastCsQty, CASE WHEN NVL(q.pcQty, 0) > 0 THEN q.pcQty ELSE q.eaQty END AS lastEaQty, q.lbs AS lastLbs, " &
+                      " CASE WHEN q.custGrpItem_id IS NOT NULL OR cp.regcsprice > 0 THEN 'Y' ELSE 'N' END ordered, " &
+                      " NVL(p.csAvail, 0) || ' cs ' || NVL(p.eaAvail, 0) || ' ea available' AS qtyAvail, " &
+                      " NVL(p.csCost, 0) AS csCost, " &
+                      " NVL(p.BTMCSPRICE,0) AS btmcsPrice, " &
+                      " NVL(vc.item_id,'') AS promoItemId, " &
+                      " CASE WHEN ci.csPrice = 0 THEN 1 ELSE ROUND((ci.csPrice - NVL(p.csCost, 0)) / ci.csPrice, 2) END gp, " &
+                      " nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, " &
+                      " TO_CHAR(ROUND(NVL(a.grossWeight, 0), 2), 99999.99) AS grossWeight_lbs, TO_CHAR(ROUND(NVL(a.grossWeight, 0) / 2.2046, 2), 99999.99) AS grossWeight_kg, " &
+                      " TO_CHAR(ROUND(NVL(a.caseWidth * a.caseDepth * a.caseHight, 0) / 1728, 3), 99999.999) AS caseVol_ft3, TO_CHAR(ROUND(ROUND(NVL(a.caseWidth, 0) * NVL(a.caseDepth, 0) * NVL(a.caseHight, 0) / 12 / 12 / 12, 8) / 35.314, 3), 99999.999) AS caseVol_m3, " &
+                      " NVL(p.block, 0) AS block, NVL(p.high, 0) AS high, NVL(p.ingredient_branch, a.ingredient) ingredient, " &
+                      " CASE WHEN i.jfcitem = 'Y' THEN 'JFCItems' ELSE 'OtherItems' END itemType, " &
+                      " CASE WHEN " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " IS NULL THEN i.item_id ELSE " & IIf(smallCustomer = True, "cc.custItemCode", "i.itemNr") & " || ' (JFC item #' || i.item_id || ')' END AS itemIdNr_view, " &
+                      " CASE WHEN i.jfcitem = 'Y' AND cc.custItemDesc IS NULL THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE cc.custItemDesc || ' (' || NVL(p.itemDesc_branch, a.itemDesc) || ')' END AS itemDesc_view, " &
+                      " jctgGrp.ctgGrpDesc AS ctgName_view, jctgGrp.ctgGrpDesc AS jfcCtgName, " &
+                      " CASE WHEN i.jfcitem = 'Y' THEN a.pointPerCs ELSE NULL END pointPerCs, " &
+                      IIf(cartID <> "", " CASE WHEN cd.csQty IS NOT NULL THEN cd.csQty END AS cartCsQty, ", "'' cartCsQty, ") &
+                      IIf(cartID <> "", " CASE WHEN cd.eaQty IS NOT NULL THEN cd.eaQty END AS cartEaQty, ", "'' cartEaQty, ") &
+                      IIf(cartID <> "", " CASE WHEN cd.lbs IS NOT NULL THEN cd.lbs END AS cartLbs, ", "'' cartLbs, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.csQty IS NOT NULL THEN od.csQty END AS orderCsQty, ", "'' orderCsQty, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.eaQty IS NOT NULL THEN od.eaQty END AS orderEaQty, ", "'' orderEaQty, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.lbs IS NOT NULL THEN od.lbs END AS orderLbs, ", "'' orderLbs, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.csQty_vp IS NOT NULL THEN od.csQty_vp END AS orderCsQty_vp, ", "'' orderCsQty_vp, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.eaQty_vp IS NOT NULL THEN od.eaQty_vp END AS orderEaQty_vp, ", "'' orderEaQty_vp, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.csQty_sp IS NOT NULL THEN od.csQty_sp END AS orderCsQty_sp, ", "'' orderCsQty_sp, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.eaQty_sp IS NOT NULL THEN od.eaQty_sp END AS orderEaQty_sp, ", "'' orderEaQty_sp, ") &
+                      IIf(webOrderID <> "", " CASE WHEN od.vpMemo IS NOT NULL THEN od.vpMemo END AS orderVpMemo ", "'' orderVpMemo ") &
+                      "FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(smallCustomer = True, IIf(IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+                      "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " &
+                      "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = GetCtgGrpID(" & DB.SqlEsc(customerID) & ", i.item_id, 'N') " &
+                      "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = " & DB.SqlEsc(jfcBranchNr) & " AND cp.customerid = " & DB.SqlEsc(jfcCustomerNr) & " " &
+                      "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)) & " " &
+                      "LEFT OUTER JOIN customer_lastOrderedQty q ON q.custGrpItem_id = i.custGrpItem_id AND q.customer_id = " & DB.SqlEsc(customerID) & " " &
+                      "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.custGrpItem_id AND cc.customer_id = " & DB.SqlEsc(customerID) & " " &
+                      "LEFT OUTER JOIN v_customer_promoitem vc ON vc.item_id = i.item_id AND (vc.customer_id = " & DB.SqlEsc(customerID) & " or vc.customer_id is null) and vc.jfcbranchnr = " & DB.SqlEsc(jfcBranchNr) & " " &
+                      IIf(cartID <> "", "LEFT OUTER JOIN sodtl_cart cd ON cd.custGrpItem_id = i.custGrpItem_id AND cd.cart_id = " & DB.SqlEsc(cartID) & " ", "") &
+                      IIf(webOrderID <> "", "LEFT OUTER JOIN sodtl od ON od.custGrpItem_id = i.custGrpItem_id AND od.webOrder_id = " & DB.SqlEsc(webOrderID) & " ", "") &
+                      "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " &
+                      "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " &
+                      "  AND g.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) &
+                      "  AND i.custGrpItem_id = ci.custGrpItem_id " &
+                      "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " &
+                      "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " &
                       "  AND ci.customer_id = " & DB.SqlEsc(customerID) & " AND ci.custGrpItem_id = " & DB.SqlEsc(custGrpItemID) & " "
         '" CASE WHEN i.jfcitem = 'Y' THEN jctgGrp.ctgGrpDesc ELSE NULL END jfcCtgName, " & _
         '" CASE WHEN i.jfcitem = 'Y' AND c.ctgName IS NULL THEN jctgGrp.ctgGrpDesc ELSE c.ctgName END ctgName_view, " & _
@@ -1486,7 +1521,7 @@ Public Class Common
 
     Public Shared Function ExistDeliveryDate(ByVal DB As DBHelper, ByVal customerID As String, ByVal custGrpVendorID As String, ByVal shipPointID As String, ByVal deliveryDate As String) As Boolean
         Dim SQL As String
-        SQL = "SELECT customer_id FROM customer_deliveryDate WHERE customer_id = :1 AND custGrpVendor_id = :2" & _
+        SQL = "SELECT customer_id FROM customer_deliveryDate WHERE customer_id = :1 AND custGrpVendor_id = :2" &
                             " AND shipPoint_id = :3 AND deliveryDate = TO_DATE(:4, :5)"
         Return IIf(CString(DB.GetScalar(SQL, customerID, custGrpVendorID, shipPointID, deliveryDate, DATE_FMT)) = "", False, True)
     End Function
@@ -1499,7 +1534,7 @@ Public Class Common
 
         SQL = "SELECT vendorCompany_id FROM custGrp_vendor WHERE custGrpVendor_id = :1"
         isVendorJfc = IIf(CString(DB.GetScalar(SQL, custGrpVendorID)) = "JFC", True, False)
-        SQL = "SELECT webOrder_id FROM sohdr WHERE customer_id = :1 AND custGrpVendor_id = :2" & _
+        SQL = "SELECT webOrder_id FROM sohdr WHERE customer_id = :1 AND custGrpVendor_id = :2" &
                             " AND shipPoint_id = :3 AND deliveryDate = TO_DATE(:4, :5) AND orderState <> 'D'"
         If isVendorJfc = True Then
             GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, jfcCustomerNr)
@@ -1510,7 +1545,7 @@ Public Class Common
 
     Public Shared Function SendOrderReminder(ByVal DB As DBHelper, ByVal customerID As String, ByVal custGrpVendorID As String, ByVal shipPointID As String, ByVal deliveryDate As String) As Boolean
         Dim SQL As String
-        SQL = "SELECT customer_id FROM customer_deliveryDate WHERE customer_id = :1 AND custGrpVendor_id = :2" & _
+        SQL = "SELECT customer_id FROM customer_deliveryDate WHERE customer_id = :1 AND custGrpVendor_id = :2" &
                             " AND shipPoint_id = :3 AND deliveryDate = TO_DATE(:4, :5) AND sendReminder = 'Y'"
         Return IIf(CString(DB.GetScalar(SQL, customerID, custGrpVendorID, shipPointID, deliveryDate, DATE_FMT)) = "", False, True)
     End Function
@@ -1522,7 +1557,7 @@ Public Class Common
 
         GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, Nothing)
         'If userEmail = String.Empty Then
-        SQL = "SELECT TO_CHAR(MIN(deliveryDate), :1) FROM customer_deliveryDate " & _
+        SQL = "SELECT TO_CHAR(MIN(deliveryDate), :1) FROM customer_deliveryDate " &
                     "WHERE customer_id = :2 AND custGrpVendor_id = :3 AND shipPoint_id = :4 AND orderByDate > SYSDATE + " & GetServerDayOffset(DB, jfcBranchNr) & " + " & hoursLater / 24
         Return CString(DB.GetScalar(SQL, dateFmt, customerID, custGrpVendorID, shipPointID))
     End Function
@@ -1532,14 +1567,14 @@ Public Class Common
         Dim jfcBranchNr As String = ""
 
         GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, Nothing)
-        SQL = "SELECT TO_CHAR(MAX(deliveryDate), :1) FROM customer_deliveryDate " & _
+        SQL = "SELECT TO_CHAR(MAX(deliveryDate), :1) FROM customer_deliveryDate " &
                         "WHERE customer_id = :2 AND custGrpVendor_id = :3 AND shipPoint_id = :4 AND orderByDate < SYSDATE + " & GetServerDayOffset(DB, jfcBranchNr)
         Return CString(DB.GetScalar(SQL, dateFmt, customerID, custGrpVendorID, shipPointID))
     End Function
 
     Public Shared Function GetOrderByDate(ByVal DB As DBHelper, ByVal customerID As String, ByVal custGrpVendorID As String, ByVal shipPointID As String, ByVal deliveryDate As String, ByVal dateTimeFmt As String) As String
         Dim SQL As String
-        SQL = "SELECT TO_CHAR(orderByDate, :1) FROM customer_deliveryDate WHERE customer_id = :2 AND custGrpVendor_id = :3" & _
+        SQL = "SELECT TO_CHAR(orderByDate, :1) FROM customer_deliveryDate WHERE customer_id = :2 AND custGrpVendor_id = :3" &
                             " AND shipPoint_id = :4 AND deliveryDate = TO_DATE(:5, :6)"
         Return CString(DB.GetScalar(SQL, dateTimeFmt, customerID, custGrpVendorID, shipPointID, deliveryDate, DATE_FMT))
     End Function
@@ -1569,8 +1604,8 @@ Public Class Common
             shipPointID = CString(DB.GetScalar(SQL))
         End If
 
-        SQL = "SELECT custGrpVendor_id, vendorName FROM custGrp_vendor " & _
-             "WHERE custGrp_id = " & DB.SqlEsc(custGrpID) & _
+        SQL = "SELECT custGrpVendor_id, vendorName FROM custGrp_vendor " &
+             "WHERE custGrp_id = " & DB.SqlEsc(custGrpID) &
              "ORDER BY vendorName"
         r = DB.GetReader(SQL)
         'info = "Next Delivery" & IIf(mobile, "<br />", " - ")
@@ -1644,6 +1679,76 @@ Public Class Common
         Return url
     End Function
 
+    Public Shared Function CompressIfLarge(originalStream As Stream, Optional targetSizeKB As Integer = 100, Optional resizeThresholdKB As Integer = 100) As Byte()
+
+        Using msOriginal As New MemoryStream()
+            originalStream.CopyTo(msOriginal)
+
+            ' Check original file size
+            Dim originalSizeKB As Integer = CInt(msOriginal.Length / 1024)
+
+            If originalSizeKB <= resizeThresholdKB Then
+                Return msOriginal.ToArray()
+            End If
+
+            msOriginal.Position = 0
+
+            If Not IsValidImageFormat(msOriginal) Then
+                Throw New FormatException("Uploaded file is not a supported image.")
+            End If
+
+            msOriginal.Position = 0
+
+            Dim quality As Integer = 90
+            Dim compressedBytes As Byte()
+
+            Using originalImage As Image = Image.FromStream(msOriginal)
+                Dim ratioX As Double = CDbl("720") / originalImage.Width
+                Dim ratioY As Double = CDbl("1600") / originalImage.Height
+                Dim ratio As Double = Math.Min(ratioX, ratioY)
+
+                Dim newWidth As Integer = CInt(originalImage.Width * ratio)
+                Dim newHeight As Integer = CInt(originalImage.Height * ratio)
+
+                Using bitmap As New Bitmap(newWidth, newHeight)
+                    Using g As Graphics = Graphics.FromImage(bitmap)
+                        g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+                        g.DrawImage(originalImage, 0, 0, bitmap.Width, bitmap.Height)
+
+                        Dim encoderParams As New EncoderParameters(1)
+                        Dim jpegEncoder As ImageCodecInfo = ImageCodecInfo.GetImageEncoders().First(Function(c) c.MimeType = "image/jpeg")
+
+                        Do
+                            Using msCompressed As New MemoryStream()
+                                encoderParams.Param(0) = New EncoderParameter(Encoder.Quality, quality)
+                                bitmap.Save(msCompressed, jpegEncoder, encoderParams)
+                                compressedBytes = msCompressed.ToArray()
+
+                                If compressedBytes.Length <= targetSizeKB * 1024 OrElse quality <= 20 Then
+                                    Exit Do
+                                Else
+                                    quality -= 5
+                                End If
+                            End Using
+                        Loop
+                    End Using
+                End Using
+            End Using
+
+            Return compressedBytes
+        End Using
+    End Function
+
+    Private Shared Function IsValidImageFormat(imgStream As Stream) As Boolean
+        Try
+            Using img As Image = Image.FromStream(imgStream, False, True)
+                Return True
+            End Using
+        Catch
+            Return False
+        End Try
+    End Function
+
     Public Shared Function GetHomePageImg(ByVal Branch As String, ByVal fileID As String) As String
         Dim url As String
         Dim filepath As String = "C:\\inetpub\\wwwroot\\KOSCUS_JFCAdmin\\Images\\HomePageImg\\" & Branch & "\\"
@@ -1713,7 +1818,7 @@ Public Class Common
 
         file = "C:\\inetpub\\wwwroot\\KOSCUS\\Login\\Images\\NewItems\\" & folderName & "\\item" & itemID & ".jpg"
         If IsDev() = True Then
-            partUrl = "http://" & HttpContext.Current.Request.Url.Host & IIf(HttpContext.Current.Request.Url.Port = 80 OrElse HttpContext.Current.Request.Url.Port = 443, "", ":" & HttpContext.Current.Request.Url.Port) & _
+            partUrl = "http://" & HttpContext.Current.Request.Url.Host & IIf(HttpContext.Current.Request.Url.Port = 80 OrElse HttpContext.Current.Request.Url.Port = 443, "", ":" & HttpContext.Current.Request.Url.Port) &
                     HttpContext.Current.Request.ApplicationPath & "/Login/Images/NewItems/"
         Else
             partUrl = "http://shop.jfc.com/Login/Images/NewItems/" 'Can't use "http://192.168.207.5/xxx" because image won't show on Gmail
@@ -1795,7 +1900,7 @@ Public Class Common
         Dim customerID As String
 
         customerID = GetCustomerIDFromCartID(DB, cartID)
-        SQL = "SELECT i.itemGrp_id FROM sodtl_cart c, " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " i " & _
+        SQL = "SELECT i.itemGrp_id FROM sodtl_cart c, " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " i " &
                 "WHERE c.custGrpItem_id = i.custGrpItem_id AND i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & " AND c.cart_id = :1"
         '"i.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _ 'is added to improve the performance
         Return CString(DB.GetScalar(SQL, cartID))
@@ -1817,7 +1922,7 @@ Public Class Common
         'Check if different order form exists in cart
         SQL = "SELECT itemGrp_id FROM custGrp_item WHERE custGrpItem_id = :1"
         itemGrpID = CString(DB.GetScalar(SQL, custGrpItemID))
-        SQL = "SELECT g.itemGrpName FROM sodtl_cart c, custGrp_item i, custGrp_itemGrp g " & _
+        SQL = "SELECT g.itemGrpName FROM sodtl_cart c, custGrp_item i, custGrp_itemGrp g " &
                 "WHERE c.custGrpItem_id = i.custGrpItem_id AND i.itemGrp_id <> :1 AND c.cart_id = :2 AND i.itemGrp_id = g.itemGrp_id"
         itemGrpNameInCart = CString(DB.GetScalar(SQL, itemGrpID, cartID))
         Return IIf(itemGrpNameInCart = "", True, False)
@@ -1832,7 +1937,7 @@ Public Class Common
         'Check if different order form exists in order
         SQL = "SELECT itemGrp_id FROM custGrp_item WHERE custGrpItem_id = :1"
         itemGrpID = CString(DB.GetScalar(SQL, custGrpItemID))
-        SQL = "SELECT g.itemGrpName FROM sodtl o, custGrp_itemGrp g " & _
+        SQL = "SELECT g.itemGrpName FROM sodtl o, custGrp_itemGrp g " &
                 "WHERE o.itemGrp_id = g.itemGrp_id AND o.itemGrp_id <> :1 AND o.webOrder_id = :2"
         itemGrpNameInOrder = CString(DB.GetScalar(SQL, itemGrpID, webOrderID))
         Return IIf(itemGrpNameInOrder = "", True, False)
@@ -1843,10 +1948,10 @@ Public Class Common
         Dim SQL As String
         Dim dr As DataRow
 
-        SQL = "SELECT u.custCompany_id, " & IIf(SMALL_CUST_ONLY = True, "SUBSTR(c.custCompany_id, 1, 2) || '-' || SUBSTR(c.custCompany_id, 3, 4)", "c.custCompany_id") & " || ' ' || c.custCompanyName AS custCompanyName " & _
-                "FROM webUser_customer u, custCompany c, customer a " & _
-                "WHERE u.custCompany_id = c.custCompany_id AND u.customer_id = a.customer_id AND u.email = :1 " & IIf(custAdminOnly = True, " AND u.userCompany_id = 'ADMIN' ", " AND u.userCompany_id = 'JFC' ") & _
-                "GROUP BY u.custCompany_id, c.custCompany_id, c.custCompanyName " & _
+        SQL = "SELECT u.custCompany_id, " & IIf(SMALL_CUST_ONLY = True, "SUBSTR(c.custCompany_id, 1, 2) || '-' || SUBSTR(c.custCompany_id, 3, 4)", "c.custCompany_id") & " || ' ' || c.custCompanyName AS custCompanyName " &
+                "FROM webUser_customer u, custCompany c, customer a " &
+                "WHERE u.custCompany_id = c.custCompany_id AND u.customer_id = a.customer_id AND u.email = :1 " & IIf(custAdminOnly = True, " AND u.userCompany_id = 'ADMIN' ", " AND u.userCompany_id = 'JFC' ") &
+                "GROUP BY u.custCompany_id, c.custCompany_id, c.custCompanyName " &
                 "ORDER BY c.custCompany_id, c.custCompanyName"
         dt = DB.GetDataTable(SQL, email)
         If insertFirstLine = True Then
@@ -1865,22 +1970,22 @@ Public Class Common
         Dim SQL As String
         Dim dr As DataRow
 
-       
+
         If custAdminOnly Then
-            SQL = "SELECT u.jfcbranchnr as custCompany_id, u.jfcbranchnr || ' ' || j.vendorname AS custCompanyName " & _
-               "FROM  customer u, jfcvendor j " & _
-               "WHERE u.jfcbranchnr = j.jfcbranchnr and j.jfcbranchnr <> '99' " & _
-               "GROUP BY u.jfcbranchnr ,j.vendorname " & _
+            SQL = "SELECT u.jfcbranchnr as custCompany_id, u.jfcbranchnr || ' ' || j.vendorname AS custCompanyName " &
+               "FROM  customer u, jfcvendor j " &
+               "WHERE u.jfcbranchnr = j.jfcbranchnr and j.jfcbranchnr <> '99' " &
+               "GROUP BY u.jfcbranchnr ,j.vendorname " &
                "ORDER BY u.jfcbranchnr, j.vendorname "
 
         Else
-            SQL = "SELECT SUBSTR(u.custCompany_id, 1, 2) as custCompany_id, SUBSTR(u.custCompany_id, 1, 2) || ' ' || j.vendorname AS custCompanyName " & _
-               "FROM  webUser_customer u, jfcvendor j " & _
-               "WHERE SUBSTR(u.custCompany_id, 1, 2) = j.jfcbranchnr AND u.email = :1 AND u.userCompany_id = 'JFC' " & _
-               "GROUP BY SUBSTR(u.custCompany_id, 1, 2) ,j.vendorname " & _
+            SQL = "SELECT SUBSTR(u.custCompany_id, 1, 2) as custCompany_id, SUBSTR(u.custCompany_id, 1, 2) || ' ' || j.vendorname AS custCompanyName " &
+               "FROM  webUser_customer u, jfcvendor j " &
+               "WHERE SUBSTR(u.custCompany_id, 1, 2) = j.jfcbranchnr AND u.email = :1 AND u.userCompany_id = 'JFC' " &
+               "GROUP BY SUBSTR(u.custCompany_id, 1, 2) ,j.vendorname " &
                "ORDER BY SUBSTR(u.custCompany_id, 1, 2), j.vendorname "
         End If
-       
+
         dt = DB.GetDataTable(SQL, email)
         If insertFirstLine = True And dt.Rows.Count > 0 Then
             dr = dt.NewRow
@@ -1935,9 +2040,9 @@ Public Class Common
         Dim dr As DataRow
 
         'Show dropdownlist of shipping point
-        SQL = "SELECT shipPoint_id, shipName " & _
-                "FROM customer_shipPoint " & _
-                "WHERE customer_id = :1 " & _
+        SQL = "SELECT shipPoint_id, shipName " &
+                "FROM customer_shipPoint " &
+                "WHERE customer_id = :1 " &
                 "ORDER BY shipName"
         dt = DB.GetDataTable(SQL, customerID)
         If insertFirstLine = True Then
@@ -1951,7 +2056,7 @@ Public Class Common
         lst.DataBind()
     End Sub
 
-    Public Shared Sub ShowCodeMasterList(ByVal DB As DBHelper, ByVal codeGrp As String, ByRef lst As DropDownList, _
+    Public Shared Sub ShowCodeMasterList(ByVal DB As DBHelper, ByVal codeGrp As String, ByRef lst As DropDownList,
                                          ByVal nameOnly As Boolean, Optional ByVal insertFirstLine As Boolean = False, Optional ByVal firstLineStr As String = "")
         Dim SQL As String
         Dim dt As DataTable
@@ -1962,9 +2067,9 @@ Public Class Common
                 SQL = "SELECT code_id, codeDesc FROM codeMaster WHERE codeGrp = 'ORDERSTATE' AND code_id <> 'D' ORDER BY dispOrder"
                 dt = DB.GetDataTable(SQL)
             Case "PAYMENTTYPE"
-                SQL = "SELECT code_id, codeDesc FROM codeMaster " & _
-                        "WHERE codeGrp = :1 " & _
-                        IIf(ALLOW_CARD_PAYMENT = False, " AND code_id <> 'CARD' ", "") & _
+                SQL = "SELECT code_id, codeDesc FROM codeMaster " &
+                        "WHERE codeGrp = :1 " &
+                        IIf(ALLOW_CARD_PAYMENT = False, " AND code_id <> 'CARD' ", "") &
                         "ORDER BY dispOrder"
                 dt = DB.GetDataTable(SQL, codeGrp)
             Case "USERFLAG"
@@ -2025,7 +2130,7 @@ Public Class Common
         lst.DataBind()
     End Sub
 
-    Public Shared Sub ShowCodeMasterListLocal(ByVal DB As DBHelper, ByVal codeGrp As String, ByRef lst As DropDownList, _
+    Public Shared Sub ShowCodeMasterListLocal(ByVal DB As DBHelper, ByVal codeGrp As String, ByRef lst As DropDownList,
                                          ByVal nameOnly As Boolean, Optional ByVal insertFirstLine As Boolean = False, Optional ByVal firstLineStr As String = "")
         Dim SQL As String
         Dim dt As New DataTable
@@ -2128,7 +2233,7 @@ Public Class Common
         lst.DataBind()
     End Sub
 
-    Public Shared Sub ShowList(ByVal DB As DBHelper, ByVal cmd As String, ByVal id As String, ByRef lst As DropDownList, _
+    Public Shared Sub ShowList(ByVal DB As DBHelper, ByVal cmd As String, ByVal id As String, ByRef lst As DropDownList,
                                       ByVal nameOnly As Boolean, Optional ByVal insertFirstLine As Boolean = False, Optional ByVal firstLineStr As String = "")
         Dim SQL As String = ""
         Dim dt As DataTable
@@ -2138,8 +2243,8 @@ Public Class Common
             Case "ITEMGRP"
                 SQL = "SELECT itemGrp_id AS id, itemGrpName AS name FROM custGrp_itemGrp WHERE custGrp_id = :1 ORDER BY dispOrder"
             Case "CTG"
-                SQL = "SELECT c.ctg_id AS id, c.ctgName AS name FROM custCompany_ctg c, custGrp g " & _
-                             "WHERE c.custCompany_id = g.custCompany_id AND g.custGrp_id = :1 " & _
+                SQL = "SELECT c.ctg_id AS id, c.ctgName AS name FROM custCompany_ctg c, custGrp g " &
+                             "WHERE c.custCompany_id = g.custCompany_id AND g.custGrp_id = :1 " &
                              "ORDER BY c.dispOrder"
             Case "VENDOR"
                 SQL = "SELECT vendor_id AS id, vendorName AS name FROM custGrp_vendor WHERE custGrp_id = :1 ORDER BY vendorName"
@@ -2171,9 +2276,9 @@ Public Class Common
         Dim dr As DataRow
 
         'Show dropdownlist of account list
-        SQL = "SELECT accNickName FROM customer_payAcc " & _
-                "WHERE customer_id = :1 " & _
-                IIf(ALLOW_CARD_PAYMENT = False, " AND paymentType_id <> 'CARD' ", "") & _
+        SQL = "SELECT accNickName FROM customer_payAcc " &
+                "WHERE customer_id = :1 " &
+                IIf(ALLOW_CARD_PAYMENT = False, " AND paymentType_id <> 'CARD' ", "") &
                 "ORDER BY createDate DESC"
         dt = DB.GetDataTable(SQL, customerID)
         dr = dt.NewRow
@@ -2206,15 +2311,15 @@ Public Class Common
         Dim i As Integer
 
         'Show ordered qty from web order for non JFC items and from JETS for JFC items
-        SQL = "SELECT createDate, createDate_fmt, qty, invoiceNr " & _
-                "FROM (SELECT h.createDate AS createDate, TO_CHAR(h.createDate, :1) AS createDate_fmt, CASE WHEN d.csQty > 0 THEN d.csQty || ' cs ' END || CASE WHEN d.eaQty > 0 THEN d.eaQty || ' ea ' END || CASE WHEN d.lbs > 0 THEN d.lbs || ' lb' END qty, NULL AS invoiceNr " & _
-                " FROM sohdr h, sodtl d, custGrp_item i " & _
-                " WHERE h.webOrder_id = d.webOrder_id AND d.custGrpItem_id = i.custGrpItem_id AND i.jfcItem = 'N' AND d.custGrpItem_id = :2 AND h.customer_id = :3 " & _
-                " UNION " & _
-                " SELECT NVL(jh.shipDate, jh.createDate) AS createDate, TO_CHAR(NVL(jh.shipDate, jh.createDate), :4) AS createDate_fmt, CASE WHEN jd.csQty > 0 THEN jd.csQty || ' cs ' END || CASE WHEN jd.eaQty > 0 AND jd.lbs = 0 THEN jd.eaQty || ' ea ' END || CASE WHEN jd.pcQty > 0 AND jd.lbs > 0 THEN jd.pcQty || ' pc ' END || CASE WHEN jd.lbs > 0 THEN '(' || jd.lbs || ' lb)' END qty, jh.orderNr AS invoiceNr " & _
-                " FROM sohdr_jets jh, sodtl_jets jd, customer c " & _
-                " WHERE jh.jfcBranchNr = jd.jfcBranchNr AND jh.orderNr = jd.orderNr AND jd.item_id IN (SELECT item_id FROM " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " WHERE jfcItem = 'Y' AND custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & " AND custGrpItem_id = :5) " & _
-                "   AND jh.jfcBranchNr = c.jfcBranchNr AND jh.jfcCustomerNr = c.jfcCustomerNr AND c.customer_id = :6 " & _
+        SQL = "SELECT createDate, createDate_fmt, qty, invoiceNr " &
+                "FROM (SELECT h.createDate AS createDate, TO_CHAR(h.createDate, :1) AS createDate_fmt, CASE WHEN d.csQty > 0 THEN d.csQty || ' cs ' END || CASE WHEN d.eaQty > 0 THEN d.eaQty || ' ea ' END || CASE WHEN d.lbs > 0 THEN d.lbs || ' lb' END qty, NULL AS invoiceNr " &
+                " FROM sohdr h, sodtl d, custGrp_item i " &
+                " WHERE h.webOrder_id = d.webOrder_id AND d.custGrpItem_id = i.custGrpItem_id AND i.jfcItem = 'N' AND d.custGrpItem_id = :2 AND h.customer_id = :3 " &
+                " UNION " &
+                " SELECT NVL(jh.shipDate, jh.createDate) AS createDate, TO_CHAR(NVL(jh.shipDate, jh.createDate), :4) AS createDate_fmt, CASE WHEN jd.csQty > 0 THEN jd.csQty || ' cs ' END || CASE WHEN jd.eaQty > 0 AND jd.lbs = 0 THEN jd.eaQty || ' ea ' END || CASE WHEN jd.pcQty > 0 AND jd.lbs > 0 THEN jd.pcQty || ' pc ' END || CASE WHEN jd.lbs > 0 THEN '(' || jd.lbs || ' lb)' END qty, jh.orderNr AS invoiceNr " &
+                " FROM sohdr_jets jh, sodtl_jets jd, customer c " &
+                " WHERE jh.jfcBranchNr = jd.jfcBranchNr AND jh.orderNr = jd.orderNr AND jd.item_id IN (SELECT item_id FROM " & IIf(IsSmallCustomer(DB, customerID) = True, "v_custgrp_item_small", "custgrp_item") & " WHERE jfcItem = 'Y' AND custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & " AND custGrpItem_id = :5) " &
+                "   AND jh.jfcBranchNr = c.jfcBranchNr AND jh.jfcCustomerNr = c.jfcCustomerNr AND c.customer_id = :6 " &
                 ") ORDER BY createDate DESC"
         r = DB.GetReader(SQL, DATE_FMT, custGrpItemID, customerID, DATE_FMT, custGrpItemID, customerID)
         '"  AND custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _ 'is added to improve the performance
@@ -2290,13 +2395,13 @@ Public Class Common
     '    End If
     'End If
     'r.close()
-    Public Shared Sub ShowDayEventInCalendar(ByVal DB As DBHelper, ByVal page As System.Web.UI.Page, ByRef e As Object, ByVal customerID As String, ByVal shipPointID As String, ByVal viewOnly As Boolean, _
+    Public Shared Sub ShowDayEventInCalendar(ByVal DB As DBHelper, ByVal page As System.Web.UI.Page, ByRef e As Object, ByVal customerID As String, ByVal shipPointID As String, ByVal viewOnly As Boolean,
                                            Optional ByVal lnkDelivery As LinkButton = Nothing)
         Dim SQL As String
         Dim r As DataReader
         Dim lbl As New Label
         Dim lnk As New HyperLink
-        Dim img As Image
+        Dim img As System.Web.UI.WebControls.Image
         Dim tok As String()
         'Dim lst(1, 31) As String
         Dim info As CultureInfo = Thread.CurrentThread.CurrentCulture
@@ -2311,12 +2416,12 @@ Public Class Common
 
 
 
-        SQL = "SELECT WM_CONCAT(' (Order by ' || TO_CHAR(d.orderByDate, :1) ||')') vendorList " & _
-                "FROM customer_deliveryDate d, custGrp_vendor v " & _
-                "WHERE d.custGrpVendor_id = v.custGrpVendor_id " & _
-                "  AND d.shipPoint_id = :2" & _
-                "  AND d.customer_id = :3" & _
-                "  AND d.deliveryDate = to_date(" & DB.SqlEsc(Format(e.Day.Date, DATE_FMT)) & ", :4) " & _
+        SQL = "SELECT WM_CONCAT(' (Order by ' || TO_CHAR(d.orderByDate, :1) ||')') vendorList " &
+                "FROM customer_deliveryDate d, custGrp_vendor v " &
+                "WHERE d.custGrpVendor_id = v.custGrpVendor_id " &
+                "  AND d.shipPoint_id = :2" &
+                "  AND d.customer_id = :3" &
+                "  AND d.deliveryDate = to_date(" & DB.SqlEsc(Format(e.Day.Date, DATE_FMT)) & ", :4) " &
                 "ORDER BY vendorName"
         r = DB.GetReader(SQL, SHORTDATETIME_DELFMT, shipPointID, customerID, DATE_FMT) '
         If r.Read() Then
@@ -2382,7 +2487,7 @@ Public Class Common
             'lnkDelivery_Click() gets called when clicking
             lnk.NavigateUrl = page.ClientScript.GetPostBackClientHyperlink(lnkDelivery, Format(e.Day.Date, DATE_FMT) & ",", True)
             lnk.ToolTip = "Add a delivery"
-            img = New Image()
+            img = New System.Web.UI.WebControls.Image()
             img.ImageUrl = GetWebImgUrl("add.png")
             img.CssClass = "xxsImgBtn"
             img.BorderStyle = BorderStyle.None
@@ -2431,7 +2536,7 @@ Public Class Common
     '        Next
     '    End If
     'End If
-    Public Shared Sub ShowDayEventInMasterCalendar(ByVal DB As DBHelper, ByVal page As System.Web.UI.Page, ByRef e As Object, ByVal BranchNr As String, ByVal viewOnly As Boolean, _
+    Public Shared Sub ShowDayEventInMasterCalendar(ByVal DB As DBHelper, ByVal page As System.Web.UI.Page, ByRef e As Object, ByVal BranchNr As String, ByVal viewOnly As Boolean,
                                            Optional ByVal lnkDelivery As LinkButton = Nothing)
         Dim SQL As String
         Dim r As DataReader
@@ -2448,7 +2553,7 @@ Public Class Common
 
 
 
-  
+
         SQL = "SELECT ' (Order by ' || TO_CHAR(d.orderByDate, :1) ||')' AS Orderbydate, m.DELIVERYMASTERNAME, m.DELIVERYMASTER_ID " &
              "FROM jfcdeliverymaster_date d, jfcdeliverymaster m " & _
               "WHERE d.DELIVERYMASTER_ID = m.DELIVERYMASTER_ID AND m.jfcbranchnr = :2 " & _

@@ -970,8 +970,8 @@
     <comment>Savings Account</comment>
   </data>
   <data name="SecurityCodeBackofCard" xml:space="preserve">
-    <value>セキュリティー番号（カード裏面）</value>
-    <comment>Security Code (Back of Card)</comment>
+    <value>セキュリティー番号</value>
+    <comment>Security Code </comment>
   </data>
   <data name="Setautopayment" xml:space="preserve">
     <value>自動決済を設定...</value>
@@ -1659,7 +1659,7 @@
   </data>
   <data name="MyAccountMsg3" xml:space="preserve">
     <value>{0} を削除してもよろしいですか?</value>
-    <comment>Are you sure you want to delete {0}(Account)?</comment>
+    <comment>Are you sure you want to delete {0}?</comment>
   </data>
   <data name="Paymentacountnolongerexists" xml:space="preserve">
     <value>支払いアカウントが存在しません</value>
@@ -1958,5 +1958,70 @@
   </data>
   <data name="PhoneStatement2" xml:space="preserve">
     <value>携帯の電話番号を入力する場合は、チェックボックスにチェックする必要があります。</value>
+  </data>
+  <data name="BillingAddress" xml:space="preserve">
+    <value>請求先住所</value>
+    <comment>BillingAddress</comment>
+  </data>
+  <data name="Pleaseenternameandbillingaddress" xml:space="preserve">
+    <value>お名前と請求先住所を入力してください</value>
+    <comment>Please enter name and billing address</comment>
+  </data>
+  <data name="AllInvoice" xml:space="preserve">
+    <value>全ての請求書</value>
+    <comment>All Invoice</comment>
+  </data>
+  <data name="BeerInvoice" xml:space="preserve">
+    <value>ビールの請求書</value>
+    <comment>Beer Invoice</comment>
+  </data>
+  <data name="CCardMsg1" xml:space="preserve">
+    <value>弊社では、クレジットカード決済をご利用の際、取引金額に対して{0}%の手数料を申し受けております。この手数料は、弊社がクレジットカード会社に支払う手数料を超過することはありません。</value>
+    <comment>We impose a surcharge of {0}% on the transaction amount on credit card  products, which is not greater than our cost of acceptance.</comment>
+  </data>
+  <data name="CODAUTOPAYMENTONTHEDELIVERYINVOICEDATE" xml:space="preserve">
+    <value>COD / 配達日もしくは請求書日に自動決済</value>
+    <comment>COD / auto payment on the delivery / invoice date</comment>
+  </data>
+  <data name="CreditCard" xml:space="preserve">
+    <value>クレジットカード</value>
+    <comment>Credit Card</comment>
+  </data>
+  <data name="DebitCard" xml:space="preserve">
+    <value>デビットカード</value>
+    <comment>Debit Card</comment>
+  </data>
+  <data name="LiquorInvoice" xml:space="preserve">
+    <value>リカーの請求書</value>
+    <comment>Liquor Invoice</comment>
+  </data>
+  <data name="NonLiquorInvoice" xml:space="preserve">
+    <value>リカー以外の請求書</value>
+    <comment>Non Liquor Invoice</comment>
+  </data>
+  <data name="WineInvoice" xml:space="preserve">
+    <value>ワインの請求書</value>
+    <comment>Wine Invoice</comment>
+  </data>
+  <data name="Invalidbillingaddress" xml:space="preserve">
+    <value>無効な請求先住所です</value>
+    <comment>Invalid billing address</comment>
+  </data>
+  <data name="InvalidCVV" xml:space="preserve">
+    <value>無効なCVVです</value>
+    <comment>Invalid CVV</comment>
+  </data>
+  <data name="Pleaseenterthenameusingonebytecharacters" xml:space="preserve">
+    <value>半角文字でお名前を入力してください</value>
+    <comment>Please enter the name using one byte characters.</comment>
+  </data>
+  <data name="Autopaymentonthe15thofeachmonth" xml:space="preserve">
+    <value>毎月中旬と月末に自動決済 （月2回）</value>
+  </data>
+  <data name="Autopaymentonthelastdayofeachmonth" xml:space="preserve">
+    <value>毎月末に自動決済 （月1回）</value>
+  </data>
+  <data name="CashDiscountAmount" xml:space="preserve">
+    <value>現金割引価格</value>
   </data>
 </root>

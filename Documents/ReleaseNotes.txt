@@ -1,6 +1,22 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+
+KOSCUS_JFCADMIN014 (10/29/2025) 
+<BranchSetting> When JFC_HO adds or updates a homepage image, place it at the top of the list by default.
+<CustomerSetting> Changed homepage selection behavior to enable the “Update Changes” button without reloading the page.
+<BranchSetting> Allow JFC to save item # for recipes (optional). Textbox shortened for item ID.
+<CustomerSettings> Updated wording to “Show all exception price group items on Buy Again.”
+<Customer Items> Changed label “Order Form” to “Buy Again.”
+
+KOSCUS_JFCADMIN013 (8/5/2025)  
+<customerSetting>  A new feature has been added to allow JFC to control the visibility of the homepage
+
+KOSCUS_JFCADMIN012 (7/31/2025)  
+<Common> Added compression for large images
+<BranchSetting> Client-side file size check added (4MB limit)
+<BranchSetting> Improved upload robustness (compress to 100KB)
+
 * 6/11/2025 <New Items> Stopped using openAcctDate_branch or openAcctDate to determine new items. Only use newItemDate.
 * 6/10/2025: <Item Search> Relaced itemWebDesc_roman with salesPoint.
 * 4/14/2025:

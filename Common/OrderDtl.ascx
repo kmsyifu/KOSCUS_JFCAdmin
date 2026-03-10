@@ -32,6 +32,7 @@
 
 <%--<asp:LinkButton ID="lnkBack" CssClass="linkLabel" runat="server" Text="<< Go back to orders..." ></asp:LinkButton>--%>
 <h1><asp:Label ID="lblTitle" Text="View / Edit Order" runat="server" />&nbsp;<asp:Label ID="lblTitle2" CssClass="red" Text="(Non Web Order)" runat="server" /></h1>
+<asp:HiddenField ID="hdnBypassBottomPriceCheck" runat="server" Value="NO" />
 
 <%--Order info--%>
 <asp:Panel ID="pnlOrderHdr" CssClass='<%# "visiblePnl " & IIf(IsMobile(), "", "leftContent") %>' runat="server">
@@ -692,3 +693,27 @@
         </div>--%>
     </div>
 </asp:Panel>
+
+<%--Custom confirm dialog for bottom price warning (uses jQuery UI dialog like other message boxes)--%>
+<script type="text/javascript">
+    function showBottomPriceWarning(msg, hdnId, postbackRef) {
+        var dialogDiv = $('<div title="Price Warning"><p>' + msg + '</p></div>');
+        $('form').append(dialogDiv);
+        dialogDiv.dialog({
+            modal: true,
+            buttons: {
+                "Yes": function () {
+                    $(this).dialog('close');
+                    document.getElementById(hdnId).value = 'YES';
+                    eval(postbackRef);
+                },
+                "No": function () {
+                    $(this).dialog('close');
+                }
+            },
+            close: function () {
+                $(this).remove();
+            }
+        });
+    }
+</script>

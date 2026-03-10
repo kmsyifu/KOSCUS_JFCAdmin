@@ -1182,8 +1182,8 @@
     <comment>Savings Account</comment>
   </data>
   <data name="SecurityCodeBackofCard" xml:space="preserve">
-    <value>보안 코드( 카드 뒷면)</value>
-    <comment>Security Code (Back of Card)</comment>
+    <value>보안 코드</value>
+    <comment>Security Code</comment>
   </data>
   <data name="Setautopayment" xml:space="preserve">
     <value>자동결제 설정...</value>
@@ -1667,7 +1667,7 @@
   </data>
   <data name="MyAccountMsg3" xml:space="preserve">
     <value>{0}를 삭제하기를 위하십니까?</value>
-    <comment>Are you sure you want to delete {0}(Account)?</comment>
+    <comment>Are you sure you want to delete {0}?</comment>
   </data>
   <data name="Paymentacountnolongerexists" xml:space="preserve">
     <value>결제 어카운트가 더 이상 존재하지 아니합니다</value>
@@ -1966,5 +1966,70 @@
   </data>
   <data name="PhoneStatement2" xml:space="preserve">
     <value>휴대폰 번호가 입력되어 있어 체크박스를 반드시 체크해야 합니다.</value>
+  </data>
+  <data name="BillingAddress" xml:space="preserve">
+    <value>Billing 주소</value>
+    <comment>BillingAddress</comment>
+  </data>
+  <data name="Pleaseenternameandbillingaddress" xml:space="preserve">
+    <value>이름과 Billing주소를 입력하세요</value>
+    <comment>Please enter name and billing address</comment>
+  </data>
+  <data name="AllInvoice" xml:space="preserve">
+    <value>모든 청구서</value>
+    <comment>All Invoice</comment>
+  </data>
+  <data name="BeerInvoice" xml:space="preserve">
+    <value>맥주 청구서</value>
+    <comment>Beer Invoice</comment>
+  </data>
+  <data name="CCardMsg1" xml:space="preserve">
+    <value>당사는 신용카드로 결제된 거래 금액에 {0}%의 추가 수수료를 부과합니다. 이 수수료는 당사가 신용카드 회사에 지불하는 수수료를 초과하지 않습니다.</value>
+    <comment>We impose a surcharge of {0}% on the transaction amount on credit card  products, which is not greater than our cost of acceptance.</comment>
+  </data>
+  <data name="CODAUTOPAYMENTONTHEDELIVERYINVOICEDATE" xml:space="preserve">
+    <value>COD / 배송일 또는 청구서 날짜에 자동 결제</value>
+    <comment>COD / auto payment on the delivery / invoice date</comment>
+  </data>
+  <data name="CreditCard" xml:space="preserve">
+    <value>신용카드</value>
+    <comment>Credit Card</comment>
+  </data>
+  <data name="DebitCard" xml:space="preserve">
+    <value>직불카드</value>
+    <comment>Debit Card</comment>
+  </data>
+  <data name="LiquorInvoice" xml:space="preserve">
+    <value>주류 청구서</value>
+    <comment>Liquor Invoice</comment>
+  </data>
+  <data name="NonLiquorInvoice" xml:space="preserve">
+    <value>주류 이외의 청구서</value>
+    <comment>Non Liquor Invoice</comment>
+  </data>
+  <data name="WineInvoice" xml:space="preserve">
+    <value>와인 청구서</value>
+    <comment>Wine Invoice</comment>
+  </data>
+  <data name="Invalidbillingaddress" xml:space="preserve">
+    <value>잘못된 Billing 주소</value>
+    <comment>Invalid billing address</comment>
+  </data>
+  <data name="InvalidCVV" xml:space="preserve">
+    <value>잘못된 CVV</value>
+    <comment>Invalid CVV</comment>
+  </data>
+  <data name="Pleaseenterthenameusingonebytecharacters" xml:space="preserve">
+    <value>반각문자로 이름을 입력하여주세요.</value>
+    <comment>Please enter the name using one byte characters.</comment>
+  </data>
+  <data name="Autopaymentonthe15thofeachmonth" xml:space="preserve">
+    <value>자동 결제 (매월 중간 및 말일 : 월 2회)</value>
+  </data>
+  <data name="Autopaymentonthelastdayofeachmonth" xml:space="preserve">
+    <value>자동 결제 (매월 말일 : 월 1회)</value>
+  </data>
+  <data name="CashDiscountAmount" xml:space="preserve">
+    <value>현금 할인 가격</value>
   </data>
 </root>

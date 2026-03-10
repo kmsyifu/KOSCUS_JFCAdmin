@@ -344,20 +344,30 @@ Partial Class BranchSetting
         pnlList_HomePageIMG.Visible = False
         pnlDtl_HomePageImg.Visible = True
         ClearSubControl(pnlDtl_HomePageImg)
+        txtItemId.CssClass = IIf(IsMobile(), "size8", "size12")
         Using DB As New DBHelper
             Select Case lstImgCtg.Text
                 Case "NEW"
                     pnlitem.Visible = False
                     pnlReceipt.Visible = True
+                    txtItemId.Visible = True
+                    lblURL.Text = "URL Or Item ID"
+
+                    lblOr.Visible = True
                 Case "PROMOTION"
                     pnlitem.Visible = False
                     pnlReceipt.Visible = True
+                    txtItemId.Visible = True
+                    lblOr.Visible = True
+                    lblURL.Text = "URL Or Item ID"
+                    'txtItemId.CssClass = IIf(IsMobile(), "size32", "size48")
                 Case "RECIPE"
                     pnlitem.Visible = False
-                    txtItemId.Visible = False
-                    lblURL.Text = "URL"
-                    lblOr.Visible = False
-                    txtItemId.CssClass = IIf(IsMobile(), "size32", "size48")
+                    txtItemId.Visible = True
+                    lblURL.Text = "URL Or/And Item ID"
+                    lblOr.Text = " or/and "
+                    lblOr.Visible = True
+                    'txtItemId.CssClass = IIf(IsMobile(), "size32", "size48")
                     pnlReceipt.Visible = True
             End Select
             cblBranch.DataTextField = "Value"
@@ -427,8 +437,6 @@ Partial Class BranchSetting
                         objListItem.Selected = True
                     End If
 
-
-
                 End While
 
             End If
@@ -497,22 +505,82 @@ Partial Class BranchSetting
                     Throw New FormatException("Please enter either URL or item ID.")
                 End If
 
-                For Each item As ListItem In cblBranch.Items
-                    If item.Selected And fuHomepage.HasFile Then
-                        SaveImgForEachBranch(DB, item.Text.Substring(0, 2), Path.GetFileNameWithoutExtension(item.Value), fuHomepage.FileName)
-                    ElseIf item.Selected And item.Value.Length > 3 Then
-                        If UpdateHomePage(DB, Path.GetFileNameWithoutExtension(item.Value), HomePageName, GetUserEmail(DB), txtImgUrl.Text, txtItemId.Text) Then
-                            MessageLine("CONFIRM", "Successfully saved")
-                        End If
-                    ElseIf item.Selected And item.Value.Length < 3 Then
-                        CopyImgForOneBranchToOther(DB, item.Text.Substring(0, 2), Path.GetFileNameWithoutExtension(item.Value), ImgHomepage.ImageUrl)
-                    ElseIf Not item.Selected And item.Value.Length > 3 Then
+                Dim email = GetUserEmail(DB)
+                Dim disOrder As Nullable(Of Integer) = Nothing
+                Dim compressedImage As Byte() = Nothing
 
+
+
+                'If fuHomepage.HasFile Then
+                '    Dim compressedImage As Byte() = Common.CompressIfLarge(fuHomepage.PostedFile.InputStream)
+
+
+                '    For Each item As ListItem In cblBranch.Items
+                '        If item.Selected Then
+                '            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                '                Sql = "SELECT Min(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
+                '                disOrder = Val(DB.GetScalar(Sql, item.Text.Substring(0, 2), lstImgCtg.Text)) - 1
+
+                '            End If
+
+                '            SaveImgForEachBranch(DB, item.Text.Substring(0, 2), Path.GetFileNameWithoutExtension(item.Value), fuHomepage.FileName, compressedImage, disOrder)
+                '        ElseIf item.Selected And item.Value.Length > 3 Then
+                '            If UpdateHomePage(DB, Path.GetFileNameWithoutExtension(item.Value), HomePageName, GetUserEmail(DB), txtImgUrl.Text, txtItemId.Text) Then
+                '                MessageLine("CONFIRM", "Successfully saved")
+                '            End If
+                '        ElseIf item.Selected And item.Value.Length < 3 Then
+                '            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                '                Sql = "SELECT Min(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
+                '                disOrder = Val(DB.GetScalar(Sql, item.Text.Substring(0, 2), lstImgCtg.Text)) - 1
+
+                '            End If
+                '            CopyImgForOneBranchToOther(DB, item.Text.Substring(0, 2), Path.GetFileNameWithoutExtension(item.Value), ImgHomepage.ImageUrl, disOrder)
+                '        ElseIf Not item.Selected And item.Value.Length > 3 Then
+
+                '            DeleteHomePageImg(DB, Path.GetFileNameWithoutExtension(item.Value), item.Text.Substring(0, 2))
+                '            DeleteHomePageFile(item.Text.Substring(0, 2), item.Value)
+                '        End If
+
+
+                '    Next
+                'End If
+
+
+
+                ' Compress image if file is uploaded
+                If fuHomepage.HasFile Then
+                    compressedImage = Common.CompressIfLarge(fuHomepage.PostedFile.InputStream)
+                End If
+
+                ' Process each branch checkbox
+                For Each item As ListItem In cblBranch.Items
+                    If item.Selected Then
+                        ' Handle cases where branch is selected
+                        If fuHomepage.HasFile Then
+                            ' New image uploaded - save/update with new image
+                            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                                Sql = "SELECT Min(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
+                                disOrder = Val(DB.GetScalar(Sql, item.Text.Substring(0, 2), lstImgCtg.Text)) - 1
+                            End If
+                            SaveImgForEachBranch(DB, item.Text.Substring(0, 2), Path.GetFileNameWithoutExtension(item.Value), fuHomepage.FileName, compressedImage, disOrder)
+                        ElseIf item.Value.Length > 3 Then
+                            ' No new image, but updating existing record (item_id, URL, etc.)
+                            If UpdateHomePage(DB, Path.GetFileNameWithoutExtension(item.Value), HomePageName, GetUserEmail(DB), txtImgUrl.Text, txtItemId.Text) Then
+                                MessageLine("CONFIRM", "Successfully saved")
+                            End If
+                        ElseIf item.Value.Length < 3 Then
+                            ' Copy image from another branch
+                            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                                Sql = "SELECT Min(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
+                                disOrder = Val(DB.GetScalar(Sql, item.Text.Substring(0, 2), lstImgCtg.Text)) - 1
+                            End If
+                            CopyImgForOneBranchToOther(DB, item.Text.Substring(0, 2), Path.GetFileNameWithoutExtension(item.Value), ImgHomepage.ImageUrl, disOrder)
+                        End If
+                    ElseIf Not item.Selected And item.Value.Length > 3 Then
+                        ' Branch unchecked - delete the image
                         DeleteHomePageImg(DB, Path.GetFileNameWithoutExtension(item.Value), item.Text.Substring(0, 2))
                         DeleteHomePageFile(item.Text.Substring(0, 2), item.Value)
                     End If
-
-
                 Next
 
                 'Dim filename = Path.GetFileNameWithoutExtension(fuHomepage.FileName)
@@ -619,7 +687,7 @@ Partial Class BranchSetting
         End If
     End Function
 
-    Private Sub SaveImgForEachBranch(DB As DBHelper, branchNr As String, IMG_ID As String, fileName_url As String)
+    Private Sub SaveImgForEachBranch(DB As DBHelper, branchNr As String, IMG_ID As String, fileName_url As String, compressedImage As Byte(), disOrder As Nullable(Of Integer))
         Dim filetype = Path.GetExtension(fileName_url)
 
         Dim filename = Path.GetFileNameWithoutExtension(fileName_url)
@@ -647,16 +715,18 @@ Partial Class BranchSetting
         'ViewState("HomePageId") 
         Dim filepath = Server.MapPath("~/Images/HomePageImg/" & branchNr & "/") & IMG_ID & filetype
 
-        UpsertHomepage(DB, IMG_ID, HomepageName, filepath, branchNr, GetUserEmail(DB), ImgUrl, itemID, ImgCtg)
+        UpsertHomepage(DB, IMG_ID, HomepageName, filepath, branchNr, GetUserEmail(DB), ImgUrl, itemID, ImgCtg, disOrder)
         ImgHomepage.ImageUrl = GetHomePageImg(branchNr, CString(IMG_ID & filetype))
-        fuHomepage.SaveAs(filepath)
-        fuHomepage.SaveAs(GetHomepageFilePath(branchNr) & IMG_ID & filetype)
+        File.WriteAllBytes(filepath, compressedImage)
+        File.WriteAllBytes(GetHomepageFilePath(branchNr) & IMG_ID & filetype, compressedImage)
+        'fuHomepage.SaveAs(filepath)
+        'fuHomepage.SaveAs(GetHomepageFilePath(branchNr) & IMG_ID & filetype)
         ImgHomepage.Visible = True
         btnSaveHomePageImg.Text = "Update"
         MessageLine("CONFIRM", "Successfully saved")
     End Sub
 
-    Private Sub CopyImgForOneBranchToOther(DB As DBHelper, branchNr As String, IMG_ID As String, fileName_url As String)
+    Private Sub CopyImgForOneBranchToOther(DB As DBHelper, branchNr As String, IMG_ID As String, fileName_url As String, disOrder As Nullable(Of Integer))
 
 
         Dim filetype = Path.GetExtension(fileName_url)
@@ -681,7 +751,7 @@ Partial Class BranchSetting
         End If
         Dim filepath = Server.MapPath("~/Images/HomePageImg/" & branchNr & "/") & IMG_ID & filetype
         Dim orginalfilepath = Server.MapPath("~/Images/HomePageImg/" & GetSecondLastFolderName(fileName_url) & "/") & filename & filetype
-        UpsertHomepage(DB, IMG_ID, HomepageName, filepath, branchNr, GetUserEmail(DB), ImgUrl, itemID, ImgCtg)
+        UpsertHomepage(DB, IMG_ID, HomepageName, filepath, branchNr, GetUserEmail(DB), ImgUrl, itemID, ImgCtg, disOrder)
         'ImgHomepage.ImageUrl = GetHomePageImg(branchNr, CString(IMG_ID & filetype))
 
         Try
