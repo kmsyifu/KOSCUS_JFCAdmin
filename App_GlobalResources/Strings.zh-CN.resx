@@ -2064,4 +2064,13 @@
   <data name="CashDiscountAmount" xml:space="preserve">
     <value>现金折扣价</value>
   </data>
+  <data name="CurrentSettings" xml:space="preserve">
+    <value>目前設定</value>
+  </data>
+  <data name="NewSettings" xml:space="preserve">
+    <value>新設定</value>
+  </data>
+  <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
+    <value>發票日期後{0}天自動付款（酒類發票為{1}天）</value>
+  </data>
 </root>

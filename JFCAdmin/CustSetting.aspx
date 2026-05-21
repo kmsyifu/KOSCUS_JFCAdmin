@@ -170,7 +170,7 @@
             
             //$('#<%=lstCustCompany.ClientID%>').change(function(){alert(optionValue);});
            $('#<%=txtJfcBranchNr.ClientID%>').mask("99");
-           $.mask.definitions['h'] = "[A-Fa-f0-9]";
+           $.mask.definitions['h'] = "[A-Za-z0-9]";
            $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
            $(".resetCursor").mouseup(function () {
              this.setSelectionRange(0,0);    

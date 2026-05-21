@@ -207,7 +207,7 @@ Public Class Common
         If String.IsNullOrEmpty(Trans) Then
             Return ""
         Else
-            Dim TransID = Trans.Replace(" ", "").Replace("&", "").Replace(",", "")
+            Dim TransID = Trans.Replace(" ", "").Replace("&", "").Replace(",", "").Replace("/", "")
             Dim result As String = rm.GetString(TransID, ci)
             If String.IsNullOrWhiteSpace(result) Then
                 Return Trans

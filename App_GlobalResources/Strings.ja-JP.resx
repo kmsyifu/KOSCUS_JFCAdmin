@@ -2024,4 +2024,13 @@
   <data name="CashDiscountAmount" xml:space="preserve">
     <value>現金割引価格</value>
   </data>
+  <data name="CurrentSettings" xml:space="preserve">
+    <value>現行設定</value>
+  </data>
+  <data name="NewSettings" xml:space="preserve">
+    <value>新規設定</value>
+  </data>
+  <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
+    <value>請求書発行日から{0}日後に自動決済（リカー請求書の場合は{1}日後）</value>
+  </data>
 </root>

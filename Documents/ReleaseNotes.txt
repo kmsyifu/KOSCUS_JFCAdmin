@@ -1,8 +1,14 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN015 (05/11/2026) 
+<CustomerSetting> Add AutoPay option handling to support: No Auto Payment, COD/Invoice Date Auto Payment, and Net Days Auto Payment for credit card customers.
 
+KOSCUS_JFCADMIN015 (03/10/2026) 
+<CustomerSetting> Applied a 4-character alphanumeric input mask to the JFC Customer Number field to restrict entries to letters and numbers.
+<CustomerItem> Applied a 4-character alphanumeric input mask to the JFC Customer Number field to restrict entries to letters and numbers.
 KOSCUS_JFCADMIN014 (10/29/2025) 
+
 <BranchSetting> When JFC_HO adds or updates a homepage image, place it at the top of the list by default.
 <CustomerSetting> Changed homepage selection behavior to enable the “Update Changes” button without reloading the page.
 <BranchSetting> Allow JFC to save item # for recipes (optional). Textbox shortened for item ID.

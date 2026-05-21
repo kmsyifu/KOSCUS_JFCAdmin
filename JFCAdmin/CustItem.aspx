@@ -210,7 +210,7 @@
             });
 
            $('#<%=txtJfcBranchNr.ClientID%>').mask("99");
-            $.mask.definitions['h'] = "[A-Fa-f0-9]";
+            $.mask.definitions['h'] = "[A-Za-z0-9]";
            $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
            applySortable();
 //           $(".drag_drop_grid").sortable({

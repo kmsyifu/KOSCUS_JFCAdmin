@@ -501,9 +501,9 @@ Partial Class JFCAdmin_CustSetting
                 grdShipPoint.Columns(GetColumnIndex(grdShipPoint, "country")).Visible = False 'Country
             Else
                 pnlCustInfo.Width = 500
-                pnlCustInfo.Height = 400
+                pnlCustInfo.Height = 450
                 pnlCustSetting.Width = 500
-                pnlCustSetting.Height = 400
+                pnlCustSetting.Height = 450
             End If
 
             Dim autoPayTypeALL = GetCustAutoPayType(DB, customerID, "AUTOPAYTYPEID_ALL")
@@ -523,7 +523,7 @@ Partial Class JFCAdmin_CustSetting
             ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lstHideHomePage, True)
 
             'Show customer info and settings
-            SQL = "SELECT c.* FROM customer c WHERE c.customer_id = :1"
+            SQL = "SELECT * FROM customer c left join codemaster m on m.code_id = c.autopaytype AND CODEGRP = 'AUTOPAY_TYPE'  WHERE c.customer_id = :1 "
             r = DB.GetReader(SQL, customerID)
             If r.Read() Then
                 'Customer info
@@ -542,6 +542,9 @@ Partial Class JFCAdmin_CustSetting
                 lblJfcContactName.Text = CString(r("jfcContactName"))
                 lblJfcEmail.Text = foldlongString(CString(r("jfcEmail")), New Char() {","})
                 'lblAutoPayType.Text = CString(r("AutoPayType"))
+                Dim autoPaytype As String = CString(r("CODEDESC"))
+                Dim NetsDay As String = CString(r("NETDAYS"))
+                Dim NetsDay_LIQUOR As String = CString(r("NETDAYS_LIQUOR"))
                 lblAutoPayType.Text = String.Empty
                 If autoPayTypeALL <> "" Then
                     lblAutoPayType.Text &= String.Format("{0}: {1}, ", "All Invoice", autoPayTypeALL)
@@ -558,6 +561,11 @@ Partial Class JFCAdmin_CustSetting
                 If autoPayTypeLIQUOR <> "" Then
                     lblAutoPayType.Text &= String.Format("{0}: {1}", "Liquor Invoice", autoPayTypeLIQUOR)
                 End If
+                If autoPayType <> "" Then
+                    lblAutoPayType.Text &= String.Format(Translate(autoPaytype), NetsDay, If(NetsDay_LIQUOR = "", NetsDay, NetsDay_LIQUOR))
+                End If
+
+
 
                 lblWebDiscType.Text = CString(r("WebDiscType"))
 

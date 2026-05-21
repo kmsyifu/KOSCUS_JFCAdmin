@@ -1815,4 +1815,13 @@
   <data name="CashDiscountAmount" xml:space="preserve">
     <value>Cash Discount Price</value>
   </data>
+  <data name="CurrentSettings" xml:space="preserve">
+    <value>Current Settings</value>
+  </data>
+  <data name="NewSettings" xml:space="preserve">
+    <value>New Settings</value>
+  </data>
+  <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
+    <value>Auto payment on {0} days after the invoice date ({1} days for liquor invoices)</value>
+  </data>
 </root>

@@ -2032,4 +2032,13 @@
   <data name="CashDiscountAmount" xml:space="preserve">
     <value>현금 할인 가격</value>
   </data>
+  <data name="CurrentSettings" xml:space="preserve">
+    <value>기존 설정</value>
+  </data>
+  <data name="NewSettings" xml:space="preserve">
+    <value>새 설정</value>
+  </data>
+  <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
+    <value>송장 발행일로부터 {0}일 후 자동 결제 (주류 송장의 경우 {1}일 후)</value>
+  </data>
 </root>

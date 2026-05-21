@@ -1988,7 +1988,7 @@
     <comment>We impose a surcharge of {0}% on the transaction amount on credit card or debit card products, which is not greater than our cost of acceptance.</comment>
   </data>
   <data name="CODAUTOPAYMENTONTHEDELIVERYINVOICEDATE" xml:space="preserve">
-    <value>COD /El pago automático en la fecha de entrega o emisión.</value>
+    <value>COD /El pago automático en la fecha de entrega o emisión</value>
     <comment>COD / auto payment on the delivery / invoice date</comment>
   </data>
   <data name="CreditCard" xml:space="preserve">
@@ -2031,5 +2031,14 @@
   </data>
   <data name="CashDiscountAmount" xml:space="preserve">
     <value>Precio con descuento por pago en efectivo</value>
+  </data>
+  <data name="CurrentSettings" xml:space="preserve">
+    <value>Configuración actual</value>
+  </data>
+  <data name="NewSettings" xml:space="preserve">
+    <value>Nueva configuración</value>
+  </data>
+  <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
+    <value>Pago automático {0} días después de la fecha de la factura  ({1} días en el caso de las facturas de licores)</value>
   </data>
 </root>
