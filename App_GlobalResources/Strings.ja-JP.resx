@@ -1138,7 +1138,7 @@
     <comment>Zip</comment>
   </data>
   <data name="ActionRequired" xml:space="preserve">
-    <value>必要なアクション</value>
+    <value>要対応</value>
     <comment>Action Required</comment>
   </data>
   <data name="Anorderhasbeencanceled" xml:space="preserve">
@@ -2032,5 +2032,40 @@
   </data>
   <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
     <value>請求書発行日から{0}日後に自動決済（リカー請求書の場合は{1}日後）</value>
+  </data>
+  <data name="creditcardexpiresupdateMessage" xml:space="preserve">
+    <value>自動払いが中断されるのを防ぐため、{0} にログインし、「マイアカウント」からクレジットカード情報の更新をお願いします。</value>
+    <comment>To avoid any interruption to your automatic payments, please update your credit card information by logging into {0} and updating your payment account under "My Account".</comment>
+  </data>
+  <data name="Ifyouhavealreadyupdatedyourcardpleasedisregardthismessage" xml:space="preserve">
+    <value>既にカード情報を更新済みの場合は、このメッセージを破棄（無視）してください。</value>
+    <comment>If you have already updated your card, please disregard this message.</comment>
+  </data>
+  <data name="SecurityNotice" xml:space="preserve">
+    <value>セキュリティ通知</value>
+    <comment>Security Notice</comment>
+  </data>
+  <data name="SecurityNoticeMessage" xml:space="preserve">
+    <value>JFCに関する誤った不振な支払指示を含む、フィッシングメール（詐欺メール）が送信されているとの報告を受けております。このような不審なメールを受信された場合は無視していただき、JFCの担当営業までご連絡いただけますようお願い申し上げます。</value>
+    <comment>We have received reports of phishing emails with incorrect payment instructions. Please ignore them and report to your sales reps if you receive any suspicious emails related to JFC.</comment>
+  </data>
+  <data name="Yourcreditcardexpiresnextmonth" xml:space="preserve">
+    <value>お客様のクレジットカード（{0}）は来月（{1}/{2}）に有効期限が切れます。</value>
+    <comment>Your credit card {0} expires next month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardexpiresthismonth" xml:space="preserve">
+    <value>お客様のクレジットカード（{0}）は今月（{1}/{2}）に有効期限が切れます。</value>
+    <comment>Your credit card {0} expires this month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardonfileisexpiringsoon" xml:space="preserve">
+    <value>登録済みのクレジットカードの有効期限がまもなく切れます</value>
+    <comment>Your credit card on file is expiring soon</comment>
+  </data>
+  <data name="SecurePayment" xml:space="preserve">
+    <value>セキュア決済</value>
+  </data>
+  <data name="SecurePaymentMessage" xml:space="preserve">
+    <value>お客様のお支払い情報は、PCI適合のリーディング決済ゲートウェイであるForteを通じて、高度な暗号化とトークン化技術を用いて安全に処理されます。お客様の銀行口座やカードの詳細情報は厳重に保護され、当社のサーバーに保存されることは一切ありません。</value>
+    <comment>Your payments are processed securely via Forte, a leading PCI-compliant payment gateway, using advanced encryption and tokenization. Your bank or card details remain strictly confidential and are never stored on our servers.</comment>
   </data>
 </root>

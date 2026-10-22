@@ -2041,4 +2041,40 @@
   <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
     <value>Pago automático {0} días después de la fecha de la factura  ({1} días en el caso de las facturas de licores)</value>
   </data>
+  <data name="creditcardexpiresupdateMessage" xml:space="preserve">
+    <value>Para evitar cualquier interrupción en sus pagos automáticos, inicie sesión en {0} y actualice la información de su tarjeta de crédito en la sección "Mi Cuenta".</value>
+    <comment>To avoid any interruption to your automatic payments, please update your credit card information by logging into {0} and updating your payment account under My Account.</comment>
+  </data>
+  <data name="Ifyouhavealreadyupdatedyourcardpleasedisregardthismessage" xml:space="preserve">
+    <value>Si ya ha actualizado la información de su tarjeta, por favor ignore este mensaje.</value>
+    <comment>If you have already updated your card, please disregard this message.</comment>
+  </data>
+  <data name="SecurityNotice" xml:space="preserve">
+    <value>Aviso de seguridad</value>
+    <comment>Security Notice</comment>
+  </data>
+  <data name="SecurityNoticeMessage" xml:space="preserve">
+    <value>Hemos recibido informes sobre correos electrónicos de phishing que contienen instrucciones de pago incorrectas. Si recibe algún correo sospechoso relacionado con JFC, por favor ignórelo y infórmelo a su representante de ventas.</value>
+    <comment>We have received reports of phishing emails with incorrect payment instructions. Please ignore them and report to your sales reps if you receive any suspicious emails related to JFC.</comment>
+  </data>
+  <data name="Yourcreditcardexpiresnextmonth" xml:space="preserve">
+    <value>Su tarjeta de crédito {0} vence el próximo mes ({1}/{2}).</value>
+    <comment>Your credit card {0} expires next month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardexpiresthismonth" xml:space="preserve">
+    <value>Su tarjeta de crédito {0} vence este mes ({1}/{2}).</value>
+    <comment>Your credit card {0} expires this month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardonfileisexpiringsoon" xml:space="preserve">
+    <value>Su tarjeta de crédito registrada vencerá pronto</value>
+    <comment>Your credit card on file is expiring soon</comment>
+  </data>
+  <data name="SecurePayment" xml:space="preserve">
+    <value>Pago seguro</value>
+    <comment>Secure Payment</comment>
+  </data>
+  <data name="SecurePaymentMessage" xml:space="preserve">
+    <value>Sus pagos se procesan de manera segura a través de Forte, una pasarela de pagos líder que cumple con la normativa PCI, utilizando cifrado avanzado y tokenización. Los datos de su banco o tarjeta se mantienen estrictamente confidenciales y nunca se almacenan en nuestros servidores.</value>
+    <comment>Your payments are processed securely via Forte, a leading PCI-compliant payment gateway, using advanced encryption and tokenization. Your bank or card details remain strictly confidential and are never stored on our servers.</comment>
+  </data>
 </root>

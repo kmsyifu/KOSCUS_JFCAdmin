@@ -1,6 +1,11 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN015 (05/11/2026)
+*<CustomerSetting>: Added the HideChat permission for chat users.
+*<CustomerSetting>: Added the ReadOnly permission, allowing all customers to access chat in read-only mode.
+*<OrderForm>: Added a new Order Form page to support order management functions.
+
 KOSCUS_JFCADMIN015 (05/11/2026) 
 <CustomerSetting> Add AutoPay option handling to support: No Auto Payment, COD/Invoice Date Auto Payment, and Net Days Auto Payment for credit card customers.
 

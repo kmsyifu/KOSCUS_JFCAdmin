@@ -1481,12 +1481,12 @@ Public Class DBUpdate
         Return True
     End Function
 
-    Public Shared Function UpdateCustSetting(ByVal db As DBHelper, ByVal customerID As String, ByVal AllowCustOrder As String, HideItemPage As String, HidePaymentPage As String, HidePrice As String, anytimedelivery As String, TextPhones As String, ShowOutofStock As String, ShowAllExcepGrpItem As String, shipvia As String, shipdateoffset As Decimal, minOrderAmt As Integer, hideHomePage As String, Optional ByVal isOneTrans As Boolean = True) As Boolean
+    Public Shared Function UpdateCustSetting(ByVal db As DBHelper, ByVal customerID As String, ByVal AllowCustOrder As String, HideItemPage As String, HidePaymentPage As String, HidePrice As String, anytimedelivery As String, TextPhones As String, ShowOutofStock As String, ShowAllExcepGrpItem As String, shipvia As String, shipdateoffset As Decimal, minOrderAmt As Integer, hideHomePage As String, allowChat As String, Optional ByVal isOneTrans As Boolean = True) As Boolean
         Dim SQL As String
         If isOneTrans Then db.BeginTransaction()
         SQL = "Update customer SET allowCustOrder = :1, hideItemPage =:2,hidePaymentPage =:3, hidePrice = :4, anytimedelivery = :5, textphones = :6, SHOWOUTOFSTOCK = :7,ShowAllExcepGrpItem = :8, SHIPVIA = :9, ShipDateOffset = " &
-            shipdateoffset & ", minOrderAmt = " & minOrderAmt & ", hideHomePage =:10 where customer_id = :11"
-        db.ExecuteNonQuery(SQL, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, TextPhones, ShowOutofStock, ShowAllExcepGrpItem, shipvia, hideHomePage, customerID)
+            shipdateoffset & ", minOrderAmt = " & minOrderAmt & ", hideHomePage =:10, AllowChat =:11 where customer_id = :12"
+        db.ExecuteNonQuery(SQL, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, TextPhones, ShowOutofStock, ShowAllExcepGrpItem, shipvia, hideHomePage, allowChat, customerID)
         If AllowCustOrder = "Y" Then
             SQL = "Update customer SET AllowOrderCreateDate = sysdate where customer_id = :1 and AllowOrderCreateDate is null"
             db.ExecuteNonQuery(SQL, customerID)
@@ -1496,16 +1496,14 @@ Public Class DBUpdate
         Return True
     End Function
 
-    Public Shared Function UpdateUserInList(ByVal db As DBHelper, ByVal email As String, ByVal customerID As String, ByVal txtPhone As String, firstName As String, lastName As String, ByVal hideCustOrder As String, hideItemPage As String, hidePaymentPage As String, hidePrice As String, Optional ByVal isOneTrans As Boolean = True) As Boolean
+    Public Shared Function UpdateUserInList(ByVal db As DBHelper, ByVal email As String, ByVal customerID As String, ByVal txtPhone As String, firstName As String, lastName As String, ByVal hideCustOrder As String, hideItemPage As String, hidePaymentPage As String, hidePrice As String, Optional hideChat As String = Nothing, Optional ByVal isOneTrans As Boolean = True) As Boolean
         Dim SQL As String
         Dim needUpdate As Boolean = False
         If isOneTrans Then db.BeginTransaction()
-
         'Update webuser
         SQL = "Update webuser SET cellular =:1 ,FIRSTNAME=:2,LASTNAME=:3 where email =:4"
         db.ExecuteNonQuery(SQL, txtPhone, firstName, lastName, email)
         InsertEventLog(db, "Update Webuser", email, Nothing, Nothing, False, False)
-
         'Update webuser_customer
         SQL = "Update webuser_customer SET "
         If hideCustOrder IsNot Nothing Then
@@ -1524,6 +1522,10 @@ Public Class DBUpdate
             SQL &= " hidePrice = " & db.SqlEsc(hidePrice) & ","
             needUpdate = True
         End If
+        If hideChat IsNot Nothing Then
+            SQL &= " hideChat = " & db.SqlEsc(hideChat) & ","
+            needUpdate = True
+        End If
         If needUpdate = True Then
             SQL = SQL.Substring(0, SQL.Length - 1)
             SQL &= " where email =:1 AND customer_id = :2"
@@ -1531,7 +1533,6 @@ Public Class DBUpdate
             db.ExecuteNonQuery(SQL, email, customerID)
             InsertEventLog(db, "Update Webuser_customer", email, customerID, Nothing, False, False)
         End If
-
         If isOneTrans Then db.CommitTransaction()
         Return True
     End Function

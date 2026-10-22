@@ -2163,6 +2163,30 @@ Public Class Common
                 'SQL = "SELECT decode(code_id,'1','Y','N') as code_id, decode(code_id,'1','Show','Hide') as codeDesc FROM codeMaster WHERE codeGrp = 'YESNO' ORDER BY dispOrder"
 
                 'dt = DB.GetDataTable(SQL)
+            Case "ALLOWNOT_CHAT"
+
+                dr = dt.NewRow
+                dr("code_id") = "Y"
+                dr("codeDesc") = "Allow"
+                dt.Rows.Add(dr)
+                dr = dt.NewRow
+                dr("code_id") = "N"
+                dr("codeDesc") = "Not Allow"
+                dt.Rows.Add(dr)
+                dr = dt.NewRow
+                dr("code_id") = "R"
+                dr("codeDesc") = "Read Only"
+                dt.Rows.Add(dr)
+            Case "READNOT_CHAT"
+                dr = dt.NewRow
+                dr("code_id") = "N"
+                dr("codeDesc") = "Read Only"
+                dt.Rows.Add(dr)
+                dr = dt.NewRow
+                dr("code_id") = "Y"
+                dr("codeDesc") = "Not Allow"
+                dt.Rows.Add(dr)
+
             Case "ALLOWNOT"
                 dr = dt.NewRow
                 dr("code_id") = "Y"

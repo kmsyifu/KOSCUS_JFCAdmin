@@ -2041,4 +2041,40 @@
   <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
     <value>송장 발행일로부터 {0}일 후 자동 결제 (주류 송장의 경우 {1}일 후)</value>
   </data>
+  <data name="creditcardexpiresupdateMessage" xml:space="preserve">
+    <value>자동 결제가 중단되지 않도록 {0}에 로그인하신 후, '내 어카운트' 메뉴에서 신용카드 정보를 업데이트해 주시기 바랍니다.</value>
+    <comment>To avoid any interruption to your automatic payments, please update your credit card information by logging into {0} and updating your payment account under My Account.</comment>
+  </data>
+  <data name="Ifyouhavealreadyupdatedyourcardpleasedisregardthismessage" xml:space="preserve">
+    <value>이미 카드 정보를 업데이트하셨다면, 본 메시지는 무시하셔도 됩니다.</value>
+    <comment>If you have already updated your card information, please disregard this message.</comment>
+  </data>
+  <data name="SecurityNotice" xml:space="preserve">
+    <value>보안 고지</value>
+    <comment>Security Notice</comment>
+  </data>
+  <data name="SecurityNoticeMessage" xml:space="preserve">
+    <value>최근 잘못된 결제 안내가 포함된 피싱 이메일이 접수되었다는 신고가 있었습니다. JFC와 관련된 의심스러운 이메일을 받으시는 경우, 이를 무시하시고 담당 영업 사원에게 신고(문의)해 주시기 바랍니다.</value>
+    <comment>We have received reports of phishing emails with incorrect payment instructions. Please ignore them and report to your sales reps if you receive any suspicious emails related to JFC.</comment>
+  </data>
+  <data name="Yourcreditcardexpiresnextmonth" xml:space="preserve">
+    <value>고객님의 신용카드({0})가 다음 달({1}/{2})에 만료됩니다.</value>
+    <comment>Your credit card {0} expires next month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardexpiresthismonth" xml:space="preserve">
+    <value>고객님의 신용카드({0})가 이번 달({1}/{2})에 만료됩니다.</value>
+    <comment>Your credit card {0} expires this month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardonfileisexpiringsoon" xml:space="preserve">
+    <value>등록된 신용카드의 유효기간이 곧 만료됩니다</value>
+    <comment>Your credit card on file is expiring soon</comment>
+  </data>
+  <data name="SecurePayment" xml:space="preserve">
+    <value>안전한 결제</value>
+    <comment>Secure Payment</comment>
+  </data>
+  <data name="SecurePaymentMessage" xml:space="preserve">
+    <value>고객님의 결제 정보는 선도적인 PCI 준수 결제 게이트웨이인 Forte를 통해 최첨단 암호화 및 토큰화 기술로 안전하게 처리됩니다. 고객님의 은행 및 카드 정보는 엄격하게 비밀로 유지되며, 당사의 서버에 절대로 저장되지 않습니다.</value>
+    <comment>Your payments are processed securely via Forte, a leading PCI-compliant payment gateway, using advanced encryption and tokenization. Your bank or card details remain strictly confidential and are never stored on our servers.</comment>
+  </data>
 </root>

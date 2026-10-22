@@ -446,16 +446,143 @@
                         <asp:DropDownList ID="lstVendorSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();"/>
                     </asp:Panel>
                     <asp:Label ID="Label46" runat="server" Text="Category" CssClass="gray" />
-                    <asp:DropDownList ID="lstCtgSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();" /><br />
+                    <asp:DropDownList ID="lstCtgSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();" />
+                   <%-- <asp:Label runat="server" Text="Order Form" CssClass="gray" />
+                        <asp:DropDownList ID="lstOrderForm" CssClass="largeDrpList"
+                                          runat="server" AutoPostBack="True"
+                                          OnSelectedIndexChanged="lstOrderForm_SelectedIndexChanged"
+                                          OnChange="javascript:showProgress();" />
+                        <asp:ImageButton ID="btnEditOrderForm" runat="server" Visible="true"
+                                         CssClass="xsImgBtn" ToolTip="Manage order forms"
+                                         ImageUrl='<%# GetWebImgUrl("pencil.png") %>'
+                                         OnClick="btnEditOrderForm_Click" />--%>
+                     <br />
                     <asp:TextBox ID="txtItemSearch_custItem" CssClass="largeTxt size48" runat="server"  autocomplete="off" />
                     <ajaxToolkit:TextBoxWatermarkExtender ID="watItemSearch_custItem" runat="server" TargetControlID="txtItemSearch_custItem" WatermarkText="Search by item" WatermarkCssClass='watermark largeTxt size48' />
                     <asp:ImageButton ID="btnSearch_custItem" CssClass="xsImgBtn" ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
                     <br />
                 </asp:Panel>
                 <%--= IIf(IsMobile(), "<br class='turnOffFloat' />", "")--%>
+                <%-- ── Inline editor panel ── --%>
+             <%-- Hidden trigger button (same pattern as btnPopupTmp_UserDtl) --%>
+         <%--   <asp:LinkButton ID="btnPopupTmp_OrderForm" runat="server" />
+
+            <ajaxToolKit:ModalPopupExtender ID="popDialog_OrderForm" runat="server"
+                BehaviorID="popDialog_OrderForm"
+                TargetControlID="btnPopupTmp_OrderForm"
+                PopupControlID="pnlPopOrderForm"
+                BackgroundCssClass="modalBackground">
+                <Animations>
+                    <OnShown><FadeIn Duration="0.5" Fps="25" /></OnShown>
+                    <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
+                </Animations>
+            </ajaxToolKit:ModalPopupExtender>--%>
+
+          <%--  <asp:Panel ID="pnlPopOrderForm" style="display:none;"
+                       runat="server" CssClass="popup_dialog">
+                <div class="inner">
+
+                    <asp:ImageButton ID="btnPopCloseOrderForm" CssClass="popClose"
+                                     CausesValidation="False" runat="server"
+                                     ImageUrl='<%# GetWebImgUrl("close.jpg") %>'
+                                     OnClick="btnPopCloseOrderForm_Click" />
+
+                    <h1>Manage Order Forms</h1>
+                    <br />
+
+                    <asp:Label ID="lblPopOFMsg" CssClass="red" runat="server" /><br />
+
+                    <%-- All order forms in a grid — edit / delete each row --%>
+                  <%--  <asp:GridView ID="grdOF" runat="server"
+                                  CssClass="STDTABLE" AutoGenerateColumns="false"
+                                  GridLines="Horizontal" ShowHeaderWhenEmpty="true"
+                                  DataKeyNames="orderForm_id"
+                                  OnRowEditing="grdOF_RowEditing"
+                                  OnRowUpdating="grdOF_RowUpdating"
+                                  OnRowCancelingEdit="grdOF_RowCancelingEdit"
+                                  OnRowDeleting="grdOF_RowDeleting">
+                        <Columns>
+
+                            <asp:TemplateField HeaderText="Order Form Name"
+                                               HeaderStyle-CssClass="th size48"
+                                               ItemStyle-CssClass="size48">
+                                <ItemTemplate>
+                                    <asp:Label runat="server"
+                                               Text='<%# Eval("orderFormName") %>' />
+                                </ItemTemplate>
+                                <EditItemTemplate>
+                                    <asp:TextBox ID="txtEditOFName" runat="server"
+                                                 CssClass="stdTxt size32 disableEnter"
+                                                 Text='<%# Eval("orderFormName") %>'
+                                                 autocomplete="off" />
+                                </EditItemTemplate>
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderStyle-CssClass="th size12"
+                                               ItemStyle-CssClass="size12">
+                                <ItemTemplate>
+                                    <asp:LinkButton runat="server" CssClass="cellLink"
+                                                    ForeColor="#4169E1"
+                                                    CommandName="Edit" Text="Edit" />
+                                </ItemTemplate>
+                                <EditItemTemplate>
+                                    <asp:LinkButton runat="server" CssClass="cellLink"
+                                                    ForeColor="green"
+                                                    CommandName="Update" Text="Save" />
+                                    &nbsp;
+                                    <asp:LinkButton runat="server" CssClass="cellLink"
+                                                    ForeColor="#999"
+                                                    CommandName="Cancel" Text="Cancel"
+                                                    CausesValidation="false" />
+                                </EditItemTemplate>
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderStyle-CssClass="th center4"
+                                               ItemStyle-CssClass="center4">
+                                <ItemTemplate>
+                                    <asp:ImageButton runat="server" CssClass="xxsImgBtn"
+                                                     CommandName="Delete"
+                                                     ToolTip="Delete"
+                                                     ImageUrl='<%# GetWebImgUrl("close.jpg") %>'
+                                                     OnClientClick="return confirm('Delete this order form and all its items?');" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <asp:Label runat="server" CssClass="gray"
+                                       Text="No order forms yet." />
+                        </EmptyDataTemplate>
+                    </asp:GridView>--%>
+
+                   
+
+                    <%-- Add new --%>
+                   <%-- <table>
+                        <tr>
+                            <td class="rowHdr">New Name</td>
+                            <td>
+                                <asp:TextBox ID="txtNewOFName" runat="server"
+                                             CssClass="stdTxt size32 disableEnter"
+                                             autocomplete="off" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="center">
+                                <asp:Button ID="btnAddOF" runat="server"
+                                            CssClass="midButton_green" Text="Add"
+                                            OnClick="btnAddOF_Click"
+                                            OnClientClick="javascript:showProgress();" />
+                            </td>
+                        </tr>
+                    </table>--%>
+        <%--            <br />
+
+                </div>
+            </asp:Panel>--%>
 
                 <%--Add item--%>
-                <asp:Panel ID="pnlNewItem" CssClass="visiblePnl" style='<%# IIf(IsMobile(), "", "margin-left:533px") %>' runat="server">
+                <asp:Panel ID="pnlNewItem" CssClass="visiblePnl" style='<%# IIf(IsMobile(), "", "margin-left:433px") %>' runat="server">
                     <h1>Add / Update Item</h1>
                         <asp:Panel ID="pnlGetItem" DefaultButton="btnGetItem" runat="server">
                             <asp:TextBox ID="txtItem" CssClass='<%# "stdTxt CODE_ITEM " & IIf(IsMobile(), "size32", "size72") %>'  runat="server"  />

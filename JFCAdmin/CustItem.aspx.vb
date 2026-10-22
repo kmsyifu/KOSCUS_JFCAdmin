@@ -109,7 +109,7 @@ Partial Class JFCAdmin_CustItem
                 'Show add item
                 If IsMobile() Then
                 Else
-                    pnlSearchItem.Width = 500
+                    pnlSearchItem.Width = 400
                     pnlNewItem.Width = 600
                     pnlSearchItem.Height = 110
                     pnlNewItem.Height = 110
@@ -126,7 +126,259 @@ Partial Class JFCAdmin_CustItem
             '
         End Using
     End Sub
+    ' ════════════════════════════════════════════════════════════════
+    '  HELPERS
+    ' ════════════════════════════════════════════════════════════════
 
+    'Private Sub BindOFGrid(DB As DBHelper, customerID As String)
+    '    grdOF.DataSource = DB.GetDataTable(
+    '    "SELECT orderForm_id, orderFormName " &
+    '    "FROM   customer_orderForm " &
+    '    "WHERE  customer_id = :1 " &
+    '    "ORDER  BY orderFormName", customerID)
+    '    grdOF.DataBind()
+    'End Sub
+
+    'Private Sub LoadOrderFormDDL(DB As DBHelper,
+    '                          customerID As String,
+    '                          Optional selectID As String = "")
+    '    Dim dt As DataTable = DB.GetDataTable(
+    '    "SELECT orderForm_id, orderFormName " &
+    '    "FROM   customer_orderForm " &
+    '    "WHERE  customer_id = :1 " &
+    '    "ORDER  BY  orderFormName", customerID)
+
+    '    Dim dr As DataRow = dt.NewRow()
+    '    dr("orderForm_id") = ""
+    '    dr("orderFormName") = IIf(dt.Rows.Count = 0, "(None)", "(All items)")
+    '    dt.Rows.InsertAt(dr, 0)
+
+    '    lstOrderForm.DataSource = dt
+    '    lstOrderForm.DataValueField = "orderForm_id"
+    '    lstOrderForm.DataTextField = "orderFormName"
+    '    lstOrderForm.DataBind()
+
+    '    If selectID <> "" AndAlso
+    '   lstOrderForm.Items.FindByValue(selectID) IsNot Nothing Then
+    '        lstOrderForm.SelectedValue = selectID
+    '    End If
+
+    '    Dim email As String = GetUserEmail(DB)
+    '    btnEditOrderForm.Visible =
+    '    IsJfcBranchAdmin(DB, email) OrElse
+    '    IsJfcHoAdmin(DB, email) OrElse
+    '    IsKmsSupport(DB, email)
+    'End Sub
+
+    Private Function IsDuplicateName(DB As DBHelper,
+                                  customerID As String,
+                                  name As String,
+                                  Optional excludeID As String = "") As Boolean
+        If excludeID = "" Then
+            Return Val(DB.GetScalar(
+            "SELECT COUNT(*) FROM customer_orderForm " &
+            "WHERE customer_id = :1 AND orderFormName = :2",
+            customerID, name)) > 0
+        Else
+            Return Val(DB.GetScalar(
+            "SELECT COUNT(*) FROM customer_orderForm " &
+            "WHERE customer_id = :1 AND orderFormName = :2 " &
+            "  AND orderForm_id <> :3",
+            customerID, name, excludeID)) > 0
+        End If
+    End Function
+
+    ' ════════════════════════════════════════════════════════════════
+    '  OPEN POPUP — pencil button
+    ' ════════════════════════════════════════════════════════════════
+
+    'Protected Sub btnEditOrderForm_Click(sender As Object,
+    '                                  e As ImageClickEventArgs)
+    '    Using DB As New DBHelper
+    '        grdOF.EditIndex = -1
+    '        lblPopOFMsg.Text = ""
+    '        txtNewOFName.Text = ""
+    '        BindOFGrid(DB, lblCustomerID.Text)
+    '    End Using
+    '    popDialog_OrderForm.Show()
+    'End Sub
+
+    ' ════════════════════════════════════════════════════════════════
+    '  CLOSE POPUP
+    ' ════════════════════════════════════════════════════════════════
+
+    Protected Sub btnPopCloseOrderForm_Click(sender As Object,
+                                          e As EventArgs)
+        ' ModalPopupExtender hides itself on postback;
+        ' nothing extra needed here.
+    End Sub
+
+    ' ════════════════════════════════════════════════════════════════
+    '  MAIN DDL changed
+    ' ════════════════════════════════════════════════════════════════
+
+    Protected Sub lstOrderForm_SelectedIndexChanged(sender As Object,
+                                                 e As EventArgs)
+        ' Re-filter Buy Again grid by lstOrderForm.SelectedValue
+    End Sub
+
+    ' ════════════════════════════════════════════════════════════════
+    '  GRIDVIEW — Edit
+    ' ════════════════════════════════════════════════════════════════
+
+    'Protected Sub grdOF_RowEditing(sender As Object,
+    '                            e As GridViewEditEventArgs)
+    '    grdOF.EditIndex = e.NewEditIndex
+    '    lblPopOFMsg.Text = ""
+    '    Using DB As New DBHelper
+    '        BindOFGrid(DB, lblCustomerID.Text)
+    '    End Using
+    '    popDialog_OrderForm.Show()
+    'End Sub
+
+    'Protected Sub grdOF_RowCancelingEdit(sender As Object,
+    '                                  e As GridViewCancelEditEventArgs)
+    '    grdOF.EditIndex = -1
+    '    lblPopOFMsg.Text = ""
+    '    Using DB As New DBHelper
+    '        BindOFGrid(DB, lblCustomerID.Text)
+    '    End Using
+    '    popDialog_OrderForm.Show()
+    'End Sub
+
+    ' ════════════════════════════════════════════════════════════════
+    '  GRIDVIEW — Update (rename)
+    ' ════════════════════════════════════════════════════════════════
+
+    'Protected Sub grdOF_RowUpdating(sender As Object,
+    '                              e As GridViewUpdateEventArgs)
+    '    Dim orderFormID As String =
+    '    grdOF.DataKeys(e.RowIndex).Value.ToString()
+
+    '    Dim newName As String =
+    '    CType(grdOF.Rows(e.RowIndex).FindControl("txtEditOFName"),
+    '          TextBox).Text.Trim()
+
+    '    Dim customerID As String = lblCustomerID.Text
+
+    '    If newName = "" Then
+    '        lblPopOFMsg.Text = "Name cannot be empty."
+    '        popDialog_OrderForm.Show()
+    '        Return
+    '    End If
+
+    '    Using DB As New DBHelper
+    '        If IsDuplicateName(DB, customerID, newName, orderFormID) Then
+    '            lblPopOFMsg.Text = """" & newName & """ already exists."
+    '            popDialog_OrderForm.Show()
+    '            Return
+    '        End If
+
+    '        DB.BeginTransaction()
+    '        DB.ExecuteNonQuery(
+    '        "UPDATE customer_orderForm " &
+    '        "SET    orderFormName = :1, modUser = :2, modDate = SYSDATE " &
+    '        "WHERE  orderForm_id  = :3",
+    '        newName, GetUserEmail(DB), orderFormID)
+    '        DB.CommitTransaction()
+
+    '        InsertEventLog(DB, "UPDATE customer_orderForm",
+    '                   orderFormID, newName, Nothing, True, False)
+
+    '        grdOF.EditIndex = -1
+    '        lblPopOFMsg.Text = ""
+
+    '        BindOFGrid(DB, customerID)
+    '        LoadOrderFormDDL(DB, customerID, orderFormID)
+    '    End Using
+
+    '    MessageLine("CONFIRM", "Renamed to """ & newName & """.")
+    '    popDialog_OrderForm.Show()
+    'End Sub
+
+    '' ════════════════════════════════════════════════════════════════
+    ''  GRIDVIEW — Delete
+    '' ════════════════════════════════════════════════════════════════
+
+    'Protected Sub grdOF_RowDeleting(sender As Object,
+    '                              e As GridViewDeleteEventArgs)
+    '    Dim orderFormID As String =
+    '    grdOF.DataKeys(e.RowIndex).Value.ToString()
+    '    Dim customerID As String = lblCustomerID.Text
+
+    '    Using DB As New DBHelper
+    '        DB.BeginTransaction()
+
+    '        DB.ExecuteNonQuery(
+    '        "DELETE FROM customer_orderFormItems WHERE orderForm_id = :1",
+    '        orderFormID)
+
+    '        DB.ExecuteNonQuery(
+    '        "DELETE FROM customer_orderForm WHERE orderForm_id = :1",
+    '        orderFormID)
+
+    '        DB.CommitTransaction()
+
+    '        InsertEventLog(DB, "DELETE customer_orderForm",
+    '                   orderFormID, customerID, Nothing, True, False)
+
+    '        grdOF.EditIndex = -1
+    '        lblPopOFMsg.Text = ""
+
+    '        BindOFGrid(DB, customerID)
+    '        LoadOrderFormDDL(DB, customerID)
+    '    End Using
+
+    '    MessageLine("CONFIRM", "Order form deleted.")
+    '    popDialog_OrderForm.Show()
+    'End Sub
+
+    '' ════════════════════════════════════════════════════════════════
+    ''  ADD NEW
+    '' ════════════════════════════════════════════════════════════════
+
+    'Protected Sub btnAddOF_Click(sender As Object, e As EventArgs)
+    '    Dim name As String = txtNewOFName.Text.Trim()
+    '    Dim customerID As String = lblCustomerID.Text
+
+    '    If name = "" Then
+    '        lblPopOFMsg.Text = "Please enter a name."
+    '        popDialog_OrderForm.Show()
+    '        Return
+    '    End If
+
+    '    Using DB As New DBHelper
+    '        If IsDuplicateName(DB, customerID, name) Then
+    '            lblPopOFMsg.Text = """" & name & """ already exists."
+    '            popDialog_OrderForm.Show()
+    '            Return
+    '        End If
+
+    '        Dim newID As String =
+    '        DB.GetSequence("ORDERFORM_ID", CUSTGRP_ITEM_ID_LEN)
+
+    '        DB.BeginTransaction()
+
+    '        '"   createUser, createDate) " & GetUserEmail(DB)
+    '        DB.ExecuteNonQuery(
+    '        "INSERT INTO customer_orderForm " &
+    '        "  (orderForm_id, customer_id, orderFormName) " & "VALUES (:1, :2, :3 )",
+    '            newID, customerID, name)
+    '        DB.CommitTransaction()
+
+    '        InsertEventLog(DB, "INSERT customer_orderForm",
+    '                   customerID, newID, name, True, False)
+
+    '        txtNewOFName.Text = ""
+    '        lblPopOFMsg.Text = ""
+
+    '        BindOFGrid(DB, customerID)
+    '        LoadOrderFormDDL(DB, customerID, newID)
+    '    End Using
+
+    '    MessageLine("CONFIRM", "Added """ & name & """.")
+    '    popDialog_OrderForm.Show()
+    'End Sub
     Protected Sub lstCustCompany_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstCustCompany.SelectedIndexChanged
         If lstCustCompany.Text <> "" Then
             lblTitle.Visible = False

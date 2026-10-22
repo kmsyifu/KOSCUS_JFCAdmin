@@ -413,6 +413,12 @@
                                     <td class="rowHdr">Price</td>
                                     <td><asp:DropDownList ID="lstHidePrice" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' runat="server"    AutoPostBack="True" /><span class="red">*</span></td>
                                 </tr>
+                                      <asp:Panel runat="server" ID="pnlChatControls" Visible="true"> 
+                                     <tr>
+                                     <td class="rowHdr">Chat</td>
+                                       <td><asp:DropDownList ID="lstAllowChat" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' runat="server" AutoPostBack="True" /><span class="red">*</span></td>
+                                  </tr>
+                                  </asp:Panel>
                                   <tr>
                                       <td class="rowHdr">Home Page</td>
                                       <td><asp:DropDownList ID="lstHideHomePage" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' runat="server"  onchange="javascript:EnableButton();"  /><span class="red">*</span></td>
@@ -724,6 +730,12 @@
                                     <ItemTemplate>
                                         <asp:DropDownList ID="lstHideCustOrder" CssClass="cellLbl drpList"  runat="server" onchange="javascript:EnableButton();" />
                                         <asp:Label Visible="false" runat="server" ID="lblHideCustOrder" CssClass="cellLbl" Text='<%# Eval("hideCustOrder") %>' />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Chat" HeaderStyle-CssClass="th center32" ItemStyle-CssClass="center24">
+                                    <ItemTemplate>
+                                        <asp:DropDownList ID="lstHideChat" CssClass="cellLbl drpList" runat="server" onchange="javascript:EnableButton();" />
+                                        <asp:Label Visible="false" runat="server" ID="lblHideChat" CssClass="cellLbl" Text='<%# Eval("hideChat") %>' />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Item Search Page" HeaderStyle-CssClass="th center32" ItemStyle-CssClass="center24" >

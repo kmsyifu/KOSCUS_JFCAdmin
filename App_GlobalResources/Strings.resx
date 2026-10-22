@@ -1824,4 +1824,37 @@
   <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
     <value>Auto payment on {0} days after the invoice date ({1} days for liquor invoices)</value>
   </data>
+  <data name="creditcardexpiresupdateMessage" xml:space="preserve">
+    <value>To avoid any interruption to your automatic payments, please update your credit card information by logging into {0} and updating your payment account under "My Account".</value>
+    <comment>自動払いが中断されるのを防ぐため、{0} にログインし、「マイアカウント」からクレジットカード情報の更新をお願いします。</comment>
+  </data>
+  <data name="Ifyouhavealreadyupdatedyourcardpleasedisregardthismessage" xml:space="preserve">
+    <value>If you have already updated your card, please disregard this message.</value>
+    <comment>既にカード情報を更新済みの場合は、このメッセージを破棄（無視）してください。</comment>
+  </data>
+  <data name="SecurityNotice" xml:space="preserve">
+    <value>Security Notice</value>
+    <comment>セキュリティ通知</comment>
+  </data>
+  <data name="SecurityNoticeMessage" xml:space="preserve">
+    <value>We have received reports of phishing emails with incorrect payment instructions. Please ignore them and report to your sales reps if you receive any suspicious emails related to JFC.</value>
+    <comment>JFCに関する誤った不振な支払指示を含む、フィッシングメール（詐欺メール）が送信されているとの報告を受けております。このような不審なメールを受信された場合は無視していただき、JFCの担当営業までご連絡いただけますようお願い申し上げます。</comment>
+  </data>
+  <data name="Yourcreditcardexpiresnextmonth" xml:space="preserve">
+    <value>Your credit card {0} expires next month ({1}/{2}).</value>
+    <comment>お客様のクレジットカード（{0}）は来月（{1}/{2}）に有効期限が切れます。</comment>
+  </data>
+  <data name="Yourcreditcardexpiresthismonth" xml:space="preserve">
+    <value>Your credit card {0} expires this month ({1}/{2}).</value>
+    <comment>お客様のクレジットカード（{0}）は今月（{1}/{2}）に有効期限が切れます。</comment>
+  </data>
+  <data name="Yourcreditcardonfileisexpiringsoon" xml:space="preserve">
+    <value>Your credit card on file is expiring soon</value>
+  </data>
+  <data name="SecurePayment" xml:space="preserve">
+    <value>Secure Payment</value>
+  </data>
+  <data name="SecurePaymentMessage" xml:space="preserve">
+    <value>Your payments are processed securely via Forte, a leading PCI-compliant payment gateway, using advanced encryption and tokenization. Your bank or card details remain strictly confidential and are never stored on our servers.</value>
+  </data>
 </root>

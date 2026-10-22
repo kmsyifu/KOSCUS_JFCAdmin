@@ -2073,4 +2073,38 @@
   <data name="AutopaymentonXXdaysaftertheinvoicedate(YYdaysforliquorinvoices)" xml:space="preserve">
     <value>發票日期後{0}天自動付款（酒類發票為{1}天）</value>
   </data>
+  <data name="creditcardexpiresupdateMessage" xml:space="preserve">
+    <value>為避免您的自動扣款中斷，請登入 {0}，並至「我的賬戶」更新您的信用卡資訊。</value>
+    <comment>To avoid any interruption to your automatic payments, please update your credit card information by logging into {0} and updating your payment account under My Account.</comment>
+  </data>
+  <data name="Ifyouhavealreadyupdatedyourcardpleasedisregardthismessage" xml:space="preserve">
+    <value>若您已更新信用卡資訊，請忽略此訊息。</value>
+    <comment>If you have already updated your card, please disregard this message.</comment>
+  </data>
+  <data name="SecurityNotice" xml:space="preserve">
+    <value>安全通知</value>
+    <comment>Security Notice</comment>
+  </data>
+  <data name="SecurityNoticeMessage" xml:space="preserve">
+    <value>我們收到報告指出，目前出現了含有錯誤付款說明的網路釣魚郵件。若您收到任何與 JFC 相關的可疑郵件，請直接予以忽略，並立即向您的負責業務代表回報。</value>
+    <comment>We have received reports of phishing emails with incorrect payment instructions. Please ignore them and report to your sales reps if you receive any suspicious emails related to JFC.</comment>
+  </data>
+  <data name="Yourcreditcardexpiresnextmonth" xml:space="preserve">
+    <value>您的信用卡（{0}）將於下個月（{1}/{2}）到期。</value>
+    <comment>Your credit card {0} expires next month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardexpiresthismonth" xml:space="preserve">
+    <value>您的信用卡（{0}）將於本月（{1}/{2}）到期。</value>
+    <comment>Your credit card {0} expires this month ({1}/{2}).</comment>
+  </data>
+  <data name="Yourcreditcardonfileisexpiringsoon" xml:space="preserve">
+    <value>您登記的信用卡即將到期</value>
+    <comment>Your credit card on file is expiring soon</comment>
+  </data>
+  <data name="SecurePayment" xml:space="preserve">
+    <value>安全支付</value>
+  </data>
+  <data name="SecurePaymentMessage" xml:space="preserve">
+    <value>您的支付将通过 PCI 合规的支付网关 Forte 安全处理，采用先进的加密和令牌化技术，确保您的银行卡信息始终受到保护。我们不会存储您的任何银行卡或信用卡信息。</value>
+  </data>
 </root>
