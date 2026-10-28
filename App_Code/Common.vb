@@ -1132,6 +1132,23 @@ Public Class Common
         Return CString(DB.GetScalar(SQL, jfcBranchNr, jfcCustomerNr))
     End Function
 
+    Public Shared Function GetPriceGrpIDByBranch(ByVal DB As DBHelper, ByVal jfcBranchNr As String) As String
+        Dim SQL As String
+
+        SQL = "SELECT pricegpid FROM jfcVendor WHERE jfcBranchNr = :1"
+        Return CString(DB.GetScalar(SQL, jfcBranchNr))
+    End Function
+
+    'Price group of the customers in an exception price group (customer.jfcPriceGrpID_orig), resolved the same way as GetPriceGrpID (jets_customer.priceGpID)
+    Public Shared Function GetPriceGrpIDByExcepGrp(ByVal DB As DBHelper, ByVal jfcBranchNr As String, ByVal jfcPriceGrpIDOrig As String) As String
+        Dim SQL As String
+
+        SQL = "SELECT jc.priceGpID FROM customer c, jets_customer jc " &
+              "WHERE jc.bid = c.jfcBranchNr AND jc.customerid = c.jfcCustomerNr " &
+              "  AND c.jfcBranchNr = :1 AND c.jfcPriceGrpID_orig = :2 AND jc.priceGpID IS NOT NULL AND ROWNUM = 1"
+        Return CString(DB.GetScalar(SQL, jfcBranchNr, jfcPriceGrpIDOrig))
+    End Function
+
     Public Shared Function GetPriceGrpDesc(ByVal DB As DBHelper, ByVal priceGrpID As String) As String
         Dim SQL As String
 

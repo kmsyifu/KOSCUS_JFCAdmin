@@ -80,6 +80,25 @@ Public Class Search_VB : Implements IHttpHandler
                     End While
                     r.close()
                     context.Response.Write(sb.ToString)
+                Case "ITEM_JFCBRANCH"
+                    'Branch-level item list (id = jfcBranchNr, id2 = price group of an exception form), used by JFCAdmin/OrderForm. Last word is the 5-char item_id.
+                    priceGrpID = IIf(id2 <> "", id2, Common.GetPriceGrpIDByBranch(DB, id))
+                    SQL = "SELECT '#' || a.item_id || ', ' || NVL(p.itemDesc_branch, a.itemDesc) || ', ' || a.item_id AS itemDtl " & _
+                          "FROM jets_price p " & _
+                          "INNER JOIN jfcItem a ON a.item_id = p.itemcode " & _
+                          "WHERE p.pricegpid = :1 " & _
+                          "  AND (p.enabled IS NULL OR p.enabled = 'Y') " & _
+                          "  AND (a.item_id LIKE :2 OR UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE :3) " & _
+                          "ORDER BY itemDtl"
+                    r = DB.GetReader(SQL, priceGrpID, prefixtext & "%", "%" & Replace(prefixtext.ToUpper, " ", "%") & "%")
+                    While r.Read
+                        itemDtl = CString(r("itemDtl"))
+                        itemDtl = Replace(itemDtl, "<", "(")
+                        itemDtl = Replace(itemDtl, ">", ")")
+                        sb.Append(itemDtl).Append(Environment.NewLine)
+                    End While
+                    r.close()
+                    context.Response.Write(sb.ToString)
                 Case "JFCBRANCH"
         
                     SQL = "SELECT c.Name FROM  jho.customer@jho c " & _

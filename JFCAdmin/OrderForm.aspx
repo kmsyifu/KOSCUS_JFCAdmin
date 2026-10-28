@@ -8,12 +8,10 @@
 
         function clickGetItem(txtItem) {
             var enterd = txtItem.val();
+            // Format: "#item_id, description, item_id" (description may contain commas, so use the last part)
             var lines = enterd.split(',');
-            if (lines[2] in window) {
-            } else {
-                if (lines[2].length > 10) {
-                    $('#<%=btnGetItem.ClientID%>').click();
-                }
+            if (lines.length >= 3 && $.trim(lines[lines.length - 1]).length == 5) {
+                $('#<%=btnGetItem.ClientID%>').click();
             }
         }
 
@@ -40,7 +38,7 @@
                 }
             });
 
-            $(".CODE_ITEM").autocomplete('../Common/Suggestion.ashx?id=<%=lblBranchID.Text%>&id2=&id3=&id4=JFCADMIN&code=ITEM',
+            $(".CODE_ITEM").autocomplete('../Common/Suggestion.ashx?id=<%=lblBranchID.Text%>&id2=<%=Server.UrlEncode(ItemSearchPriceGrpID())%>&id3=&id4=JFCADMIN&code=ITEM_JFCBRANCH',
                 { minChars: 1, autoFill: false, scroll: false, max: 30 }).focus(function () { clickGetItem($('#<%=txtItem.ClientID%>')); });
 
             <%= JavaScript %>
@@ -179,7 +177,8 @@
                 <tr>
                     <td class="rowHdr">Exception Price Group</td>
                     <td>
-                        <asp:DropDownList ID="lstExcepPriceGrp" CssClass="largeDrpList" runat="server" />
+                        <asp:DropDownList ID="lstExcepPriceGrp" CssClass="largeDrpList" runat="server"
+                            OnChange="javascript:showProgress();" AutoPostBack="True" />
                     </td>
                 </tr>
                 </asp:Panel>
@@ -276,7 +275,7 @@
             <h3>Items</h3>
 
             <asp:Panel ID="pnlSearchItem" CssClass='<%# "visiblePnl " & IIf(IsMobile(), "", "leftContent") %>'
-                DefaultButton="btnSearchItem" runat="server"  Visible ="false">
+                DefaultButton="btnSearchItem" runat="server">
                 <b>Search Items</b><br />
                 <asp:Label runat="server" Text="Sort by" CssClass="gray" />
                 <asp:DropDownList ID="lstSortBy" CssClass="largeDrpList"
@@ -300,7 +299,7 @@
             </asp:Panel>
 
             <asp:Panel ID="pnlAddItem" CssClass="visiblePnl"
-                style='<%# IIf(IsMobile(), "", "margin-left:633px") %>' runat="server" Visible ="false">
+                style='<%# IIf(IsMobile(), "", "margin-left:633px") %>' runat="server">
                 <h3>Add / Update Item</h3>
                 <asp:Panel ID="pnlGetItem" DefaultButton="btnGetItem" runat="server">
                     <asp:TextBox ID="txtItem" CssClass='<%# "stdTxt CODE_ITEM " & IIf(IsMobile(), "size32", "size72") %>'
@@ -327,7 +326,7 @@
             <asp:GridView ID="grdItems" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
-                DataKeyNames="custGrpItem_id"
+                DataKeyNames="item_id"
                 OnRowDataBound="grdItems_RowDataBound"
                 OnRowCommand="grdItems_RowCommand">
                 <Columns>
@@ -349,7 +348,7 @@
                         <ItemTemplate>
                             <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1"
                                 CommandName="ITEM_DETAIL"
-                                CommandArgument='<%# Eval("custGrpItem_id") %>'
+                                CommandArgument='<%# Eval("item_id") %>'
                                 Text='<%# IIf(CString(Eval("itemNr")) <> "", CString(Eval("itemNr")), CString(Eval("item_id"))) %>' />
                             <asp:Label runat="server" CssClass="gray"
                                 Text='<%# IIf(CString(Eval("itemNr")) <> "", " (" & CString(Eval("item_id")) & ")", "") %>' />
@@ -417,7 +416,7 @@
                             <asp:ImageButton ID="btnRemoveItem" Tooltip="Remove item"
                                 CommandName="REMOVE_ITEM" CssClass="xxsImgBtn"
                                 ImageUrl='<%# GetWebImgUrl("close.jpg") %>'
-                                CommandArgument='<%# Eval("custGrpItem_id") %>'
+                                CommandArgument='<%# Eval("item_id") %>'
                                 runat="server"
                                 Visible='<%# CBool(Eval("isAssigned")) %>' />
                         </ItemTemplate>
