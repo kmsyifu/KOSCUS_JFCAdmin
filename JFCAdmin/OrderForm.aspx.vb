@@ -93,7 +93,8 @@ Partial Class JFCAdmin_OrderForm
             Dim searchCust As String = txtSearchCustNr.Text.Trim()
 
             Dim SQL As String =
-                "SELECT DISTINCT f.orderForm_id, f.orderFormName  " &
+                "SELECT DISTINCT f.orderForm_id, f.orderFormName, " &
+                "CASE WHEN f.JFCPriceGrpID_Orig IS NOT NULL THEN 'E' ELSE 'R' END AS formType " &
                 "FROM   orderForm f " &
                 "LEFT JOIN orderForm_Customer fc ON fc.orderForm_id = f.orderForm_id " &
                 "WHERE  f.jfcBranchNr = :1 " &
@@ -148,7 +149,7 @@ Partial Class JFCAdmin_OrderForm
             ' Load formType from DB when editing
             If formType = "" AndAlso Not isNew Then
                 formType = CString(DB.GetScalar(
-                    "SELECT JFCPRICEGRPID_ORIG FROM orderForm WHERE orderForm_id = :1", orderFormID))
+                    "SELECT CASE WHEN JFCPriceGrpID_Orig IS NOT NULL THEN 'E' ELSE 'R' END FROM orderForm WHERE orderForm_id = :1", orderFormID))
             End If
             hfFormType.Value = formType
             ViewState("FormType") = formType
@@ -171,15 +172,15 @@ Partial Class JFCAdmin_OrderForm
                 btnDeleteForm.Visible = True
 
                 Dim r As DataReader = DB.GetReader(
-                    "SELECT orderFormName, excepPriceGrpId, " &
+                    "SELECT orderFormName, JFCPriceGrpID_Orig, " &
                     "TO_CHAR(createDate, 'MM/DD/YYYY HH:MI AM') || ' PDT by ' || createUser AS createDateFmt, " &
                     "TO_CHAR(modDate,    'MM/DD/YYYY HH:MI AM') || ' PDT by ' || modUser   AS modDateFmt " &
-                    "FROM branch_orderForm WHERE orderForm_id = :1", orderFormID)
+                    "FROM orderForm WHERE orderForm_id = :1", orderFormID)
                 If r.Read() Then
                     txtFormName.Text = CString(r("orderFormName"))
                     lblCreatedOn.Text = CString(r("createDateFmt"))
                     lblLastUpdated.Text = CString(r("modDateFmt"))
-                    ViewState("ExcepPriceGrpID") = CString(r("excepPriceGrpId"))
+                    ViewState("ExcepPriceGrpID") = CString(r("JFCPriceGrpID_Orig"))
                 End If
                 r.close()
             End If
@@ -352,7 +353,7 @@ Partial Class JFCAdmin_OrderForm
             '    "NVL(jctgGrp.dispOrder, 99) AS ctgDispOrder, " &
             '    "ci.eaPerCs, ci.csPrice, ci.eaPrice, ci.lbPrice_OrderByQty, " &
             '    "NVL(a.availMsg, '') AS availMsg, " &
-            '    "CASE WHEN fi.custGrpItem_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
+            '    "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
             '    "NVL(co.disporder, 0) AS custdisporder " &
             '    "FROM   custgrp_item i " &
             '    "JOIN   custGrp_itemGrp g ON g.custGrp_id = i.custGrp_id AND g.itemGrp_id = i.itemGrp_id " &
@@ -361,7 +362,7 @@ Partial Class JFCAdmin_OrderForm
             '    "LEFT   JOIN jets_price p ON p.itemcode = i.item_id AND p.pricegpid = :2 " &
             '    "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
             '    "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
-            '    "LEFT   JOIN branch_orderFormItems fi ON fi.custGrpItem_id = i.custGrpItem_id " &
+            '    "LEFT   JOIN orderForm_Item fi ON fi.item_id = i.item_id " &
             '    "           AND fi.orderForm_id = :3 " &
             '    "LEFT   JOIN customer_itemDispOrder co ON co.custGrpItem_id = i.custGrpItem_id " &
             '    "WHERE  i.custGrp_id = :1 " &
@@ -391,7 +392,7 @@ Partial Class JFCAdmin_OrderForm
             If orderFormID <> "" Then
                 Using DB As New DBHelper
                     DB.ExecuteNonQuery(
-                        "DELETE FROM branch_orderFormItems WHERE orderForm_id = :1 AND custGrpItem_id = :2",
+                        "DELETE FROM orderForm_Item WHERE orderForm_id = :1 AND item_id = :2",
                         orderFormID, e.CommandArgument.ToString())
                 End Using
             End If
@@ -432,13 +433,13 @@ Partial Class JFCAdmin_OrderForm
 
         Using DB As New DBHelper
             Dim exists As Integer = Val(DB.GetScalar(
-                "SELECT COUNT(*) FROM branch_orderFormItems WHERE orderForm_id = :1 AND custGrpItem_id = :2",
+                "SELECT COUNT(*) FROM orderForm_Item WHERE orderForm_id = :1 AND item_id = :2",
                 orderFormID, custGrpItemID))
             If exists = 0 Then
                 DB.ExecuteNonQuery(
-                    "INSERT INTO branch_orderFormItems (orderForm_id, custGrpItem_id) VALUES (:1, :2)",
+                    "INSERT INTO orderForm_Item (orderForm_id, item_id) VALUES (:1, :2)",
                     orderFormID, custGrpItemID)
-                InsertEventLog(DB, "INSERT branch_orderFormItems", orderFormID, custGrpItemID, Nothing, True, False)
+                InsertEventLog(DB, "INSERT orderForm_Item", orderFormID, custGrpItemID, Nothing, True, False)
             End If
         End Using
 
@@ -469,8 +470,8 @@ Partial Class JFCAdmin_OrderForm
         Using DB As New DBHelper
             ' Duplicate check
             Dim dupSQL As String = IIf(isNew,
-                "SELECT COUNT(*) FROM branch_orderForm WHERE jfcBranchNr = :1 AND orderFormName = :2",
-                "SELECT COUNT(*) FROM branch_orderForm WHERE jfcBranchNr = :1 AND orderFormName = :2 AND orderForm_id <> :3")
+                "SELECT COUNT(*) FROM orderForm WHERE jfcBranchNr = :1 AND orderFormName = :2",
+                "SELECT COUNT(*) FROM orderForm WHERE jfcBranchNr = :1 AND orderFormName = :2 AND orderForm_id <> :3")
             Dim dupCount As Integer
             If isNew Then
                 dupCount = Val(DB.GetScalar(dupSQL, jfcBranchNr, formName))
@@ -491,15 +492,15 @@ Partial Class JFCAdmin_OrderForm
             If isNew Then
                 orderFormID = DB.GetSequence("ORDERFORM_ID", CUSTGRP_ITEM_ID_LEN)
                 DB.ExecuteNonQuery(
-                    "INSERT INTO branch_orderForm " &
-                    "  (orderForm_id, jfcBranchNr, orderFormName, formType, excepPriceGrpId, createUser, createDate, modUser, modDate) " &
-                    "VALUES (:1, :2, :3, :4, :5, :6, SYSDATE, :6, SYSDATE)",
-                    orderFormID, jfcBranchNr, formName, formType, excepGrpID, userEmail)
+                    "INSERT INTO orderForm " &
+                    "  (orderForm_id, jfcBranchNr, orderFormName, JFCPriceGrpID_Orig, createUser, createDate, modUser, modDate) " &
+                    "VALUES (:1, :2, :3, :4, :5, SYSDATE, :5, SYSDATE)",
+                    orderFormID, jfcBranchNr, formName, excepGrpID, userEmail)
                 hfOrderFormID.Value = orderFormID
             Else
                 DB.ExecuteNonQuery(
-                    "UPDATE branch_orderForm " &
-                    "SET    orderFormName = :1, excepPriceGrpId = :2, modUser = :3, modDate = SYSDATE " &
+                    "UPDATE orderForm " &
+                    "SET    orderFormName = :1, JFCPriceGrpID_Orig = :2, modUser = :3, modDate = SYSDATE " &
                     "WHERE  orderForm_id  = :4",
                     formName, excepGrpID, userEmail, orderFormID)
             End If
@@ -521,19 +522,19 @@ Partial Class JFCAdmin_OrderForm
 
             ' Save checked items
             DB.ExecuteNonQuery(
-                "DELETE FROM branch_orderFormItems WHERE orderForm_id = :1", orderFormID)
+                "DELETE FROM orderForm_Item WHERE orderForm_id = :1", orderFormID)
             For Each row As GridViewRow In grdItems.Rows
                 Dim chk = CType(row.FindControl("chkItemRow"), CheckBox)
                 If chk IsNot Nothing AndAlso chk.Checked Then
                     Dim itemID As String = CString(grdItems.DataKeys(row.RowIndex).Value)
                     DB.ExecuteNonQuery(
-                        "INSERT INTO branch_orderFormItems (orderForm_id, custGrpItem_id) VALUES (:1, :2)",
+                        "INSERT INTO orderForm_Item (orderForm_id, item_id) VALUES (:1, :2)",
                         orderFormID, itemID)
                 End If
             Next
 
             DB.CommitTransaction()
-            InsertEventLog(DB, IIf(isNew, "INSERT", "UPDATE") & " branch_orderForm",
+            InsertEventLog(DB, IIf(isNew, "INSERT", "UPDATE") & " orderForm",
                 orderFormID, formName, Nothing, True, False)
         End Using
 
@@ -565,13 +566,13 @@ Partial Class JFCAdmin_OrderForm
                 Using DB As New DBHelper
                     DB.BeginTransaction()
                     DB.ExecuteNonQuery(
-                        "DELETE FROM orderFormItem WHERE orderForm_id = :1", dialogArg1)
+                        "DELETE FROM orderForm_Item WHERE orderForm_id = :1", dialogArg1)
                     DB.ExecuteNonQuery(
                         "DELETE FROM orderForm_Customer WHERE orderForm_id = :1", dialogArg1)
                     DB.ExecuteNonQuery(
                         "DELETE FROM orderForm WHERE orderForm_id = :1", dialogArg1)
                     DB.CommitTransaction()
-                    InsertEventLog(DB, "DELETE branch_orderForm", dialogArg1, Nothing, Nothing, True, False)
+                    InsertEventLog(DB, "DELETE orderForm", dialogArg1, Nothing, Nothing, True, False)
                 End Using
                 ShowListPanel()
                 MessageLine("CONFIRM", "Order form deleted.")
