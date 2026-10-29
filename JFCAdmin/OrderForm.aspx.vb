@@ -299,8 +299,8 @@ Partial Class JFCAdmin_OrderForm
                 "WHERE  p.pricegpid = :2 " &
                 "  AND  (fi.item_id IS NOT NULL" &
                 IIf(checkedIDs <> "", " OR a.item_id IN (" & checkedIDs & ")", "") &
-                IIf(searchCond <> "", " OR (" & searchCond & ")", "") & ") " &
-                " ORDER BY " & sortBy
+                                IIf(searchCond <> "", " OR (" & searchCond & ")", "") & ") " & " OR (" & searchCond & ")) " &
+                                                " ORDER BY " & sortBy
 
             '(p.enabled IS NULL OR p.enabled = 'Y')
 
@@ -385,6 +385,7 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
+<<<<<<< HEAD
     '  ADD ITEM (autocomplete box, same as CustItem)
     ' ════════════════════════════════════════════════════════════════
 
@@ -475,6 +476,8 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
+=======
+>>>>>>> 237160239d9ffab4147cd01412dfdaba563231a8
     '  SAVE / DELETE FORM
     ' ════════════════════════════════════════════════════════════════
 
