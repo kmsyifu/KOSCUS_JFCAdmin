@@ -94,8 +94,7 @@ Partial Class JFCAdmin_OrderForm
             Dim searchCust As String = txtSearchCustNr.Text.Trim()
 
             Dim SQL As String =
-                "SELECT DISTINCT f.orderForm_id, f.orderFormName, " &
-                "CASE WHEN f.JFCPriceGrpID_Orig IS NOT NULL THEN 'E' ELSE 'R' END AS formType " &
+                "SELECT DISTINCT f.orderForm_id, f.orderFormName, f.JFCPriceGrpID_Orig " &
                 "FROM   orderForm f " &
                 "LEFT JOIN orderForm_Customer fc ON fc.orderForm_id = f.orderForm_id " &
                 "WHERE  f.jfcBranchNr = :1 " &
@@ -122,55 +121,39 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
-    '  ADD BUTTONS
+    '  ADD BUTTON
     ' ════════════════════════════════════════════════════════════════
 
-    Protected Sub btnAddExcep_Click(sender As Object, e As EventArgs) Handles btnAddExcep.Click
-        OpenDetailPanel("", "E")
-    End Sub
-
-    Protected Sub btnAddReg_Click(sender As Object, e As EventArgs) Handles btnAddReg.Click
-        OpenDetailPanel("", "R")
+    Protected Sub btnAddForm_Click(sender As Object, e As EventArgs) Handles btnAddForm.Click
+        OpenDetailPanel("")
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
     '  DETAIL PANEL — open
     ' ════════════════════════════════════════════════════════════════
 
-    Private Sub OpenDetailPanel(orderFormID As String, Optional formType As String = "")
+    ' Every order form belongs to one exception price group (orderForm.JFCPriceGrpID_Orig)
+    Private Sub OpenDetailPanel(orderFormID As String)
         pnlList.Visible = False
         pnlDetail.Visible = True
         lblDetailMsg.Text = ""
         lblItemMsg.Text = ""
-        txtItem.Text = ""
-        pnlItemPreview.Visible = False
         ViewState("ItemChecks") = Nothing
+        ViewState("ExcepPriceGrpID") = ""
         hfOrderFormID.Value = orderFormID
         Dim isNew As Boolean = (orderFormID = "")
         pnlBranch.Visible = False
         Using DB As New DBHelper
-            ' Load formType from DB when editing
-            If formType = "" AndAlso Not isNew Then
-                formType = CString(DB.GetScalar(
-                    "SELECT CASE WHEN JFCPriceGrpID_Orig IS NOT NULL THEN 'E' ELSE 'R' END FROM orderForm WHERE orderForm_id = :1", orderFormID))
-            End If
-            hfFormType.Value = formType
-            ViewState("FormType") = formType
-
             ' Titles / button text
             If isNew Then
-                lblDetailTitle.Text = IIf(formType = "E",
-                    "Add Order Form for Exception Price Group Customers",
-                    "Add Order Form for Regular Customers")
+                lblDetailTitle.Text = "Add Order Form"
                 btnSaveForm.Text = "Add Form"
                 btnDeleteForm.Visible = False
                 txtFormName.Text = ""
                 lblCreatedOn.Text = ""
                 lblLastUpdated.Text = ""
             Else
-                lblDetailTitle.Text = IIf(formType = "E",
-                    "Update Order Form for Exception Price Group Customers",
-                    "Update Order Form for Regular Customers")
+                lblDetailTitle.Text = "Update Order Form"
                 btnSaveForm.Text = "Update Form"
                 btnDeleteForm.Visible = True
 
@@ -189,21 +172,11 @@ Partial Class JFCAdmin_OrderForm
             End If
 
             ' Exception Price Group DDL
-            pnlExcepGrpRow.Visible = (formType = "E")
-            If formType = "E" Then
-                LoadExcepPriceGrpDDL(DB, lblBranchID.Text)
-                If Not isNew Then
-                    Dim savedGrp As String = CString(ViewState("ExcepPriceGrpID"))
-                    If lstExcepPriceGrp.Items.FindByValue(savedGrp) IsNot Nothing Then
-                        lstExcepPriceGrp.SelectedValue = savedGrp
-                    End If
-                End If
+            LoadExcepPriceGrpDDL(DB, lblBranchID.Text)
+            Dim savedGrp As String = CString(ViewState("ExcepPriceGrpID"))
+            If lstExcepPriceGrp.Items.FindByValue(savedGrp) IsNot Nothing Then
+                lstExcepPriceGrp.SelectedValue = savedGrp
             End If
-
-            ' Add Customer search panel — Regular type only
-            pnlAddCustSearch.Visible = (formType = "R")
-            txtAddCust.Text = ""
-            lblAddCustMsg.Text = ""
 
             ' Sort by DDL init
             If lstSortBy.Items.Count = 0 Then
@@ -226,7 +199,7 @@ Partial Class JFCAdmin_OrderForm
             End If
         End Using
 
-        BindCustomersGrid(orderFormID, formType)
+        BindCustomersGrid(orderFormID)
         BindItemsGrid(orderFormID, False)
     End Sub
 
@@ -248,106 +221,30 @@ Partial Class JFCAdmin_OrderForm
     '  CUSTOMERS GRID
     ' ════════════════════════════════════════════════════════════════
 
-    Private Sub BindCustomersGrid(orderFormID As String, formType As String)
+    Private Sub BindCustomersGrid(orderFormID As String)
         Using DB As New DBHelper
-            Dim SQL As String
-
-            If formType = "E" Then
-                ' Show ALL exception-price customers for this branch; pre-check assigned ones
-                Dim excepGrpID As String = IIf(lstExcepPriceGrp.Items.Count > 0, lstExcepPriceGrp.SelectedValue, "")
-                SQL = "SELECT c.customer_id, c.customerName, " &
-                      "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned " &
-                      "FROM   customer c " &
-                      "LEFT   JOIN orderForm_Customer fc " &
-                      "         ON fc.customer_id = c.customer_id AND fc.orderForm_id = :1 " &
-                      "WHERE  c.jfcBranchNr = :2 " &
-                      "  AND  c.JFCPRICEGRPID_ORIG = :3 " &
-                      "ORDER  BY c.customerName"
-                grdCustomers.DataSource = DB.GetDataTable(SQL,
-                    IIf(orderFormID = "", "~~NONE~~", orderFormID),
-                    lblBranchID.Text,
-                    excepGrpID)
-            Else
-                ' Regular: show only already-assigned customers with x remove button
-                If orderFormID = "" Then
-                    grdCustomers.DataSource = New DataTable()
-                Else
-                    SQL = "SELECT c.customer_id, c.customerName, 1 AS isAssigned " &
-                          "FROM   customer c, orderForm_Customer fc " &
-                          "WHERE  fc.customer_id = c.customer_id AND fc.orderForm_id = :1 " &
-                          "ORDER  BY c.customerName"
-                    grdCustomers.DataSource = DB.GetDataTable(SQL, orderFormID)
-                End If
-            End If
-
+            ' All customers of the selected exception price group; pre-check assigned ones
+            Dim SQL As String =
+                "SELECT c.customer_id, c.customerName, " &
+                "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned " &
+                "FROM   customer c " &
+                "LEFT   JOIN orderForm_Customer fc " &
+                "         ON fc.customer_id = c.customer_id AND fc.orderForm_id = :1 " &
+                "WHERE  c.jfcBranchNr = :2 " &
+                "  AND  c.JFCPRICEGRPID_ORIG = :3 " &
+                "ORDER  BY c.customerName"
+            grdCustomers.DataSource = DB.GetDataTable(SQL,
+                IIf(orderFormID = "", "~~NONE~~", orderFormID),
+                lblBranchID.Text,
+                SelectedExcepGrpID())
             grdCustomers.DataBind()
-
-            ' Show x button only for Regular type
-            For Each row As GridViewRow In grdCustomers.Rows
-                Dim lnk = CType(row.FindControl("lnkRemoveCust"), LinkButton)
-                If lnk IsNot Nothing Then lnk.Visible = (formType = "R")
-            Next
         End Using
     End Sub
 
     Protected Sub lstExcepPriceGrp_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstExcepPriceGrp.SelectedIndexChanged
         ' Customers and item prices both depend on the exception price group
-        BindCustomersGrid(hfOrderFormID.Value, hfFormType.Value)
+        BindCustomersGrid(hfOrderFormID.Value)
         BindItemsGrid(hfOrderFormID.Value)
-    End Sub
-
-    Protected Sub btnAddCust_Click(sender As Object, e As EventArgs) Handles btnAddCust.Click
-        ' Add a Regular customer to the form (only valid when form already exists)
-        Dim orderFormID As String = hfOrderFormID.Value
-        Dim custSearch As String = txtAddCust.Text.Trim()
-        lblAddCustMsg.Text = ""
-
-        If custSearch = "" Then
-            lblAddCustMsg.Text = "Please enter a customer name or ID."
-            Return
-        End If
-        If orderFormID = "" Then
-            lblAddCustMsg.Text = "Please save the form first before adding customers."
-            Return
-        End If
-
-        Using DB As New DBHelper
-            Dim customerID As String = CString(DB.GetScalar(
-                "SELECT customer_id FROM customer WHERE jfcBranchNr = :1 " &
-                "AND (UPPER(customerName) LIKE " & DB.SqlEsc("%" & custSearch.ToUpper & "%") &
-                "  OR customer_id LIKE " & DB.SqlEsc("%" & custSearch & "%") & ") " &
-                "AND ROWNUM = 1", lblBranchID.Text))
-
-            If customerID = "" Then
-                lblAddCustMsg.Text = "Customer not found."
-                Return
-            End If
-
-            Dim exists As Integer = Val(DB.GetScalar(
-                "SELECT COUNT(*) FROM orderForm_Customer WHERE orderForm_id = :1 AND customer_id = :2",
-                orderFormID, customerID))
-            If exists = 0 Then
-                DB.ExecuteNonQuery(
-                    "INSERT INTO orderForm_Customer (orderForm_id, customer_id) VALUES (:1, :2)",
-                    orderFormID, customerID)
-            End If
-        End Using
-        txtAddCust.Text = ""
-        BindCustomersGrid(orderFormID, hfFormType.Value)
-    End Sub
-
-    Protected Sub grdCustomers_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles grdCustomers.RowCommand
-        If e.CommandName = "REMOVE_CUST" Then
-            Dim orderFormID As String = hfOrderFormID.Value
-            If orderFormID <> "" Then
-                Using DB As New DBHelper
-                    DB.ExecuteNonQuery(
-                        "DELETE FROM orderForm_Customer WHERE orderForm_id = :1 AND customer_id = :2",
-                        orderFormID, e.CommandArgument.ToString())
-                End Using
-                BindCustomersGrid(orderFormID, hfFormType.Value)
-            End If
-        End If
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
@@ -365,9 +262,9 @@ Partial Class JFCAdmin_OrderForm
             Dim sortBy As String = lstSortBy.SelectedValue
             Dim priceGrpID As String = GetFormPriceGrpID(DB)
 
-            ' Items come from the branch price list (jets_price for the branch price group).
-            ' Assigned items are always listed so Save (delete + re-insert checked rows) never drops them;
-            ' other branch items are listed only when a search text or category is given.
+            ' All enabled items on the form's price list are listed (like CustItem with ShowAllExcepGrpItem = 'Y');
+            ' search text / category only narrow that list. Checked and saved items are always listed so
+            ' Save (delete + re-insert checked rows) never drops them.
             Dim searchCond As String = ""
             If searchText <> "" Then
                 searchCond &= " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE " & DB.SqlEsc("%" & Replace(searchText.ToUpper, " ", "%") & "%") &
@@ -377,8 +274,7 @@ Partial Class JFCAdmin_OrderForm
                 searchCond &= " AND NVL(jctgGrp.ctgGrpDesc, 'Other') = " & DB.SqlEsc(ctgFilter)
             End If
 
-            ' Unsaved edits: checked items (incl. ones added from the auto-complete) are always listed;
-            ' isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
+            ' Unsaved edits: isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
             Dim checkedIDs As String = ItemIDList(DB, True)
             Dim uncheckedIDs As String = ItemIDList(DB, False)
 
@@ -403,7 +299,7 @@ Partial Class JFCAdmin_OrderForm
                 "WHERE  p.pricegpid = :2 " &
                 "  AND  (fi.item_id IS NOT NULL" &
                 IIf(checkedIDs <> "", " OR a.item_id IN (" & checkedIDs & ")", "") &
-                IIf(searchCond <> "", " OR ((p.enabled IS NULL OR p.enabled = 'Y')" & searchCond & ")", "") & ") " &
+                " OR ((p.enabled IS NULL OR p.enabled = 'Y')" & searchCond & ")) " &
                 " ORDER BY " & sortBy
 
             Dim dt As DataTable = DB.GetDataTable(SQL,
@@ -487,96 +383,6 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
-    '  ADD ITEM (autocomplete box, same as CustItem)
-    ' ════════════════════════════════════════════════════════════════
-
-    Protected Sub btnGetItem_Click(sender As Object, e As EventArgs) Handles btnGetItem.Click
-        lblItemMsg.Text = ""
-        If txtItem.Text.Contains(",") = False Then
-            lblItemMsg.Text = "Please select an item from the auto-complete list."
-            Return
-        End If
-
-        ' Branch auto-complete (ITEM_JFCBRANCH) ends with the 5-char item_id
-        Dim itemID As String = GetLastWord(txtItem.Text, ",").Trim()
-        txtItem.Text = ""
-        CaptureItemChecks()   ' so "Already in this order form" reflects unsaved checkbox edits
-        ShowItemPreview(itemID)
-    End Sub
-
-    ' Read-only item detail (no price / name editing), like CustItem's Add / Update Item panel
-    Private Sub ShowItemPreview(itemID As String)
-        pnlItemPreview.Visible = False
-        hfPreviewItemID.Value = ""
-
-        Using DB As New DBHelper
-            ' Must be enabled on this form's price list
-            Dim r As DataReader = DB.GetReader(
-                "SELECT a.item_id, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
-                "NVL(jctgGrp.ctgGrpDesc, 'Other') AS ctgName_view, " &
-                "p.eaPerCs, jp.csPrice, jp.eaPrice, jp.lbPrice_OrderByQty " &
-                "FROM   jets_price p " &
-                "INNER  JOIN jfcItem a ON a.item_id = p.itemcode " &
-                "LEFT   JOIN jfcPrice jp ON jp.item_id = a.item_id AND jp.priceGrp_id = p.pricegpid " &
-                "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
-                "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
-                "WHERE  p.pricegpid = :1 AND a.item_id = :2 " &
-                "  AND  (p.enabled IS NULL OR p.enabled = 'Y')",
-                GetFormPriceGrpID(DB), itemID)
-            If Not r.Read() Then
-                r.close()
-                lblItemMsg.Text = "Item not found."
-                Return
-            End If
-
-            hfPreviewItemID.Value = CString(r("item_id"))
-            imgPreview.ImageUrl = GetItemImgUrl("JFCItems", hfPreviewItemID.Value)
-            lblPreviewDesc.Text = CString(r("itemDesc_view"))
-            lblPreviewItemID.Text = hfPreviewItemID.Value
-            lblPreviewCtg.Text = CString(r("ctgName_view"))
-            lblPreviewEaPerCs.Text = IIf(Val(r("eaPerCs")) > 1, CString(r("eaPerCs")), "")
-
-            Dim prices As New List(Of String)
-            If Val(r("csPrice")) <> 0 Then prices.Add(Format(Val(r("csPrice")), "$#,##0.00") & " /cs")
-            If Val(r("eaPrice")) <> 0 Then prices.Add(Format(Val(r("eaPrice")), "$#,##0.00") & " /ea")
-            If Val(r("lbPrice_OrderByQty")) <> 0 Then prices.Add(Format(Val(r("lbPrice_OrderByQty")), "$#,##0.00") & " /lb")
-            lblPreviewPrice.Text = IIf(prices.Count > 0, String.Join("&nbsp;&nbsp;", prices), "Ask")
-            r.close()
-
-            ' Already in the list = checked in the grid (unsaved edits win over orderForm_Item)
-            Dim inList As Boolean
-            If ItemChecks().ContainsKey(itemID) Then
-                inList = ItemChecks()(itemID)
-            Else
-                inList = hfOrderFormID.Value <> "" AndAlso Val(DB.GetScalar(
-                    "SELECT COUNT(*) FROM orderForm_Item WHERE orderForm_id = :1 AND item_id = :2",
-                    hfOrderFormID.Value, itemID)) > 0
-            End If
-            lblPreviewInList.Visible = inList
-            btnAddToList.Visible = Not inList
-        End Using
-
-        pnlItemPreview.Visible = True
-    End Sub
-
-    ' Adds the previewed item to the list (checked); saved to orderForm_Item on Add / Update Form
-    Protected Sub btnAddToList_Click(sender As Object, e As EventArgs) Handles btnAddToList.Click
-        Dim itemID As String = hfPreviewItemID.Value
-        If itemID = "" Then Return
-
-        SetItemCheck(itemID, True)
-        pnlItemPreview.Visible = False
-        lblItemMsg.Text = ""
-        lstSortBy.SelectedIndex = 0   ' "Selected" first, so the new item shows at the top
-        BindItemsGrid(hfOrderFormID.Value, False)
-    End Sub
-
-    Protected Sub btnClearItem_Click(sender As Object, e As EventArgs) Handles btnClearItem.Click
-        txtItem.Text = ""
-        pnlItemPreview.Visible = False
-    End Sub
-
-    ' ════════════════════════════════════════════════════════════════
     '  SAVE / DELETE FORM
     ' ════════════════════════════════════════════════════════════════
 
@@ -587,8 +393,13 @@ Partial Class JFCAdmin_OrderForm
             Return
         End If
 
+        Dim excepGrpID As String = SelectedExcepGrpID()
+        If excepGrpID = "" Then
+            lblDetailMsg.Text = "Please select an Exception Price Group."
+            Return
+        End If
+
         Dim jfcBranchNr As String = lblBranchID.Text
-        Dim formType As String = hfFormType.Value
         Dim orderFormID As String = hfOrderFormID.Value
         Dim isNew As Boolean = (orderFormID = "")
 
@@ -609,8 +420,6 @@ Partial Class JFCAdmin_OrderForm
             End If
 
             Dim userEmail As String = GetUserEmail(DB)
-            Dim excepGrpID As String = IIf(formType = "E" AndAlso lstExcepPriceGrp.Items.Count > 0,
-                lstExcepPriceGrp.SelectedValue, "")
 
             DB.BeginTransaction()
 
@@ -630,20 +439,18 @@ Partial Class JFCAdmin_OrderForm
                     formName, excepGrpID, userEmail, orderFormID)
             End If
 
-            ' Save assigned customers from checkbox grid (Exception type)
-            If formType = "E" Then
-                DB.ExecuteNonQuery(
-                    "DELETE FROM orderForm_Customer WHERE orderForm_id = :1", orderFormID)
-                For Each row As GridViewRow In grdCustomers.Rows
-                    Dim chk = CType(row.FindControl("chkCustRow"), CheckBox)
-                    If chk IsNot Nothing AndAlso chk.Checked Then
-                        Dim custID As String = CString(grdCustomers.DataKeys(row.RowIndex).Value)
-                        DB.ExecuteNonQuery(
-                            "INSERT INTO orderForm_Customer (orderForm_id, customer_id) VALUES (:1, :2)",
-                            orderFormID, custID)
-                    End If
-                Next
-            End If
+            ' Save checked customers
+            DB.ExecuteNonQuery(
+                "DELETE FROM orderForm_Customer WHERE orderForm_id = :1", orderFormID)
+            For Each row As GridViewRow In grdCustomers.Rows
+                Dim chk = CType(row.FindControl("chkCustRow"), CheckBox)
+                If chk IsNot Nothing AndAlso chk.Checked Then
+                    Dim custID As String = CString(grdCustomers.DataKeys(row.RowIndex).Value)
+                    DB.ExecuteNonQuery(
+                        "INSERT INTO orderForm_Customer (orderForm_id, customer_id) VALUES (:1, :2)",
+                        orderFormID, custID)
+                End If
+            Next
 
             ' Save checked items
             DB.ExecuteNonQuery(
@@ -715,21 +522,15 @@ Partial Class JFCAdmin_OrderForm
     '  HELPERS
     ' ════════════════════════════════════════════════════════════════
 
-    ' Same rule as CustItem: exception customers use their own JETS price group (jets_customer.priceGpID),
-    ' so an Exception form uses the price group of its exception group's customers; a Regular form uses the branch's -REG customers' price group.
-    Private Function GetFormPriceGrpID(DB As DBHelper) As String
-        If hfFormType.Value = "E" AndAlso lstExcepPriceGrp.Items.Count > 0 Then
-            Return GetPriceGrpIDByExcepGrp(DB, lblBranchID.Text, lstExcepPriceGrp.SelectedValue)
-        End If
-        Return GetPriceGrpIDByBranch(DB, lblBranchID.Text)
+    ' Exception price group picked in the detail panel ("" when the branch has none)
+    Private Function SelectedExcepGrpID() As String
+        Return IIf(lstExcepPriceGrp.Items.Count > 0, lstExcepPriceGrp.SelectedValue, "")
     End Function
 
-    ' Price group passed to the item auto-complete (blank = branch price group)
-    Protected Function ItemSearchPriceGrpID() As String
-        If hfFormType.Value <> "E" OrElse lstExcepPriceGrp.Items.Count = 0 Then Return ""
-        Using DB As New DBHelper
-            Return GetPriceGrpIDByExcepGrp(DB, lblBranchID.Text, lstExcepPriceGrp.SelectedValue)
-        End Using
+    ' Same rule as CustItem: exception customers use their own JETS price group (jets_customer.priceGpID),
+    ' so the form uses the price group of its exception group's customers.
+    Private Function GetFormPriceGrpID(DB As DBHelper) As String
+        Return GetPriceGrpIDByExcepGrp(DB, lblBranchID.Text, SelectedExcepGrpID())
     End Function
 
     Overrides Sub VerifyRenderingInServerForm(control As Control)
