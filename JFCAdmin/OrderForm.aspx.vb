@@ -385,7 +385,7 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
-<<<<<<< HEAD
+
     '  ADD ITEM (autocomplete box, same as CustItem)
     ' ════════════════════════════════════════════════════════════════
 
