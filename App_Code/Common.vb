@@ -1132,10 +1132,13 @@ Public Class Common
         Return CString(DB.GetScalar(SQL, jfcBranchNr, jfcCustomerNr))
     End Function
 
+    'Price group of the branch's regular customers (customer.jfcPriceGrpID_orig ending in -REG), resolved the same way as GetPriceGrpID (jets_customer.priceGpID)
     Public Shared Function GetPriceGrpIDByBranch(ByVal DB As DBHelper, ByVal jfcBranchNr As String) As String
         Dim SQL As String
 
-        SQL = "SELECT pricegpid FROM jfcVendor WHERE jfcBranchNr = :1"
+        SQL = "SELECT jc.priceGpID FROM customer c, jets_customer jc " &
+              "WHERE jc.bid = c.jfcBranchNr AND jc.customerid = c.jfcCustomerNr " &
+              "  AND c.jfcBranchNr = :1 AND SUBSTR(c.jfcPriceGrpID_orig, -4) = '-REG' AND jc.priceGpID IS NOT NULL AND ROWNUM = 1"
         Return CString(DB.GetScalar(SQL, jfcBranchNr))
     End Function
 

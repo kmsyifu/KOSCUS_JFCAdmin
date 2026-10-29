@@ -617,7 +617,7 @@ Partial Class JFCAdmin_OrderForm
     ' ════════════════════════════════════════════════════════════════
 
     ' Same rule as CustItem: exception customers use their own JETS price group (jets_customer.priceGpID),
-    ' so an Exception form uses the price group of its exception group's customers; a Regular form uses the branch price group.
+    ' so an Exception form uses the price group of its exception group's customers; a Regular form uses the branch's -REG customers' price group.
     Private Function GetFormPriceGrpID(DB As DBHelper) As String
         If hfFormType.Value = "E" AndAlso lstExcepPriceGrp.Items.Count > 0 Then
             Return GetPriceGrpIDByExcepGrp(DB, lblBranchID.Text, lstExcepPriceGrp.SelectedValue)
