@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/JFCAdmin/CustSetting.aspx" hash="fffffffc59719ee9" filehash="bb64432a4b5056f9" flags="110000" assembly="App_Web_wg0cwicz" type="ASP.jfcadmin_custsetting_aspx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/JFCAdmin/CustSetting.aspx" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/CustSetting.aspx.vb" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master.vb" />
+    </filedeps>
+</preserve>

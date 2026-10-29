@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/JFCAdmin/Balance.aspx" hash="fffffffc59719ee9" filehash="32e9bb3eccd15d40" flags="110000" assembly="App_Web_wg0cwicz" type="ASP.jfcadmin_balance_aspx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/Common/Balance.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/Balance.ascx.vb" />
+        <filedep name="/C:/Program Files/Git/Common/PaymentDtl.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/PaymentDtl.ascx.vb" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/Balance.aspx" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/Balance.aspx.vb" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master.vb" />
+    </filedeps>
+</preserve>

@@ -309,19 +309,55 @@
                         WatermarkText="Search by item # or keyword"
                         WatermarkCssClass='<%# "watermark stdTxt " & IIf(IsMobile(), "size32", "size72") %>' />
                     <asp:ImageButton ID="btnClearItem" Tooltip="Clear" CssClass="xxsImgBtn"
-                        ImageUrl='<%# GetWebImgUrl("close.jpg") %>' runat="server"
-                        OnClick="btnClearItem_Click" />
+                        ImageUrl='<%# GetWebImgUrl("close.jpg") %>' runat="server" />
                     <asp:Button ID="btnGetItem" OnClientClick="javascript:showProgress();"
                         CssClass="midButton" runat="server" Text="Get Item"
-                        style="display:none;" OnClick="btnGetItem_Click" />
+                        style="display:none;" />
                     <br />
+                </asp:Panel>
+
+                <%-- Read-only preview of the picked item; "Add to List" adds it (checked) to the items grid --%>
+                <asp:Panel ID="pnlItemPreview" DefaultButton="btnAddToList" Visible="false" runat="server">
+                    <asp:HiddenField ID="hfPreviewItemID" runat="server" />
+                    <table>
+                        <tr>
+                            <td rowspan="6"><asp:Image ID="imgPreview" CssClass="largeGrdImg" runat="server" /></td>
+                            <td colspan="2"><asp:Label ID="lblPreviewDesc" CssClass="cellLbl bold" runat="server" /></td>
+                        </tr>
+                        <tr>
+                            <td class="gray">Item:</td>
+                            <td><asp:Label ID="lblPreviewItemID" CssClass="cellLbl" runat="server" /></td>
+                        </tr>
+                        <tr>
+                            <td class="gray">JFC Category:</td>
+                            <td><asp:Label ID="lblPreviewCtg" CssClass="cellLbl" runat="server" /></td>
+                        </tr>
+                        <tr>
+                            <td class="gray">Each / Case:</td>
+                            <td><asp:Label ID="lblPreviewEaPerCs" CssClass="cellLbl" runat="server" /></td>
+                        </tr>
+                        <tr>
+                            <td class="gray">Price:</td>
+                            <td><asp:Label ID="lblPreviewPrice" CssClass="cellLbl red bold" runat="server" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <asp:Label ID="lblPreviewInList" CssClass="cellLbl green"
+                                    Text="Already in this order form" runat="server" />
+                                <asp:Button ID="btnAddToList" CssClass="midButton" runat="server"
+                                    Text="Add to List"
+                                    OnClientClick="javascript:showProgress();" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:Panel>
                  <br style="clear:both;" />
             </asp:Panel>
 
-           
+
 
             <asp:Label ID="lblItemMsg" CssClass="red" runat="server" />
+            <asp:Label ID="lblItemPendingMsg" CssClass="green" runat="server" />
 
             <asp:GridView ID="grdItems" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"

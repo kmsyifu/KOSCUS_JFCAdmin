@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/Default.aspx" hash="fffffffc59719ee9" filehash="258fdfec272f4901" flags="110000" assembly="App_Web_wsa2qct4" type="ASP.default_aspx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/Default.aspx" />
+        <filedep name="/C:/Program Files/Git/Default.aspx.vb" />
+    </filedeps>
+</preserve>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/JFCAdmin/DownloadFile.aspx" hash="fffffffc59719ee9" filehash="6b8709669ed2f013" flags="110000" assembly="App_Web_zwqdcfjc" type="ASP.jfcadmin_downloadfile_aspx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/JFCAdmin/DownloadFile.aspx" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/DownloadFile.aspx.vb" />
+    </filedeps>
+</preserve>

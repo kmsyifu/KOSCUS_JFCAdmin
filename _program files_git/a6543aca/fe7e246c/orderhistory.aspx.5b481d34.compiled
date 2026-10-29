@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/JFCAdmin/OrderHistory.aspx" hash="fffffffc59719ee9" filehash="1d11f44b8df49c35" flags="110000" assembly="App_Web_ms4h45d5" type="ASP.jfcadmin_orderhistory_aspx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/Common/OrderDtl.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/OrderDtl.ascx.vb" />
+        <filedep name="/C:/Program Files/Git/Common/OrderHistory.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/OrderHistory.ascx.vb" />
+        <filedep name="/C:/Program Files/Git/Common/ShowItemDtl.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/ShowItemDtl.ascx.vb" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master.vb" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/OrderHistory.aspx" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/OrderHistory.aspx.vb" />
+    </filedeps>
+</preserve>

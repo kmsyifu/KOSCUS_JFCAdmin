@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/Common/OrderDtl.ascx" hash="fffffffc59719ee9" filehash="4ef2941194b90cf" flags="110000" assembly="App_Web_5g5abev1" type="ASP.common_orderdtl_ascx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/Common/OrderDtl.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/OrderDtl.ascx.vb" />
+        <filedep name="/C:/Program Files/Git/Common/ShowItemDtl.ascx" />
+        <filedep name="/C:/Program Files/Git/Common/ShowItemDtl.ascx.vb" />
+    </filedeps>
+</preserve>

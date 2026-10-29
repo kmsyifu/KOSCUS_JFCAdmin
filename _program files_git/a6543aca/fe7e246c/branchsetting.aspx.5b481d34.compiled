@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/C:/Program Files/Git/JFCAdmin/BranchSetting.aspx" hash="fffffffc59719ee9" filehash="8a7a24c50d068af4" flags="110000" assembly="App_Web_ms4h45d5" type="ASP.jfcadmin_branchsetting_aspx">
+    <filedeps>
+        <filedep name="/C:/Program Files/Git/JFCAdmin/BranchSetting.aspx" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/BranchSetting.aspx.vb" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master" />
+        <filedep name="/C:/Program Files/Git/JFCAdmin/JFCAdmin.master.vb" />
+    </filedeps>
+</preserve>
