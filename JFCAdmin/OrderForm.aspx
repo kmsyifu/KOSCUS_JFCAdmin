@@ -6,15 +6,6 @@
 
     <script type="text/javascript">
 
-        function clickGetItem(txtItem) {
-            var enterd = txtItem.val();
-            // Format: "#item_id, description, item_id" (description may contain commas, so use the last part)
-            var lines = enterd.split(',');
-            if (lines.length >= 3 && $.trim(lines[lines.length - 1]).length == 5) {
-                $('#<%=btnGetItem.ClientID%>').click();
-            }
-        }
-
         function loadData(id, id2, id3, id4, code, callback) {
             $.ajax({
                 type: 'POST',
@@ -37,9 +28,6 @@
                     event.preventDefault();
                 }
             });
-
-            $(".CODE_ITEM").autocomplete('../Common/Suggestion.ashx?id=<%=lblBranchID.Text%>&id2=<%=Server.UrlEncode(ItemSearchPriceGrpID())%>&id3=&id4=JFCADMIN&code=ITEM_JFCBRANCH',
-                { minChars: 1, autoFill: false, scroll: false, max: 30 }).focus(function () { clickGetItem($('#<%=txtItem.ClientID%>')); });
 
             <%= JavaScript %>
         });
@@ -112,15 +100,10 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Type"
+                    <asp:BoundField HeaderText="Exception Price Group" DataField="JFCPriceGrpID_Orig"
                         HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48 cellLbl gray"
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-HorizontalAlign="Left"
-                        HeaderStyle-Height="30px" ItemStyle-Height="30px">
-                        <ItemTemplate>
-                            <asp:Label runat="server"
-                                Text='<%# IIf(CString(Eval("formType")) = "E", "Exception Price Group Customers", "Regular Customers") %>' />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                        HeaderStyle-Height="30px" ItemStyle-Height="30px" />
 
                     <asp:TemplateField HeaderStyle-CssClass="th center4" ItemStyle-CssClass="center4"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px">
@@ -139,15 +122,9 @@
             </asp:GridView>
 
             <br />
-            <asp:Button ID="btnAddExcep" runat="server" CssClass="midButton"
-                Text="Add Form for Excep Grp Cust"
-                OnClick="btnAddExcep_Click"
+            <asp:Button ID="btnAddForm" runat="server" CssClass="midButton"
+                Text="Add Order Form"
                 OnClientClick="javascript:showProgress();" />
-            &nbsp;
-            <asp:Button ID="btnAddReg" runat="server" CssClass="midButton"
-                Text="Add Form for Reg Customer"
-                OnClick="btnAddReg_Click"
-                OnClientClick="javascript:showProgress();" Visible ="false" />
 
         </asp:Panel>
 
@@ -160,7 +137,6 @@
             <br />
             <asp:Label ID="lblDetailMsg" CssClass="red" runat="server" /><br />
             <asp:HiddenField ID="hfOrderFormID" runat="server" />
-            <asp:HiddenField ID="hfFormType"    runat="server" />
 
             <h2><asp:Label ID="lblDetailTitle" runat="server" /></h2>
             <asp:Panel ID="pnlOrderDetail" CssClass="visiblePnl" runat="server">
@@ -173,7 +149,6 @@
                             runat="server" autocomplete="off" />
                     </td>
                 </tr>
-                <asp:Panel ID="pnlExcepGrpRow" runat="server">
                 <tr>
                     <td class="rowHdr">Exception Price Group</td>
                     <td>
@@ -181,7 +156,6 @@
                             OnChange="javascript:showProgress();" AutoPostBack="True" />
                     </td>
                 </tr>
-                </asp:Panel>
                 <tr>
                     <td class="rowHdr">Created on</td>
                     <td><asp:Label ID="lblCreatedOn" CssClass="cellLbl gray" runat="server" /></td>
@@ -199,31 +173,12 @@
             <%-- ── Assigned Customers ── --%>
             <h3>Assigned Customers</h3>
 
-            <%-- Search add — Regular customers type only --%>
-            <asp:Panel ID="pnlAddCustSearch" runat="server" Visible="false">
-                <b>Add Customer</b><br />
-                <asp:Panel ID="pnlGetCust" DefaultButton="btnAddCust" runat="server">
-                    <asp:TextBox ID="txtAddCust" CssClass="largeTxt size48 disableEnter"
-                        runat="server" autocomplete="off" />
-                    <ajaxToolkit:TextBoxWatermarkExtender ID="watAddCust" runat="server"
-                        TargetControlID="txtAddCust"
-                        WatermarkText="Search by customer"
-                        WatermarkCssClass="watermark largeTxt size48" />
-                    &nbsp;
-                    <asp:Button ID="btnAddCust" runat="server" CssClass="midButton"
-                        Text="Add" OnClick="btnAddCust_Click"
-                        OnClientClick="javascript:showProgress();" />
-                </asp:Panel>
-                <asp:Label ID="lblAddCustMsg" CssClass="red" runat="server" />
-                <br />
-            </asp:Panel>
-
+            <%-- All customers of the selected exception price group; checked = saved to the form --%>
             <asp:GridView ID="grdCustomers" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
                 DataKeyNames="customer_id">
                 <Columns>
-                    <%-- Checkbox only for Exception type (assign/unassign) --%>
                     <asp:TemplateField HeaderStyle-CssClass="th center4" ItemStyle-CssClass="center4"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px">
                         <HeaderTemplate>
@@ -249,22 +204,9 @@
                         HeaderStyle-CssClass="th size64" ItemStyle-CssClass="size64 cellLbl gray"
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-HorizontalAlign="Left"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px" />
-
-                    <%-- Remove link — Regular type only --%>
-                    <asp:TemplateField HeaderStyle-CssClass="th center4" ItemStyle-CssClass="center4"
-                        HeaderStyle-Height="30px" ItemStyle-Height="30px">
-                        <ItemTemplate>
-                            <asp:LinkButton runat="server" ForeColor="red" CssClass="cellLink"
-                                ID="lnkRemoveCust"
-                                CommandName="REMOVE_CUST"
-                                CommandArgument='<%# Eval("customer_id") %>'
-                                Text="x" Visible="false"
-                                OnClientClick="return confirm('Remove this customer from the order form?');" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
                 </Columns>
                 <EmptyDataTemplate>
-                    <asp:Label runat="server" CssClass="gray" Text="No customers assigned." />
+                    <asp:Label runat="server" CssClass="gray" Text="No customers in this exception price group." />
                 </EmptyDataTemplate>
             </asp:GridView>
 
@@ -298,61 +240,7 @@
                 <br />
             </asp:Panel>
 
-            <asp:Panel ID="pnlAddItem" CssClass="visiblePnl"
-                style='<%# IIf(IsMobile(), "", "margin-left:633px") %>' runat="server">
-                <h3>Add / Update Item</h3>
-                <asp:Panel ID="pnlGetItem" DefaultButton="btnGetItem" runat="server">
-                    <asp:TextBox ID="txtItem" CssClass='<%# "stdTxt CODE_ITEM " & IIf(IsMobile(), "size32", "size72") %>'
-                        runat="server" autocomplete="off" />
-                    <ajaxToolkit:TextBoxWatermarkExtender ID="watItem" runat="server"
-                        TargetControlID="txtItem"
-                        WatermarkText="Search by item # or keyword"
-                        WatermarkCssClass='<%# "watermark stdTxt " & IIf(IsMobile(), "size32", "size72") %>' />
-                    <asp:ImageButton ID="btnClearItem" Tooltip="Clear" CssClass="xxsImgBtn"
-                        ImageUrl='<%# GetWebImgUrl("close.jpg") %>' runat="server" />
-                    <asp:Button ID="btnGetItem" OnClientClick="javascript:showProgress();"
-                        CssClass="midButton" runat="server" Text="Get Item"
-                        style="display:none;" />
-                    <br />
-                </asp:Panel>
-
-                <%-- Read-only preview of the picked item; "Add to List" adds it (checked) to the items grid --%>
-                <asp:Panel ID="pnlItemPreview" DefaultButton="btnAddToList" Visible="false" runat="server">
-                    <asp:HiddenField ID="hfPreviewItemID" runat="server" />
-                    <table>
-                        <tr>
-                            <td rowspan="6"><asp:Image ID="imgPreview" CssClass="largeGrdImg" runat="server" /></td>
-                            <td colspan="2"><asp:Label ID="lblPreviewDesc" CssClass="cellLbl bold" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="gray">Item:</td>
-                            <td><asp:Label ID="lblPreviewItemID" CssClass="cellLbl" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="gray">JFC Category:</td>
-                            <td><asp:Label ID="lblPreviewCtg" CssClass="cellLbl" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="gray">Each / Case:</td>
-                            <td><asp:Label ID="lblPreviewEaPerCs" CssClass="cellLbl" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="gray">Price:</td>
-                            <td><asp:Label ID="lblPreviewPrice" CssClass="cellLbl red bold" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <asp:Label ID="lblPreviewInList" CssClass="cellLbl green"
-                                    Text="Already in this order form" runat="server" />
-                                <asp:Button ID="btnAddToList" CssClass="midButton" runat="server"
-                                    Text="Add to List"
-                                    OnClientClick="javascript:showProgress();" />
-                            </td>
-                        </tr>
-                    </table>
-                </asp:Panel>
-                 <br style="clear:both;" />
-            </asp:Panel>
+            <br style="clear:both;" />
 
 
 
