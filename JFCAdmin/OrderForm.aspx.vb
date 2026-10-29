@@ -403,8 +403,10 @@ Partial Class JFCAdmin_OrderForm
                 "WHERE  p.pricegpid = :2 " &
                 "  AND  (fi.item_id IS NOT NULL" &
                 IIf(checkedIDs <> "", " OR a.item_id IN (" & checkedIDs & ")", "") &
-                IIf(searchCond <> "", " OR ((p.enabled IS NULL OR p.enabled = 'Y')" & searchCond & ")", "") & ") " &
+                IIf(searchCond <> "", " OR (" & searchCond & ")", "") & ") " &
                 " ORDER BY " & sortBy
+
+            '(p.enabled IS NULL OR p.enabled = 'Y')
 
             Dim dt As DataTable = DB.GetDataTable(SQL,
                 IIf(orderFormID = "", "~~NONE~~", orderFormID),
@@ -520,9 +522,9 @@ Partial Class JFCAdmin_OrderForm
                 "LEFT   JOIN jfcPrice jp ON jp.item_id = a.item_id AND jp.priceGrp_id = p.pricegpid " &
                 "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
-                "WHERE  p.pricegpid = :1 AND a.item_id = :2 " &
-                "  AND  (p.enabled IS NULL OR p.enabled = 'Y')",
+                "WHERE  p.pricegpid = :1 AND a.item_id = :2 ",
                 GetFormPriceGrpID(DB), itemID)
+            '"  AND  (p.enabled IS NULL OR p.enabled = 'Y')"
             If Not r.Read() Then
                 r.close()
                 lblItemMsg.Text = "Item not found."
