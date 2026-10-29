@@ -9,7 +9,7 @@ Imports Common
 Imports Newtonsoft.Json.Linq
 
 Public Class Search_VB : Implements IHttpHandler
-    
+
     Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
         Dim SQL, prefixtext, code, id, id2, id3, id4 As String
         Dim r As DataReader = Nothing
@@ -26,7 +26,7 @@ Public Class Search_VB : Implements IHttpHandler
 
         Using DB As New DBHelper
             Dim sb As StringBuilder = New StringBuilder
-            
+
             Select Case code
                 Case "ITEM"
                     'Get JFC #
@@ -35,7 +35,7 @@ Public Class Search_VB : Implements IHttpHandler
                     Dim smallCustomer As Boolean = IsSmallCustomer(DB, id)
                     GetJFCBranchAndCustomerNr(DB, id, jfcBranchNr, jfcCustomerNr)
                     priceGrpID = Common.GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)
-  
+
                     'Get item list
                     'SQL = "SELECT v.vendorName || ', Item#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
                     SQL = "SELECT '#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
@@ -83,13 +83,14 @@ Public Class Search_VB : Implements IHttpHandler
                 Case "ITEM_JFCBRANCH"
                     'Branch-level item list (id = jfcBranchNr, id2 = price group of an exception form), used by JFCAdmin/OrderForm. Last word is the 5-char item_id.
                     priceGrpID = IIf(id2 <> "", id2, Common.GetPriceGrpIDByBranch(DB, id))
-                    SQL = "SELECT '#' || a.item_id || ', ' || NVL(p.itemDesc_branch, a.itemDesc) || ', ' || a.item_id AS itemDtl " & _
-                          "FROM jets_price p " & _
-                          "INNER JOIN jfcItem a ON a.item_id = p.itemcode " & _
-                          "WHERE p.pricegpid = :1 " & _
-                          "  AND (p.enabled IS NULL OR p.enabled = 'Y') " & _
-                          "  AND (a.item_id LIKE :2 OR UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE :3) " & _
+                    SQL = "SELECT '#' || a.item_id || ', ' || NVL(p.itemDesc_branch, a.itemDesc) || ', ' || a.item_id AS itemDtl " &
+                          "FROM jets_price p " &
+                          "INNER JOIN jfcItem a ON a.item_id = p.itemcode " &
+                          "WHERE p.pricegpid = :1 " &
+                          "  AND (a.item_id LIKE :2 OR UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE :3) " &
                           "ORDER BY itemDtl"
+
+                    ' "  AND (p.enabled IS NULL OR p.enabled = 'Y') " & _
                     r = DB.GetReader(SQL, priceGrpID, prefixtext & "%", "%" & Replace(prefixtext.ToUpper, " ", "%") & "%")
                     While r.Read
                         itemDtl = CString(r("itemDtl"))
@@ -100,7 +101,7 @@ Public Class Search_VB : Implements IHttpHandler
                     r.close()
                     context.Response.Write(sb.ToString)
                 Case "JFCBRANCH"
-        
+
                     SQL = "SELECT c.Name FROM  jho.customer@jho c " & _
                     " WHERE c.bid = :1 AND c.customerid = :2"
                     Dim Name = CString(DB.GetScalar(SQL, id, id2))
@@ -113,14 +114,14 @@ Public Class Search_VB : Implements IHttpHandler
                     End If
                     If id.Contains(",") Then
                         msg = "Error! Your email address cannot contain ','" 'Doesn't allow multiple email address separated by "," for auto signup
-                   
+
                     End If
                     SQL = "SELECT u.email FROM webuser_customer uc, customer c, webuser u, jfcVendor v " & _
                             "WHERE uc.email = u.email AND uc.customer_id = c.customer_id AND c.jfcBranchNr = v.jfcBranchNr AND v.jfcBranchNr = :1 AND c.jfcCustomerNr = :2 AND uc.email = :3"
                     If CString(DB.GetScalar(SQL, id2, id3, id)) <> String.Empty Then
                         msg = "Error! This customer already exists. "
                     End If
-                  
+
                     If IsProduction() = True OrElse IsProdBeta() = True Then
                         'TODO: Remove OrElse userEmail = "yfukushima@jfc.com" later
                         'Get sales rep email (to address) and branch email (cc address)
@@ -156,7 +157,7 @@ Public Class Search_VB : Implements IHttpHandler
                     If r.Read() Then
                         msg = Get_GP(Val(r("eaPerCs")), Val(r("cscost")), Val(r("lbPrice_OrderByQty")), Val(r("csPrice")))
                     End If
-                    
+
                     sb.Append(msg)
                     context.Response.Write(sb.ToString)
                 Case "ITEM_BRANCH"
@@ -166,7 +167,7 @@ Public Class Search_VB : Implements IHttpHandler
                     Dim smallCustomer As Boolean = IsSmallCustomer(DB, id)
                     GetJFCBranchAndCustomerNr(DB, id, jfcBranchNr, jfcCustomerNr)
                     priceGrpID = Common.GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)
-  
+
                     'Get item list
                     'SQL = "SELECT v.vendorName || ', Item#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
                     SQL = "SELECT '#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
@@ -224,7 +225,7 @@ Public Class Search_VB : Implements IHttpHandler
                         ' Accessing the 'items' array
                         items = DirectCast(requestData("items"), JArray)
                     End If
-                    
+
                     Dim sortNumber As Integer = 1
                     DB.BeginTransaction()
                     For Each item As JObject In items
@@ -236,10 +237,10 @@ Public Class Search_VB : Implements IHttpHandler
                         ' Process each itemId as needed
                     Next
                     DB.CommitTransaction()
-                   
+
                     context.Response.ContentType = "text/plain"
                     context.Response.Write("Data received successfully")
-               
+
                 Case "ITEMLIST"
                     Dim json As String
                     Using reader = New System.IO.StreamReader(context.Request.InputStream)
@@ -253,7 +254,7 @@ Public Class Search_VB : Implements IHttpHandler
                         ' Accessing the 'items' array
                         items = DirectCast(requestData("items"), JArray)
                     End If
-                    
+
                     Dim sortNumber As Integer = 1
                     DBUpdate.DeleteCustItemDispOrder(DB, id)
                     For Each item As JObject In items
@@ -263,18 +264,18 @@ Public Class Search_VB : Implements IHttpHandler
                         ' Process each itemId as needed
                     Next
 
-                   
+
                     context.Response.ContentType = "text/plain"
                     context.Response.Write("Data received successfully")
                 Case "BRANCHSETTING"
-                    
+
                 Case Else
-              
+
                     Exit Sub
             End Select
         End Using
     End Sub
-    
+
     Public ReadOnly Property IsReusable() As Boolean Implements IHttpHandler.IsReusable
         Get
             Return False
