@@ -262,16 +262,19 @@ Partial Class JFCAdmin_OrderForm
             Dim sortBy As String = lstSortBy.SelectedValue
             Dim priceGrpID As String = GetFormPriceGrpID(DB)
 
-            ' All enabled items on the form's price list are listed (like CustItem with ShowAllExcepGrpItem = 'Y');
-            ' search text / category only narrow that list. Checked and saved items are always listed so
+            ' Same list as CustItem GetSQL_CustItem "List" for an exception price customer
+            ' (isExcepPriceCustomer = True, showOnlyRecentOrder4ExcepCust = False), but by branch price group
+            ' instead of one customer: jets_price/jfcPrice replace the customer's custGrp item and price rows.
+            ' Search text / category only narrow that list. Checked and saved items are always listed so
             ' Save (delete + re-insert checked rows) never drops them.
-            Dim searchCond As String = ""
-            If searchText <> "" Then
-                searchCond &= " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE " & DB.SqlEsc("%" & Replace(searchText.ToUpper, " ", "%") & "%") &
-                              "  OR  UPPER(a.item_id) LIKE " & DB.SqlEsc(searchText.ToUpper & "%") & ")"
-            End If
+            Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
+                                      " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
+            Dim searchCond As String = " AND NOT (NVL(jp.csPrice, 0) = 0 AND NVL(jp.eaPrice, 0) = 0 AND NVL(jp.lbPrice_orderByQty, 0) = 0)"
+            For Each word As String In searchText.ToUpper.Split(New Char() {" ", ",", "."})
+                If word.Trim <> "" Then searchCond &= String.Format(searchSQL, DB.SqlEsc("%" & word & "%"), DB.SqlEsc(word))
+            Next
             If ctgFilter <> "" AndAlso ctgFilter <> LST_ALL_STR Then
-                searchCond &= " AND NVL(jctgGrp.ctgGrpDesc, 'Other') = " & DB.SqlEsc(ctgFilter)
+                searchCond &= " AND NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) = " & DB.SqlEsc(ctgFilter)
             End If
 
             ' Unsaved edits: isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
@@ -281,8 +284,8 @@ Partial Class JFCAdmin_OrderForm
             Dim SQL As String =
                 "SELECT a.item_id, NULL AS itemNr, " &
                 "NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
-                "NVL(jctgGrp.ctgGrpDesc, 'Other') AS ctgName_view, " &
-                "NVL(jctgGrp.dispOrder, 99) AS ctgDispOrder, " &
+                "NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) AS ctgName_view, " &
+                "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
                 "p.eaPerCs, jp.csPrice, jp.eaPrice, jp.lbPrice_OrderByQty, " &
                 "'' AS availMsg, " &
                 "CASE " &
@@ -295,14 +298,14 @@ Partial Class JFCAdmin_OrderForm
                 "LEFT   JOIN jfcPrice jp ON jp.item_id = a.item_id AND jp.priceGrp_id = p.pricegpid " &
                 "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
+                "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
+                "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
                 "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :1 " &
                 "WHERE  p.pricegpid = :2 " &
                 "  AND  (fi.item_id IS NOT NULL" &
                 IIf(checkedIDs <> "", " OR a.item_id IN (" & checkedIDs & ")", "") &
-                                IIf(searchCond <> "", " OR (" & searchCond & ")", "") & ") " & " OR (" & searchCond & ")) " &
-                                                " ORDER BY " & sortBy
-
-            '(p.enabled IS NULL OR p.enabled = 'Y')
+                " OR (1 = 1" & searchCond & ")) " &
+                " ORDER BY " & sortBy
 
             Dim dt As DataTable = DB.GetDataTable(SQL,
                 IIf(orderFormID = "", "~~NONE~~", orderFormID),
@@ -385,99 +388,6 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
-<<<<<<< HEAD
-    '  ADD ITEM (autocomplete box, same as CustItem)
-    ' ════════════════════════════════════════════════════════════════
-
-    Protected Sub btnGetItem_Click(sender As Object, e As EventArgs) Handles btnGetItem.Click
-        lblItemMsg.Text = ""
-        If txtItem.Text.Contains(",") = False Then
-            lblItemMsg.Text = "Please select an item from the auto-complete list."
-            Return
-        End If
-
-        ' Branch auto-complete (ITEM_JFCBRANCH) ends with the 5-char item_id
-        Dim itemID As String = GetLastWord(txtItem.Text, ",").Trim()
-        txtItem.Text = ""
-        CaptureItemChecks()   ' so "Already in this order form" reflects unsaved checkbox edits
-        ShowItemPreview(itemID)
-    End Sub
-
-    ' Read-only item detail (no price / name editing), like CustItem's Add / Update Item panel
-    Private Sub ShowItemPreview(itemID As String)
-        pnlItemPreview.Visible = False
-        hfPreviewItemID.Value = ""
-
-        Using DB As New DBHelper
-            ' Must be enabled on this form's price list
-            Dim r As DataReader = DB.GetReader(
-                "SELECT a.item_id, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
-                "NVL(jctgGrp.ctgGrpDesc, 'Other') AS ctgName_view, " &
-                "p.eaPerCs, jp.csPrice, jp.eaPrice, jp.lbPrice_OrderByQty " &
-                "FROM   jets_price p " &
-                "INNER  JOIN jfcItem a ON a.item_id = p.itemcode " &
-                "LEFT   JOIN jfcPrice jp ON jp.item_id = a.item_id AND jp.priceGrp_id = p.pricegpid " &
-                "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
-                "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
-                "WHERE  p.pricegpid = :1 AND a.item_id = :2 ",
-                GetFormPriceGrpID(DB), itemID)
-            '"  AND  (p.enabled IS NULL OR p.enabled = 'Y')"
-            If Not r.Read() Then
-                r.close()
-                lblItemMsg.Text = "Item not found."
-                Return
-            End If
-
-            hfPreviewItemID.Value = CString(r("item_id"))
-            imgPreview.ImageUrl = GetItemImgUrl("JFCItems", hfPreviewItemID.Value)
-            lblPreviewDesc.Text = CString(r("itemDesc_view"))
-            lblPreviewItemID.Text = hfPreviewItemID.Value
-            lblPreviewCtg.Text = CString(r("ctgName_view"))
-            lblPreviewEaPerCs.Text = IIf(Val(r("eaPerCs")) > 1, CString(r("eaPerCs")), "")
-
-            Dim prices As New List(Of String)
-            If Val(r("csPrice")) <> 0 Then prices.Add(Format(Val(r("csPrice")), "$#,##0.00") & " /cs")
-            If Val(r("eaPrice")) <> 0 Then prices.Add(Format(Val(r("eaPrice")), "$#,##0.00") & " /ea")
-            If Val(r("lbPrice_OrderByQty")) <> 0 Then prices.Add(Format(Val(r("lbPrice_OrderByQty")), "$#,##0.00") & " /lb")
-            lblPreviewPrice.Text = IIf(prices.Count > 0, String.Join("&nbsp;&nbsp;", prices), "Ask")
-            r.close()
-
-            ' Already in the list = checked in the grid (unsaved edits win over orderForm_Item)
-            Dim inList As Boolean
-            If ItemChecks().ContainsKey(itemID) Then
-                inList = ItemChecks()(itemID)
-            Else
-                inList = hfOrderFormID.Value <> "" AndAlso Val(DB.GetScalar(
-                    "SELECT COUNT(*) FROM orderForm_Item WHERE orderForm_id = :1 AND item_id = :2",
-                    hfOrderFormID.Value, itemID)) > 0
-            End If
-            lblPreviewInList.Visible = inList
-            btnAddToList.Visible = Not inList
-        End Using
-
-        pnlItemPreview.Visible = True
-    End Sub
-
-    ' Adds the previewed item to the list (checked); saved to orderForm_Item on Add / Update Form
-    Protected Sub btnAddToList_Click(sender As Object, e As EventArgs) Handles btnAddToList.Click
-        Dim itemID As String = hfPreviewItemID.Value
-        If itemID = "" Then Return
-
-        SetItemCheck(itemID, True)
-        pnlItemPreview.Visible = False
-        lblItemMsg.Text = ""
-        lstSortBy.SelectedIndex = 0   ' "Selected" first, so the new item shows at the top
-        BindItemsGrid(hfOrderFormID.Value, False)
-    End Sub
-
-    Protected Sub btnClearItem_Click(sender As Object, e As EventArgs) Handles btnClearItem.Click
-        txtItem.Text = ""
-        pnlItemPreview.Visible = False
-    End Sub
-
-    ' ════════════════════════════════════════════════════════════════
-=======
->>>>>>> 237160239d9ffab4147cd01412dfdaba563231a8
     '  SAVE / DELETE FORM
     ' ════════════════════════════════════════════════════════════════
 
