@@ -262,16 +262,19 @@ Partial Class JFCAdmin_OrderForm
             Dim sortBy As String = lstSortBy.SelectedValue
             Dim priceGrpID As String = GetFormPriceGrpID(DB)
 
-            ' All enabled items on the form's price list are listed (like CustItem with ShowAllExcepGrpItem = 'Y');
-            ' search text / category only narrow that list. Checked and saved items are always listed so
+            ' Same list as CustItem GetSQL_CustItem "List" for an exception price customer
+            ' (isExcepPriceCustomer = True, showOnlyRecentOrder4ExcepCust = False), but by branch price group
+            ' instead of one customer: jets_price/jfcPrice replace the customer's custGrp item and price rows.
+            ' Search text / category only narrow that list. Checked and saved items are always listed so
             ' Save (delete + re-insert checked rows) never drops them.
-            Dim searchCond As String = ""
-            If searchText <> "" Then
-                searchCond &= " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE " & DB.SqlEsc("%" & Replace(searchText.ToUpper, " ", "%") & "%") &
-                              "  OR  UPPER(a.item_id) LIKE " & DB.SqlEsc(searchText.ToUpper & "%") & ")"
-            End If
+            Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
+                                      " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
+            Dim searchCond As String = " AND NOT (NVL(jp.csPrice, 0) = 0 AND NVL(jp.eaPrice, 0) = 0 AND NVL(jp.lbPrice_orderByQty, 0) = 0)"
+            For Each word As String In searchText.ToUpper.Split(New Char() {" ", ",", "."})
+                If word.Trim <> "" Then searchCond &= String.Format(searchSQL, DB.SqlEsc("%" & word & "%"), DB.SqlEsc(word))
+            Next
             If ctgFilter <> "" AndAlso ctgFilter <> LST_ALL_STR Then
-                searchCond &= " AND NVL(jctgGrp.ctgGrpDesc, 'Other') = " & DB.SqlEsc(ctgFilter)
+                searchCond &= " AND NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) = " & DB.SqlEsc(ctgFilter)
             End If
 
             ' Unsaved edits: isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
@@ -281,8 +284,8 @@ Partial Class JFCAdmin_OrderForm
             Dim SQL As String =
                 "SELECT a.item_id, NULL AS itemNr, " &
                 "NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
-                "NVL(jctgGrp.ctgGrpDesc, 'Other') AS ctgName_view, " &
-                "NVL(jctgGrp.dispOrder, 99) AS ctgDispOrder, " &
+                "NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) AS ctgName_view, " &
+                "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
                 "p.eaPerCs, jp.csPrice, jp.eaPrice, jp.lbPrice_OrderByQty, " &
                 "'' AS availMsg, " &
                 "CASE " &
@@ -295,14 +298,14 @@ Partial Class JFCAdmin_OrderForm
                 "LEFT   JOIN jfcPrice jp ON jp.item_id = a.item_id AND jp.priceGrp_id = p.pricegpid " &
                 "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
+                "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
+                "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
                 "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :1 " &
                 "WHERE  p.pricegpid = :2 " &
                 "  AND  (fi.item_id IS NOT NULL" &
                 IIf(checkedIDs <> "", " OR a.item_id IN (" & checkedIDs & ")", "") &
-                                IIf(searchCond <> "", " OR (" & searchCond & ")", "") & ") " & " OR (" & searchCond & ")) " &
-                                                " ORDER BY " & sortBy
-
-            '(p.enabled IS NULL OR p.enabled = 'Y')
+                " OR (1 = 1" & searchCond & ")) " &
+                " ORDER BY " & sortBy
 
             Dim dt As DataTable = DB.GetDataTable(SQL,
                 IIf(orderFormID = "", "~~NONE~~", orderFormID),
@@ -384,8 +387,6 @@ Partial Class JFCAdmin_OrderForm
         BindItemsGrid(hfOrderFormID.Value)
     End Sub
 
-    ' ════════════════════════════════════════════════════════════════
-    '  ADD ITEM (autocomplete box, same as CustItem)
     ' ════════════════════════════════════════════════════════════════
     '  SAVE / DELETE FORM
     ' ════════════════════════════════════════════════════════════════
