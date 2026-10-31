@@ -278,8 +278,8 @@ Partial Class JFCAdmin_OrderForm
             End If
 
             ' Unsaved edits: isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
-            Dim checkedIDs As String = ItemIDList(DB, True)
-            Dim uncheckedIDs As String = ItemIDList(DB, False)
+            ' isAssigned is set from ItemChecks() after the query (no IN list, Oracle allows max 1000 per list).
+            Dim checkedCond As String = ItemInCond(DB, "a.item_id", True)
 
             Dim SQL As String =
                 "SELECT a.item_id, NULL AS itemNr, " &
@@ -288,10 +288,7 @@ Partial Class JFCAdmin_OrderForm
                 "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
                 "p.eaPerCs, jp.csPrice, jp.eaPrice, jp.lbPrice_OrderByQty, " &
                 "'' AS availMsg, " &
-                "CASE " &
-                IIf(checkedIDs <> "", "WHEN a.item_id IN (" & checkedIDs & ") THEN 1 ", "") &
-                IIf(uncheckedIDs <> "", "WHEN a.item_id IN (" & uncheckedIDs & ") THEN 0 ", "") &
-                "WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
+                "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
                 "FROM   jets_price p " &
                 "INNER  JOIN jfcItem a ON a.item_id = p.itemcode " &
@@ -303,14 +300,20 @@ Partial Class JFCAdmin_OrderForm
                 "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :1 " &
                 "WHERE  p.pricegpid = :2 " &
                 "  AND  (fi.item_id IS NOT NULL" &
-                IIf(checkedIDs <> "", " OR a.item_id IN (" & checkedIDs & ")", "") &
-                " OR (1 = 1" & searchCond & ")) " &
-                " ORDER BY " & sortBy
+                IIf(checkedCond <> "", " OR " & checkedCond, "") &
+                " OR (1 = 1" & searchCond & ")) "
 
             Dim dt As DataTable = DB.GetDataTable(SQL,
                 IIf(orderFormID = "", "~~NONE~~", orderFormID),
                 priceGrpID)
-            grdItems.DataSource = dt
+            Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
+            For Each dr As DataRow In dt.Rows
+                Dim itemID As String = CString(dr("item_id"))
+                If checks.ContainsKey(itemID) Then dr("isAssigned") = IIf(checks(itemID), 1, 0)
+            Next
+            ' Sorted after isAssigned is set, so "Selected" shows unsaved checks at the top
+            dt.DefaultView.Sort = sortBy
+            grdItems.DataSource = dt.DefaultView
             grdItems.DataBind()
 
             Dim changes As Integer = 0
@@ -339,7 +342,7 @@ Partial Class JFCAdmin_OrderForm
         End If
     End Sub
 
-    ' Item check state edited since the form was opened: item_id -> checked
+    ' Item check state edited since the form was opened (only rows that differ from orderForm_Item): item_id -> checked
     Private Function ItemChecks() As Dictionary(Of String, Boolean)
         If ViewState("ItemChecks") Is Nothing Then
             ViewState("ItemChecks") = New Dictionary(Of String, Boolean)
@@ -352,7 +355,12 @@ Partial Class JFCAdmin_OrderForm
         For Each row As GridViewRow In grdItems.Rows
             Dim chk = CType(row.FindControl("chkItemRow"), CheckBox)
             If chk IsNot Nothing Then
-                checks(CString(grdItems.DataKeys(row.RowIndex).Value)) = chk.Checked
+                Dim itemID As String = CString(grdItems.DataKeys(row.RowIndex)("item_id"))
+                If chk.Checked = (Val(grdItems.DataKeys(row.RowIndex)("isSaved")) = 1) Then
+                    checks.Remove(itemID)
+                Else
+                    checks(itemID) = chk.Checked
+                End If
             End If
         Next
         ViewState("ItemChecks") = checks
@@ -366,13 +374,18 @@ Partial Class JFCAdmin_OrderForm
         ViewState("ItemChecks") = checks
     End Sub
 
-    ' Comma-separated, SQL-escaped item_ids with the given check state ("" if none)
-    Private Function ItemIDList(DB As DBHelper, checked As Boolean) As String
+    ' "(col IN (...) OR col IN (...))" for item_ids with the given check state, 1000 per list (Oracle limit); "" if none
+    Private Function ItemInCond(DB As DBHelper, column As String, checked As Boolean) As String
         Dim ids As New List(Of String)
         For Each kv As KeyValuePair(Of String, Boolean) In ItemChecks()
             If kv.Value = checked Then ids.Add(DB.SqlEsc(kv.Key))
         Next
-        Return String.Join(",", ids)
+        If ids.Count = 0 Then Return ""
+        Dim lists As New List(Of String)
+        For i As Integer = 0 To ids.Count - 1 Step 1000
+            lists.Add(column & " IN (" & String.Join(",", ids.GetRange(i, Math.Min(1000, ids.Count - i))) & ")")
+        Next
+        Return "(" & String.Join(" OR ", lists) & ")"
     End Function
 
     Protected Sub lstSortBy_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstSortBy.SelectedIndexChanged
