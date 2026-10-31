@@ -50,7 +50,8 @@ Public Class DBHelper
         Select Case dbtype
             Case DataBaseType.ORACLE
                 'Return "User Id=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD") & ";Data Source=" & GetConfig("TNSNAME") & ";Min Pool Size=10;Connection Lifetime=20;Pooling=FALSE"
-                Return "User Id=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD") & ";Data Source=" & GetConfig("TNSNAME") & ";Min Pool Size=10;Connection Lifetime=20;" 'Pooling=False -> Pooling=True 'Max Pool Size=200;
+                'Return "User Id=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD") & ";Data Source=" & GetConfig("TNSNAME") & ";Min Pool Size=10;Connection Lifetime=20;" 'Pooling=False -> Pooling=True 'Max Pool Size=200;
+                Return "User Id=KOSCUS5;Password=KOSCUS5;Data Source=jla12c;Min Pool Size=10;Connection Lifetime=20;" 'Pooling=False -> Pooling=True 'Max Pool Size=200;
             Case DataBaseType.SQLSERVER
                 Return "MultipleActiveResultSets=True;Persist Security Info=True;Pooling=false;Max Pool Size=250;Min Pool Size=5;" & _
                        "server=" & GetConfig("DBServer") & ";database=" & GetConfig("DEFAULTDB") & ";User=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD")
