@@ -250,7 +250,7 @@
             <asp:GridView ID="grdItems" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
-                DataKeyNames="item_id"
+                DataKeyNames="item_id,isSaved"
                 OnRowDataBound="grdItems_RowDataBound"
                 OnRowCommand="grdItems_RowCommand">
                 <Columns>
