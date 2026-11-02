@@ -262,14 +262,15 @@ Partial Class JFCAdmin_OrderForm
             Dim sortBy As String = lstSortBy.SelectedValue
             Dim priceGrpID As String = GetFormPriceGrpID(DB)
 
-            ' Same list as CustItem GetSQL_CustItem "List" for an exception price customer
-            ' (isExcepPriceCustomer = True, showOnlyRecentOrder4ExcepCust = False), but by branch price group
-            ' instead of one customer: jets_price/jfcPrice replace the customer's custGrp item and price rows.
+            ' Same prices as v_excepcust_custgrpitem_small: jfcCustomerPrice rows whose customer_id is the
+            ' exception price group (customer.jfcPriceGrpID_orig). Those rows are the group's item list.
+            ' jets_price (branch price group) only supplies the branch description / category / ea per cs.
             ' Search text / category only narrow that list. Checked and saved items are always listed so
             ' Save (delete + re-insert checked rows) never drops them.
             Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
                                       " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
-            Dim searchCond As String = " AND NOT (NVL(jp.csPrice, 0) = 0 AND NVL(jp.eaPrice, 0) = 0 AND NVL(jp.lbPrice_orderByQty, 0) = 0)"
+            Dim searchCond As String = " AND cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
+                                       " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0)"
             For Each word As String In searchText.ToUpper.Split(New Char() {" ", ",", "."})
                 If word.Trim <> "" Then searchCond &= String.Format(searchSQL, DB.SqlEsc("%" & word & "%"), DB.SqlEsc(word))
             Next
@@ -286,25 +287,25 @@ Partial Class JFCAdmin_OrderForm
                 "NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
                 "NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) AS ctgName_view, " &
                 "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
-                "p.eaPerCs, jp.csPrice, jp.eaPrice, jp.lbPrice_OrderByQty, " &
+                "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, " &
                 "'' AS availMsg, " &
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
-                "FROM   jets_price p " &
-                "INNER  JOIN jfcItem a ON a.item_id = p.itemcode " &
-                "LEFT   JOIN jfcPrice jp ON jp.item_id = a.item_id AND jp.priceGrp_id = p.pricegpid " &
+                "FROM   jfcItem a " &
+                "LEFT   JOIN jfcCustomerPrice cp ON cp.item_id = a.item_id AND cp.customer_id = :2 " &
+                "LEFT   JOIN jets_price p ON p.itemcode = a.item_id AND p.pricegpid = :3 " &
                 "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
                 "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
                 "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :1 " &
-                "WHERE  p.pricegpid = :2 " &
-                "  AND  (fi.item_id IS NOT NULL" &
+                "WHERE  (fi.item_id IS NOT NULL" &
                 IIf(checkedCond <> "", " OR " & checkedCond, "") &
                 " OR (1 = 1" & searchCond & ")) "
 
             Dim dt As DataTable = DB.GetDataTable(SQL,
                 IIf(orderFormID = "", "~~NONE~~", orderFormID),
+                SelectedExcepGrpID(),
                 priceGrpID)
             Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
             For Each dr As DataRow In dt.Rows
