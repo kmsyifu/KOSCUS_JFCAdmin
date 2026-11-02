@@ -503,15 +503,9 @@ Partial Class JFCAdmin_OrderForm
                 orderFormID, formName, Nothing, True, False)
         End Using
 
-        If isNew Then
-            ' Back to the order form list with the top message bar (same as CustItem)
-            ShowListPanel()
-            MessageLine("CONFIRM", "Order form """ & formName & """ added successfully.")
-        Else
-            ' Reload detail with fresh timestamps
-            OpenDetailPanel(orderFormID)
-            MessageLine("CONFIRM", "Order form """ & formName & """ updated successfully.")
-        End If
+        ' Back to the order form list with the top message bar (same as CustItem)
+        ShowListPanel()
+        MessageLine("CONFIRM", "Order form """ & formName & """ " & IIf(isNew, "added", "updated") & " successfully.")
     End Sub
 
     Protected Sub btnDeleteForm_Click(sender As Object, e As EventArgs) Handles btnDeleteForm.Click
