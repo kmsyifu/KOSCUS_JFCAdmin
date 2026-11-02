@@ -210,7 +210,7 @@
             <%-- ── Items ── --%>
             <h3>Items</h3>
 
-            <asp:Panel ID="pnlSearchItem" CssClass='<%# "visiblePnl " & IIf(IsMobile(), "", "leftContent") %>'
+            <asp:Panel ID="pnlSearchItem" CssClass="visiblePnl"
                 DefaultButton="btnSearchItem" runat="server">
                 <b>Search Items</b><br />
                 <asp:Label runat="server" Text="Sort by" CssClass="gray" />
