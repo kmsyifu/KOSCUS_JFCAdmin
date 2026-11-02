@@ -264,9 +264,7 @@
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-HorizontalAlign="Left"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px">
                         <ItemTemplate>
-                            <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1"
-                                CommandName="ITEM_DETAIL"
-                                CommandArgument='<%# Eval("item_id") %>'
+                            <asp:Label runat="server"
                                 Text='<%# IIf(CString(Eval("itemNr")) <> "", CString(Eval("itemNr")), CString(Eval("item_id"))) %>' />
                             <asp:Label runat="server" CssClass="gray"
                                 Text='<%# IIf(CString(Eval("itemNr")) <> "", " (" & CString(Eval("item_id")) & ")", "") %>' />
