@@ -91,15 +91,20 @@ Partial Class JFCAdmin_OrderForm
         Using DB As New DBHelper
             Dim jfcBranchNr As String = lblBranchID.Text
             Dim searchForm As String = IIf(watSearchOrderForm.WatermarkText = txtSearchOrderForm.Text, "", txtSearchOrderForm.Text.Trim())
-            Dim searchCust As String = txtSearchCustNr.Text.Trim()
+            ' Customer # search: JFC customer # (e.g. 1234 or 30-1234) or custGrp_id, not the internal customer_id
+            Dim searchCust As String = txtSearchCustNr.Text.Trim().ToUpper().Replace("-", "").Replace(" ", "")
+            Dim custLike As String = DB.SqlEsc("%" & searchCust & "%")
 
             Dim SQL As String =
                 "SELECT DISTINCT f.orderForm_id, f.orderFormName, f.JFCPriceGrpID_Orig " &
                 "FROM   orderForm f " &
                 "LEFT JOIN orderForm_Customer fc ON fc.orderForm_id = f.orderForm_id " &
+                "LEFT JOIN customer c ON c.customer_id = fc.customer_id " &
                 "WHERE  f.jfcBranchNr = :1 " &
                 IIf(searchForm <> "", " AND UPPER(f.orderFormName) LIKE " & DB.SqlEsc("%" & searchForm.ToUpper & "%"), "") &
-                IIf(searchCust <> "", " AND fc.customer_id LIKE " & DB.SqlEsc("%" & searchCust & "%"), "") &
+                IIf(searchCust <> "", " AND (UPPER(c.jfcCustomerNr) LIKE " & custLike &
+                                      " OR UPPER(c.jfcBranchNr || c.jfcCustomerNr) LIKE " & custLike &
+                                      " OR UPPER(c.custGrp_id) LIKE " & custLike & ")", "") &
                 " ORDER BY  f.orderFormName"
 
             grdOrderForms.DataSource = DB.GetDataTable(SQL, jfcBranchNr)
@@ -226,6 +231,8 @@ Partial Class JFCAdmin_OrderForm
             ' All customers of the selected exception price group; pre-check assigned ones
             Dim SQL As String =
                 "SELECT c.customer_id, c.customerName, " &
+                "CASE WHEN c.jfcCustomerNr IS NOT NULL THEN c.jfcBranchNr || '-' || c.jfcCustomerNr " &
+                "     ELSE SUBSTR(c.custGrp_id, 1, 2) || '-' || SUBSTR(c.custGrp_id, 3) END AS custNr_view, " &
                 "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned " &
                 "FROM   customer c " &
                 "LEFT   JOIN orderForm_Customer fc " &

@@ -7,6 +7,8 @@ KOSCUS_JFCADMIN016 (11/02/2026)
 *<OrderForm>: Changing the Exception Price Group refreshes the item list with nothing selected.
 *<OrderForm>: After adding or updating a form, return to the Order Form list and show the success message bar at the top (same as Customer Items).
 *<OrderForm>: Unsaved item change warning is shown larger.
+*<OrderForm>: Customer # search on the Order Form list uses the JFC customer # (jfcCustomerNr, e.g. 1234 or 30-1234) or custGrp_id instead of the internal customer_id.
+*<OrderForm>: Assigned Customers list shows the Customer # as JFC branch - customer # (or custGrp_id) instead of the internal customer_id.
 *<OrderForm>: Fixed ORA-01795 error when more than 1000 items are checked.
 
 KOSCUS_JFCADMIN015 (05/11/2026)
