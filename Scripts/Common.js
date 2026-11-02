@@ -193,12 +193,28 @@ function showPopupWindow(url) {
 
 /************************** Show progress ***************************/
 // Shown right away (the CSS fades it in after a short delay, so quick postbacks don't flash).
-// Centered by CSS. Safe to call more than once: only one overlay is added.
+// Safe to call more than once: only one overlay is added.
+// Centered two ways so it is always in the middle of the screen:
+// - the card is moved to <body>, so no page container can change where position:fixed puts it
+// - top/left are set here (used if an older cached Koscus.css without the centering rules is loaded);
+//   the current Koscus.css centers it with top/left 50% !important + translate(-50%, -50%)
 function showProgress() {
     if ($('.modal:visible').length > 0) return;
     $('body').append($('<div />').addClass("modal"));
-    $(".loading").show();
+    var loading = $(".loading").first();
+    if (loading.length === 0) return;
+    loading.appendTo('body').show();
+    centerProgress();
 }
+
+function centerProgress() {
+    var loading = $(".loading:visible").first();
+    if (loading.length === 0) return;
+    var top = Math.max(($(window).height() - loading.outerHeight()) / 2, 0);
+    var left = Math.max(($(window).width() - loading.outerWidth()) / 2, 0);
+    loading.css({ top: top, left: left });
+}
+$(window).on("resize", centerProgress);
 
 function hideProgress() {
     $('.modal').remove();
