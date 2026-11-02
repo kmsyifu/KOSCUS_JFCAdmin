@@ -6,15 +6,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head id="Head1" runat="server">
     <title></title>
-    <link href="~/Styles/Site.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/Koscus.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/dropdown.css" rel="stylesheet" type="text/css" />
     <%--Favicon--%>
     <link rel="shortcut icon" href="~/Images/Web/jfc-icon.ico" />
 
     <asp:ContentPlaceHolder ID="DefContent" runat="server">
+        <%--Stylesheets with ?v=VERSION (see Common.CssLink) --%>
+        <%= Common.CssLink("~/Styles/Site.css") %>
+        <%= Common.CssLink("~/Styles/Koscus.css") %>
+        <%= Common.CssLink("~/Styles/jquery-ui-1.8.16.custom.css") %>
+        <%= Common.CssLink("~/Styles/jquery.autocomplete.css") %>
+        <%= Common.CssLink("~/Styles/dropdown.css") %>
         <script src="<%= ResolveClientUrl("~/Scripts/jquery-1.8.3.min.js") %>" type="text/javascript"></script>
         <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
       <%--  <script src="<%= ResolveClientUrl("~/Scripts/jquery-ui-1.8.16.custom.min.js") %>" type="text/javascript"></script>--%>
