@@ -49,6 +49,7 @@ Partial Class JFCAdmin_JFCAdmin
                 'Dim useApp As Boolean = Common.UseApp(DB, email)
                 pnlCustSetting.Visible = True 'useApp
                 pnlCustItem.Visible = True 'useApp
+                pnlOrderForm.Visible = True
                 'Yi Fu 12/10/2020
                 Dim jfcbranchAdmin As Boolean = IsJfcBranchAdmin(DB, email) OrElse IsJfcHoAdmin(DB, email) OrElse IsKmsSupport(DB, email)
                 pnlBranchSetting.Visible = jfcbranchAdmin
@@ -67,6 +68,8 @@ Partial Class JFCAdmin_JFCAdmin
                         aBranchSetting.Attributes("class") = "menuSelected"
                     Case "custitem.aspx"
                         aCustItem.Attributes("class") = "menuSelected"
+                    Case "orderform.aspx"
+                        aOrderForm.Attributes("class") = "menuSelected"
                     Case "tool.aspx"
                         aTool.Attributes("class") = "menuSelected"
                         'Case "deliverysched.aspx"
