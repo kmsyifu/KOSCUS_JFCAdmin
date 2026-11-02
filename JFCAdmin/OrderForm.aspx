@@ -22,7 +22,10 @@
             });
         }
 
-        // Show the loading screen once for every postback (buttons, links, dropdowns, grid commands, Enter)
+        // Loading screen for every postback. Native submits (Button / ImageButton / Enter key) are
+        // already covered by the master page's form submit handler; __doPostBack calls form.submit()
+        // directly, which skips that handler, so LinkButtons, AutoPostBack dropdowns and grid
+        // commands are covered here.
         var progressShown = false;
         function pageProgress() {
             if (progressShown) return;
@@ -31,9 +34,6 @@
         }
 
         $(document).ready(function () {
-            // Native submits: Button / ImageButton / Enter key (DefaultButton)
-            $("form").on("submit", pageProgress);
-            // __doPostBack submits: LinkButton, AutoPostBack dropdowns, grid commands
             if (typeof __doPostBack === "function") {
                 var origDoPostBack = __doPostBack;
                 __doPostBack = function (eventTarget, eventArgument) {
@@ -138,8 +138,7 @@
                             <asp:LinkButton runat="server" ForeColor="red" CssClass="cellLink"
                                 CommandName="DELETE_FORM"
                                 CommandArgument='<%# Eval("orderForm_id") %>'
-                                Text="x"
-                                OnClientClick="return confirm('Delete this order form and all its items?');" />
+                                Text="x" />
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
@@ -382,8 +381,7 @@
             &nbsp;
             <asp:Button ID="btnDeleteForm" runat="server" CssClass="midButton"
                 Text="Delete Form" Visible="false"
-                OnClick="btnDeleteForm_Click"
-                OnClientClick="return confirm('Delete this order form and all its items?');" />
+                OnClick="btnDeleteForm_Click" />
             &nbsp;
           
 

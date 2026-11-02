@@ -70,6 +70,9 @@
                   <asp:Panel ID="pnlCustItem" runat="server">
                     <li><a runat="server" id="aCustItem" href="~/JFCAdmin/CustItem.aspx" onclick="showProgress();">Customer Items </a></li>
                 </asp:Panel>
+                <asp:Panel ID="pnlOrderForm" runat="server">
+                    <li><a runat="server" id="aOrderForm" href="~/JFCAdmin/OrderForm.aspx" onclick="showProgress();">Order Form </a></li>
+                </asp:Panel>
                  <asp:Panel ID="pnlBranchSetting" runat="server">
                     <li><a runat="server" id="aBranchSetting" href="~/JFCAdmin/BranchSetting.aspx" onclick="showProgress();">Branch Settings </a></li>
                 </asp:Panel>

@@ -429,13 +429,13 @@ Partial Class JFCAdmin_OrderForm
     Protected Sub btnSaveForm_Click(sender As Object, e As EventArgs) Handles btnSaveForm.Click
         Dim formName As String = txtFormName.Text.Trim()
         If formName = "" Then
-            lblDetailMsg.Text = "Please enter an Order Form Name."
+            MessageBox("Please enter an Order Form Name.", "Error")
             Return
         End If
 
         Dim excepGrpID As String = SelectedExcepGrpID()
         If excepGrpID = "" Then
-            lblDetailMsg.Text = "Please select an Exception Price Group."
+            MessageBox("Please select an Exception Price Group.", "Error")
             Return
         End If
 
@@ -455,7 +455,7 @@ Partial Class JFCAdmin_OrderForm
                 dupCount = Val(DB.GetScalar(dupSQL, jfcBranchNr, formName, orderFormID))
             End If
             If dupCount > 0 Then
-                lblDetailMsg.Text = """" & formName & """ already exists."
+                MessageBox("Order form name """ & formName & """ already exists. Please enter a different name.", "Error", DB)
                 Return
             End If
 
