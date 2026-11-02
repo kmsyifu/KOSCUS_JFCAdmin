@@ -22,7 +22,34 @@
             });
         }
 
+        // Show the loading screen once for every postback (buttons, links, dropdowns, grid commands, Enter)
+        var progressShown = false;
+        function pageProgress() {
+            if (progressShown) return;
+            progressShown = true;
+            showProgress();
+        }
+
         $(document).ready(function () {
+            // Native submits: Button / ImageButton / Enter key (DefaultButton)
+            $("form").on("submit", pageProgress);
+            // __doPostBack submits: LinkButton, AutoPostBack dropdowns, grid commands
+            if (typeof __doPostBack === "function") {
+                var origDoPostBack = __doPostBack;
+                __doPostBack = function (eventTarget, eventArgument) {
+                    pageProgress();
+                    origDoPostBack(eventTarget, eventArgument);
+                };
+            }
+            // Coming back with the browser Back button: no loading screen
+            $(window).on("pageshow", function (e) {
+                if (e.originalEvent && e.originalEvent.persisted) {
+                    progressShown = false;
+                    $(".modal").remove();
+                    $(".loading").hide();
+                }
+            });
+
             $(".disableEnter").keypress(function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
@@ -42,7 +69,7 @@
         <h1>Order Form&nbsp;&nbsp;</h1>
         <asp:Label ID="lblGetBranchType" runat="server" Text="Branch" CssClass="gray" />
         <asp:DropDownList ID="lstBranch" CssClass='<%# "drpList " & IIf(IsMobile(), "size24", "size48") %>'
-            OnChange="javascript:showProgress();" runat="server"
+            runat="server"
             AutoPostBack="True" OnSelectedIndexChanged="lstBranch_SelectedIndexChanged" />
         &nbsp;
         <asp:Label ID="lblBranchID" CssClass="visiblePnl" runat="server" Visible="false" />
@@ -123,8 +150,8 @@
 
             <br />
             <asp:Button ID="btnAddForm" runat="server" CssClass="midButton"
-                Text="Add Order Form"
-                OnClientClick="javascript:showProgress();" />
+                Text="Add Exception Price Group Order Form"
+                />
 
         </asp:Panel>
 
@@ -153,7 +180,7 @@
                     <td class="rowHdr">Exception Price Group</td>
                     <td>
                         <asp:DropDownList ID="lstExcepPriceGrp" CssClass="largeDrpList" runat="server"
-                            OnChange="javascript:showProgress();" AutoPostBack="True" />
+                            AutoPostBack="True" />
                     </td>
                 </tr>
                 <tr>
@@ -217,12 +244,12 @@
                 <b>Search Items</b><br />
                 <asp:Label runat="server" Text="Sort by" CssClass="gray" />
                 <asp:DropDownList ID="lstSortBy" CssClass="largeDrpList"
-                    OnChange="javascript:showProgress();" runat="server"
+                    runat="server"
                     AutoPostBack="True" OnSelectedIndexChanged="lstSortBy_SelectedIndexChanged" />
                 &nbsp;
                 <asp:Label runat="server" Text="Category" CssClass="gray" />
                 <asp:DropDownList ID="lstCtgSearch" CssClass="largeDrpList"
-                    OnChange="javascript:showProgress();" runat="server"
+                    runat="server"
                     AutoPostBack="True" OnSelectedIndexChanged="lstCtgSearch_SelectedIndexChanged" />
                 <br />
                 <asp:TextBox ID="txtItemSearch" CssClass="largeTxt size48" runat="server" autocomplete="off" />
@@ -351,7 +378,7 @@
             <asp:Button ID="btnSaveForm" runat="server" CssClass="midButton_green"
                 Text="Add Form"
                 OnClick="btnSaveForm_Click"
-                OnClientClick="javascript:showProgress();" />
+                />
             &nbsp;
             <asp:Button ID="btnDeleteForm" runat="server" CssClass="midButton"
                 Text="Delete Form" Visible="false"
