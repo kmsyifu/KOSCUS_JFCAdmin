@@ -5,7 +5,7 @@ KOSCUS_JFCADMIN016 (11/02/2026)
 *<OrderForm>: The item list now comes from the exception price group's item prices (jfcCustomerPrice where customer_id = JFCPriceGrpID_Orig), the same prices exception customers see in Customer Items.
 *<OrderForm>: Only enabled items (enabled = 'Y') with a non-zero price in the selected Exception Price Group are listed.
 *<OrderForm>: Changing the Exception Price Group refreshes the item list with nothing selected.
-*<OrderForm>: After adding a form, return to the Order Form list and show the success message bar at the top (same as Customer Items). Update also shows the message bar.
+*<OrderForm>: After adding or updating a form, return to the Order Form list and show the success message bar at the top (same as Customer Items).
 *<OrderForm>: Unsaved item change warning is shown larger.
 *<OrderForm>: Fixed ORA-01795 error when more than 1000 items are checked.
 
