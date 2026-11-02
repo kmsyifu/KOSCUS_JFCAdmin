@@ -6,22 +6,6 @@
 
     <script type="text/javascript">
 
-        function loadData(id, id2, id3, id4, code, callback) {
-            $.ajax({
-                type: 'POST',
-                dataType: "text",
-                url: '../Common/Suggestion.ashx?id=' + id + '&id2=' + id2 + '&id3=' + id3 + '&id4=' + id4 + '&code=' + code + '',
-                data: '{}',
-                async: false,
-                success: function (data) {
-                    callback(data);
-                },
-                error: function () {
-                    alert('Error occured');
-                }
-            });
-        }
-
         // Loading screen for every postback. Native submits (Button / ImageButton / Enter key) are
         // already covered by the master page's form submit handler; __doPostBack calls form.submit()
         // directly, which skips that handler, so LinkButtons, AutoPostBack dropdowns and grid
