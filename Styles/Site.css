@@ -47,6 +47,10 @@
 {
     width: 100%;
     background-color: #FFFFFF;
+    /* Fill the window so the footer sits at the bottom of the screen (not in the middle on a big window) */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .headerTop
@@ -81,10 +85,12 @@
     margin: 12px 8px 8px 8px;
     min-height: 550px;
     background-color: #FFFFFF;
+    flex: 1 0 auto;
 }
 
 .footer
 {
+    flex-shrink: 0;
     margin: 3px 20px;
     text-align: center;
     line-height: normal;
