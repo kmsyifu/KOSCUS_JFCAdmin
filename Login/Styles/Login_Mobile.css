@@ -31,6 +31,14 @@
     font-size: 0.9em;
 }
 
+.footer p       { color: #666666; }
+.footer a:link,
+.footer a:visited { color: #3C78D8; text-decoration: none; }
+
+/* Login card: full width on a phone, no box around it */
+.loginCard      { max-width: none; margin: 0; padding: 0; border: none; box-shadow: none; }
+.loginNotice    { max-width: none; }
+
 .cmd            { margin-left: 0px; }
 .info           { width: 100%; }
 .stdTxt         { width: 200px; }

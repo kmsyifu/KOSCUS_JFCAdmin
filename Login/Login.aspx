@@ -19,15 +19,14 @@
 
 
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    <br /> 
-    <asp:Panel ID="pnlNotice" runat="server" CssClass="noticePnl" Style="margin:0px 100px">
+    <%-- Centered login card (styles: .loginCard in Styles/Login.css, mobile overrides in Login_Mobile.css) --%>
+    <asp:Panel ID="pnlNotice" runat="server" CssClass="noticePnl loginNotice">
         <asp:Label ID="lblNotice" runat="server" CssClass="red" Text='<%# LOGIN_NOTICE %>' />
     </asp:Panel>
-    <br /><br />
-    <div class="info">
+    <div class="info loginCard">
         <div>
+            <h2 class="loginTitle">Log In</h2>
             <asp:Label ID="lblCmd" CssClass="cmd" runat="server" Text="Please enter your email address and password to login." /><%--&nbsp;&nbsp;<a href="NewUser.aspx" style="color:Red;" class="bold italic">(New User? Click here to apply!)</a>--%>
-            <br /><br /><br />
             <table cellpadding="5" class="stdTable">
                 <tbody>
                     <tr>
@@ -50,7 +49,6 @@
                </tbody>
            </table>
         </div>
-        <br /><br />
 
         <div class="submit">
             <%--<input type="submit" class="midButton" value="Login"/>--%>

@@ -92,7 +92,7 @@ Public Enum Init_Level
 End Enum
 
 Public Class Common
-    Public Const VERSION As String = "009"
+    Public Const VERSION As String = "010"
     Public Shared CURRENT_YEAR As String = Now.Year
     Public Const SYSTEM_EMAIL As String = "JFC App <web@jfc.com>" '"JFC Customer Portal <web@jfc.com>"
     Public Const SYSTEM_TEXT As String = "+13238949338"

@@ -2,7 +2,8 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN016 (11/02/2026)
-*<Common>: New loading screen on all pages (centered card with spinner on a see-through dark background). Always shown in the center of the screen.
+*<Common>: New loading screen on all pages, styled like the message box (orange "Processing" title bar, spinner and "Please wait..."). Always shown in the center of the screen.
+*<Login>: Login form is a centered card on big screens. The page is white and the orange footer is a thin bar at the bottom (no large orange area below the footer).
 *<OrderForm>: Fixed the loading screen sometimes not showing for buttons (e.g. Add Exception Price Group Order Form).
 *<Common>: Added the "Order Form" tab to the menu between Customer Items and Branch Settings.
 *<OrderForm>: Deleting a form shows only one confirmation popup (removed the extra browser confirm).
