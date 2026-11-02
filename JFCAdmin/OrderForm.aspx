@@ -190,15 +190,11 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Customer ID"
+                    <%-- JFC customer # (branch - customer #); the internal customer_id is only the DataKey --%>
+                    <asp:BoundField HeaderText="Customer #" DataField="custNr_view"
                         HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16"
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-HorizontalAlign="Left"
-                        HeaderStyle-Height="30px" ItemStyle-Height="30px">
-                        <ItemTemplate>
-                            <asp:Label runat="server"
-                                Text='<%# CString(Eval("customer_id")).Insert(2, "-") %>' />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                        HeaderStyle-Height="30px" ItemStyle-Height="30px" />
 
                     <asp:BoundField HeaderText="Name" DataField="customerName"
                         HeaderStyle-CssClass="th size64" ItemStyle-CssClass="size64 cellLbl gray"
