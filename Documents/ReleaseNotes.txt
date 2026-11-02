@@ -15,6 +15,7 @@ KOSCUS_JFCADMIN016 (11/02/2026)
 *<OrderForm>: Changing the Exception Price Group refreshes the item list with nothing selected.
 *<OrderForm>: After adding or updating a form, return to the Order Form list and show the success message bar at the top (same as Customer Items).
 *<OrderForm>: Unsaved item change warning is shown larger.
+*<OrderForm>: Search Items panel is full width like the other panels.
 *<OrderForm>: Customer # search on the Order Form list uses the JFC customer # (jfcCustomerNr, e.g. 1234 or 30-1234) or custGrp_id instead of the internal customer_id.
 *<OrderForm>: Renamed "Add Order Form" to "Add Exception Price Group Order Form".
 *<OrderForm>: Show the loading screen on every action that waits for the server (buttons, links, dropdowns, search, grid commands).
