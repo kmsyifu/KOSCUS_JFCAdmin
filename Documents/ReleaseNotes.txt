@@ -2,7 +2,7 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN016 (11/02/2026)
-*<Common>: New loading screen on all pages (centered card with spinner on a see-through dark background).
+*<Common>: New loading screen on all pages (centered card with spinner on a see-through dark background). Always shown in the center of the screen.
 *<OrderForm>: Fixed the loading screen sometimes not showing for buttons (e.g. Add Exception Price Group Order Form).
 *<Common>: Added the "Order Form" tab to the menu between Customer Items and Branch Settings.
 *<OrderForm>: Deleting a form shows only one confirmation popup (removed the extra browser confirm).
