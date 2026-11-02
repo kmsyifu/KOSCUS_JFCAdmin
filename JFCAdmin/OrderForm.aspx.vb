@@ -292,21 +292,22 @@ Partial Class JFCAdmin_OrderForm
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
                 "FROM   jfcItem a " &
-                "LEFT   JOIN jfcCustomerPrice cp ON cp.item_id = a.item_id AND cp.customer_id = :2 " &
-                "LEFT   JOIN jets_price p ON p.itemcode = a.item_id AND p.pricegpid = :3 " &
+                "LEFT   JOIN jfcCustomerPrice cp ON cp.item_id = a.item_id AND cp.customer_id = :1 " &
+                "LEFT   JOIN jets_price p ON p.itemcode = a.item_id AND p.pricegpid = :2 " &
                 "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
                 "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
-                "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :1 " &
+                "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :3 " &
                 "WHERE  (fi.item_id IS NOT NULL" &
                 IIf(checkedCond <> "", " OR " & checkedCond, "") &
                 " OR (1 = 1" & searchCond & ")) "
 
+            ' DBHelper binds args in the order the :n placeholders appear in the SQL (not by number)
             Dim dt As DataTable = DB.GetDataTable(SQL,
-                IIf(orderFormID = "", "~~NONE~~", orderFormID),
                 SelectedExcepGrpID(),
-                priceGrpID)
+                priceGrpID,
+                IIf(orderFormID = "", "~~NONE~~", orderFormID))
             Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
             For Each dr As DataRow In dt.Rows
                 Dim itemID As String = CString(dr("item_id"))
