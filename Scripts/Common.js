@@ -192,18 +192,23 @@ function showPopupWindow(url) {
 }
 
 /************************** Show progress ***************************/
+// Shown right away (the CSS fades it in after a short delay, so quick postbacks don't flash).
+// Centered by CSS. Safe to call more than once: only one overlay is added.
 function showProgress() {
-    setTimeout(function () {
-        var modal = $('<div />');
-        modal.addClass("modal");
-        $('body').append(modal);
-        var loading = $(".loading");
-        loading.show();
-        var top = Math.max($(window).height() / 2 - loading[0].offsetHeight / 2, 0);
-        var left = Math.max($(window).width() / 2 - loading[0].offsetWidth / 2, 0);
-        loading.css({ top: top, left: left });
-    }, 200);
+    if ($('.modal:visible').length > 0) return;
+    $('body').append($('<div />').addClass("modal"));
+    $(".loading").show();
 }
+
+function hideProgress() {
+    $('.modal').remove();
+    $(".loading").hide();
+}
+
+// Coming back with the browser Back button restores the page from cache with the loading screen still on
+$(window).on("pageshow", function (e) {
+    if (e.originalEvent && e.originalEvent.persisted) hideProgress();
+});
 
 //function showProgress() {
 //    if (document.getElementById) {

@@ -6,33 +6,21 @@
 
     <script type="text/javascript">
 
-        // Loading screen for every postback. Native submits (Button / ImageButton / Enter key) are
-        // already covered by the master page's form submit handler; __doPostBack calls form.submit()
-        // directly, which skips that handler, so LinkButtons, AutoPostBack dropdowns and grid
-        // commands are covered here.
-        var progressShown = false;
-        function pageProgress() {
-            if (progressShown) return;
-            progressShown = true;
-            showProgress();
-        }
-
+        // Loading screen for every postback on this page (showProgress adds only one overlay).
+        // - Native submits (Button / ImageButton / Enter key): the master page's submit handler calls
+        //   Page_ClientValidate, which only exists on pages with validators. This page has none, so that
+        //   handler fails here and the submit hook below is needed.
+        // - __doPostBack (LinkButton, AutoPostBack dropdowns, grid commands) calls form.submit() directly,
+        //   which skips submit handlers.
         $(document).ready(function () {
+            $("form").on("submit", function () { showProgress(); });
             if (typeof __doPostBack === "function") {
                 var origDoPostBack = __doPostBack;
                 __doPostBack = function (eventTarget, eventArgument) {
-                    pageProgress();
+                    showProgress();
                     origDoPostBack(eventTarget, eventArgument);
                 };
             }
-            // Coming back with the browser Back button: no loading screen
-            $(window).on("pageshow", function (e) {
-                if (e.originalEvent && e.originalEvent.persisted) {
-                    progressShown = false;
-                    $(".modal").remove();
-                    $(".loading").hide();
-                }
-            });
 
             $(".disableEnter").keypress(function (event) {
                 if (event.keyCode == 13) {
