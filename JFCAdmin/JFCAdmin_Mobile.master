@@ -7,12 +7,7 @@
 <head id="Head1" runat="server">
     <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0"/> 
-    <link href="~/Styles/Site.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/Koscus.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/dropdown.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/Site_Mobile.css?v=<%= Common.VERSION %>d" rel="stylesheet" type="text/css" />
+    <%--Stylesheets are in DefContent below, with ?v=VERSION (see Common.CssLink) --%>
     <%--Web icon for iPhone--%>
     <link href="~/Images/Web/jfc-icon.png" rel="apple-touch-icon" />
     <link href="~/Images/Web/jfc-icon-72x72.png" rel="apple-touch-icon" sizes="72x72" />
@@ -28,6 +23,12 @@
     <link rel="shortcut icon" href="~/Images/Web/jfc-icon.ico" />
 
     <asp:ContentPlaceHolder ID="DefContent" runat="server">
+        <%= Common.CssLink("~/Styles/Site.css") %>
+        <%= Common.CssLink("~/Styles/Koscus.css") %>
+        <%= Common.CssLink("~/Styles/jquery-ui-1.8.16.custom.css") %>
+        <%= Common.CssLink("~/Styles/jquery.autocomplete.css") %>
+        <%= Common.CssLink("~/Styles/dropdown.css") %>
+        <%= Common.CssLink("~/Styles/Site_Mobile.css") %>
         <script src="<%= ResolveClientUrl("~/Scripts/jquery-1.4.1.min.js") %>" type="text/javascript"></script>
         <script src="<%= ResolveClientUrl("~/Scripts/jquery-ui-1.8.16.custom.min.js") %>" type="text/javascript"></script>
         <script src="<%= ResolveClientUrl("~/Scripts/Common.js?v=" & Common.VERSION) %>" type="text/javascript"></script>

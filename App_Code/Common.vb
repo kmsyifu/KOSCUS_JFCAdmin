@@ -93,6 +93,15 @@ End Enum
 
 Public Class Common
     Public Const VERSION As String = "010"
+
+    ' Stylesheet <link> tag with VERSION in the URL, so browsers load the new file after VERSION changes.
+    ' Use it as <%= Common.CssLink("~/Styles/Koscus.css") %> inside a master page's DefContent placeholder.
+    ' (A plain <link href="...?v=<%= Common.VERSION %>"> directly in <head runat="server"> becomes a server
+    '  control and the <%= %> is never run, so the URL never changed and old CSS stayed cached.)
+    Public Shared Function CssLink(ByVal virtualPath As String, Optional ByVal suffix As String = "") As String
+        Dim url As String = System.Web.VirtualPathUtility.ToAbsolute(virtualPath) & "?v=" & VERSION & suffix
+        Return "<link href=""" & System.Web.HttpUtility.HtmlAttributeEncode(url) & """ rel=""stylesheet"" type=""text/css"" />"
+    End Function
     Public Shared CURRENT_YEAR As String = Now.Year
     Public Const SYSTEM_EMAIL As String = "JFC App <web@jfc.com>" '"JFC Customer Portal <web@jfc.com>"
     Public Const SYSTEM_TEXT As String = "+13238949338"

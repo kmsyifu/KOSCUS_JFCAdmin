@@ -6,8 +6,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
     <title></title>
-    <link href="~/Styles/Site.css?v=<%= Common.VERSION %>" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/Koscus.css?v=<%= Common.VERSION %>" rel="stylesheet" type="text/css" />
+    <%--Stylesheets with ?v=VERSION (see Common.CssLink) --%>
+    <asp:PlaceHolder runat="server">
+        <%= Common.CssLink("~/Styles/Site.css") %>
+        <%= Common.CssLink("~/Styles/Koscus.css") %>
+    </asp:PlaceHolder>
 </head>
 <body class="body_print">
     <form id="form1" runat="server">
