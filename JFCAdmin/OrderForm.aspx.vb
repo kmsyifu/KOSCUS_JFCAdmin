@@ -151,7 +151,7 @@ Partial Class JFCAdmin_OrderForm
         Using DB As New DBHelper
             ' Titles / button text
             If isNew Then
-                lblDetailTitle.Text = "Add Order Form"
+                lblDetailTitle.Text = "Add Exception Price Group Order Form"
                 btnSaveForm.Text = "Add Form"
                 btnDeleteForm.Visible = False
                 txtFormName.Text = ""
