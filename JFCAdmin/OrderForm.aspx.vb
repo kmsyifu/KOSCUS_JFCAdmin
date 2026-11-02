@@ -242,9 +242,11 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     Protected Sub lstExcepPriceGrp_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstExcepPriceGrp.SelectedIndexChanged
-        ' Customers and item prices both depend on the exception price group
+        ' Customers and items both depend on the exception price group.
+        ' Start the item list fresh: drop unsaved checks made under the previous group.
+        ViewState("ItemChecks") = Nothing
         BindCustomersGrid(hfOrderFormID.Value)
-        BindItemsGrid(hfOrderFormID.Value)
+        BindItemsGrid(hfOrderFormID.Value, False)
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
@@ -265,12 +267,14 @@ Partial Class JFCAdmin_OrderForm
             ' Same prices as v_excepcust_custgrpitem_small: jfcCustomerPrice rows whose customer_id is the
             ' exception price group (customer.jfcPriceGrpID_orig). Those rows are the group's item list.
             ' jets_price (branch price group) only supplies the branch description / category / ea per cs.
-            ' Search text / category only narrow that list. Checked and saved items are always listed so
-            ' Save (delete + re-insert checked rows) never drops them.
+            ' Every listed item must be in that group (enabled, non-zero price). Search text / category only
+            ' narrow the list; checked and saved items of the group are always listed so Save
+            ' (delete + re-insert checked rows) never drops them.
+            Dim groupCond As String = "cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
+                                      " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0)"
             Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
                                       " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
-            Dim searchCond As String = " AND cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
-                                       " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0)"
+            Dim searchCond As String = ""
             For Each word As String In searchText.ToUpper.Split(New Char() {" ", ",", "."})
                 If word.Trim <> "" Then searchCond &= String.Format(searchSQL, DB.SqlEsc("%" & word & "%"), DB.SqlEsc(word))
             Next
@@ -299,15 +303,20 @@ Partial Class JFCAdmin_OrderForm
                 "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
                 "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
                 "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :3 " &
-                "WHERE  (fi.item_id IS NOT NULL" &
+                "WHERE  " & groupCond &
+                "  AND  (fi.item_id IS NOT NULL" &
                 IIf(checkedCond <> "", " OR " & checkedCond, "") &
                 " OR (1 = 1" & searchCond & ")) "
+
+            ' Saved items belong to the form's saved group; after switching groups none are checked
+            ' (Save then replaces them with the items checked under the new group).
+            Dim grpChanged As Boolean = (orderFormID <> "" AndAlso SelectedExcepGrpID() <> CString(ViewState("ExcepPriceGrpID")))
 
             ' DBHelper binds args in the order the :n placeholders appear in the SQL (not by number)
             Dim dt As DataTable = DB.GetDataTable(SQL,
                 SelectedExcepGrpID(),
                 priceGrpID,
-                IIf(orderFormID = "", "~~NONE~~", orderFormID))
+                IIf(orderFormID = "" OrElse grpChanged, "~~NONE~~", orderFormID))
             Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
             For Each dr As DataRow In dt.Rows
                 Dim itemID As String = CString(dr("item_id"))
@@ -324,6 +333,10 @@ Partial Class JFCAdmin_OrderForm
             Next
             lblItemPendingMsg.Text = IIf(changes > 0,
                 changes & " unsaved item change(s) - click """ & btnSaveForm.Text & """ to save.", "")
+            If grpChanged Then
+                lblItemPendingMsg.Text &= IIf(lblItemPendingMsg.Text <> "", "<br />", "") &
+                    "Exception Price Group changed - items saved for the previous group will be removed when you click """ & btnSaveForm.Text & """."
+            End If
         End Using
     End Sub
 
@@ -490,10 +503,15 @@ Partial Class JFCAdmin_OrderForm
                 orderFormID, formName, Nothing, True, False)
         End Using
 
-        ' Reload detail with fresh timestamps
-        OpenDetailPanel(orderFormID)
-        lblDetailMsg.Text = IIf(isNew, "Order form added successfully.", "Order form updated successfully.")
-        lblDetailMsg.ForeColor = Drawing.Color.Green
+        If isNew Then
+            ' Back to the order form list with the top message bar (same as CustItem)
+            ShowListPanel()
+            MessageLine("CONFIRM", "Order form """ & formName & """ added successfully.")
+        Else
+            ' Reload detail with fresh timestamps
+            OpenDetailPanel(orderFormID)
+            MessageLine("CONFIRM", "Order form """ & formName & """ updated successfully.")
+        End If
     End Sub
 
     Protected Sub btnDeleteForm_Click(sender As Object, e As EventArgs) Handles btnDeleteForm.Click

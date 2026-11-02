@@ -245,7 +245,7 @@
 
 
             <asp:Label ID="lblItemMsg" CssClass="red" runat="server" />
-            <asp:Label ID="lblItemPendingMsg" CssClass="green" runat="server" />
+            <asp:Label ID="lblItemPendingMsg" CssClass="green" Font-Size="Large" Font-Bold="True" runat="server" />
 
             <asp:GridView ID="grdItems" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
