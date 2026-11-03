@@ -245,8 +245,7 @@
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
                 DataKeyNames="item_id,isSaved"
-                OnRowDataBound="grdItems_RowDataBound"
-                OnRowCommand="grdItems_RowCommand">
+                OnRowDataBound="grdItems_RowDataBound">
                 <Columns>
                     <asp:TemplateField HeaderStyle-CssClass="th center4" ItemStyle-CssClass="center4"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px">
@@ -323,18 +322,6 @@
                         <ItemTemplate>
                             <asp:Label runat="server"
                                 Text='<%# IIf(Val(Eval("lbPrice_OrderByQty")) <> 0, Eval("lbPrice_OrderByQty", "{0:N2}"), "") %>' />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-
-                    <asp:TemplateField ItemStyle-CssClass="center4"
-                        HeaderStyle-Height="30px" ItemStyle-Height="30px">
-                        <ItemTemplate>
-                            <asp:ImageButton ID="btnRemoveItem" Tooltip="Remove item"
-                                CommandName="REMOVE_ITEM" CssClass="xxsImgBtn"
-                                ImageUrl='<%# GetWebImgUrl("close.jpg") %>'
-                                CommandArgument='<%# Eval("item_id") %>'
-                                runat="server"
-                                Visible='<%# CBool(Eval("isAssigned")) %>' />
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

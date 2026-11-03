@@ -190,6 +190,9 @@ Partial Class JFCAdmin_OrderForm
                 lstSortBy.Items.Add(New ListItem("Item Description", "itemDesc_view"))
                 lstSortBy.Items.Add(New ListItem("Item #", "item_id"))
             End If
+            ' Each time the detail page opens: sort by "Selected", empty search text, category All (below)
+            lstSortBy.SelectedIndex = 0
+            txtItemSearch.Text = ""
 
             ' Category DDL
             If lstCtgSearch.Items.Count = 0 Then
@@ -202,6 +205,7 @@ Partial Class JFCAdmin_OrderForm
                 Next
                 lstCtgSearch.Items.Add(New ListItem("Other", "Other"))
             End If
+            lstCtgSearch.SelectedIndex = 0   ' All
         End Using
 
         BindCustomersGrid(orderFormID)
@@ -356,14 +360,6 @@ Partial Class JFCAdmin_OrderForm
         End If
     End Sub
 
-    Protected Sub grdItems_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles grdItems.RowCommand
-        If e.CommandName = "REMOVE_ITEM" Then
-            ' Same as unchecking the row; removed from orderForm_Item on Save
-            SetItemCheck(e.CommandArgument.ToString(), False)
-            BindItemsGrid(hfOrderFormID.Value, False)
-        End If
-    End Sub
-
     ' Item check state edited since the form was opened (only rows that differ from orderForm_Item): item_id -> checked
     Private Function ItemChecks() As Dictionary(Of String, Boolean)
         If ViewState("ItemChecks") Is Nothing Then
@@ -385,14 +381,6 @@ Partial Class JFCAdmin_OrderForm
                 End If
             End If
         Next
-        ViewState("ItemChecks") = checks
-    End Sub
-
-    ' Captures the grid first so other unsaved edits are kept
-    Private Sub SetItemCheck(itemID As String, checked As Boolean)
-        CaptureItemChecks()
-        Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
-        checks(itemID) = checked
         ViewState("ItemChecks") = checks
     End Sub
 

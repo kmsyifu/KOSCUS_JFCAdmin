@@ -18,6 +18,8 @@ KOSCUS_JFCADMIN016 (11/02/2026)
 *<OrderForm>: Unsaved item change warning is shown larger.
 *<OrderForm>: Search Items panel is full width like the other panels.
 *<OrderForm>: Item ID in the item list is plain text, not a link (the link did nothing).
+*<OrderForm>: Each time a form is opened (Add Exception Price Group Order Form or an existing form), Sort by is reset to "Selected", Category to "All" and the item search text is empty.
+*<OrderForm>: Removed the delete (X) button on selected items. To remove an item, uncheck it and click Update Form.
 *<OrderForm>: Customer # search on the Order Form list uses the JFC customer # (jfcCustomerNr, e.g. 1234 or 30-1234) or custGrp_id instead of the internal customer_id.
 *<OrderForm>: Renamed "Add Order Form" to "Add Exception Price Group Order Form".
 *<OrderForm>: Show the loading screen on every action that waits for the server (buttons, links, dropdowns, search, grid commands).
