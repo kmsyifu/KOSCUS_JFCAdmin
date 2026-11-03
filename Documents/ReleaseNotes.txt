@@ -5,6 +5,7 @@ KOSCUS_JFCADMIN016 (11/02/2026)
 *<Common>: Fixed stylesheet links so browsers load the new CSS after a version change. The ?v=<%= Common.VERSION %> in the <head> links was never filled in, so old CSS stayed cached. Links now use Common.CssLink in all master pages and Print.aspx.
 *<Common>: New loading screen on all pages, styled like the message box (orange "Processing" title bar, spinner and "Please wait..."). Always shown in the center of the screen.
 *<Common>: Admin pages fill the window so the footer is at the bottom of the screen (not in the middle on a big window).
+*<Login>: Faster login: the flat / one-time password settings are read once on the login page's own DB connection (before: 4 reads, each opening a new DB connection).
 *<Login>: Login form is a centered card on big screens. The page is white and the orange footer is a thin bar at the bottom (no large orange area below the footer).
 *<OrderForm>: Fixed the loading screen sometimes not showing for buttons (e.g. Add Exception Price Group Order Form).
 *<Common>: Added the "Order Form" tab to the menu between Customer Items and Branch Settings.

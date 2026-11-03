@@ -134,8 +134,11 @@ Partial Class Login_Login
             If Val(r("user_id")) <= 0 Then GoTo fail
 
             'Check flat password, onetime password, and regular password
-            If GetUserParam("PROFILE", "FLATPWD", r("user_id")) <> "" AndAlso GetUserParam("PROFILE", "FLATPWD", r("user_id")) = txtPassword.Text.Trim Then GoTo PASS
-            If GetUserParam("PROFILE", "ONETIMEPWD", r("user_id")) <> "" AndAlso GetUserParam("PROFILE", "ONETIMEPWD", r("user_id")) = txtPassword.Text.Trim Then
+            'Read each setting once on this page's connection (GetUserParam opened a new DB connection on every call)
+            Dim flatPwd As String = GetProfileParam(DB, "FLATPWD", CInt(r("user_id")))
+            If flatPwd <> "" AndAlso flatPwd = txtPassword.Text.Trim Then GoTo PASS
+            Dim oneTimePwd As String = GetProfileParam(DB, "ONETIMEPWD", CInt(r("user_id")))
+            If oneTimePwd <> "" AndAlso oneTimePwd = txtPassword.Text.Trim Then
                 DB.ExecuteNonQuery("delete from sys_app_userparam where appid='PROFILE' and paramid='ONETIMEPWD' and userid=:1", r("user_id"))
                 ResetPassword = True
                 GoTo pass
@@ -240,6 +243,12 @@ FAIL:
             MessageSimpleBox("Email address or password is invalid. If you are our existing customer but don't have a customer portal account, please use 'New User...' link to register. If you are new to JFC, please contact us at http://jfc.com/#/contact-us.", DB)
         End Using
     End Sub
+
+    'Same query and result as Common.GetUserParam("PROFILE", paramID, userID), but on the given connection
+    Private Function GetProfileParam(ByVal DB As DBHelper, ByVal paramID As String, ByVal userID As Integer) As String
+        Return CString(DB.GetScalarEx("select value from sys_app_userparam where appid = :1 and userid = :2 and paramid = :3 order by disporder", "", "",
+                                      "PROFILE", userID, paramID))
+    End Function
 
     Private Function verifyPassword(ByVal DB As DBHelper, ByVal email As String, ByVal passwd As String, ByVal isHashedPasswd As Boolean, ByRef usedFlatPasswd As Boolean) As Boolean
         Dim SQL As String
