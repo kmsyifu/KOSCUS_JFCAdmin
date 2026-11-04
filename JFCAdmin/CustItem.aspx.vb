@@ -663,7 +663,7 @@ Partial Class JFCAdmin_CustItem
                 txtPopEditRemark.Text = CString(r("jfcRemark"))
                 lblPopEditEachCase.Text = IIf(Val(r("eaPerCs")) <> 0 And Val(r("eaPerCs")) <> 1 And Val(r("lbPrice_OrderByQty")) = 0, CString(r("eaPerCs")), "")
                 pnlPoppcpercs.Visible = scaledItem
-                lblPopEditInventory.Text = CString(r("csAvail_view")) & " /cs,  " & CString(r("eaAvail_view")) & " /ea"
+                lblPopEditInventory.Text = CString(r("csAvail_view")) & " cs,  " & CString(r("eaAvail_view")) & " ea"
                 lblPopEditPcperCs.Text = If(Val(r("eaPrice_o")) <> 0, Math.Round(Val(r("csPrice_o")) / Val(r("eaPrice_o")), 0).ToString, "")
 
 
@@ -721,7 +721,7 @@ Partial Class JFCAdmin_CustItem
                     pnlPoppcpercs.Visible = scaledItem
                     lblPopEditDesc.Text = Common.WrapText(CString(r("itemDtl")), IIf(IsMobile(), 20, 40))
 
-                    lblPopEditInventory.Text = CString(r("csAvail_view")) & " /cs,  " & CString(r("eaAvail_view")) & " /ea"
+                    lblPopEditInventory.Text = CString(r("csAvail_view")) & " cs,  " & CString(r("eaAvail_view")) & " ea"
                     txtPopEditDesc.Text = ""
                     txtPopEditItem.Text = ""
                     txtPopEditRemark.Text = ""
