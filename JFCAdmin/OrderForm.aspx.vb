@@ -164,8 +164,8 @@ Partial Class JFCAdmin_OrderForm
 
                 Dim r As DataReader = DB.GetReader(
                     "SELECT orderFormName, JFCPriceGrpID_Orig, " &
-                    "TO_CHAR(createDate, 'MM/DD/YYYY HH:MI AM') || ' PDT by ' || createUser AS createDateFmt, " &
-                    "TO_CHAR(modDate,    'MM/DD/YYYY HH:MI AM') || ' PDT by ' || modUser   AS modDateFmt " &
+                    "TO_CHAR(createDate, 'MM/DD/YYYY HH:MI AM') || ' PT by ' || createUser AS createDateFmt, " &
+                    "TO_CHAR(modDate,    'MM/DD/YYYY HH:MI AM') || ' PT by ' || modUser   AS modDateFmt " &
                     "FROM orderForm WHERE orderForm_id = :1", orderFormID)
                 If r.Read() Then
                     txtFormName.Text = CString(r("orderFormName"))
