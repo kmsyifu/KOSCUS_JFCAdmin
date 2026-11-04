@@ -281,6 +281,7 @@
                             <asp:Label runat="server" ID="lblAvailNote" CssClass="green"
                                 Text='<%# IIf(CString(Eval("availMsg")) <> "", "<br />" & CString(Eval("availMsg")), "") %>'
                                 Visible='<%# CString(Eval("availMsg")) <> "" %>' />
+                            <asp:Label runat="server" ID="lblMatchTag" />
                         </ItemTemplate>
                     </asp:TemplateField>
 

@@ -20,6 +20,7 @@ KOSCUS_JFCADMIN016 (11/02/2026)
 *<OrderForm>: Item ID in the item list is plain text, not a link (the link did nothing).
 *<OrderForm>: Each time a form is opened (Add Exception Price Group Order Form or an existing form), Sort by is reset to "Selected", Category to "All" and the item search text is empty.
 *<OrderForm>: Created On / Last Updated show "PT" (Pacific Time) instead of "PDT", which was wrong in winter (PST).
+*<OrderForm>: Item search shows why an item matched: when a search word is not in the description or item ID, a small tag under the description names the field that matched (Japanese, Long description, Web description or Sales point) with a short piece of its text.
 *<OrderForm>: Removed the delete (X) button on selected items. To remove an item, uncheck it and click Update Form.
 *<OrderForm>: Customer # search on the Order Form list uses the JFC customer # (jfcCustomerNr, e.g. 1234 or 30-1234) or custGrp_id instead of the internal customer_id.
 *<OrderForm>: Renamed "Add Order Form" to "Add Exception Price Group Order Form".
