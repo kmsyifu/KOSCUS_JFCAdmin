@@ -88,6 +88,15 @@ Before
     - Search starts at 2 letters (1 letter matched most of the catalog and was the slowest).
     Test: type part of a description (e.g. 2-3 words), type an item #, pick with mouse and with arrow keys + Enter,
     then click back into the search box (item and qty must stay).
+4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
+    - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
+      was returned and the list showed 30 - a short search returned most of the catalog.
+    - The "item is in more than one order form" count is in the same query, only for the rows returned (was one
+      extra COUNT query per row).
+    - Item # match ignores case and a leading "#" (the list shows "#123, ..."; typing "#123" found nothing before).
+    - Same rows, order and text as before otherwise.
+    Test: Order Detail and Customer Items search: "#" + item #, lowercase item #, keyword; an item in two order forms
+    still shows the order form name in front.
 
 ==================================================================================================================================
 5. VERSION

@@ -36,9 +36,24 @@ Public Class Search_VB : Implements IHttpHandler
                     GetJFCBranchAndCustomerNr(DB, id, jfcBranchNr, jfcCustomerNr)
                     priceGrpID = Common.GetPriceGrpID(DB, jfcBranchNr, jfcCustomerNr)
 
+                    'Search text: "#123" and "123" both find item 123 (the list shows items as "#123, ..."), any case
+                    Dim q As String = CString(prefixtext).Trim()
+                    If q.StartsWith("#") Then q = q.Substring(1).Trim()
+                    Dim qUpper As String = q.ToUpper()
+                    Dim qWords As String = "%" & Replace(qUpper, " ", "%") & "%"
+                    'Only the rows the list can show (the autocomplete sends limit = its max, 30 on Order Detail / Customer Items).
+                    'Before, every match was returned - one letter returned most of the catalog.
+                    Dim maxRows As Integer = CInt(Val(context.Request.QueryString("limit")))
+                    If maxRows <= 0 Then maxRows = 30
+                    If maxRows > 150 Then maxRows = 150
+
                     'Get item list
-                    'SQL = "SELECT v.vendorName || ', Item#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
-                    SQL = "SELECT '#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
+                    'nrItemGrp: how many order forms the item is in (only needed when no order form is given) - was one extra
+                    'COUNT query per row; now in the same query and only for the rows returned
+                    SQL = "SELECT t.*, " &
+                             IIf(id3 = "", "(SELECT COUNT(*) FROM custGrp_item x WHERE x.custGrp_id = t.custGrp_id AND x.vendor_id = t.vendor_id AND (x.item_id = t.item_id OR x.itemNr = t.itemNr))", "0") & " AS nrItemGrp " &
+                          "FROM (" &
+                          "SELECT '#' || (CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END) " & _
                              " || ', ' || (CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END) " & _
                              " || ', ' || TRIM(LEADING '0' FROM i.custGrpItem_id) AS itemDtl, " & _
                              " i.custGrp_id, i.vendor_id, i.item_id, i.itemNr, g.itemGrpName " & _
@@ -54,26 +69,21 @@ Public Class Search_VB : Implements IHttpHandler
                              IIf(id2 = "", "", " AND v.custGrpVendor_id = " & DB.SqlEsc(id2)) & _
                              IIf(id3 = "", "", " AND i.itemGrp_id = " & DB.SqlEsc(id3)) & _
                              IIf(id4 = "JFCADMIN", "", " AND NOT (ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0) ") & _
-                             "  AND (i.item_id LIKE :4 OR UPPER(i.itemNr) LIKE :5 OR UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE :6 OR UPPER(i.CustItemDesc) LIKE :7) " & _
+                             "  AND (UPPER(i.item_id) LIKE :4 OR UPPER(i.itemNr) LIKE :5 OR UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE :6 OR UPPER(i.CustItemDesc) LIKE :7) " & _
                              "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " & _
-                             "ORDER BY itemDtl"
+                             "ORDER BY itemDtl" &
+                          ") t WHERE ROWNUM <= " & maxRows
                     '"  AND g.custgrp_id = " & DB.SqlEsc(GetCustGrpID(DB, customerID)) & _ 'is added to improve the performance
                     '"  AND (p.outOfStock IS NULL OR p.outOfStock = 'N') " & _
                     '"  ORDER BY v.vendorName, g.itemGrpName, i.itemNr, i.item_id"
-                    '" || (CASE WHEN i.itemNr IS NOT NULL THEN ', Cust#' || i.itemNr END) || ', Web#' || i.item_id || ', ' " & _
-                    '', ' || g.itemGrpName ||   And (cc.enabled IS NULL OR cc.enabled = 'Y')
-                    ' "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.CUSTGRPITEM_ID AND cc.customer_id = " & DB.SqlEsc(id) & " " &
-                    r = DB.GetReader(SQL, jfcBranchNr, jfcCustomerNr, id, prefixtext & "%", prefixtext.ToUpper & "%", "%" & Replace(prefixtext.ToUpper, " ", "%") & "%", "%" & Replace(prefixtext.ToUpper, " ", "%") & "%")
+                    'Before: item_id LIKE was case-sensitive and a leading "#" never matched
+                    r = DB.GetReader(SQL, jfcBranchNr, jfcCustomerNr, id, qUpper & "%", qUpper & "%", qWords, qWords)
                     While r.Read
                         itemDtl = CString(r("itemDtl"))
                         itemDtl = Replace(itemDtl, "<", "(")
                         itemDtl = Replace(itemDtl, ">", ")")
                         'If multiple order forms exist for a item, show order form name
-                        SQL = "SELECT COUNT (*) FROM custGrp_item " & _
-                                "WHERE custGrp_id = :1 AND vendor_id = :2" & _
-                                "  AND (item_id = :3 OR itemNr = :4)"
-                        If id3 = "" AndAlso Val(DB.GetScalar(SQL, CString(r("custGrp_id")), CString(r("vendor_id")), CString(r("item_id")), CString(r("itemNr")))) > 1 Then
-                            'itemDtl = Replace(itemDtl, "Item#", CString(r("itemGrpName")) & ", Item#")
+                        If id3 = "" AndAlso Val(r("nrItemGrp")) > 1 Then
                             itemDtl = CString(r("itemGrpName")) & ", " & itemDtl
                         End If
                         sb.Append(itemDtl).Append(Environment.NewLine)
