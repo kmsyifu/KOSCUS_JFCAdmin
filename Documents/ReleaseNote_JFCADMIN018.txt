@@ -48,6 +48,8 @@ Before
 2.3 Add to Order / Update uses the typed price even if Apply was not clicked. A below-bottom price is allowed and
     the warning is shown in the success message (same as the old popup).
 2.4 GP % shows as soon as a JFC item is loaded (before: always blank until a price was set).
+2.5 Item that already has a price: no price step - enter qty and Add to Order. Edit Price is only to change it.
+    Item with no price: the price box opens right away (no need to click Edit Price first).
 
 ==================================================================================================================================
 3. KEEP UNSAVED LIST CHANGES

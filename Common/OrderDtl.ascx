@@ -925,6 +925,8 @@
             }
         });
         odRecalcTotals();
-        if ($.trim($('#<%=txtNewSetPrice.ClientID%>').val()) !== '') odNewShowPrice(); else odNewRecalc();
+        // Item with a price: nothing to set, just enter qty and Add to Order (Edit Price only to change it).
+        // Item with no price: open the price box right away.
+        if ($.trim($('#<%=txtNewSetPrice.ClientID%>').val()) !== '' || $('#odNewData').attr('data-noprice') === 'Y') odNewShowPrice(); else odNewRecalc();
     });
 </script>

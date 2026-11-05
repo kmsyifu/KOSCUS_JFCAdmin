@@ -2112,7 +2112,8 @@ Partial Class Common_OrderDtl
             " data-cscost=""" & DataNum(Val(lblNewCsCost.Text)) & """ data-eacost=""" & DataNum(Val(lblNewEaCost.Text)) & """ data-lbcost=""" & DataNum(Val(lblNewLbCost.Text)) & """" &
             " data-btmcs=""" & DataNum(Val(lblNewBtmCs.Text)) & """" &
             " data-cs=""" & DataNum(cs) & """ data-ea=""" & DataNum(Val(lblNewEaPrice.Text)) & """ data-lbq=""" & DataNum(lbq) & """" &
-            " data-lbw=""" & DataNum(Val(lblNewLbPrice_OrderByWgt.Text)) & """></span>"
+            " data-lbw=""" & DataNum(Val(lblNewLbPrice_OrderByWgt.Text)) & """" &
+            " data-noprice=""" & IIf(cs = 0 AndAlso lbq = 0 AndAlso Val(lblNewEaPrice.Text) = 0 AndAlso Val(lblNewLbPrice_OrderByWgt.Text) = 0, "Y", "N") & """></span>"
     End Sub
 
     Private Sub showOrderDtl()
