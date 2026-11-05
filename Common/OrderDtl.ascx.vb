@@ -864,8 +864,8 @@ Partial Class Common_OrderDtl
                 'so close the price box and say so - before, the box stayed open and it looked like nothing happened
                 Dim warning As String = lblNewMsg.Text
                 txtNewSetPrice.Text = ""
-                lblNewPriceTag.Visible = True 'Price line shows "New $x / cs ..."
-                lblNewMsg.Text = "<span class='green'>New price is set. Click """ & btnAddItem.Text & """ to save it.</span>" &
+                lblNewPriceTag.Visible = True 'Price line shows "Updated $x / cs ..."
+                lblNewMsg.Text = "<span class='green'>Updated price is set. Click """ & btnAddItem.Text & """ to save it.</span>" &
                     IIf(warning <> "", "<br />" & warning, "")
             End If
         End Using

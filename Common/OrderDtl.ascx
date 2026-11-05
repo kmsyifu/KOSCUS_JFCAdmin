@@ -257,8 +257,8 @@
             <asp:Panel ID="pnlNewShowPrice" runat="server">
                 <tr>
                     <td class="gray">Price:</td>
-                    <td><%--"New" shows after a price is set with the check mark. While typing a price, the current price is hidden (odNewOldPrice) and the new one shows in odNewPreview--%>
-                        <asp:Label runat="server" ID="lblNewPriceTag" CssClass="cellLbl green bold" Text="New " Visible="false" />
+                    <td><%--"Updated" shows after a price is set with the check mark. While typing a price, the current price is hidden (odNewOldPrice) and the new one shows in odNewPreview--%>
+                        <asp:Label runat="server" ID="lblNewPriceTag" CssClass="cellLbl green bold" Text="Updated " Visible="false" />
                         <span id="odNewOldPrice">
                         <asp:Label runat="server" ID="lblNewLbPrice_OrderByQty_view" CssClass="cellLbl green bold" /><asp:Label runat="server" ID="lblNewLbPrice_OrderByQty" Visible="false" />
                         <asp:Label runat="server" ID="lblNewCsPrice_view" CssClass="cellLbl red bold" /><asp:Label runat="server" ID="lblNewCsPrice" Visible="false" />
@@ -790,8 +790,8 @@
             gpEl.text(g === null ? '' : od.pct(g)).css({ 'font-weight': 'bold', 'color': (g !== null && g < 0) ? 'red' : '' });
             // Only the new price is shown, in the old price's place, labelled New
             tr.find('.od-old').hide();
-            tr.find('.od-newprice').html('<span class="green bold">New</span><br /><span class="bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('<br />') + '</span><br />');
-            prev.html(below ? '<span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : '');
+            tr.find('.od-newprice').html('<span class="green bold">Updated</span><br /><span class="bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('<br />') + '</span><br />');
+            prev.html(below ? '<span class="red bold" style="white-space:nowrap;">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : ''); // one line
         } else {
             gpEl.text(tr.data('odGp0')).css({ 'font-weight': '', 'color': '' });
             prev.html('');
@@ -838,7 +838,7 @@
         return false;
     }
 
-    // Check mark: keep the new price (saved by Update Order), close the inputs, show "New: $x/cs"
+    // Check mark: keep the new price (saved by Update Order), close the inputs, show "Updated: $x/cs"
     function odOkPrice(a) {
         var tr = $(a).closest('tr');
         if (od.n(tr.find('input.od-price').val()) <= 0) return odCancelPrice(a);
@@ -873,10 +873,10 @@
         // While typing a price: hide the current price, show only the new one labelled New
         $('#odNewOldPrice').toggle(!editing);
         $('#<%=lblNewPriceTag.ClientID%>').toggle(!editing);
-        $('#odNewLivePrice').html(editing ? '<span class="cellLbl green bold">New</span> <span class="cellLbl red bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('&nbsp;&nbsp;').replace(/\//g, ' / ') + '</span>' : '').toggle(editing);
+        $('#odNewLivePrice').html(editing ? '<span class="cellLbl green bold">Updated</span> <span class="cellLbl red bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('&nbsp;&nbsp;').replace(/\//g, ' / ') + '</span>' : '').toggle(editing);
         var t = [];
         if (amt !== 0) t.push('Amount: <b>' + od.money(amt) + '</b>');
-        if (d.btmcs > 0 && p.cs > 0 && p.cs < d.btmcs) t.push('<span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>');
+        if (d.btmcs > 0 && p.cs > 0 && p.cs < d.btmcs) t.push('<span class="red bold" style="white-space:nowrap;">Below bottom ' + od.money(d.btmcs) + '/cs</span>');
         out.html(t.join('&nbsp;&nbsp;'));
     }
 
@@ -924,7 +924,7 @@
             var tr = $(this).closest('tr'), d = od.data($(this));
             var priceTxt = tr.find('input.od-price');
             if (priceTxt.length && $.trim(priceTxt.val()) !== '') {
-                // price changed but not saved yet: show it as accepted ("New: ..."), Edit reopens it
+                // price changed but not saved yet: show it as accepted ("Updated: ..."), Edit reopens it
                 tr.attr('data-od-edit', '1');
                 tr.find('.od-edit-box').show();
                 tr.find('.od-edit-inputs').hide();
