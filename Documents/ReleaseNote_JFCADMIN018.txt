@@ -127,6 +127,8 @@ Before
      hides the password (icon changes to a crossed-out eye). type="button", so Enter still logs in; not in the Tab order.
      Works on the mobile login page too (same page and stylesheet).
      Test: Login page, type a password, click the eye (shown), click again (hidden), press Enter (logs in).
+4.19 Order Form (JFCAdmin/OrderForm.aspx.vb): sort by "Selected" lists the selected items first, then by item #
+     (was by description). Item # is sorted as text, same as the "Item #" sort.
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.
