@@ -293,7 +293,7 @@ Partial Class JFCAdmin_OrderForm
             ' narrow the list; checked and saved items of the group are always listed so Save
             ' (delete + re-insert checked rows) never drops them.
             Dim groupCond As String = "cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
-                                      " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0)"
+                                      " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0 AND NVL(cp.lbPrice_orderByWgt, 0) = 0)"
             Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
                                       " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
             Dim searchCond As String = ""
@@ -317,7 +317,7 @@ Partial Class JFCAdmin_OrderForm
                 "NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
                 "NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) AS ctgName_view, " &
                 "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
-                "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, " &
+                "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, NVL(cp.lbPrice_orderByWgt, 0) AS lbPrice_OrderByWgt, " &
                 "'' AS availMsg, " &
                 IIf(searchWords.Count > 0, "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, a.salesPoint, ",
                     "NULL AS itemDesc_ja, NULL AS itemDesc_long, NULL AS itemWebDesc, NULL AS salesPoint, ") &
