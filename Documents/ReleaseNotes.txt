@@ -11,6 +11,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Adding or deleting an item keeps the qty / prices typed in the list but not saved yet (no more "Changes in qty will be lost" question).
 *<OrderDtl>: Edit is only shown for JFC items with a cost, for JFC admins (before: on every row, doing nothing for other items).
 *<OrderDtl>: Fixed: the Set Price OK code read a column (lbPrice_OrderByWgt) the price query does not return.
+*<OrderDtl>: Fixed: for branch 05 customers (Each qty hidden), setting a price in the Add Item panel showed the Each qty box and each price again.
 
 KOSCUS_JFCADMIN017 (11/04/2026)
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.

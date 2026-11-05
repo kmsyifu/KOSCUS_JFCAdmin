@@ -63,6 +63,9 @@ Before
 4.1 Price set with Edit was lost when Update Order was clicked (see "Before" 4).
 4.2 The Set Price OK code read lbPrice_OrderByWgt from the SetPrice query, which does not return that column.
     It now uses the order-by-weight price already shown in the panel (Set Price does not change it).
+4.3 Branch 05 customers never see Each qty (Common.HideEaQty). After setting a price in the Add Item panel, the Each qty
+    box and each price came back anyway (the old popup code skipped that check). Now the same check is used.
+    Test: branch 05 customer, Add Item, Edit Price + check mark: no Each box; other branch: Each box shows as before.
 
 ==================================================================================================================================
 5. VERSION

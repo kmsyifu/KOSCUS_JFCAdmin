@@ -1015,7 +1015,8 @@ Partial Class Common_OrderDtl
                 lblNewCsPrice_view.Visible = IIf(Val(r("csprice")) <> 0, True, False)
                 lblNewEaPrice.Text = Val(r("eaprice"))
                 lblNewEaPrice_view.Text = String.Format("{0:C}", Val(r("eaprice"))) & IIf(Val(r("lbPrice_orderByQty")) <> 0, " / pc", " / ea")
-                lblNewEaPrice_view.Visible = IIf(Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
+                'Branch 05 customers never see / order Each (HideEaQty) - same check as when the item is loaded
+                lblNewEaPrice_view.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
                 lblNewLbPrice_OrderByQty.Text = Val(r("lbPrice_OrderByQty"))
                 lblNewLbPrice_OrderByQty_view.Text = String.Format("{0:C}", Val(r("lbPrice_OrderByQty"))) & " / lb"
                 lblNewLbPrice_OrderByQty_view.Visible = IIf(Val(r("lbPrice_OrderByQty")) <> 0, True, False)
@@ -1041,9 +1042,9 @@ Partial Class Common_OrderDtl
                 lblNewAvgWgtTitle.Visible = lblNewAvgCsWgt.Visible OrElse lblNewAvgEaWgt.Visible
                 txtNewCsQty.Visible = IIf(Val(r("csprice")) <> 0, True, False)
                 lblNewCsQty.Visible = IIf(Val(r("csprice")) <> 0, True, False)
-                txtNewEaQty.Visible = IIf(Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
+                txtNewEaQty.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
                 lblNewEaQty.Text = IIf(Val(r("lbPrice_orderByQty")) <> 0, "pc", "ea")
-                lblNewEaQty.Visible = IIf(Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
+                lblNewEaQty.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
                 noPrice = IIf(Val(r("csprice")) = 0 AndAlso Val(r("eaprice")) = 0 AndAlso Val(lblNewLbPrice_OrderByWgt.Text) = 0 AndAlso Val(r("lbPrice_OrderByQty")) = 0, True, False)
                 btnAddItem.Visible = True
                 pnlNewVpSp.Visible = False
