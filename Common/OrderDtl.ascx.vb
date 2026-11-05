@@ -250,11 +250,6 @@ Partial Class Common_OrderDtl
     End Sub
 
     Protected Sub grdItem_RowDataBound(ByVal sender As Object, ByVal e As GridViewRowEventArgs) Handles grdItem_edit.RowDataBound, grdItem_view.RowDataBound
-        Dim lbl As Label
-        Dim lblprice As Label
-        Dim lblbottom As Label
-        Dim lblIsNew As Label
-
         'Highlight the mourse-over row
         If e.Row.RowType = DataControlRowType.DataRow Then
             e.Row.CssClass = "selectRow"
@@ -270,47 +265,42 @@ Partial Class Common_OrderDtl
         'Price units for the in-list price edit
         If e.Row.RowType = DataControlRowType.DataRow Then FillRowPriceUnits(e.Row)
 
-        'Highlight the mourse-over row
-        If e.Row.RowType = DataControlRowType.DataRow Then
+        'Row color (out of stock / below bottom / promo / new item)
+        If e.Row.RowType = DataControlRowType.DataRow Then SetRowColor(e.Row)
+    End Sub
 
+    'Row color for JFC admin - used when the list is bound and again after each postback (CheckItemAvail), because the
+    'color is not kept across postbacks. Before, the two had different rules, so a row could change color after a click:
+    'a promo item that is also new turned from green to blue, and a row with no price ($0) showed yellow (below bottom).
+    'Priority: out of stock (pink) > below bottom (yellow) > promo (green) > new item (blue).
+    Private Sub SetRowColor(ByVal row As GridViewRow)
+        Dim lbl As Label = row.FindControl("lblOutOfStock")
+        If lbl IsNot Nothing AndAlso lbl.Text = "Y" Then
+            'Out of stock: pink row, ordered qty and available qty in red
+            row.BackColor = Drawing.Color.FromName("#FFE4E1")
+            For Each id As String In {"lblCsAvail", "lblEaAvail", "lblCs3", "lblEa3"}
+                lbl = row.FindControl(id)
+                If lbl IsNot Nothing Then lbl.ForeColor = Drawing.Color.Red
+            Next
+            Exit Sub
+        End If
 
-            lbl = e.Row.FindControl("lblOutOfStock")
-            If lbl.Text = "Y" Then
-                'Highlight the row for outofstock item pink and change font color of ordered qty and available qty to red 
-                e.Row.BackColor = Drawing.Color.FromName("#FFE4E1")
-                lbl = e.Row.FindControl("lblCsAvail")
-                lbl.ForeColor = Drawing.Color.Red
-                lbl = e.Row.FindControl("lblEaAvail")
-                lbl.ForeColor = Drawing.Color.Red
-                lbl = e.Row.FindControl("lblCs3")
-                lbl.ForeColor = Drawing.Color.Red
-                lbl = e.Row.FindControl("lblEa3")
-                lbl.ForeColor = Drawing.Color.Red
-                Exit Sub
-            End If
+        Dim lblbottom As Label = row.FindControl("lblbtmCs")
+        Dim lblprice As Label = row.FindControl("lblCsPrice")
+        If lblbottom IsNot Nothing AndAlso lblprice IsNot Nothing AndAlso Val(lblprice.Text) > 0 AndAlso Val(lblprice.Text) < Val(lblbottom.Text) Then
+            row.BackColor = Drawing.Color.FromName("#FFFF99")
+            Exit Sub
+        End If
 
-            lblbottom = e.Row.FindControl("lblbtmCs")
-            lblprice = e.Row.FindControl("lblCsPrice")
-            If Val(lblprice.Text) < Val(lblbottom.Text) Then
-                e.Row.BackColor = Drawing.Color.FromName("#FFFF99")
-                Exit Sub
-            End If
+        lbl = row.FindControl("lblPromoitem")
+        If lbl IsNot Nothing AndAlso lbl.Text <> "" Then
+            row.BackColor = Drawing.Color.FromName("#90EE90")
+            Exit Sub
+        End If
 
-            lbl = e.Row.FindControl("lblPromoitem")
-            If lbl.Text <> "" Then
-                e.Row.BackColor = Drawing.Color.FromName("#90EE90")
-                Exit Sub
-            End If
-
-
-            lblIsNew = e.Row.FindControl("lblIsNew")
-            If CString(lblIsNew.Text) = "Y" Then
-                e.Row.BackColor = Drawing.Color.FromName("#C3E8F6")
-                Exit Sub
-            End If
-
-
-
+        lbl = row.FindControl("lblIsNew")
+        If lbl IsNot Nothing AndAlso CString(lbl.Text) = "Y" Then
+            row.BackColor = Drawing.Color.FromName("#C3E8F6")
         End If
     End Sub
 
@@ -333,10 +323,17 @@ Partial Class Common_OrderDtl
                     webOrderID = ViewState("ORDER_ID")
                     orderState = GetOrderState(DB, webOrderID)
                     custGrpItemID = dialogArg1
+                    'Re-check at "Yes": the order may have been approved / downloaded while the dialog was open
+                    If canEditOrder(DB, webOrderID, errMsg) = False Then
+                        MessageBox(errMsg, "Error", DB)
+                        Exit Select
+                    End If
                     DB.BeginTransaction()
                     'Insert order history
                     DBUpdate.InsertOrderHistory(DB, webOrderID, False)
                     DeleteItemInOrder(DB, webOrderID, custGrpItemID, False)
+                    'Total amount of the order (Order History list) - was left at the old total until Update Order
+                    DBUpdate.UpdateOrderTotal(DB, webOrderID, False)
                     'Set order state to 'Order updated but not received' if a confirmed or received order was updated by JFC admin
                     If orderState = "O" OrElse orderState = "C" Then DBUpdate.UpdateOrderState(DB, webOrderID, "U", False)
                     DB.CommitTransaction()
@@ -519,39 +516,10 @@ Partial Class Common_OrderDtl
     End Sub
 
     Protected Sub CheckItemAvail()
+        'Same colors as when the list is bound (grdItem_RowDataBound colors only the JFC admin edit list)
+        If ViewState("ORDER_CMD") <> "JFCADMIN" Then Exit Sub
         For Each row As GridViewRow In grdItem_edit.Rows
-            Dim lbl As Label = row.FindControl("lblOutOfStock")
-            If lbl.Text = "Y" Then
-                row.BackColor = Drawing.Color.FromName("#FFE4E1")
-                lbl = row.FindControl("lblCsAvail")
-                lbl.ForeColor = Drawing.Color.Red
-                lbl = row.FindControl("lblEaAvail")
-                lbl.ForeColor = Drawing.Color.Red
-                lbl = row.FindControl("lblCs3")
-                lbl.ForeColor = Drawing.Color.Red
-                lbl = row.FindControl("lblEa3")
-                lbl.ForeColor = Drawing.Color.Red
-                Continue For
-            End If
-            Dim lblbottom As Label = row.FindControl("lblbtmCs")
-            lbl = row.FindControl("lblPromoitem")
-            If lbl.Text <> "" Then
-                row.BackColor = Drawing.Color.FromName("#90EE90")
-
-            End If
-
-            Dim lblprice As Label = row.FindControl("lblCsPrice")
-            If Val(lblprice.Text) < Val(lblbottom.Text) Then
-                row.BackColor = Drawing.Color.FromName("#FFFF99")
-                Continue For
-            End If
-
-
-            Dim lblIsNew As Label = row.FindControl("lblIsNew")
-            If CString(lblIsNew.Text) = "Y" Then
-                row.BackColor = Drawing.Color.FromName("#C3E8F6")
-                Continue For
-            End If
+            SetRowColor(row)
         Next
     End Sub
 
@@ -772,9 +740,10 @@ Partial Class Common_OrderDtl
                 End If
 
             ElseIf GetDeleteCustomer_Item(DB, lblCustomerID.Text, custGrpItemID) > 0 Then
+                r.close()
                 ViewState("DIALOG_CMD") = "ITEM_RESTORE"
                 ViewState("DIALOG_ARG1") = custGrpItemID
-                MessageBoxYesNo("This item has been deleted from the order form. Would you like to restore?", "Item has been delete", DB)
+                MessageBoxYesNo("This item has been deleted from the order form. Would you like to restore it?", "Item Has Been Deleted", DB)
                 Exit Sub
             Else
                 r.close()

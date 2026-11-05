@@ -20,6 +20,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: AR Balance in Order Info is a working link again: opens the Balance page for this customer in a new tab. The link is app-relative (was built from the server address of the request).
 *<OrderDtl>: Fixed: pressing Enter could log the user out (went to Login.aspx) - in the Order Info boxes, in the item list of a new order (Update Order hidden, Approve Order shown) and in the Add Item panel for an item with no price. Enter now does nothing there.
 *<CustItem, CustSetting, BranchSetting, Tool, OrderForm, Balance, OrderHistory>: Same Enter fix: Enter in a box with no button of its own no longer goes to Login.aspx. Boxes with their own button (search, save, ...) work as before.
+*<OrderDtl>: Fixed: deleting a row did not update the order total shown in Order History (until Update Order); the status is re-checked at "Yes". Row colors no longer change after a click (one rule for load and postback); a $0-price row is no longer yellow; non-JFC items are no longer shown as out of stock (pink). Restore-deleted-item dialog: reader closed, title fixed.
 *<Suggestion>: Item search (Order Detail Add Item, Customer Items) is faster: returns only the 30 rows the list shows (was every match, with an extra query per row). Item # search ignores case and a leading "#" ("#abc123" finds ABC123).
 
 KOSCUS_JFCADMIN017 (11/04/2026)

@@ -104,6 +104,19 @@ Before
      tab (that customer selected, payment detail shown). The URL is app-relative (ResolveUrl) - it was built from
      Request.Url, which can be the internal server address behind the proxy. Customer id is URL-encoded.
      Test: open an order, click AR Balance: Balance page opens for the same customer.
+4.12 Delete a row (Yes): the order's saved total amount (sohdr.totalAmt, shown in the Order History list) was not
+     updated - it kept the old total until Update Order was clicked. Now it is updated with the delete.
+     The order status is also checked again at "Yes" (the order may have been approved / downloaded meanwhile).
+     Test: delete a row, go back to Order History without Update Order: total is the new amount.
+4.13 Row colors (JFC admin): the colors set when the list loads and the colors set again after each click used
+     different rules, so a row could change color after any click (e.g. a promo item that is also new: green, then
+     blue). Both now use one function (SetRowColor): out of stock pink > below bottom yellow > promo green > new blue.
+     A row with no price ($0) is no longer yellow "below bottom". Customer orders are no longer colored after a click
+     (they never were when the list loaded).
+4.14 Out of stock (pink row, red qty) is only for JFC items. Other items have no stock data (always 0), so every
+     non-JFC row showed pink.
+4.15 Get Item for an item deleted from the order form: the item reader is closed before the "restore?" question,
+     and the dialog title reads "Item Has Been Deleted" (was "Item has been delete").
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.

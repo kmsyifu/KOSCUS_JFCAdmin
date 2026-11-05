@@ -498,7 +498,7 @@
             <asp:TemplateField HeaderText="Out Of Stock" >
                 <ItemTemplate>
                     <%--<asp:Label runat="server" ID="lblOutOfStock" CssClass="cellLbl" Text="Yes" Visible='<%# Val(Eval("remainingInStockQty")) < 0 %>' />--%>
-                    <asp:Label runat="server" ID="lblOutOfStock" CssClass="cellLbl" Text='<%# IIf(Val(Eval("remainingInStockQty")) <= 0, "Y", "") %>' />
+                    <asp:Label runat="server" ID="lblOutOfStock" CssClass="cellLbl" Text='<%# IIf(CString(Eval("itemType")) = "JFCItems" AndAlso Val(Eval("remainingInStockQty")) <= 0, "Y", "") %>' /><%--only JFC items have stock (other items always had 0 and showed pink)--%>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField HeaderText="Cost<br />GP" HeaderStyle-CssClass="th number16" ItemStyle-CssClass="number16 cellLbl" >
