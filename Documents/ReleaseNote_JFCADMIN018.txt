@@ -18,8 +18,10 @@ Before
 ==================================================================================================================================
 1.1 Click Edit under the price -> a price box, and under it the unit list (/lb, /cs, /ea - same units as the old
     popup) with a check mark and an X, appear in the row. No popup, no page reload.
-    Check mark (or Enter): keeps the new price - the box closes and the row shows "New: $x/cs, ..." (Edit reopens it).
-    X: cancels the change.
+    Price box, unit list and check mark / X are stacked and the same width (72px), right-aligned under the price.
+    While a new price is set, the old price is hidden and only the new one shows, labelled "New" ($x/cs, $y/ea, ...).
+    Check mark (or Enter): keeps the new price - the box closes, the "New" price stays (Edit reopens it).
+    X: cancels the change and shows the old price again.
 1.2 While typing (price or qty), JavaScript updates:
       - the row's new prices (= $x/cs, $y/ea, $z/lb), GP % (bold, red if negative) and line amount
       - Total amount (header and bottom line) and Total GP

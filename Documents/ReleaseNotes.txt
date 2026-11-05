@@ -2,7 +2,7 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN018 (11/04/2026)
-*<OrderDtl>: Price is edited right in the order item list: click Edit, type the price and pick the unit (/cs, /ea, /lb), then the check mark (or Enter) to keep it or the X to cancel. The row then shows "New: $x/cs...". No popup, no page reload, and the item is no longer loaded into the Add Item panel.
+*<OrderDtl>: Price is edited right in the order item list: click Edit, type the price and pick the unit (/cs, /ea, /lb), then the check mark (or Enter) to keep it or the X to cancel. The old price is hidden and the row shows only the new price, labelled "New". No popup, no page reload, and the item is no longer loaded into the Add Item panel.
 *<OrderDtl>: While typing a price or qty in the list, the row's GP %, line amount and the order's Total amount / Total GP update right away. A price below bottom turns the row yellow and shows the bottom price.
 *<OrderDtl>: Update Order saves the qty and the changed prices together, and the bottom price warning checks the new prices. Fixed: before, a price set with Edit was lost if Update Order was clicked instead of the Add Item panel's Update button.
 *<OrderDtl>: Add Item to Order panel: Set Price opens a price box in the panel (cost and bottom shown) instead of a popup. GP % and the line amount update while typing. Add to Order / Update uses the typed price even if Apply was not clicked. Apply closes the price box, shows the new price in the panel and says to click Add to Order / Update to save it.

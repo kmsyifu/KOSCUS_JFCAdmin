@@ -374,26 +374,26 @@
             <asp:TemplateField HeaderText="Price" HeaderStyle-CssClass="th number16" ItemStyle-CssClass="number16 cellLbl" >
                 <ItemTemplate>
                     <%--<asp:Label runat="server" Text='(' Visible='<%# IsMobile() = False and CString(Eval("lbPrice_OrderByQty")) <> "0" and CString(Eval("csprice")) <> "0"%>' />--%>
-                    <asp:Label runat="server" ID="lblCsPrice" Text='<%# Eval("csprice", "{0:C}") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("csprice")) <> "0"%>' />
-                    <%--<asp:Label runat="server" Text=')' Visible='<%# IsMobile() = False and CString(Eval("lbPrice_OrderByQty")) <> "0" and CString(Eval("csprice")) <> "0"%>' />--%><asp:Label ID="Label1" runat="server" Text='<br />' Visible='<%# CString(Eval("csprice")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblCsPrice" CssClass="od-old" Text='<%# Eval("csprice", "{0:C}") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("csprice")) <> "0"%>' />
+                    <%--<asp:Label runat="server" Text=')' Visible='<%# IsMobile() = False and CString(Eval("lbPrice_OrderByQty")) <> "0" and CString(Eval("csprice")) <> "0"%>' />--%><asp:Label ID="Label1" CssClass="od-old" runat="server" Text='<br />' Visible='<%# CString(Eval("csprice")) <> "0"%>' />
                     <%--<asp:Label runat="server" Text='(' Visible='<%# IsMobile() = False and CString(Eval("lbPrice_OrderByQty")) <> "0" and CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />--%>
-                    <asp:Label runat="server" ID="lblEaPrice" Text='<%# Eval("eaprice", "{0:C}") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso lblHideEaQty.Text = "N" AndAlso CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
+                    <asp:Label runat="server" ID="lblEaPrice" CssClass="od-old" Text='<%# Eval("eaprice", "{0:C}") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso lblHideEaQty.Text = "N" AndAlso CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
                     <%--<asp:Label runat="server" Text=')' Visible='<%# IsMobile() = False and CString(Eval("lbPrice_OrderByQty")) <> "0" and CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />--%>
-                    <asp:Label ID="Label2" runat="server" Text='<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso lblHideEaQty.Text = "N" AndAlso  CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
-                    <asp:Label runat="server" ID="lblLbPrice_OrderByWgt" Text='<%# CString(Eval("lbPrice_OrderByWgt", "{0:C}")) & "<br />" %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso Common.ALLOW_LB_ORDER = True AndAlso CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblLbPrice_OrderByQty" Text='<%# CString(Eval("lbPrice_OrderByQty", "{0:C}")) & "<br />" %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("lbPrice_OrderByQty")) <> "0"%>' CssClass="green" />
+                    <asp:Label ID="Label2" CssClass="od-old" runat="server" Text='<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso lblHideEaQty.Text = "N" AndAlso  CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
+                    <asp:Label runat="server" ID="lblLbPrice_OrderByWgt" CssClass="od-old" Text='<%# CString(Eval("lbPrice_OrderByWgt", "{0:C}")) & "<br />" %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso Common.ALLOW_LB_ORDER = True AndAlso CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblLbPrice_OrderByQty" Text='<%# CString(Eval("lbPrice_OrderByQty", "{0:C}")) & "<br />" %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("lbPrice_OrderByQty")) <> "0"%>' CssClass="green od-old" />
                     <asp:Label runat="server" ID="lblMinSalCnt_view" CssClass="green normal" Visible='<%# lblHideEaQty.Text = "N" AndAlso Val(Eval("minSalCnt")) > 1 AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' Text='<%# IIf(IsMobile(), "min:" & CString(Eval("minSalCnt")) & "ea", "min " & CString(Eval("minSalCnt")) & " ea") & "<br />" %>' /><%-- and CString(Eval("eaprice")) <> "0"--%>
                     <asp:Label runat="server" ID="lblMinSalCnt" Text='<%# Eval("minSalCnt") %>' Visible="false" />
                     <%--Edit price right in the list (JFC admin, JFC item). Nothing is saved until Update Order. Unit list is filled in grdItem_RowDataBound--%>
                     <asp:PlaceHolder runat="server" ID="phEditPrice" Visible='<%# CanEditRowPrice() AndAlso CString(Eval("itemType")) = "JFCItems" %>'>
                         <a href="#" class="cellLink od-edit" style="color:#4169E1;" title="Change the price for this order" onclick="return odEditPrice(this);">Edit</a>
                         <span class="od-edit-box" style="display:none;">
-                            <span class="od-edit-inputs" style="display:inline-block; white-space:nowrap; text-align:right; margin-top:2px;">
-                                <asp:TextBox runat="server" ID="txtEditPrice" CssClass="cellQtyTxt od-price" autocomplete="off" onFocus="this.select()" /><br />
+                            <span class="od-edit-inputs" style="display:inline-block; white-space:nowrap; text-align:right; margin-top:3px;">
+                                <asp:TextBox runat="server" ID="txtEditPrice" CssClass="cellQtyTxt od-price" autocomplete="off" onFocus="this.select()" style="width:72px; box-sizing:border-box;" /><br />
                                 <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender14" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtEditPrice" />
-                                <asp:DropDownList runat="server" ID="lstEditPriceUnit" CssClass="od-unit" style="font-size:11px; padding:0; margin:2px 0 0 0; width:auto;" />
-                                <a href="#" class="od-ok" title="OK (saved when you click Update Order)" style="color:green; font-weight:bold; text-decoration:none; font-size:15px; margin-left:3px;" onclick="return odOkPrice(this);">&#10004;</a>
-                                <a href="#" class="od-cancel" title="Cancel price change" style="color:red; font-weight:bold; text-decoration:none; font-size:15px; margin-left:3px;" onclick="return odCancelPrice(this);">&#10006;</a>
+                                <asp:DropDownList runat="server" ID="lstEditPriceUnit" CssClass="od-unit" style="width:72px; height:24px; font-size:13px; margin:3px 0 0 0; box-sizing:border-box;" /><br />
+                                <a href="#" class="od-ok" title="OK (saved when you click Update Order)" style="color:green; font-weight:bold; text-decoration:none; font-size:16px;" onclick="return odOkPrice(this);">&#10004;</a>
+                                <a href="#" class="od-cancel" title="Cancel price change" style="color:red; font-weight:bold; text-decoration:none; font-size:16px; margin-left:12px;" onclick="return odCancelPrice(this);">&#10006;</a>
                             </span>
                             <br /><span class="od-preview cellLbl"></span>
                         </span>
@@ -403,10 +403,10 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size10" ItemStyle-CssClass="size10 cellLbl" >
                 <ItemTemplate>
-                    <asp:Label runat="server" ID="lblCs" Text='/cs<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("csprice")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblEa" Text='<%# IIf(CString(Eval("lbPrice_OrderByQty")) <> "0", "/pc<br />", "/ea<br />") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso lblHideEaQty.Text = "N" AndAlso CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
-                    <asp:Label runat="server" ID="lblLb_orderByWgt" Text='/lb<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso Common.ALLOW_LB_ORDER = True AndAlso CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblLb_orderByQty" Text='/lb<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("lbPrice_OrderByQty")) <> "0"%>' CssClass="green" />
+                    <asp:Label runat="server" ID="lblCs" CssClass="od-old" Text='/cs<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("csprice")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblEa" CssClass="od-old" Text='<%# IIf(CString(Eval("lbPrice_OrderByQty")) <> "0", "/pc<br />", "/ea<br />") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso lblHideEaQty.Text = "N" AndAlso CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
+                    <asp:Label runat="server" ID="lblLb_orderByWgt" CssClass="od-old" Text='/lb<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso Common.ALLOW_LB_ORDER = True AndAlso CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblLb_orderByQty" Text='/lb<br />' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("lbPrice_OrderByQty")) <> "0"%>' CssClass="green od-old" />
                     <asp:Label ID="Label8" runat="server" Text='<br />' Visible='<%# Val(Eval("minSalCnt")) > 1 and CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
                     <asp:Label ID="Label4" runat="server" Text='<br />' />
                 </ItemTemplate>
@@ -769,12 +769,14 @@
         if (editing) {
             var g = od.gp(d, p);
             gpEl.text(g === null ? '' : od.pct(g)).css({ 'font-weight': 'bold', 'color': (g !== null && g < 0) ? 'red' : '' });
-            var done = !tr.find('.od-edit-inputs').is(':visible');
-            prev.html((done ? '<span class="green bold">New: ' : '= ') + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea') + (done ? '</span>' : '') +
+            // Only the new price is shown (old price hidden), labelled New
+            tr.find('.od-old').hide();
+            prev.html('<span class="green bold">New</span><br /><span class="bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('<br />') + '</span>' +
                 (below ? '<br /><span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : ''));
         } else {
             gpEl.text(tr.data('odGp0')).css({ 'font-weight': '', 'color': '' });
             prev.html('');
+            tr.find('.od-old').show();
         }
         var wasBelow = d.btmcs > 0 && d.cs > 0 && d.cs < d.btmcs;
         if (below) tr[0].style.backgroundColor = '#FFFF99';
