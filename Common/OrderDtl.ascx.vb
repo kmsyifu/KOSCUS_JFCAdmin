@@ -1883,8 +1883,7 @@ Partial Class Common_OrderDtl
                 lblCustomerName.Text = CString(r("customerName"))
                 lblJfcBranchNr.Text = CString(r("jfcBranchNr"))
                 lblJfcCustomerNr.Text = CString(r("jfcCustomerNr"))
-                lnkCurrentBalance.Text = "AR Balance: $" & GetCurrentBalance(DB, CString(r("customer_id")))
-                lnkCurrentBalance.NavigateUrl = GetCurrentDirectory() & "Balance.aspx?customer_id=" & CString(r("customer_id")) & "&cmd=show_dtl"
+                lblCurrentBalance.Text = "AR Balance: $" & GetCurrentBalance(DB, CString(r("customer_id")))
                 txtDeliveryDate.Text = CString(r("shipDate"))
                 lblDeliveryDate.Text = CString(r("shipDate_view"))
                 lblShipOffset.Text = IIf((ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" OrElse ViewState("ORDER_MODE") = "VIEW_WEB_ORDER") And Val(r("SHIPDATEOFFSET")) <> 0,

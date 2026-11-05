@@ -17,6 +17,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Fixed: Delete Order and "Change Back to Order Placed Status" now re-check the order status at "Yes", so an order processed or canceled in the meantime is not canceled / reopened.
 *<OrderDtl>: Fixed: downloading an invoice from the order left the database reader open.
 *<OrderDtl>: Add Item to Order search (item # / keyword) fixed: the list no longer goes empty or stale after the 2nd letter, an older slow search no longer replaces the current list, picking an item (click or Enter) loads it right away, and clicking back into the search box no longer reloads the old item and clears the qty. Search starts at 2 letters.
+*<OrderDtl>: AR Balance in Order Info is plain text (was a link to the Balance page).
 *<Suggestion>: Item search (Order Detail Add Item, Customer Items) is faster: returns only the 30 rows the list shows (was every match, with an extra query per row). Item # search ignores case and a leading "#" ("#abc123" finds ABC123).
 
 KOSCUS_JFCADMIN017 (11/04/2026)
