@@ -249,24 +249,32 @@
             <asp:Panel ID="pnlNewShowPrice" runat="server">
                 <tr>
                     <td class="gray">Price:</td>
-                    <td><asp:Label runat="server" ID="lblNewLbPrice_OrderByQty_view" CssClass="cellLbl green bold" /><asp:Label runat="server" ID="lblNewLbPrice_OrderByQty" Visible="false" />
+                    <td><%--"New" shows after a price is set with the check mark. While typing a price, the current price is hidden (odNewOldPrice) and the new one shows in odNewPreview--%>
+                        <asp:Label runat="server" ID="lblNewPriceTag" CssClass="cellLbl green bold" Text="New " Visible="false" />
+                        <span id="odNewOldPrice">
+                        <asp:Label runat="server" ID="lblNewLbPrice_OrderByQty_view" CssClass="cellLbl green bold" /><asp:Label runat="server" ID="lblNewLbPrice_OrderByQty" Visible="false" />
                         <asp:Label runat="server" ID="lblNewCsPrice_view" CssClass="cellLbl red bold" /><asp:Label runat="server" ID="lblNewCsPrice" Visible="false" />
                         <asp:Label runat="server" ID="lblNewEaPrice_view" CssClass="cellLbl red bold" /><asp:Label runat="server" ID="lblNewEaPrice" Visible="false" /> 
                         <asp:Label runat="server" ID="lblNewLbPrice_OrderByWgt_view" CssClass="cellLbl red bold" /><asp:Label runat="server" ID="lblNewLbPrice_OrderByWgt" Visible="false" />
+                        </span>
+                        <span id="odNewLivePrice" style="display:none;"></span><%--new price while typing, in the current price's place--%>
                         <asp:Label runat="server" ID="lblNewMinSalCnt_view" CssClass="cellLbl green" /><asp:Label runat="server" ID="lblNewMinSalCnt" Visible="false" />
                         <asp:Label runat="server" ID="lblNewAskPrice" Text='Ask' CssClass="cellLbl red bold" />
                         <asp:Label runat="server" ID="lblNewCsCost" Visible="false" /><asp:Label runat="server" ID="lblNewEaCost" Visible="false" /><asp:Label runat="server" ID="lblNewLbCost" Visible="false" />
                         <asp:Label runat="server" ID="lblNewBtmCs" Visible="false" /><asp:Label runat="server" ID="lblNewBtmEa" Visible="false" /><asp:Label runat="server" ID="lblNewBtmLb" Visible="false" />
                         <asp:Label runat="server" ID="lblNewGp" CssClass="cellLbl gray" />
-                        <asp:HyperLink runat="server" ID="lnkSetPrice" CssClass="cellLink" NavigateUrl="#" onclick="return odNewShowPrice();" Text="Set Price" />
-                        <%--Set price right in the panel (was a popup). Add to Order / Update uses the typed price; Apply only refreshes the panel--%>
+                        <asp:HyperLink runat="server" ID="lnkSetPrice" CssClass="cellLink" NavigateUrl="#" onclick="return odNewShowPrice();" Text="Edit Price" />
+                        <%--Set price right in the panel (was a popup). Check mark (or Enter) puts the new price in the panel; Add to Order / Update saves it
+                            (and also uses a typed price if the check mark was not clicked). X cancels.--%>
                         <span id="odNewPriceBox" style="display:none;">
                             <br /><asp:Label runat="server" ID="lblNewCostBtm" CssClass="cellLbl gray" /><br />
-                            <asp:TextBox runat="server" ID="txtNewSetPrice" CssClass="stdTxt size12" autocomplete="off" onFocus="this.select()" />
-                            <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender13" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtNewSetPrice" />
-                            <asp:DropDownList ID="lstNewSetPriceUnit" CssClass="drpList" runat="server" />
-                            <asp:Button ID="btnNewApplyPrice" CssClass="midButton" runat="server" Text="Apply" ToolTip="Show the new price in this panel (not saved until Add to Order / Update)" />
-                            <a href="#" class="cellLink" onclick="return odNewCancelPrice();">Cancel</a>
+                            <span style="display:inline-block; white-space:nowrap; margin-top:3px;">
+                                <asp:TextBox runat="server" ID="txtNewSetPrice" CssClass="stdTxt" style="width:90px; box-sizing:border-box;" autocomplete="off" onFocus="this.select()" />
+                                <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender13" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtNewSetPrice" />
+                                <asp:DropDownList ID="lstNewSetPriceUnit" runat="server" style="width:72px; height:24px; font-size:13px; margin-left:4px; box-sizing:border-box;" />
+                                <asp:LinkButton ID="btnNewApplyPrice" runat="server" Text="&#10004;" ToolTip="OK - show the new price (saved when you click Add to Order / Update)" style="color:green; font-weight:bold; text-decoration:none; font-size:16px; margin-left:8px;" />
+                                <a href="#" title="Cancel price change" style="color:red; font-weight:bold; text-decoration:none; font-size:16px; margin-left:12px;" onclick="return odNewCancelPrice();">&#10006;</a>
+                            </span>
                         </span>
                         <br /><span id="odNewPreview" class="cellLbl"></span>
                         <asp:Literal ID="litNewPriceData" runat="server" />
@@ -386,6 +394,7 @@
                     <asp:Label runat="server" ID="lblMinSalCnt" Text='<%# Eval("minSalCnt") %>' Visible="false" />
                     <%--Edit price right in the list (JFC admin, JFC item). Nothing is saved until Update Order. Unit list is filled in grdItem_RowDataBound--%>
                     <asp:PlaceHolder runat="server" ID="phEditPrice" Visible='<%# CanEditRowPrice() AndAlso CString(Eval("itemType")) = "JFCItems" %>'>
+                        <span class="od-newprice"></span><%--new price, shown in the old price's place (old price is hidden)--%>
                         <a href="#" class="cellLink od-edit" style="color:#4169E1;" title="Change the price for this order" onclick="return odEditPrice(this);">Edit</a>
                         <span class="od-edit-box" style="display:none;">
                             <span class="od-edit-inputs" style="display:inline-block; white-space:nowrap; text-align:right; margin-top:3px;">
@@ -769,13 +778,14 @@
         if (editing) {
             var g = od.gp(d, p);
             gpEl.text(g === null ? '' : od.pct(g)).css({ 'font-weight': 'bold', 'color': (g !== null && g < 0) ? 'red' : '' });
-            // Only the new price is shown (old price hidden), labelled New
+            // Only the new price is shown, in the old price's place, labelled New
             tr.find('.od-old').hide();
-            prev.html('<span class="green bold">New</span><br /><span class="bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('<br />') + '</span>' +
-                (below ? '<br /><span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : ''));
+            tr.find('.od-newprice').html('<span class="green bold">New</span><br /><span class="bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('<br />') + '</span><br />');
+            prev.html(below ? '<span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : '');
         } else {
             gpEl.text(tr.data('odGp0')).css({ 'font-weight': '', 'color': '' });
             prev.html('');
+            tr.find('.od-newprice').html('');
             tr.find('.od-old').show();
         }
         var wasBelow = d.btmcs > 0 && d.cs > 0 && d.cs < d.btmcs;
@@ -841,7 +851,7 @@
     // ---- Add Item to Order panel ----
     function odNewRecalc() {
         var s = $('#odNewData'), out = $('#odNewPreview');
-        if (!s.length) { out.html(''); return; }
+        if (!s.length) { out.html(''); $('#odNewLivePrice').html('').hide(); $('#odNewOldPrice').show(); return; }
         var d = od.data(s);
         var P = od.n($('#<%=txtNewSetPrice.ClientID%>').val()), unit = $('#<%=lstNewSetPriceUnit.ClientID%>').val();
         var editing = P > 0 && $('#odNewPriceBox').is(':visible');
@@ -850,8 +860,11 @@
         var amt = od.r2(p.cs * csq + p.ea * eaq + d.lbw * lbs);
         var g = od.gp(d, p);
         $('#<%=lblNewGp.ClientID%>').text(g === null ? '' : ' GP ' + od.pct(g)).css('color', (g !== null && g < 0) ? 'red' : '');
+        // While typing a price: hide the current price, show only the new one labelled New
+        $('#odNewOldPrice').toggle(!editing);
+        $('#<%=lblNewPriceTag.ClientID%>').toggle(!editing);
+        $('#odNewLivePrice').html(editing ? '<span class="cellLbl green bold">New</span> <span class="cellLbl red bold">' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea').split(', ').join('&nbsp;&nbsp;').replace(/\//g, ' / ') + '</span>' : '').toggle(editing);
         var t = [];
-        if (editing) t.push('New price: ' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea'));
         if (amt !== 0) t.push('Amount: <b>' + od.money(amt) + '</b>');
         if (d.btmcs > 0 && p.cs > 0 && p.cs < d.btmcs) t.push('<span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>');
         out.html(t.join('&nbsp;&nbsp;'));
@@ -887,6 +900,10 @@
         });
         // Enter in a list price box = check mark (must not submit the page - Update Order is the default button there)
         $(document).on('keydown', 'input.od-price', function (e) { if (e.keyCode === 13) { odOkPrice(this); return false; } });
+        // Panel: Enter in the price box = check mark
+        $(document).on('keydown', '#<%=txtNewSetPrice.ClientID%>', function (e) {
+            if (e.keyCode === 13) { if (od.n($(this).val()) > 0) { <%= Page.ClientScript.GetPostBackEventReference(btnNewApplyPrice, "") %>; } return false; }
+        });
         // Panel: price / unit / qty typed -> recalc preview
         $(document).on('keyup change', '#<%=txtNewSetPrice.ClientID%>, #<%=lstNewSetPriceUnit.ClientID%>, #<%=txtNewCsQty.ClientID%>, #<%=txtNewEaQty.ClientID%>, #<%=txtNewLbs.ClientID%>', function () {
             if ($(this).is('select')) odNewShowPrice(); else odNewRecalc();

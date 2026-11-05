@@ -876,11 +876,8 @@ Partial Class Common_OrderDtl
                 'so close the price box and say so - before, the box stayed open and it looked like nothing happened
                 Dim warning As String = lblNewMsg.Text
                 txtNewSetPrice.Text = ""
-                lblNewMsg.Text = "<span class='green bold'>New price applied: " &
-                    IIf(lblNewCsPrice_view.Visible, lblNewCsPrice_view.Text.Replace("<br />", "") & " ", "") &
-                    IIf(lblNewEaPrice_view.Visible, lblNewEaPrice_view.Text & " ", "") &
-                    IIf(lblNewLbPrice_OrderByQty_view.Visible, lblNewLbPrice_OrderByQty_view.Text, "") &
-                    ". Click """ & btnAddItem.Text & """ to save it.</span>" &
+                lblNewPriceTag.Visible = True 'Price line shows "New $x / cs ..."
+                lblNewMsg.Text = "<span class='green'>New price is set. Click """ & btnAddItem.Text & """ to save it.</span>" &
                     IIf(warning <> "", "<br />" & warning, "")
             End If
         End Using
@@ -1590,6 +1587,7 @@ Partial Class Common_OrderDtl
         lblNewAskPrice.Visible = False
         btnAddItem.Visible = True
         'Panel price box
+        lblNewPriceTag.Visible = False
         txtNewSetPrice.Text = ""
         lstNewSetPriceUnit.Items.Clear()
         lblNewCostBtm.Text = ""
@@ -2046,6 +2044,7 @@ Partial Class Common_OrderDtl
         Dim eaUnit As String
 
         txtNewSetPrice.Text = ""
+        lblNewPriceTag.Visible = False
         lstNewSetPriceUnit.Items.Clear()
         lblNewCostBtm.Text = ""
         litNewPriceData.Text = ""
