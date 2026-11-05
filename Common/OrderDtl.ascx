@@ -73,7 +73,7 @@
             <asp:Panel ID="pnlShowPrice" runat="server">
                 <tr>
                     <td class="gray">Total Amount<%--&nbsp;<asp:ImageButton ID="btnInfo_totalAmt" CssClass="xsImgBtn red" runat="server" ImageUrl='<%# GetWebImgUrl("question.png") %>' ToolTip="This is not an invoice amount. Additional charges such as sales tax, crv, etc may apply separately." />--%></td>
-                    <td><asp:Label ID="lblTotalAmt" CssClass="cellLbl bold red" runat="server" /><%--(<asp:Label ID="lblNrItem" CssClass="cellLbl bold" runat="server" />)--%></td>
+                    <td><asp:Label ID="lblTotalAmt" CssClass="cellLbl bold red od-total-hdr" runat="server" /><%--(<asp:Label ID="lblNrItem" CssClass="cellLbl bold" runat="server" />)--%></td>
                 </tr>
                 <%--<tr>
                     <td></td>
@@ -258,7 +258,18 @@
                         <asp:Label runat="server" ID="lblNewCsCost" Visible="false" /><asp:Label runat="server" ID="lblNewEaCost" Visible="false" /><asp:Label runat="server" ID="lblNewLbCost" Visible="false" />
                         <asp:Label runat="server" ID="lblNewBtmCs" Visible="false" /><asp:Label runat="server" ID="lblNewBtmEa" Visible="false" /><asp:Label runat="server" ID="lblNewBtmLb" Visible="false" />
                         <asp:Label runat="server" ID="lblNewGp" CssClass="cellLbl gray" />
-                        <asp:LinkButton runat="server" ID="lnkSetPrice" CssClass="cellLink" Text="Set Price" />
+                        <asp:HyperLink runat="server" ID="lnkSetPrice" CssClass="cellLink" NavigateUrl="#" onclick="return odNewShowPrice();" Text="Set Price" />
+                        <%--Set price right in the panel (was a popup). Add to Order / Update uses the typed price; Apply only refreshes the panel--%>
+                        <span id="odNewPriceBox" style="display:none;">
+                            <br /><asp:Label runat="server" ID="lblNewCostBtm" CssClass="cellLbl gray" /><br />
+                            <asp:TextBox runat="server" ID="txtNewSetPrice" CssClass="stdTxt size12" autocomplete="off" onFocus="this.select()" />
+                            <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender13" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtNewSetPrice" />
+                            <asp:DropDownList ID="lstNewSetPriceUnit" CssClass="drpList" runat="server" />
+                            <asp:Button ID="btnNewApplyPrice" CssClass="midButton" runat="server" Text="Apply" ToolTip="Show the new price in this panel (not saved until Add to Order / Update)" />
+                            <a href="#" class="cellLink" onclick="return odNewCancelPrice();">Cancel</a>
+                        </span>
+                        <br /><span id="odNewPreview" class="cellLbl"></span>
+                        <asp:Literal ID="litNewPriceData" runat="server" />
                     </td>
                 </tr>
             </asp:Panel>
@@ -373,7 +384,18 @@
                     <asp:Label runat="server" ID="lblLbPrice_OrderByQty" Text='<%# CString(Eval("lbPrice_OrderByQty", "{0:C}")) & "<br />" %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" AndAlso CString(Eval("lbPrice_OrderByQty")) <> "0"%>' CssClass="green" />
                     <asp:Label runat="server" ID="lblMinSalCnt_view" CssClass="green normal" Visible='<%# lblHideEaQty.Text = "N" AndAlso Val(Eval("minSalCnt")) > 1 AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' Text='<%# IIf(IsMobile(), "min:" & CString(Eval("minSalCnt")) & "ea", "min " & CString(Eval("minSalCnt")) & " ea") & "<br />" %>' /><%-- and CString(Eval("eaprice")) <> "0"--%>
                     <asp:Label runat="server" ID="lblMinSalCnt" Text='<%# Eval("minSalCnt") %>' Visible="false" />
-                    <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkItemSetPrice" Text="Edit"  CommandName="SETPRICE" CommandArgument='<%# Eval("custGrpItem_id")%>' />
+                    <%--Edit price right in the list (JFC admin, JFC item). Nothing is saved until Update Order. Unit list is filled in grdItem_RowDataBound--%>
+                    <asp:PlaceHolder runat="server" ID="phEditPrice" Visible='<%# CanEditRowPrice() AndAlso CString(Eval("itemType")) = "JFCItems" %>'>
+                        <a href="#" class="cellLink od-edit" style="color:#4169E1;" title="Change the price for this order" onclick="return odEditPrice(this);">Edit</a>
+                        <span class="od-edit-box" style="display:none;"><br />
+                            <asp:TextBox runat="server" ID="txtEditPrice" CssClass="cellQtyTxt od-price" autocomplete="off" onFocus="this.select()" />
+                            <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender14" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtEditPrice" />
+                            <asp:DropDownList runat="server" ID="lstEditPriceUnit" CssClass="drpList od-unit" />
+                            <a href="#" class="cellLink" title="Cancel price change" onclick="return odCancelPrice(this);">x</a>
+                            <br /><span class="od-preview cellLbl"></span>
+                        </span>
+                    </asp:PlaceHolder>
+                    <%# RowPriceData(Container.DataItem) %>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size10" ItemStyle-CssClass="size10 cellLbl" >
@@ -388,7 +410,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="Case" HeaderStyle-CssClass="th center16" ItemStyle-CssClass="number16" >
                 <ItemTemplate>
-                    <asp:TextBox autocomplete="off"  runat="server" ID="txtCsQty" Visible='<%# CString(Eval("csprice")) <> "0"%>' onFocus="this.select()" Text='<%# Eval("csQty")%>' CssClass="cellQtyTxt" /><%--TextMode="Number"--%>
+                    <asp:TextBox autocomplete="off"  runat="server" ID="txtCsQty" Visible='<%# CString(Eval("csprice")) <> "0"%>' onFocus="this.select()" Text='<%# Eval("csQty")%>' CssClass="cellQtyTxt od-cs" /><%--TextMode="Number"--%>
                     <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" runat="server" FilterType="Numbers" TargetControlID="txtCsQty" />
                     <asp:Label runat="server" ID="Label15" CssClass="cellLbl gray" onFocus="this.select()" Visible='<%# CString(Eval("csprice")) <> "0"%>' Text='<%# IIf(IsMobile(), "<br/>", "") & "cs&nbsp;&nbsp;<br />" %>' />
                     <asp:LinkButton runat="server" CssClass="cellLink" ID="lnkShowCsQtyVpSp" Visible='false' Text='<%# "vp/sp" & IIf(IsMobile(), "", "&emsp;&emsp;") %>' 
@@ -404,7 +426,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="Each" HeaderStyle-CssClass="th center16" ItemStyle-CssClass="number16" >
                 <ItemTemplate>
-                    <asp:TextBox runat="server" ID="txtEaQty" Visible='<%# CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' onFocus="this.select()" Text='<%# Eval("eaQty")%>' CssClass="cellQtyTxt" /><%--TextMode="Number"--%>
+                    <asp:TextBox runat="server" ID="txtEaQty" Visible='<%# CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' onFocus="this.select()" Text='<%# Eval("eaQty")%>' CssClass="cellQtyTxt od-ea" /><%--TextMode="Number"--%>
                     <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender2" runat="server" FilterType="Numbers" TargetControlID="txtEaQty" />
                     <asp:Label runat="server" ID="Label16" CssClass="cellLbl gray" Visible='<%# CString(Eval("eaprice")) <> "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' Text='<%# IIf(IsMobile(), "<br/>", "") & IIf(CString(Eval("lbPrice_OrderByQty")) <> "0", "pc", "ea") & "&nbsp;&nbsp;<br />" %>' />
                     <asp:LinkButton runat="server" CssClass="cellLink" ID="lnkShowEaQtyVpSp"  Text='<%# "vp/sp" & IIf(IsMobile(), "", "&emsp;&emsp;") %>' 
@@ -420,7 +442,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="Lb" HeaderStyle-CssClass="th center16" ItemStyle-CssClass="number16" >
                 <ItemTemplate>
-                    <asp:TextBox autocomplete="off"  runat="server" ID="txtLbs" Visible='<%# CString(Eval("lbPrice_OrderByWgt")) <> "0" %>' onFocus="this.select()" Text='<%# Eval("lbs")%>' CssClass="cellQtyTxt" /><%--TextMode="Number"--%>
+                    <asp:TextBox autocomplete="off"  runat="server" ID="txtLbs" Visible='<%# CString(Eval("lbPrice_OrderByWgt")) <> "0" %>' onFocus="this.select()" Text='<%# Eval("lbs")%>' CssClass="cellQtyTxt od-lbs" /><%--TextMode="Number"--%>
                     <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender3" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtLbs" />
                     <asp:Label runat="server" ID="Label17" CssClass="cellLbl gray" Visible='<%# CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' Text='<%# IIf(IsMobile(), "<br/>", "") & "lbs" %>' />
                 </ItemTemplate>
@@ -432,7 +454,7 @@
             </asp:TemplateField>--%>
             <asp:TemplateField HeaderText="Amount" HeaderStyle-CssClass="th number16" ItemStyle-CssClass="number16" >
                 <ItemTemplate>
-                    <asp:Label runat="server" ID="lblLineAmt" CssClass="cellLbl red bold" Text='<%# Eval("lineAmt", "{0:C}") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" %>' />
+                    <asp:Label runat="server" ID="lblLineAmt" CssClass="cellLbl red bold od-amt" Text='<%# Eval("lineAmt", "{0:C}") %>' Visible='<%# CString(Eval("hidePrice")) <> "Y" %>' />
                     <asp:Label runat="server" ID="lblLineCost" Visible="false" Text='<%# Eval("lineCost") %>' />
                     <asp:LinkButton runat="server" CssClass="cellLink" ID="btnShowCost" Visible='<%# Session("ORDERDTL_CMD") = "JFCADMIN" AndAlso IsMobile() AndAlso Val(Eval("gp")) <> 1 %>' Text='<%# "<br />" & Format(Eval("gp"), "P0") %>' CommandName="SHOW_COST" CommandArgument='<%# CType(Container, GridViewRow).RowIndex %>' />
                     <asp:Label runat="server" ID="lblLineGrossWeight_kg_view" CssClass="cellLbl green" Text='<%# "<br />" & CString(Eval("lineGrossWeight_kg")) & " kg" %>' Visible='<%# CString(Eval("itemDtl")) <> "" %>' />
@@ -464,7 +486,7 @@
                     <asp:Label runat="server" ID="lblCsCost" Text='<%# CString(Eval("cscost", "{0:C}")) & "<br />" %>' Visible='<%# Val(Eval("cscost")) <> 0 AndAlso Val(Eval("lbPrice_orderByQty")) = 0 %>' />
                     <asp:Label runat="server" ID="lblEaCost" Text='<%# CString(Eval("eacost", "{0:C}")) & "<br />" %>' Visible='<%# Val(Eval("eacost")) <> 0 AndAlso Val(Eval("lbPrice_orderByQty")) = 0 AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' />
                     <asp:Label runat="server" ID="lblLbCost" Text='<%# CString(Eval("lbCost", "{0:C}")) & "<br />" %>' Visible='<%# Val(Eval("lbcost")) <> 0 AndAlso Val(Eval("lbPrice_orderByQty")) <> 0 %>' />
-                    <asp:Label runat="server" ID="lblGp" Text='<%# Format(Eval("gp"), "P1") %>' Visible='<%# Val(Eval("gp")) <> 1 %>' CssClass="gray" />
+                    <asp:Label runat="server" ID="lblGp" Text='<%# IIf(Val(Eval("gp")) <> 1, Format(Eval("gp"), "P1"), "") %>' CssClass="gray od-gp" /><%--Always rendered (empty when no GP) so the live price edit can show GP--%>
                     <asp:Label runat= "server" ID="lblbtmCs"  Text='<%# CString(Eval("btmcsprice", "{0:C}"))  %>' Visible ="false" />
                     <asp:Label runat= "server" ID="lblbtmEa"  Text='<%# CString(Eval("btmeaprice", "{0:C}"))  %>' Visible ="false" />
                     <asp:Label runat= "server" ID="lblbtmlb"  Text='<%# CString(Eval("btmlbprice", "{0:C}"))  %>' Visible ="false" />
@@ -641,59 +663,6 @@
 <%--Popup window to show item detail--%>
 <uc:ShowItemDtl id="ctrShowItemDtl" runat="Server" />
 
-<%--Popup window to set or change price for JFC Admin--%>
-<asp:LinkButton ID="btnPopupTmp_setPrice"  runat="server" />
-<ajaxToolKit:ModalPopupExtender ID="popDialog_setPrice" runat="server"
-            BehaviorID="popDialog_setPrice" 
-            TargetControlID="btnPopupTmp_setPrice"
-            PopupControlID="pnlPopSetPrice"
-            CancelControlID="btnPopClose_setPrice"
-            BackgroundCssClass="modalBackground">
-    <Animations>
-        <OnShown><FadeIn Duration="0.5" Fps="25" /></OnShown>
-        <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
-    </Animations>
-</ajaxToolKit:ModalPopupExtender>
-<asp:Panel ID="pnlPopSetPrice" DefaultButton="btnPopUpdatePrice" style="display:none;" runat="server" CssClass="popup_dialog fontsize2">
-    <div class="inner">
-        <asp:LinkButton ID="btnPopClose_setPrice" CssClass="popClose" runat="server" Text="x" /><%--Use LinkButton instead of ImageButton because progress bar shows after closed in some browser.--%>
-        <h1>Set Price</h1>
-        <table>
-            <tr><td colspan="2"><br /></td></tr>
-            <tr>
-                <td class="gray left size8">Cost</td>
-                <td><asp:Label runat="server" ID="lblPopCost" /></td>
-            </tr>
-             <tr>
-                <td class="gray left size8">Bottom</td>
-                <td><asp:Label runat="server" ID="lblPopBtm" /></td>
-            </tr>
-            <tr>
-                <td class="gray left">Price</td>
-                <td><asp:TextBox runat="server" ID="txtPopPrice" onFocus="this.select()" CssClass="stdTxt size12" autocomplete="off"  /><%--&nbsp;/ cs--%>
-                    <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender11" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtPopPrice" /> 
-                    <asp:DropDownList ID="lstPopPriceUnit" CssClass="drpList" runat="server" />
-                </td>
-            </tr>
-            <%--<tr>
-                <td class="gray left">Unit</td>
-                <td><asp:RadioButtonList ID="radPopPriceUnit" CssClass="radiobtn" runat="server" /></td>
-            </tr>--%>
-            <tr>
-                <td colspan="2" class="red"><asp:Label runat="server" ID="lblPopMsg_setPrice" /></td>                  
-            </tr>
-            <tr><td colspan= "2" class="red" >After clicking OK, please click Update.</td></tr>
-            <tr><td colspan="2"><br /></td></tr>
-            <tr>
-                <td colspan="2"><center><asp:Button ID="btnPopUpdatePrice" CssClass="midButton" runat="server" Text="OK"/></center></td>
-            </tr>
-        </table>     
-        <br />
-        <%--<div class="base">
-        </div>--%>
-    </div>
-</asp:Panel>
-
 <%--Custom confirm dialog for bottom price warning (uses jQuery UI dialog like other message boxes)--%>
 <script type="text/javascript">
     function showBottomPriceWarning(msg, hdnId, postbackRef) {
@@ -716,4 +685,207 @@
             }
         });
     }
+</script>
+
+<%--Live price / GP / amount preview for JFC admin. Only a preview - the server works out the real prices
+    (Common.SetPrice, same SQL as before) when Update Order / Add to Order is clicked--%>
+<script type="text/javascript">
+    var od = {
+        n: function (v) { var x = parseFloat(v); return isNaN(x) ? 0 : x; },
+        r2: function (v) { return isFinite(v) ? Math.round(v * 100) / 100 : 0; },
+        money: function (v) { var s = Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); return (v < 0 ? '-$' : '$') + s; },
+        pct: function (v) { return (v * 100).toFixed(1) + '%'; },
+        // Read the data-* values written by RowPriceData / BuildNewPriceData (empty = NULL in the database)
+        data: function (s) {
+            function a(k) { var v = s.attr('data-' + k); return (v === undefined || v === '') ? null : parseFloat(v); }
+            function z(k) { var v = a(k); return v === null ? 0 : v; }
+            return { scaled: s.attr('data-scaled') === 'Y', epc: a('epc'), minsal: a('minsal'), lbsRaw: a('lbsperea'), avgcs: a('avgcs'), avgea: a('avgea'),
+                cscost: z('cscost'), eacost: z('eacost'), lbcost: z('lbcost'), btmcs: z('btmcs'),
+                cs: z('cs'), ea: z('ea'), lbq: z('lbq'), lbw: z('lbw'), amt: z('amt'), cost: z('cost'), csq: z('csq'), eaq: z('eaq'), lbs: z('lbs') };
+        },
+        // Same rules as Common.SetPrice (cs / ea / lb price from the price typed in one unit)
+        calc: function (d, unit, P) {
+            var epc = d.epc, ms = (d.minsal === 0 ? 1 : d.minsal), L = (d.lbsRaw === null || d.lbsRaw === 0) ? 0.1 : d.lbsRaw;
+            var avgEa = (d.avgea === null ? 0.9 : d.avgea), avgCs = (d.avgcs === null ? 0 : d.avgcs), sc = d.scaled;
+            var perMin = (epc === null || ms === null) ? NaN : epc / ms, one = (L * epc === 1);
+            var cs = 0, ea = 0, lb = 0;
+            if (unit === 'CS') {
+                cs = P;
+                if (perMin <= 1) ea = 0;
+                else if (sc && !one) ea = od.r2(P / (epc * L) * avgEa);
+                else if (sc && one) ea = od.r2(P / avgCs * avgEa);
+                else ea = od.r2(P / epc);
+                if (!sc || perMin <= 1) lb = 0;
+                else if (one) lb = od.r2(P * (epc * d.lbsRaw) / avgCs);
+                else lb = od.r2(P / (epc * L));
+            } else if (unit === 'EA') {
+                cs = (sc && one) ? 0 : od.r2(P * epc);
+                ea = P;
+                lb = (!sc || perMin <= 1) ? 0 : od.r2(P / L);
+            } else if (unit === 'LB') {
+                cs = (sc && one) ? od.r2(P / (epc * d.lbsRaw) * avgCs) : od.r2(P * epc * L);
+                ea = (perMin <= 1) ? 0 : (sc ? od.r2(P * avgEa) : od.r2(P * L));
+                lb = P;
+            }
+            return { cs: od.r2(cs), ea: od.r2(ea), lb: od.r2(lb) };
+        },
+        // GP the same way the grid does: by lb price for scaled items, otherwise by case price
+        gp: function (d, p) {
+            if (p.lb !== 0) return (p.lb - d.lbcost) / p.lb;
+            if (p.cs !== 0) return (p.cs - d.cscost) / p.cs;
+            return null;
+        },
+        priceText: function (p, eaUnit) {
+            var t = [];
+            if (p.cs !== 0) t.push(od.money(p.cs) + '/cs');
+            if (p.ea !== 0) t.push(od.money(p.ea) + '/' + eaUnit);
+            if (p.lb !== 0) t.push(od.money(p.lb) + '/lb');
+            return t.join(', ');
+        },
+        qty: function (box, cls, def) { var t = box.find('input.' + cls); return t.length ? od.n(t.val()) : def; }
+    };
+
+    // ---- Order item list ----
+    function odRecalcRow(tr) {
+        var s = tr.find('span.od-data');
+        if (!s.length) return;
+        var d = od.data(s);
+        var priceTxt = tr.find('input.od-price'), unit = tr.find('select.od-unit').val();
+        var P = priceTxt.length ? od.n(priceTxt.val()) : 0;
+        var editing = P > 0 && tr.find('.od-edit-box').is(':visible');
+        var p = editing ? od.calc(d, unit, P) : { cs: d.cs, ea: d.ea, lb: d.lbq };
+        var csq = od.qty(tr, 'od-cs', d.csq), eaq = od.qty(tr, 'od-ea', d.eaq), lbs = od.qty(tr, 'od-lbs', d.lbs);
+        var amt = od.r2(p.cs * csq + p.ea * eaq + d.lbw * lbs);
+        var cost = od.r2(d.cscost * csq + d.eacost * eaq);
+        tr.data('odAmt', amt).data('odCost', cost);
+        tr.find('.od-amt').text(od.money(amt));
+
+        var gpEl = tr.find('.od-gp'), prev = tr.find('.od-preview');
+        if (tr.data('odGp0') === undefined) { tr.data('odGp0', gpEl.text()); tr.data('odBg0', tr[0].style.backgroundColor); }
+        var below = d.btmcs > 0 && p.cs > 0 && p.cs < d.btmcs;
+        if (editing) {
+            var g = od.gp(d, p);
+            gpEl.text(g === null ? '' : od.pct(g)).css({ 'font-weight': 'bold', 'color': (g !== null && g < 0) ? 'red' : '' });
+            prev.html('= ' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea') + (below ? '<br /><span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : ''));
+        } else {
+            gpEl.text(tr.data('odGp0')).css({ 'font-weight': '', 'color': '' });
+            prev.html('');
+        }
+        var wasBelow = d.btmcs > 0 && d.cs > 0 && d.cs < d.btmcs;
+        if (below) tr[0].style.backgroundColor = '#FFFF99';
+        else tr[0].style.backgroundColor = wasBelow ? '' : tr.data('odBg0');
+    }
+
+    function odRecalcTotals() {
+        var amt = 0, cost = 0, any = false;
+        $('span.od-data').each(function () {
+            var tr = $(this).closest('tr'), d = od.data($(this)), a = tr.data('odAmt'), c = tr.data('odCost');
+            any = true;
+            amt += (a === undefined ? d.amt : a);
+            cost += (c === undefined ? d.cost : c);
+        });
+        if (!any) return;
+        amt = od.r2(amt);
+        $('#odTotalAmt').text(od.money(amt));
+        $('.od-total-hdr').text(od.money(amt));
+        $('#odTotalGp').text(amt !== 0 && cost !== 0 ? Math.round((amt - cost) / amt * 100) + '%' : '');
+    }
+
+    function odSetPlaceholder(tr) {
+        var s = tr.find('span.od-data');
+        if (!s.length) return;
+        var d = od.data(s), u = tr.find('select.od-unit').val();
+        var cur = (u === 'EA' ? d.ea : (u === 'LB' ? d.lbq : d.cs));
+        tr.find('input.od-price').attr('placeholder', cur.toFixed(2));
+    }
+
+    function odEditPrice(a) {
+        var tr = $(a).closest('tr');
+        $(a).hide();
+        tr.find('.od-edit-box').show();
+        odSetPlaceholder(tr);
+        tr.find('input.od-price').focus();
+        odRecalcRow(tr); odRecalcTotals();
+        return false;
+    }
+
+    function odCancelPrice(a) {
+        var tr = $(a).closest('tr');
+        tr.find('input.od-price').val('');
+        tr.find('.od-edit-box').hide();
+        tr.find('a.od-edit').show();
+        odRecalcRow(tr); odRecalcTotals();
+        return false;
+    }
+
+    // ---- Add Item to Order panel ----
+    function odNewRecalc() {
+        var s = $('#odNewData'), out = $('#odNewPreview');
+        if (!s.length) { out.html(''); return; }
+        var d = od.data(s);
+        var P = od.n($('#<%=txtNewSetPrice.ClientID%>').val()), unit = $('#<%=lstNewSetPriceUnit.ClientID%>').val();
+        var editing = P > 0 && $('#odNewPriceBox').is(':visible');
+        var p = editing ? od.calc(d, unit, P) : { cs: d.cs, ea: d.ea, lb: d.lbq };
+        var csq = od.n($('#<%=txtNewCsQty.ClientID%>').val()), eaq = od.n($('#<%=txtNewEaQty.ClientID%>').val()), lbs = od.n($('#<%=txtNewLbs.ClientID%>').val());
+        var amt = od.r2(p.cs * csq + p.ea * eaq + d.lbw * lbs);
+        var g = od.gp(d, p);
+        $('#<%=lblNewGp.ClientID%>').text(g === null ? '' : ' GP ' + od.pct(g)).css('color', (g !== null && g < 0) ? 'red' : '');
+        var t = [];
+        if (editing) t.push('New price: ' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea'));
+        if (amt !== 0) t.push('Amount: <b>' + od.money(amt) + '</b>');
+        if (d.btmcs > 0 && p.cs > 0 && p.cs < d.btmcs) t.push('<span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>');
+        out.html(t.join('&nbsp;&nbsp;'));
+    }
+
+    function odNewShowPrice() {
+        $('#odNewPriceBox').show();
+        $('#<%=lnkSetPrice.ClientID%>').hide();
+        var s = $('#odNewData');
+        if (s.length) {
+            var d = od.data(s), u = $('#<%=lstNewSetPriceUnit.ClientID%>').val();
+            $('#<%=txtNewSetPrice.ClientID%>').attr('placeholder', (u === 'EA' ? d.ea : (u === 'LB' ? d.lbq : d.cs)).toFixed(2));
+        }
+        $('#<%=txtNewSetPrice.ClientID%>').focus();
+        odNewRecalc();
+        return false;
+    }
+
+    function odNewCancelPrice() {
+        $('#<%=txtNewSetPrice.ClientID%>').val('');
+        $('#odNewPriceBox').hide();
+        $('#<%=lnkSetPrice.ClientID%>').show();
+        odNewRecalc();
+        return false;
+    }
+
+    $(document).ready(function () {
+        // Grid: qty or price typed -> recalc that row and the totals
+        $(document).on('keyup change', 'input.od-cs, input.od-ea, input.od-lbs, input.od-price, select.od-unit', function () {
+            var tr = $(this).closest('tr');
+            if ($(this).is('select.od-unit')) odSetPlaceholder(tr);
+            odRecalcRow(tr); odRecalcTotals();
+        });
+        // Enter in a list price box should not submit the page (Update Order is the default button there)
+        $(document).on('keydown', 'input.od-price', function (e) { if (e.keyCode === 13) { $(this).blur(); return false; } });
+        // Panel: price / unit / qty typed -> recalc preview
+        $(document).on('keyup change', '#<%=txtNewSetPrice.ClientID%>, #<%=lstNewSetPriceUnit.ClientID%>, #<%=txtNewCsQty.ClientID%>, #<%=txtNewEaQty.ClientID%>, #<%=txtNewLbs.ClientID%>', function () {
+            if ($(this).is('select')) odNewShowPrice(); else odNewRecalc();
+        });
+
+        // After a postback: show price boxes that still have a value, and recalc rows whose qty differs from the saved one
+        $('span.od-data').each(function () {
+            var tr = $(this).closest('tr'), d = od.data($(this));
+            var priceTxt = tr.find('input.od-price');
+            if (priceTxt.length && $.trim(priceTxt.val()) !== '') {
+                tr.find('a.od-edit').hide();
+                tr.find('.od-edit-box').show();
+                odSetPlaceholder(tr);
+                odRecalcRow(tr);
+            } else if (od.qty(tr, 'od-cs', d.csq) !== d.csq || od.qty(tr, 'od-ea', d.eaq) !== d.eaq || od.qty(tr, 'od-lbs', d.lbs) !== d.lbs) {
+                odRecalcRow(tr);
+            }
+        });
+        odRecalcTotals();
+        if ($.trim($('#<%=txtNewSetPrice.ClientID%>').val()) !== '') odNewShowPrice(); else odNewRecalc();
+    });
 </script>

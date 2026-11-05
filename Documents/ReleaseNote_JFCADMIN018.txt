@@ -1,0 +1,74 @@
+----------------------------------------------------------------------------------------------------------------------------------
+Release Note - KOSCUS_JFCADMIN018 (11/04/2026)   Branch: version-2.3
+Order Detail (Common/OrderDtl.ascx, OrderDtl.ascx.vb): edit price in the list with live GP, better Add Item panel.
+Short version is in ReleaseNotes.txt. Version 017 details are in ReleaseNote_JFCADMIN017.txt.
+----------------------------------------------------------------------------------------------------------------------------------
+
+Before
+  1. Edit on a row loaded the item into the "Add Item to Order" panel and opened the Set Price popup.
+  2. OK only changed the price shown in the panel - nothing was saved. The popup said "please click Update".
+  3. The user then had to click the panel's Update button (saves price + qty), then Update Order (email / status).
+  4. If Update Order was clicked instead of the panel's Update, the new price was silently lost (Update Order always
+     kept the old price).
+  5. Adding an item after changing a qty in the list asked "Changes in qty will be lost".
+
+
+==================================================================================================================================
+1. EDIT PRICE IN THE ORDER ITEM LIST
+==================================================================================================================================
+1.1 Click Edit under the price -> a price box and unit list (/lb, /cs, /ea - same units as the old popup) appear in
+    the row. x cancels. No popup, no page reload.
+1.2 While typing (price or qty), JavaScript updates:
+      - the row's new prices (= $x/cs, $y/ea, $z/lb), GP % (bold, red if negative) and line amount
+      - Total amount (header and bottom line) and Total GP
+      - row turns yellow and shows "Below bottom $x/cs" when the case price is below bottom
+    This is only a preview. Enter in the price box does not submit the page.
+1.3 Update Order saves the qty and the changed prices in the same transaction. The server works out the cs / ea / lb
+    prices with Common.SetPrice - the same SQL the old popup used - so prices are calculated exactly as before.
+    The bottom price warning (Yes / No) checks the new case price.
+1.4 Edit only shows for JFC admins, on JFC items that have a cost (before: on every row).
+1.5 A non-number or 0 price gives "Price for item #... has to be a positive number".
+
+==================================================================================================================================
+2. ADD ITEM TO ORDER PANEL
+==================================================================================================================================
+2.1 Set Price opens a price box in the panel with Cost and Bottom shown (was a popup). Apply shows the new price in the
+    panel (needed for an item with no price yet, so the qty boxes and Add to Order appear). Cancel closes it.
+2.2 GP % and Amount update while typing the price or qty.
+2.3 Add to Order / Update uses the typed price even if Apply was not clicked. A below-bottom price is allowed and
+    the warning is shown in the success message (same as the old popup).
+2.4 GP % shows as soon as a JFC item is loaded (before: always blank until a price was set).
+
+==================================================================================================================================
+3. KEEP UNSAVED LIST CHANGES
+==================================================================================================================================
+3.1 Adding an item or deleting a row reloads the list but keeps qty / prices typed in the other rows (not saved yet -
+    Update Order still saves them). The "Changes in qty will be lost" question is gone.
+
+==================================================================================================================================
+4. FIXES
+==================================================================================================================================
+4.1 Price set with Edit was lost when Update Order was clicked (see "Before" 4).
+4.2 The Set Price OK code read lbPrice_OrderByWgt from the SetPrice query, which does not return that column.
+    It now uses the order-by-weight price already shown in the panel (Set Price does not change it).
+
+==================================================================================================================================
+5. VERSION
+==================================================================================================================================
+5.1 Common.VERSION "017" -> "018".
+
+==================================================================================================================================
+TEST (as JFC admin, an order in Order Placed status)
+==================================================================================================================================
+  - Regular item: Edit -> type a /cs price: GP, amount and totals change; /ea price shows. Update Order -> reopen the
+    order: price saved, line amount and Total GP match the preview.
+  - Same with the /ea unit.
+  - Scaled item: Edit with /lb and /cs; check the derived prices after Update Order.
+  - Price below bottom: row turns yellow; Update Order shows the warning; No keeps the page, Yes saves.
+  - Edit then x: price goes back, nothing saved.
+  - Change qty in two rows, add a new item: the two rows keep the typed qty; Update Order saves them.
+  - Change qty in a row, delete another row (Yes): typed qty kept.
+  - Add Item panel: JFC item shows GP; Set Price -> type price -> Add to Order without Apply: saved with new price.
+  - Item with no price: Set Price -> Apply -> qty boxes and Add to Order appear -> add.
+  - Customer / non-JFC item: no Edit link, no Set Price.
+  - Mobile view of Order Detail still works (Edit box inside the price cell).

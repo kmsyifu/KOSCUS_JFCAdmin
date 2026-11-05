@@ -162,20 +162,7 @@ Partial Class Common_OrderDtl
                     '    custGrpItemID = Convert.ToString(e.CommandArgument)
                     '    MessageBox(GetQtyHistory(DB, lblCustomerID.Text, custGrpItemID), "Ordered Qty History", DB)
                     '    Exit Sub
-                ElseIf e.CommandName = "SETPRICE" Then
-                    custGrpItemID = Convert.ToString(e.CommandArgument)
-                    Session("SHOWITEMDTL_ARG1") = lblCustomerID.Text
-                    Session("SHOWITEMDTL_ARG2") = custGrpItemID
-                    GetItemInfo(custGrpItemID)
-                    setItemPrice()
-                    'Don't remember scroll position
-                    Page.MaintainScrollPositionOnPostBack = False
-                    'addItemInOrder()
-                    btnAddItem.Focus()
-                    txtNewCsQty.Focus()
-                    'SetFocus(Me.Page, btnAddItem)
-                    CheckItemAvail()
-                    Exit Sub
+                    'SETPRICE removed: the price is now edited right in the list (see odEditPrice / GetEditedRowPrice)
                 ElseIf e.CommandName = "SHOW_VPSP" Then
                     index = Convert.ToInt32(e.CommandArgument)
                     If ViewState("ORDER_CMD") = "JFCADMIN" Then
@@ -274,6 +261,9 @@ Partial Class Common_OrderDtl
         'Do nothing if the email is not for vendor
         If sender.id <> "grdItem_edit" OrElse ViewState("ORDER_CMD") <> "JFCADMIN" Then Exit Sub
 
+        'Price units for the in-list price edit
+        If e.Row.RowType = DataControlRowType.DataRow Then FillRowPriceUnits(e.Row)
+
         'Highlight the mourse-over row
         If e.Row.RowType = DataControlRowType.DataRow Then
 
@@ -346,8 +336,8 @@ Partial Class Common_OrderDtl
                     DB.CommitTransaction()
                     InsertEventLog(DB, "Deleted item from order", webOrderID, Nothing, Nothing, True)
                     MessageLine("CONFIRM", "Successfully deleted")
-                    'Refresh
-                    showOrderDtl()
+                    'Refresh (keep qty / prices typed in the other rows but not saved yet)
+                    showOrderDtlKeepEdits(custGrpItemID)
                 Case "DELETE_ORDER"
                     webOrderID = ViewState("ORDER_ID")
                     userEmail = GetUserEmail(DB)
@@ -777,256 +767,12 @@ Partial Class Common_OrderDtl
             'Show item list
 
             r.close()
+            'Price box / GP / live preview data for the panel (JFC admin + JFC item only)
+            SetupNewItemPriceEdit(DB, custGrpItemID)
             FocusVisibleQty(txtNewCsQty, txtNewEaQty, txtNewLbs)
         End Using
     End Sub
 
-    Private Sub GetItemInfo(custGrpItemID As String)
-        Using DB As New DBHelper
-            Dim r As DataReader
-
-            Dim email As String = GetUserEmail(DB)
-            Dim custGrpID As String
-            Dim noPrice As Boolean
-            Dim csCost, eaCost, lbCost, gp As Decimal
-            Dim btmcsPirce, btmeaPirce, btmlbPirce As Decimal
-            Dim avgCsWgt As Decimal = 0
-            Dim avgEaWgt As Decimal = 0
-            Dim lbsPerEa As Decimal = 0
-            Dim minSalCnt As Decimal
-
-
-
-            'Clear item info
-            clearItemDtl()
-            clearQtyEntry()
-
-            'Set properties
-            If Session("SYS_SESSION_USERTYPE") = "CUSTOMER" OrElse Session("SYS_SESSION_USERTYPE") = "JFCADMIN" Then
-                custGrpID = IIf(Session("SYS_SESSION_USERTYPE") = "CUSTOMER", Session("SYS_SESSION_CUSTGRPID"), GetCustGrpID(DB, lblCustomerID.Text))
-                pnlNewOrderForm.Visible = IIf(GetNrItemGrpInCustGrp(DB, custGrpID) > 1, True, False)
-                pnlNewVendor.Visible = IIf(GetNrCustGrpVendor(DB, custGrpID) > 1, True, False)
-                pnlNewShowItemDtl.Visible = Common.ShowItemDtl(DB, lblCustomerID.Text)
-                pnlNewShowPrice.Visible = IIf(Session("SYS_SESSION_USERTYPE") = "CUSTOMER" AndAlso Common.ApplyInEmailOrCustomer(DB, lblCustomerID.Text, "HidePrice") = True, False, True)
-            End If
-
-            'Get item info
-
-            r = DB.GetReader(GetSQL_itemDtl(DB, lblCustomerID.Text, custGrpItemID, "", CString(ViewState("ORDER_ID"))))
-            If r.Read() Then
-                pnlAddItem.Visible = True
-                imgNewItem.ImageUrl = GetItemImgUrl(CString(r("itemType")), CString(r("item_id")))
-                imgNewItem_mobile.ImageUrl = GetItemImgUrl(CString(r("itemType")), CString(r("item_id")))
-                lblNewCustGrpItemID.Text = CString(r("custGrpItem_id"))
-                lblNewItemDesc.Text = CString(r("itemDesc_view"))
-                lblNewJfcRemark.Text = CString(r("jfcRemark"))
-                lblNewItemIdNr.Text = CString(r("itemIdNr_view"))
-                'lblNewItemID.Text = CString(r("itemID"))
-                lblNewItemGrpName.Text = CString(r("itemGrpName"))
-                lblNewVendorName.Text = CString(r("vendorName"))
-                lblNewCtgName.Text = CString(r("ctgName_view"))
-                lblNewCsPrice.Text = Val(r("csprice"))
-                lblNewCsPrice_view.Text = String.Format("{0:C}", Val(r("csprice"))) & " / cs"
-                lblNewCsPrice_view.Visible = IIf(Val(r("csprice")) <> 0, True, False)
-                lblNewEaPrice.Text = Val(r("eaprice"))
-                lblNewEaPrice_view.Text = String.Format("{0:C}", Val(r("eaprice"))) & IIf(Val(r("lbPrice_orderByQty")) <> 0, " / pc", " / ea")
-                lblNewEaPrice_view.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
-                lblNewLbPrice_OrderByWgt.Text = Val(r("lbPrice_OrderByWgt"))
-                lblNewLbPrice_OrderByWgt_view.Text = String.Format("{0:C}", Val(r("lbPrice_OrderByWgt"))) & " / lb"
-                lblNewLbPrice_OrderByWgt_view.Visible = IIf(Val(r("lbPrice_OrderByWgt")) <> 0, True, False)
-                lblNewLbPrice_OrderByQty.Text = Val(r("lbPrice_OrderByQty"))
-                lblNewLbPrice_OrderByQty_view.Text = String.Format("{0:C}", Val(r("lbPrice_OrderByQty"))) & " / lb"
-                lblNewLbPrice_OrderByQty_view.Visible = IIf(Val(r("lbPrice_OrderByQty")) <> 0, True, False)
-                If lblNewLbPrice_OrderByQty_view.Visible = True Then
-                    lblNewCsPrice_view.Text = IIf(IsMobile(), "<br />", "") & lblNewCsPrice_view.Text
-                    lblNewEaPrice_view.Text = lblNewEaPrice_view.Text
-                End If
-                lnkSetPrice.Visible = False
-                lblNewAvailQty.Visible = False
-                If ViewState("ORDER_CMD") = "JFCADMIN" AndAlso CString(r("jfcitem")) = "Y" Then
-                    lnkSetPrice.Visible = True
-                    lblNewAvailQty.Visible = True
-                    lblNewAvailQty.Text = CString(r("qtyAvail"))
-
-                    csCost = Val(r("csCost"))
-                    btmcsPirce = Val(r("btmcsPrice"))
-                    minSalCnt = IIf(Val(r("minSalCnt")) = 0, 1, Val(r("minSalCnt")))
-                    lbsPerEa = GetJfcLbsPerEa(DB, lblCustomerID.Text, custGrpItemID)
-                    'Scaled-item lookup is 3 queries - run it once for both conversions
-                    Dim scaledForPrice As Boolean = IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID)
-                    Common.CovertPrice(csCost, eaCost, lbCost, r("eapercs"), minSalCnt, scaledForPrice, lbsPerEa, r("avgcswgt"), r("avgeawgt"))
-                    Common.CovertPrice(btmcsPirce, btmeaPirce, btmlbPirce, r("eapercs"), minSalCnt, scaledForPrice, lbsPerEa, r("avgcswgt"), r("avgeawgt"))
-
-
-                    lblNewGp.Text = IIf(gp <> 0, "<br />GP " & Math.Round(gp * 100, 1) & "%", "")
-
-                    lblNewCsCost.Text = csCost 'Show this in set price popup (not add item panel)
-                    lblNewEaCost.Text = eaCost 'Show this in set price popup (not add item panel)
-                    lblNewLbCost.Text = lbCost 'Show this in set price popup (not add item panel)
-                    lblNewBtmCs.Text = btmcsPirce
-                    lblNewBtmEa.Text = btmeaPirce
-                    lblNewBtmLb.Text = btmlbPirce
-                End If
-                lblNewMinSalCnt.Text = Val(r("minSalCnt"))
-                lblNewMinSalCnt_view.Text = IIf(IsMobile(), "<br />", "") & "min order: " & Val(r("minSalCnt")) & " ea"
-                lblNewMinSalCnt_view.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("minSalCnt")) > 1 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False) 'And Val(r("eaprice")) <> 0
-                'lblNewEaPerCs.Text = Val(r("eaPerCs")) & " ea / cs"
-                avgCsWgt = Val(r("avgcswgt")) 'GetAvgWgt(Val(r("csPrice")), Val(r("lbPrice_OrderByQty")))
-                avgEaWgt = Val(r("avgeawgt")) 'GetAvgWgt(Val(r("eaPrice")), Val(r("lbPrice_OrderByQty")))
-                lblNewAvgCsWgt.Text = String.Format("{0:N}", avgCsWgt) & " lbs / cs"
-                lblNewAvgCsWgt.Visible = IIf(avgCsWgt <> 0, True, False) 'IIf(avgCsWgt <> 0 AndAlso Val(r("csprice")) <> 0, True, False)
-                lblNewAvgEaWgt.Text = String.Format("{0:N}", avgEaWgt) & " lbs / pc"
-                lblNewAvgEaWgt.Visible = IIf(avgEaWgt <> 0, True, False) 'IIf(avgEaWgt <> 0 AndAlso Val(r("eaprice")) <> 0, True, False)
-                lblNewAvgWgtTitle.Visible = lblNewAvgCsWgt.Visible OrElse lblNewAvgEaWgt.Visible
-                pnlNewEaPerCs.Visible = IIf(lblHideEaQty.Text = "N" AndAlso lblHideEaQty.Text = "N", True, False)
-                lblNewEaPerCs.Text = CString(r("eaPerCs"))
-                lblNewEaPerCs.Visible = IIf(Val(r("eaPerCs")) <> 0 AndAlso Val(r("eaPerCs")) <> 1 AndAlso Val(r("lbPrice_OrderByQty")) = 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
-                If pnlNewShowItemDtl.Visible = True Then
-                    lblNewGrossWeight.Text = CString(r("grossWeight_lbs")) & " lbs, " & CString(r("grossWeight_kg")) & " kg"
-                    'lblNewGrossWeight.Visible = IIf(Val(r("grossWeight_lbs")) = 0, False, True)
-                    lblNewCaseVol.Text = CString(r("caseVol_ft3")) & " ft³, " & CString(r("caseVol_m3")) & " m³"
-                    'lblNewCaseVol.Visible = IIf(Val(r("caseVol_ft3")) = 0, False, True)
-                    'lblNewPallet.Text = Val(r("block")) & " x " & Val(r("high")) & " = " & Val(r("block")) * Val(r("high")) 'TODO: Add after JETS stores correct values
-                    'lblNewPallet.Visible = IIf(Val(r("block")) = 0 AndAlso Val(r("high")) = 0, False, True)
-                End If
-                txtNewCsQty.Visible = IIf(Val(r("csprice")) <> 0, True, False)
-                lblNewCsQty.Visible = IIf(Val(r("csprice")) <> 0, True, False)
-                txtNewEaQty.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
-                lblNewEaQty.Text = IIf(Val(r("lbPrice_orderByQty")) <> 0, "pc", "ea")
-                lblNewEaQty.Visible = IIf(lblHideEaQty.Text = "N" AndAlso Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
-                txtNewLbs.Visible = IIf(Val(r("lbPrice_OrderByWgt")) <> 0, True, False)
-                lblNewLbs.Visible = IIf(Val(r("lbPrice_OrderByWgt")) <> 0, True, False)
-                txtNewCsQty.CssClass = IIf(Val(r("lastCsQty")) > 0, "cellQtyTxt_highlight", "cellQtyTxt")
-                txtNewEaQty.CssClass = IIf(Val(r("lastEaQty")) > 0, "cellQtyTxt_highlight", "cellQtyTxt")
-                txtNewLbs.CssClass = IIf(Val(r("lastLbs")) > 0, "cellQtyTxt_highlight", "cellQtyTxt")
-                lblNewQtyHistory.Text = GetQtyHistory(DB, lblCustomerID.Text, custGrpItemID, 1)
-                lblNewQtyHistoryTitle.Visible = IIf(lblNewQtyHistory.Text = String.Empty, False, True)
-                lblNewQtyHistory.Visible = IIf(lblNewQtyHistory.Text = String.Empty, False, True)
-                'btnQtyHistory.Visible = IIf(CString(r("webOrdered")) = "Y", True, False)
-                'If CString(r("webOrdered")) = "Y" Then btnQtyHistory.ToolTip = GetQtyHistory(DB, lblCustomerID.Text, custGrpItemID, 10, True)
-                'If CString(r("outOfStock")) = "Y" andalso Then btnAddItem.Visible = False
-                noPrice = IIf(Val(r("csprice")) = 0 AndAlso Val(r("eaprice")) = 0 AndAlso Val(r("lbPrice_OrderByWgt")) = 0 AndAlso Val(r("lbPrice_OrderByQty")) = 0, True, False)
-                lblNewOutOfStock.Visible = IIf(CString(r("outOfStock")) = "Y" AndAlso (ViewState("ORDER_CMD") = "JFCADMIN" OrElse noPrice = True), True, False)
-                lblNewArrivDate.Text = "(Est. arrival: " & CString(r("arrivDate_fmt")) & ")"
-                lblNewArrivDate.Visible = IIf(CString(r("arrivDate_fmt")) <> "" AndAlso (ViewState("ORDER_CMD") = "JFCADMIN" OrElse noPrice = True), True, False)
-                btnAddItem.Visible = True
-                If noPrice = True Then
-                    If ViewState("ORDER_CMD") <> "JFCADMIN" Then
-                        lblNewAskPrice.Visible = True
-                    End If
-                    btnAddItem.Visible = False
-                End If
-                lnkNewShowVpSp.Visible = False
-                pnlNewVpSp.Visible = False
-                If noPrice = False AndAlso ViewState("ORDER_CMD") = "JFCADMIN" AndAlso CString(r("jfcitem")) = "Y" Then
-                    'lnkNewShowVpSp.Visible = True Comment out by YIFU 11/16/2020
-                End If
-                If CString(r("orderEaQty")) <> "" Then
-                    'Item already exists in order
-                    txtNewCsQty.Text = Val(r("orderCsQty"))
-                    txtNewEaQty.Text = Val(r("orderEaQty"))
-                    txtNewLbs.Text = Val(r("orderLbs"))
-                    txtNewCsQty_vp.Text = Val(r("orderCsQty_vp"))
-                    txtNewEaQty_vp.Text = Val(r("orderEaQty_vp"))
-                    txtNewCsQty_sp.Text = Val(r("orderCsQty_sp"))
-                    txtNewEaQty_sp.Text = Val(r("orderEaQty_sp"))
-                    txtNewVpMemo.Text = CString(r("orderVpMemo"))
-                    'If CString(r("outOfStock")) <> "Y" Then
-                    btnAddItem.Text = IIf(ViewState("ORDER_CMD") = "JFCADMIN", "Update", "Update Qty")
-                    lblNewMsg.Text = "This item is already in your order. You may change the qty."
-                    'End If
-                End If
-
-            ElseIf GetDeleteCustomer_Item(DB, lblCustomerID.Text, custGrpItemID) > 0 Then
-                ViewState("DIALOG_CMD") = "ITEM_RESTORE"
-                ViewState("DIALOG_ARG1") = custGrpItemID
-                MessageBoxYesNo("This item has been deleted from the order form. Would you like to restore?", "Item has been delete", DB)
-                Exit Sub
-            Else
-                r.close()
-                MessageBox("Item not found. Please select an item from the auto-complete list", "Error", DB)
-                Exit Sub
-            End If
-            CheckItemAvail()
-
-            'Show item list
-
-            r.close()
-            FocusVisibleQty(txtNewCsQty, txtNewEaQty, txtNewLbs)
-        End Using
-    End Sub
-
-    Private Sub setItemPrice()
-        Dim scaledItem As Boolean
-        Dim eaUnit As String
-
-        Using DB As New DBHelper
-            If ViewState("ORDER_CMD") <> "JFCADMIN" OrElse IsJfcItem(DB, lblNewCustGrpItemID.Text) = False Then Exit Sub
-            'Init
-            ClearCtrl({txtPopPrice})
-            ClearCtrl({lblPopMsg_setPrice})
-            'Check if it's scaled item
-            scaledItem = IsJfcScaledItem(DB, lblCustomerID.Text, lblNewCustGrpItemID.Text)
-            eaUnit = IIf(scaledItem = True, "pc", "ea")
-            'Show price unit (don't show / pc)
-            lstPopPriceUnit.Items.Clear()
-            If Val(lblNewLbCost.Text) > 0 AndAlso scaledItem = True Then lstPopPriceUnit.Items.Add(New ListItem(" / lb", "LB"))
-            If Val(lblNewCsCost.Text) > 0 Then lstPopPriceUnit.Items.Add(New ListItem(" / cs", "CS"))
-            If Val(lblNewEaCost.Text) > 0 AndAlso scaledItem = False Then lstPopPriceUnit.Items.Add(New ListItem(" / " & eaUnit, "EA"))
-            'radPopPriceUnit.Items.Clear()
-            'radPopPriceUnit.Items.Add(New ListItem(" / cs", "CS"))
-            'If showEa = True Then radPopPriceUnit.Items.Add(New ListItem(" / " & eaUnit, "EA"))
-            'radPopPriceUnit.Text = "CS"
-
-            'Show popup
-            lblPopCost.Text = IIf(Val(lblNewLbCost.Text) > 0 AndAlso scaledItem = True, String.Format("{0:C}", Val(lblNewLbCost.Text)) & " / lb, ", "") & _
-                                IIf(Val(lblNewCsCost.Text) > 0, String.Format("{0:C}", Val(lblNewCsCost.Text)) & " / cs, ", "") & _
-                                IIf(Val(lblNewEaCost.Text) > 0 AndAlso scaledItem = False, String.Format("{0:C}", Val(lblNewEaCost.Text)) & " / " & eaUnit, "") 'Don't show cost / pc
-
-            lblPopBtm.Text = IIf(Val(lblNewBtmLb.Text) > 0 AndAlso scaledItem = True, String.Format("{0:C}", Val(lblNewBtmLb.Text)) & " / lb, ", "") & _
-                                IIf(Val(lblNewBtmCs.Text) > 0, String.Format("{0:C}", Val(lblNewBtmCs.Text)) & " / cs, ", "") & _
-                                IIf(Val(lblNewBtmEa.Text) > 0 AndAlso scaledItem = False, String.Format("{0:C}", Val(lblNewBtmEa.Text)) & " / " & eaUnit, "") 'Don't show cost / pc
-            popDialog_setPrice.Show()
-
-
-        End Using
-    End Sub
-    Protected Sub lnkSetPrice_Click(sender As Object, e As System.EventArgs) Handles lnkSetPrice.Click
-        'Dim showEa As Boolean = IIf(Val(lblNewEaPerCs.Text) > 1 AndAlso Val(lblNewMinSalCnt.Text) <> Val(lblNewEaPerCs.Text), True, False)
-        Dim scaledItem As Boolean
-        Dim eaUnit As String
-
-        Using DB As New DBHelper
-            If ViewState("ORDER_CMD") <> "JFCADMIN" OrElse IsJfcItem(DB, lblNewCustGrpItemID.Text) = False Then Exit Sub
-            'Init
-            ClearCtrl({txtPopPrice})
-            ClearCtrl({lblPopMsg_setPrice})
-            'Check if it's scaled item
-            scaledItem = IsJfcScaledItem(DB, lblCustomerID.Text, lblNewCustGrpItemID.Text)
-            eaUnit = IIf(scaledItem = True, "pc", "ea")
-            'Show price unit (don't show / pc)
-            lstPopPriceUnit.Items.Clear()
-            If Val(lblNewLbCost.Text) > 0 AndAlso scaledItem = True Then lstPopPriceUnit.Items.Add(New ListItem(" / lb", "LB"))
-            If Val(lblNewCsCost.Text) > 0 Then lstPopPriceUnit.Items.Add(New ListItem(" / cs", "CS"))
-            If Val(lblNewEaCost.Text) > 0 AndAlso scaledItem = False Then lstPopPriceUnit.Items.Add(New ListItem(" / " & eaUnit, "EA"))
-            'radPopPriceUnit.Items.Clear()
-            'radPopPriceUnit.Items.Add(New ListItem(" / cs", "CS"))
-            'If showEa = True Then radPopPriceUnit.Items.Add(New ListItem(" / " & eaUnit, "EA"))
-            'radPopPriceUnit.Text = "CS"
-
-            'Show popup
-            lblPopCost.Text = IIf(Val(lblNewLbCost.Text) > 0 AndAlso scaledItem = True, String.Format("{0:C}", Val(lblNewLbCost.Text)) & " / lb, ", "") & _
-                                IIf(Val(lblNewCsCost.Text) > 0, String.Format("{0:C}", Val(lblNewCsCost.Text)) & " / cs, ", "") & _
-                                IIf(Val(lblNewEaCost.Text) > 0 AndAlso scaledItem = False, String.Format("{0:C}", Val(lblNewEaCost.Text)) & " / " & eaUnit, "") 'Don't show cost / pc
-
-            lblPopBtm.Text = IIf(Val(lblNewBtmLb.Text) > 0 AndAlso scaledItem = True, String.Format("{0:C}", Val(lblNewBtmLb.Text)) & " / lb, ", "") & _
-                                IIf(Val(lblNewBtmCs.Text) > 0, String.Format("{0:C}", Val(lblNewBtmCs.Text)) & " / cs, ", "") & _
-                                IIf(Val(lblNewBtmEa.Text) > 0 AndAlso scaledItem = False, String.Format("{0:C}", Val(lblNewBtmEa.Text)) & " / " & eaUnit, "") 'Don't show cost / pc
-            popDialog_setPrice.Show()
-            CheckItemAvail()
-
-        End Using
-    End Sub
     Private Sub PerformOrderUpdate(ByVal senderID As String)
         Using DB As New DBHelper
             Dim txtCsQty, txtEaQty, txtLbs, txtCsQty_vp, txtEaQty_vp, txtCsQty_sp, txtEaQty_sp, txtVpMemo As TextBox
@@ -1121,8 +867,16 @@ Partial Class Common_OrderDtl
         End Using
     End Sub
 
+    'Apply the price typed in the Add Item panel (was the Set Price popup OK button). Only refreshes the panel -
+    'the price is saved by Add to Order / Update, which also calls this so a typed price is never lost.
+    Protected Sub btnNewApplyPrice_Click(sender As Object, e As System.EventArgs) Handles btnNewApplyPrice.Click
+        Using DB As New DBHelper
+            ApplyNewItemPrice(DB)
+        End Using
+    End Sub
+
     'Update price for only JFC item
-    Protected Sub btnPopUpdatePrice_Click(sender As Object, e As System.EventArgs) Handles btnPopUpdatePrice.Click
+    Private Function ApplyNewItemPrice(ByVal DB As DBHelper) As Boolean
         Dim SQL As String = ""
         Dim r As DataReader
         Dim csPrice, eaPrice, lbPrice As Decimal
@@ -1130,15 +884,14 @@ Partial Class Common_OrderDtl
         Dim noPrice As Boolean
         Dim gp As Decimal
 
-        Using DB As New DBHelper
-            If ViewState("ORDER_CMD") <> "JFCADMIN" OrElse IsJfcItem(DB, lblNewCustGrpItemID.Text) = False Then Exit Sub
+        If True Then 'was "Using DB As New DBHelper" - the caller's connection is used now
+            If ViewState("ORDER_CMD") <> "JFCADMIN" OrElse IsJfcItem(DB, lblNewCustGrpItemID.Text) = False Then Return True
 
             'Check error
-            If Val(txtPopPrice.Text) <= 0 Then
-                lblPopMsg_setPrice.Text = "Price has to be positive."
-                popDialog_setPrice.Show()
+            If Val(txtNewSetPrice.Text) <= 0 OrElse lstNewSetPriceUnit.SelectedValue = "" Then
+                lblNewMsg.Text = "Error! Price has to be positive."
                 CheckItemAvail()
-                Exit Sub
+                Return False
             End If
 
 
@@ -1230,7 +983,7 @@ Partial Class Common_OrderDtl
             '    '"  AND p.pricegpid = jc.pricegpid " & " AND p.itemcode = " & DB.SqlEsc(GetItemID(DB, lblNewCustGrpItemID.Text)) & " AND c.customer_id = " & DB.SqlEsc(lblCustomerID.Text)
             'End If
             'YI FU 
-            SQL = SetPrice(lstPopPriceUnit.Text, Val(txtPopPrice.Text), DB.SqlEsc(GetItemID(DB, lblNewCustGrpItemID.Text)), DB.SqlEsc(lblCustomerID.Text))
+            SQL = SetPrice(lstNewSetPriceUnit.SelectedValue, Val(txtNewSetPrice.Text), DB.SqlEsc(GetItemID(DB, lblNewCustGrpItemID.Text)), DB.SqlEsc(lblCustomerID.Text))
             r = DB.GetReader(SQL)
             If r.Read() Then
                 'If Val(r("csprice")) < Val(lblNewBtmCs.Text) Then
@@ -1241,14 +994,13 @@ Partial Class Common_OrderDtl
                 'End If
                 If Val(r("csprice")) < Val(lblNewBtmCs.Text) Then
                     ' Change from error to warning - just show message but allow to continue
-                    lblPopMsg_setPrice.Text = "Warning: Price (" & String.Format("{0:C}", Val(r("csprice"))) & ") is lower than bottom price (" & String.Format("{0:C}", Val(lblNewBtmCs.Text)) & ")."
-                    lblPopMsg_setPrice.ForeColor = Drawing.Color.Orange
+                    lblNewMsg.Text = "Warning: Price (" & String.Format("{0:C}", Val(r("csprice"))) & ") is lower than bottom price (" & String.Format("{0:C}", Val(lblNewBtmCs.Text)) & ")."
                     ' Don't exit - allow the price update to continue
                     ' popDialog_setPrice.Show()
                     ' CheckItemAvail()
                     ' Exit Sub
                 Else
-                    lblPopMsg_setPrice.Text = ""
+                    lblNewMsg.Text = ""
                 End If
                 lblNewCsPrice.Text = Val(r("csprice"))
                 lblNewCsPrice_view.Text = String.Format("{0:C}", Val(r("csprice"))) & " / cs"
@@ -1284,7 +1036,7 @@ Partial Class Common_OrderDtl
                 txtNewEaQty.Visible = IIf(Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
                 lblNewEaQty.Text = IIf(Val(r("lbPrice_orderByQty")) <> 0, "pc", "ea")
                 lblNewEaQty.Visible = IIf(Val(r("eaprice")) <> 0 AndAlso Val(r("minSalCnt")) <> Val(r("eaPerCs")), True, False)
-                noPrice = IIf(Val(r("csprice")) = 0 AndAlso Val(r("eaprice")) = 0 AndAlso Val(r("lbPrice_OrderByWgt")) = 0 AndAlso Val(r("lbPrice_OrderByQty")) = 0, True, False)
+                noPrice = IIf(Val(r("csprice")) = 0 AndAlso Val(r("eaprice")) = 0 AndAlso Val(lblNewLbPrice_OrderByWgt.Text) = 0 AndAlso Val(r("lbPrice_OrderByQty")) = 0, True, False)
                 btnAddItem.Visible = True
                 pnlNewVpSp.Visible = False
                 If noPrice = True Then
@@ -1294,12 +1046,13 @@ Partial Class Common_OrderDtl
                 End If
             End If
             r.close()
+            BuildNewPriceData()
             CheckItemAvail()
             Page.MaintainScrollPositionOnPostBack = False
-            btnAddItem.Focus()
-            txtNewCsQty.Focus()
-        End Using
-    End Sub
+            FocusVisibleQty(txtNewCsQty, txtNewEaQty, txtNewLbs)
+        End If
+        Return True
+    End Function
 
     Protected Sub lnkNewShowVpSp_Click(sender As Object, e As System.EventArgs) Handles lnkNewShowVpSp.Click
         Using DB As New DBHelper
@@ -1327,17 +1080,9 @@ Partial Class Common_OrderDtl
     'End Sub
 
     Protected Sub btnAddItem_Click(sender As Object, e As System.EventArgs) Handles btnAddItem.Click
-        Using DB As New DBHelper
-            'If qty is changed, confirm; otherwise add the item
-            If lblTextChanged.Value = "YES" Then
-                'Confirm
-                ViewState("DIALOG_CMD") = "TEXT_CHANGED"
-                MessageBoxYesNo("Changes in qty will be lost if you proceed. Are you sure you want to continue?", "Qty has been changed", DB)
-                Exit Sub
-            Else
-                addItemInOrder()
-            End If
-        End Using
+        'No "changes in qty will be lost" question any more: qty / prices typed in the list are kept
+        'when the list reloads after the item is added (showOrderDtlKeepEdits)
+        addItemInOrder()
         CheckItemAvail()
 
     End Sub
@@ -1628,13 +1373,29 @@ Partial Class Common_OrderDtl
                     Exit Sub
                 End If
 
+                ' Price changed in the list (Edit link)
+                Dim txtEditPrice As TextBox = grdItem_edit.Rows.Item(i).FindControl("txtEditPrice")
+                Dim editedPrices() As Decimal = Nothing
+                If txtEditPrice IsNot Nothing AndAlso txtEditPrice.Text.Trim() <> "" Then
+                    If IsNumber(txtEditPrice.Text.Trim()) = False OrElse Val(txtEditPrice.Text.Trim()) <= 0 Then
+                        MessageBox("Price for item #" & itemIdNr_view & " has to be a positive number", "Error", DB)
+                        Exit Sub
+                    End If
+                    editedPrices = GetEditedRowPrice(DB, i)
+                    If editedPrices Is Nothing Then
+                        MessageBox("Price for item #" & itemIdNr_view & " cannot be changed (JFC price not found).", "Error", DB)
+                        Exit Sub
+                    End If
+                End If
+
                 ' Check if price is below bottom price - collect items for warning
                 If checkBottomPrice Then
                     Dim lblbottom As Label = grdItem_edit.Rows.Item(i).FindControl("lblbtmCs")
                     Dim lblprice As Label = grdItem_edit.Rows.Item(i).FindControl("lblCsPrice")
-                    If Val(lblprice.Text) > 0 AndAlso Val(lblbottom.Text) > 0 AndAlso Val(lblprice.Text) < Val(lblbottom.Text) Then
+                    Dim csPriceToSave As Decimal = If(editedPrices IsNot Nothing, editedPrices(0), Val(lblprice.Text))
+                    If csPriceToSave > 0 AndAlso Val(lblbottom.Text) > 0 AndAlso csPriceToSave < Val(lblbottom.Text) Then
                         If belowBottomPriceItems <> "" Then belowBottomPriceItems &= "<br />"
-                        belowBottomPriceItems &= "Item #" & itemIdNr_view & " - Price: " & String.Format("{0:C}", Val(lblprice.Text)) & ", Bottom: " & String.Format("{0:C}", Val(lblbottom.Text))
+                        belowBottomPriceItems &= "Item #" & itemIdNr_view & " - Price: " & String.Format("{0:C}", csPriceToSave) & ", Bottom: " & String.Format("{0:C}", Val(lblbottom.Text))
                     End If
                 End If
 
@@ -1817,6 +1578,13 @@ Partial Class Common_OrderDtl
         lblNewMsg.Text = ""
         lblNewAskPrice.Visible = False
         btnAddItem.Visible = True
+        'Panel price box
+        txtNewSetPrice.Text = ""
+        lstNewSetPriceUnit.Items.Clear()
+        lblNewCostBtm.Text = ""
+        lblNewGp.Text = ""
+        litNewPriceData.Text = ""
+        ViewState("NEWITEM_PRICEPARAMS") = Nothing
         'btnQtyHistory.Visible = False
     End Sub
 
@@ -1885,6 +1653,13 @@ Partial Class Common_OrderDtl
                 Exit Sub
             End If
 
+            'A price typed in the panel is applied here, so it is saved even if Apply was not clicked
+            Dim priceWarning As String = ""
+            If ViewState("ORDER_CMD") = "JFCADMIN" AndAlso txtNewSetPrice.Text.Trim() <> "" Then
+                If ApplyNewItemPrice(DB) = False Then Exit Sub
+                priceWarning = lblNewMsg.Text 'below bottom price warning (allowed)
+            End If
+
             'Get order info
             orderState = GetOrderState(DB, ViewState("ORDER_ID"))
             DB.BeginTransaction()
@@ -1901,9 +1676,10 @@ Partial Class Common_OrderDtl
 
             DB.CommitTransaction()
 
-            'Refresh item list and total amount
-            showOrderDtl()
-            msg = IIf(btnAddItem.Text = "Add to Order", "Successfully added the item", "Successfully updated the qty")
+            'Refresh item list and total amount (keep qty / prices typed in the other rows but not saved yet)
+            showOrderDtlKeepEdits(lblNewCustGrpItemID.Text)
+            msg = IIf(btnAddItem.Text = "Add to Order", "Successfully added the item", "Successfully updated the item")
+            If priceWarning <> "" Then msg &= ". " & priceWarning
 
             'Clear item info
             txtItem.Text = ""
@@ -1956,7 +1732,13 @@ Partial Class Common_OrderDtl
                 custGrpItemID = lbl.Text
                 'lbl = grdItem_edit.Rows.Item(i).FindControl("lblLineAmt")
                 'totalAmt += Val(lbl.Text)
-                DBUpdate.UpSertItemInOrder(DB, webOrderID, lblCustomerID.Text, custGrpItemID, Val(txtCsQty.Text), Val(txtEaQty.Text), lbs, Val(txtCsQty_vp.Text), Val(txtEaQty_vp.Text), Val(txtCsQty_sp.Text), Val(txtEaQty_sp.Text), txtVpMemo.Text, -1, -1, -1, False)
+                'Price changed in the list -> save it with the qty (was: always -1 = keep old price, so an edited price was lost)
+                Dim newPrices() As Decimal = GetEditedRowPrice(DB, i)
+                If newPrices IsNot Nothing Then
+                    DBUpdate.UpSertItemInOrder(DB, webOrderID, lblCustomerID.Text, custGrpItemID, Val(txtCsQty.Text), Val(txtEaQty.Text), lbs, Val(txtCsQty_vp.Text), Val(txtEaQty_vp.Text), Val(txtCsQty_sp.Text), Val(txtEaQty_sp.Text), txtVpMemo.Text, newPrices(0), newPrices(1), newPrices(2), False)
+                Else
+                    DBUpdate.UpSertItemInOrder(DB, webOrderID, lblCustomerID.Text, custGrpItemID, Val(txtCsQty.Text), Val(txtEaQty.Text), lbs, Val(txtCsQty_vp.Text), Val(txtEaQty_vp.Text), Val(txtCsQty_sp.Text), Val(txtEaQty_sp.Text), txtVpMemo.Text, -1, -1, -1, False)
+                End If
                 If ViewState("ORDER_CMD") = "CUST" AndAlso IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID) = True AndAlso (Val(txtCsQty.Text) > 0 OrElse Val(txtEaQty.Text) > 0) Then
                     txtVendorNote.Text &= "#" & GetItemID(DB, custGrpItemID) & " " & IIf(Val(txtCsQty.Text) > 0, CString(Val(txtCsQty.Text)) & "cs ", "") & IIf(Val(txtEaQty.Text) > 0, CString(Val(txtEaQty.Text)) & "pc ", "")
                 End If
@@ -2134,6 +1916,195 @@ Partial Class Common_OrderDtl
         End Using
     End Sub
 
+    '--------------------------------------------------------------------------------------------------------------------
+    'Price edit for JFC admin: in the order item list (Edit link) and in the Add Item to Order panel (Set Price).
+    'The browser only previews price / GP / amount (script at the end of OrderDtl.ascx). The real prices are worked
+    'out here with Common.SetPrice - the same SQL the old Set Price popup used - when Update Order / Add to Order runs.
+    '--------------------------------------------------------------------------------------------------------------------
+    Private editedPriceCache As New Dictionary(Of Integer, Decimal())
+
+    Protected Function CanEditRowPrice() As Boolean
+        Return CString(ViewState("ORDER_CMD")) = "JFCADMIN"
+    End Function
+
+    'Number for a data-* attribute ("" = NULL), always with "." as decimal point
+    Private Shared Function DataNum(ByVal v As Object) As String
+        If v Is Nothing OrElse IsDBNull(v) OrElse Not IsNumeric(v) Then Return ""
+        Return CDec(v).ToString(CultureInfo.InvariantCulture)
+    End Function
+
+    'Hidden span with the values the preview script needs for one order line
+    Protected Function RowPriceData(ByVal dataItem As Object) As String
+        If CanEditRowPrice() = False OrElse dataItem Is Nothing Then Return ""
+        Dim cols() As String = {"epc:p_eaPerCs", "minsal:p_minSalCnt", "lbsperea:p_lbsPerEa", "avgcs:p_avgcswgt", "avgea:p_avgeawgt",
+                                "cscost:csCost", "eacost:eaCost", "lbcost:lbCost", "btmcs:btmcsprice",
+                                "cs:csPrice", "ea:eaPrice", "lbq:lbPrice_orderByQty", "lbw:lbPrice_orderByWgt",
+                                "amt:lineAmt", "cost:lineCost", "csq:csQty", "eaq:eaQty", "lbs:Lbs"}
+        Dim sb As New System.Text.StringBuilder("<span class=""od-data"" style=""display:none;"" data-scaled=""" & CString(DataBinder.Eval(dataItem, "p_scaledItem")) & """")
+        For Each c As String In cols
+            Dim parts() As String = c.Split(":"c)
+            sb.Append(" data-" & parts(0) & "=""" & DataNum(DataBinder.Eval(dataItem, parts(1))) & """")
+        Next
+        sb.Append("></span>")
+        Return sb.ToString()
+    End Function
+
+    'Price units in the list price box - same rules as the old Set Price popup
+    Private Sub FillRowPriceUnits(ByVal row As GridViewRow)
+        Dim ph As PlaceHolder = row.FindControl("phEditPrice")
+        Dim lst As DropDownList = row.FindControl("lstEditPriceUnit")
+        If ph Is Nothing OrElse lst Is Nothing OrElse ph.Visible = False OrElse row.DataItem Is Nothing Then Exit Sub
+        Dim scaled As Boolean = CString(DataBinder.Eval(row.DataItem, "p_scaledItem")) = "Y"
+        lst.Items.Clear()
+        If Val(DataBinder.Eval(row.DataItem, "lbCost")) > 0 AndAlso scaled Then lst.Items.Add(New ListItem("/ lb", "LB"))
+        If Val(DataBinder.Eval(row.DataItem, "csCost")) > 0 Then lst.Items.Add(New ListItem("/ cs", "CS"))
+        If Val(DataBinder.Eval(row.DataItem, "eaCost")) > 0 AndAlso scaled = False Then lst.Items.Add(New ListItem("/ ea", "EA"))
+        If lst.Items.Count = 0 Then ph.Visible = False 'no cost -> cannot set price (same as the popup)
+    End Sub
+
+    'New cs / ea / lb price for a row whose price was changed in the list, or Nothing if it was not changed
+    Private Function GetEditedRowPrice(ByVal DB As DBHelper, ByVal rowIndex As Integer) As Decimal()
+        If CanEditRowPrice() = False Then Return Nothing
+        If editedPriceCache.ContainsKey(rowIndex) Then Return editedPriceCache(rowIndex)
+
+        Dim row As GridViewRow = grdItem_edit.Rows(rowIndex)
+        Dim ph As PlaceHolder = row.FindControl("phEditPrice")
+        Dim txt As TextBox = row.FindControl("txtEditPrice")
+        Dim lst As DropDownList = row.FindControl("lstEditPriceUnit")
+        Dim lbl As Label = row.FindControl("lblCustGrpItemID")
+        If ph Is Nothing OrElse ph.Visible = False OrElse txt Is Nothing OrElse lst Is Nothing OrElse lbl Is Nothing Then Return Nothing
+        If txt.Text.Trim() = "" OrElse Val(txt.Text.Trim()) <= 0 Then Return Nothing
+        Dim unit As String = lst.SelectedValue
+        If unit <> "CS" AndAlso unit <> "EA" AndAlso unit <> "LB" Then Return Nothing
+
+        Dim prices() As Decimal = Nothing
+        Dim r As DataReader = DB.GetReader(SetPrice(unit, Val(txt.Text.Trim()), DB.SqlEsc(GetItemID(DB, lbl.Text)), DB.SqlEsc(lblCustomerID.Text)))
+        If r.Read() Then prices = New Decimal() {Val(r("csprice")), Val(r("eaprice")), Val(r("lbPrice_orderByQty"))}
+        r.close()
+        editedPriceCache(rowIndex) = prices
+        Return prices
+    End Function
+
+    'Reload the item list but keep qty / prices typed in the list and not saved yet (after Add to Order or deleting an item)
+    Private Sub showOrderDtlKeepEdits(ByVal skipCustGrpItemID As String)
+        Dim names() As String = {"txtCsQty", "txtEaQty", "txtLbs", "txtCsQty_vp", "txtEaQty_vp", "txtCsQty_sp", "txtEaQty_sp", "txtVpMemo", "txtEditPrice"}
+        Dim saved As New Dictionary(Of String, String())
+        Dim savedUnit As New Dictionary(Of String, String)
+        Dim lbl As Label
+        Dim t As TextBox
+        Dim lst As DropDownList
+
+        If ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" Then
+            For Each row As GridViewRow In grdItem_edit.Rows
+                lbl = row.FindControl("lblCustGrpItemID")
+                If lbl Is Nothing OrElse lbl.Text = skipCustGrpItemID OrElse saved.ContainsKey(lbl.Text) Then Continue For
+                Dim vals(names.Length - 1) As String
+                For k As Integer = 0 To names.Length - 1
+                    t = row.FindControl(names(k))
+                    vals(k) = If(t Is Nothing, Nothing, t.Text)
+                Next
+                saved(lbl.Text) = vals
+                lst = row.FindControl("lstEditPriceUnit")
+                If lst IsNot Nothing Then savedUnit(lbl.Text) = lst.SelectedValue
+            Next
+        End If
+
+        showOrderDtl()
+        editedPriceCache.Clear()
+        If saved.Count = 0 Then Exit Sub
+
+        For Each row As GridViewRow In grdItem_edit.Rows
+            lbl = row.FindControl("lblCustGrpItemID")
+            If lbl Is Nothing OrElse saved.ContainsKey(lbl.Text) = False Then Continue For
+            Dim vals() As String = saved(lbl.Text)
+            For k As Integer = 0 To names.Length - 1
+                t = row.FindControl(names(k))
+                If t IsNot Nothing AndAlso vals(k) IsNot Nothing Then t.Text = vals(k)
+            Next
+            lst = row.FindControl("lstEditPriceUnit")
+            If lst IsNot Nothing AndAlso savedUnit.ContainsKey(lbl.Text) AndAlso lst.Items.FindByValue(savedUnit(lbl.Text)) IsNot Nothing Then lst.SelectedValue = savedUnit(lbl.Text)
+        Next
+    End Sub
+
+    'Add Item panel: price units, cost / bottom text and preview data for the selected item (JFC admin + JFC item)
+    Private Sub SetupNewItemPriceEdit(ByVal DB As DBHelper, ByVal custGrpItemID As String)
+        Dim SQL As String
+        Dim r As DataReader
+        Dim params() As String 'scaledItem, eaPerCs, minSalCnt, lbsPerEa, avgCsWgt, avgEaWgt as stored in jets_price ("" = NULL)
+        Dim scaled As Boolean
+        Dim eaUnit As String
+
+        txtNewSetPrice.Text = ""
+        lstNewSetPriceUnit.Items.Clear()
+        lblNewCostBtm.Text = ""
+        litNewPriceData.Text = ""
+        ViewState("NEWITEM_PRICEPARAMS") = Nothing
+        If CanEditRowPrice() = False OrElse lnkSetPrice.Visible = False Then Exit Sub
+
+        SQL = "SELECT NVL(p.scaledItem, 'N') AS scaledItem, p.eaPerCs, p.minSalCnt, p.lbsPerEa, p.avgCsWgt, p.avgEaWgt " &
+                "FROM jets_price p, jets_customer jc, customer c " &
+                "WHERE jc.bid = c.jfcBranchNr AND jc.customerid = c.jfcCustomerNr AND p.pricegpid = jc.pricegpid " &
+                "  AND p.itemcode = :1 AND c.customer_id = :2"
+        Dim itemID As String = GetItemID(DB, custGrpItemID)
+        r = DB.GetReader(SQL, itemID, lblCustomerID.Text)
+        If r.Read() = False Then
+            r.close()
+            lnkSetPrice.Visible = False
+            Exit Sub
+        End If
+        params = New String() {CString(r("scaledItem")), DataNum(r("eaPerCs")), DataNum(r("minSalCnt")), DataNum(r("lbsPerEa")), DataNum(r("avgCsWgt")), DataNum(r("avgEaWgt"))}
+        r.close()
+        ViewState("NEWITEM_PRICEPARAMS") = params
+
+        'Price units (same rules as the old Set Price popup)
+        scaled = params(0) = "Y"
+        eaUnit = IIf(scaled, "pc", "ea")
+        If Val(lblNewLbCost.Text) > 0 AndAlso scaled Then lstNewSetPriceUnit.Items.Add(New ListItem(" / lb", "LB"))
+        If Val(lblNewCsCost.Text) > 0 Then lstNewSetPriceUnit.Items.Add(New ListItem(" / cs", "CS"))
+        If Val(lblNewEaCost.Text) > 0 AndAlso scaled = False Then lstNewSetPriceUnit.Items.Add(New ListItem(" / " & eaUnit, "EA"))
+        If lstNewSetPriceUnit.Items.Count = 0 Then
+            lnkSetPrice.Visible = False
+            ViewState("NEWITEM_PRICEPARAMS") = Nothing
+            Exit Sub
+        End If
+
+        lblNewCostBtm.Text = "Cost: " &
+            IIf(Val(lblNewLbCost.Text) > 0 AndAlso scaled, String.Format("{0:C}", Val(lblNewLbCost.Text)) & " / lb, ", "") &
+            IIf(Val(lblNewCsCost.Text) > 0, String.Format("{0:C}", Val(lblNewCsCost.Text)) & " / cs, ", "") &
+            IIf(Val(lblNewEaCost.Text) > 0 AndAlso scaled = False, String.Format("{0:C}", Val(lblNewEaCost.Text)) & " / " & eaUnit, "") &
+            "&nbsp;&nbsp;Bottom: " &
+            IIf(Val(lblNewBtmLb.Text) > 0 AndAlso scaled, String.Format("{0:C}", Val(lblNewBtmLb.Text)) & " / lb, ", "") &
+            IIf(Val(lblNewBtmCs.Text) > 0, String.Format("{0:C}", Val(lblNewBtmCs.Text)) & " / cs, ", "") &
+            IIf(Val(lblNewBtmEa.Text) > 0 AndAlso scaled = False, String.Format("{0:C}", Val(lblNewBtmEa.Text)) & " / " & eaUnit, "")
+
+        BuildNewPriceData()
+    End Sub
+
+    'GP label and preview data for the Add Item panel, from the prices currently shown in the panel
+    Private Sub BuildNewPriceData()
+        Dim params() As String = TryCast(ViewState("NEWITEM_PRICEPARAMS"), String())
+        If params Is Nothing Then
+            litNewPriceData.Text = ""
+            Exit Sub
+        End If
+        Dim cs As Decimal = Val(lblNewCsPrice.Text)
+        Dim lbq As Decimal = Val(lblNewLbPrice_OrderByQty.Text)
+        If lbq <> 0 Then
+            lblNewGp.Text = " GP " & Math.Round((lbq - Val(lblNewLbCost.Text)) / lbq * 100, 1) & "%"
+        ElseIf cs <> 0 Then
+            lblNewGp.Text = " GP " & Math.Round((cs - Val(lblNewCsCost.Text)) / cs * 100, 1) & "%"
+        Else
+            lblNewGp.Text = ""
+        End If
+        litNewPriceData.Text = "<span id=""odNewData"" style=""display:none;"" data-scaled=""" & params(0) & """" &
+            " data-epc=""" & params(1) & """ data-minsal=""" & params(2) & """ data-lbsperea=""" & params(3) & """" &
+            " data-avgcs=""" & params(4) & """ data-avgea=""" & params(5) & """" &
+            " data-cscost=""" & DataNum(Val(lblNewCsCost.Text)) & """ data-eacost=""" & DataNum(Val(lblNewEaCost.Text)) & """ data-lbcost=""" & DataNum(Val(lblNewLbCost.Text)) & """" &
+            " data-btmcs=""" & DataNum(Val(lblNewBtmCs.Text)) & """" &
+            " data-cs=""" & DataNum(cs) & """ data-ea=""" & DataNum(Val(lblNewEaPrice.Text)) & """ data-lbq=""" & DataNum(lbq) & """" &
+            " data-lbw=""" & DataNum(Val(lblNewLbPrice_OrderByWgt.Text)) & """></span>"
+    End Sub
+
     Private Sub showOrderDtl()
         Dim SQL As String
         Dim lbl As Label
@@ -2244,6 +2215,7 @@ Partial Class Common_OrderDtl
                             " CASE WHEN cc.isNew = 'Y' OR (SELECT CASE WHEN ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0 THEN 'Y' ELSE 'N' END FROM " & IIf(Common.IsExcepPriceCustomer(DB, customerID), "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci WHERE ci.customer_id = " & DB.SqlEsc(customerID) & " and ci.custgrpitem_id = d.custGrpItem_id) = 'Y' THEN 'Y' ELSE 'N' END AS IsNew, " &
                             " ROUND(p.csCost * d.csQty + " & SQL_eaCost & " * d.eaQty, 2) AS lineCost, " & _
                             " nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0  ) avgeawgt, " & _
+                            " NVL(p.scaledItem, 'N') AS p_scaledItem, p.eaPerCs AS p_eaPerCs, p.minSalCnt AS p_minSalCnt, p.lbsPerEa AS p_lbsPerEa, p.avgcswgt AS p_avgcswgt, p.avgeawgt AS p_avgeawgt, " & _
                             " CASE WHEN i.jfcItem = 'Y' THEN " & _
                             "   CASE WHEN d.lbPrice_orderByQty > 0 THEN " & _
                             "     (NVL(p.csAvail, 0) * NVL(d.eaPerCs, 1) + NVL(p.eaAvail, 0)) - 1" & _
@@ -2397,7 +2369,8 @@ Partial Class Common_OrderDtl
                     lblOrderMsg.Text = "Total: " & grdItem_edit.Rows.Count & " items"
                     btnInfo_orderMsg.Visible = False
                 Else
-                    lblOrderMsg.Text = "Total amount (" & grdItem_edit.Rows.Count & " items): <span class='red'>" & lblTotalAmt.Text & "</span>" & IIf(ViewState("ORDER_CMD") = "JFCADMIN", ", Total GP: <span class='red'>" & totalGpStr & "</span>", "")
+                    'odTotalAmt / odTotalGp are updated live by the price / qty preview script
+                    lblOrderMsg.Text = "Total amount (" & grdItem_edit.Rows.Count & " items): <span class='red' id='odTotalAmt'>" & lblTotalAmt.Text & "</span>" & IIf(ViewState("ORDER_CMD") = "JFCADMIN", ", Total GP: <span class='red' id='odTotalGp'>" & totalGpStr & "</span>", "")
                 End If
                 lblOrderMsg.Text &= IIf(showItemDtl = True, "&nbsp;&nbsp;&nbsp;&nbsp;<span class='green'>" & totalGrossWeight_kg & " kg, " & totalCaseVol_m3 & " m³</span>", "")
             ElseIf ViewState("ORDER_MODE") = "VIEW_JETS_ORDER" Then

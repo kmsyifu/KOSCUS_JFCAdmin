@@ -1,6 +1,16 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN018 (11/04/2026)
+*<OrderDtl>: Price is edited right in the order item list: click Edit, type the price and pick the unit (/cs, /ea, /lb). No popup, no page reload, and the item is no longer loaded into the Add Item panel.
+*<OrderDtl>: While typing a price or qty in the list, the row's GP %, line amount and the order's Total amount / Total GP update right away. A price below bottom turns the row yellow and shows the bottom price.
+*<OrderDtl>: Update Order saves the qty and the changed prices together, and the bottom price warning checks the new prices. Fixed: before, a price set with Edit was lost if Update Order was clicked instead of the Add Item panel's Update button.
+*<OrderDtl>: Add Item to Order panel: Set Price opens a price box in the panel (cost and bottom shown) instead of a popup. GP % and the line amount update while typing. Add to Order / Update uses the typed price even if Apply was not clicked.
+*<OrderDtl>: Add Item to Order panel: GP % shows as soon as a JFC item is loaded (was always blank until a price was set).
+*<OrderDtl>: Adding or deleting an item keeps the qty / prices typed in the list but not saved yet (no more "Changes in qty will be lost" question).
+*<OrderDtl>: Edit is only shown for JFC items with a cost, for JFC admins (before: on every row, doing nothing for other items).
+*<OrderDtl>: Fixed: the Set Price OK code read a column (lbPrice_OrderByWgt) the price query does not return.
+
 KOSCUS_JFCADMIN017 (11/04/2026)
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
 *<CustItem>: Search Items panel is wider (400px -> 500px). The Add / Update Item panel moved right to match.
