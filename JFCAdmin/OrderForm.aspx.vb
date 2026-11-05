@@ -383,27 +383,25 @@ Partial Class JFCAdmin_OrderForm
         CType(e.Row.FindControl("lblMatchTag"), Label).Text = MatchTagHtml(drv)
     End Sub
 
-    ' During an item search: for words not found in the shown description / item ID, a tag naming the
-    ' hidden field that matched (same fields as the search SQL) with a short piece of its text.
+    ' During an item search: for words not found in the shown description / item ID but found in a hidden field
+    ' (same fields as the search SQL), a short piece of the text around the match with the word in bold.
+    ' No field name (was "Japanese" / "Long description" / "Web description" / "Sales point").
     Private Function MatchTagHtml(drv As DataRowView) As String
         If searchWords.Count = 0 Then Return ""
         Dim desc As String = CString(drv("itemDesc_view")).ToUpper
         Dim itemID As String = CString(drv("item_id")).ToUpper
-        Dim fields As String(,) = {{"Japanese", "itemDesc_ja"}, {"Long description", "itemDesc_long"},
-                                   {"Web description", "itemWebDesc"}, {"Sales point", "salesPoint"}}
+        Dim fields As String() = {"itemDesc_ja", "itemDesc_long", "itemWebDesc", "salesPoint"}
         Dim html As New List(Of String)
         Dim usedFields As New List(Of String)
         For Each word As String In searchWords
             If desc.Contains(word) OrElse itemID = word Then Continue For
-            For i As Integer = 0 To fields.GetUpperBound(0)
-                Dim text As String = CString(drv(fields(i, 1)))
+            For Each f As String In fields
+                Dim text As String = CString(drv(f))
                 Dim pos As Integer = text.ToUpper.IndexOf(word)
                 If pos < 0 Then Continue For
-                If Not usedFields.Contains(fields(i, 0)) Then
-                    usedFields.Add(fields(i, 0))
-                    html.Add("<span style=""display:inline-block;padding:0 6px;margin-right:4px;border-radius:3px;" &
-                             "background:#FDEBD3;color:#B35C00;font-size:smaller;"">" & fields(i, 0) & "</span>" &
-                             "<span class=""gray"" style=""font-size:smaller;"">" & Snippet(text, pos, word.Length) & "</span>")
+                If Not usedFields.Contains(f) Then
+                    usedFields.Add(f)
+                    html.Add("<span class=""gray"" style=""font-size:smaller;"">" & Snippet(text, pos, word.Length) & "</span>")
                 End If
                 Exit For
             Next

@@ -2,6 +2,7 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN017 (11/04/2026)
+*<OrderForm>: Item search match shows only the text around the matched word (word in bold) - the field name tag (e.g. "Long description") is removed.
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
 *<CustItem>: Search Items panel is wider (400px -> 500px). The Add / Update Item panel moved right to match.
 *<CustItem>: Faster: the Category dropdown is built from the item list already loaded, so the heavy item query runs once instead of twice. Categories are listed in alphabetical order.
