@@ -5,6 +5,17 @@
         $(function () {
             $("input[name=screenwidth]").val(screen.width);
             $("input[name=screenheight]").val(screen.height);
+
+            // Eye button: switch the password box between hidden and shown.
+            // Plain DOM .type (jQuery 1.4 does not allow changing an input's type).
+            $("#btnShowPwd").click(function () {
+                var pwd = document.getElementById("<%= txtPassword.ClientID %>");
+                var show = (pwd.type === "password");
+                pwd.type = show ? "text" : "password";
+                var label = show ? "Hide password" : "Show password";
+                $(this).toggleClass("shown", show).attr("title", label).attr("aria-label", label);
+                pwd.focus();
+            });
         });
     </script>
 
@@ -35,7 +46,16 @@
                     </tr>
                     <tr>
                         <td align="right">Password</td>
-                        <td><asp:TextBox ID="txtPassword" class="stdTxt" TextMode="Password" runat="server"></asp:TextBox></td>
+                        <td>
+                            <span class="pwdWrap">
+                                <asp:TextBox ID="txtPassword" class="stdTxt" TextMode="Password" runat="server"></asp:TextBox>
+                                <%--Eye button: shows / hides the password. type="button" so it never submits (Enter still logs in)--%>
+                                <button type="button" id="btnShowPwd" class="pwdEye" title="Show password" aria-label="Show password" tabindex="-1">
+                                    <svg class="eyeOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eyeOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </span>
+                        </td>
                     </tr>
                     <tr>
                         <td></td>

@@ -123,6 +123,10 @@ Before
      item ID, the line under the description shows only about 60 characters of text around the match, the word in
      bold. The field name tag before it (Japanese / Long description / Web description / Sales point) is removed.
      Test: Order Form, search a word that is only in the long description: the item shows the text around that word.
+4.18 Login page (Login/Login.aspx, Login/Styles/Login.css): eye button inside the right edge of the password box shows /
+     hides the password (icon changes to a crossed-out eye). type="button", so Enter still logs in; not in the Tab order.
+     Works on the mobile login page too (same page and stylesheet).
+     Test: Login page, type a password, click the eye (shown), click again (hidden), press Enter (logs in).
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.
