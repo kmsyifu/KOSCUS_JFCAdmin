@@ -109,7 +109,7 @@ Partial Class JFCAdmin_CustItem
                 'Show add item
                 If IsMobile() Then
                 Else
-                    pnlSearchItem.Width = 400
+                    pnlSearchItem.Width = 500
                     pnlNewItem.Width = 600
                     pnlSearchItem.Height = 110
                     pnlNewItem.Height = 110

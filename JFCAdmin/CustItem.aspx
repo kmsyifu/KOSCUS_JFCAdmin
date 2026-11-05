@@ -582,7 +582,7 @@
             </asp:Panel>--%>
 
                 <%--Add item--%>
-                <asp:Panel ID="pnlNewItem" CssClass="visiblePnl" style='<%# IIf(IsMobile(), "", "margin-left:433px") %>' runat="server">
+                <asp:Panel ID="pnlNewItem" CssClass="visiblePnl" style='<%# IIf(IsMobile(), "", "margin-left:533px") %>' runat="server">
                     <h1>Add / Update Item</h1>
                         <asp:Panel ID="pnlGetItem" DefaultButton="btnGetItem" runat="server">
                             <asp:TextBox ID="txtItem" CssClass='<%# "stdTxt CODE_ITEM " & IIf(IsMobile(), "size32", "size72") %>'  runat="server"  />
