@@ -322,7 +322,7 @@
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px" ItemStyle-Height="30px">
                         <ItemTemplate>
                             <asp:Label runat="server"
-                                Text='<%# IIf(Val(Eval("lbPrice_OrderByQty")) <> 0, Eval("lbPrice_OrderByQty", "{0:N2}"), "") %>' />
+                                Text='<%# IIf(Val(Eval("lbPrice_OrderByQty")) <> 0, Eval("lbPrice_OrderByQty", "{0:N2}"), IIf(Val(Eval("lbPrice_OrderByWgt")) <> 0, Eval("lbPrice_OrderByWgt", "{0:N2}"), "")) %>' /><%--lb price by qty, else by weight--%>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
