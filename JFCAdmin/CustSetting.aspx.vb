@@ -94,7 +94,10 @@ Partial Class JFCAdmin_CustSetting
                 SQL = "SELECT c.customer_id FROM customer c, webuser_customer w WHERE c.customer_id = w.customer_id AND w.customer_id <> 'ADMIN' AND w.email = :1 AND w.custCompany_id = :2"
                 lblCustomerID.Text = CString(DB.GetScalar(SQL, email, lstCustCompany.Text))
 
-                If Not (IsJfcBranchAdmin(DB, email) Or IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email)) Then
+                'Read the user's JFC role once (same query IsJfcBranchAdmin / IsJfcHoAdmin / IsKmsSupport each run)
+                Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+                Dim isKmsSupportUser As Boolean = (jfcRole = "KMS_SUPPORT")
+                If Not (jfcRole = "JFC_BRANCH" Or jfcRole = "JFC_HO" Or isKmsSupportUser) Then
                     pnlCustSetting.Enabled = False
                     btnUpdateChnage.Visible = False
                     btnAddCust.Visible = False
@@ -108,7 +111,7 @@ Partial Class JFCAdmin_CustSetting
                 Else
                     ViewState("JFC_ADMINGROUP") = True
                 End If
-                If Not IsKmsSupport(DB, email) Then
+                If Not isKmsSupportUser Then
                     Dim isLA As Boolean = (Left(lstCustCompany.Text, 2) = "30")
                     pnlChatControls.Visible = isLA
                 End If
@@ -570,12 +573,6 @@ Partial Class JFCAdmin_CustSetting
                 pnlCustSetting.Height = 450
             End If
 
-            Dim autoPayTypeALL = GetCustAutoPayType(DB, customerID, "AUTOPAYTYPEID_ALL")
-            Dim autoPayTypeNONLIQ = GetCustAutoPayType(DB, customerID, "AUTOPAYTYPEID_NONLIQ")
-            Dim autoPayTypeBEER = GetCustAutoPayType(DB, customerID, "AUTOPAYTYPEID_BEER")
-            Dim autoPayTypeWINE = GetCustAutoPayType(DB, customerID, "AUTOPAYTYPEID_WINE")
-            Dim autoPayTypeLIQUOR = GetCustAutoPayType(DB, customerID, "AUTOPAYTYPEID_LIQUOR")
-
             'Show dropdownlist
             ShowCodeMasterListLocal(DB, "ALLOWNOT", lstAllowCustOrder, True)
             ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lstHideItemPage, True)
@@ -605,6 +602,13 @@ Partial Class JFCAdmin_CustSetting
                 lblCountry.Text = CString(r("country"))
                 lblJfcContactName.Text = CString(r("jfcContactName"))
                 lblJfcEmail.Text = foldlongString(CString(r("jfcEmail")), New Char() {","})
+
+                'Auto pay columns come from the same customer row (was 5 separate GetCustAutoPayType queries)
+                Dim autoPayTypeALL As String = CString(r("AUTOPAYTYPEID_ALL"))
+                Dim autoPayTypeNONLIQ As String = CString(r("AUTOPAYTYPEID_NONLIQ"))
+                Dim autoPayTypeBEER As String = CString(r("AUTOPAYTYPEID_BEER"))
+                Dim autoPayTypeWINE As String = CString(r("AUTOPAYTYPEID_WINE"))
+                Dim autoPayTypeLIQUOR As String = CString(r("AUTOPAYTYPEID_LIQUOR"))
 
                 Dim autoPaytype As String = CString(r("CODEDESC"))
                 Dim NetsDay As String = CString(r("NETDAYS"))
@@ -697,13 +701,16 @@ Partial Class JFCAdmin_CustSetting
 
 
     Private MonthData As DataTable
+    Private MonthDataLoaded As Boolean = False
 
     Protected Sub cldSchedule_DayRender(sender As Object, e As System.Web.UI.WebControls.DayRenderEventArgs) Handles cldSchedule.DayRender
-        ' Load data once for the entire month
-        If MonthData Is Nothing OrElse MonthData.Rows.Count = 0 Then
+        ' Load data once for the entire month. Use a flag, not Rows.Count = 0, so a month with no deliveries
+        ' doesn't query again for every day cell.
+        If Not MonthDataLoaded Then
             Using DB As New DBHelper
                 MonthData = GetMonthlyData(DB, lblCustomerID.Text, lstShipPoint.Text, e.Day.Date)
             End Using
+            MonthDataLoaded = True
         End If
 
         ' Render day events from the cached MonthData
@@ -1315,6 +1322,8 @@ Partial Class JFCAdmin_CustSetting
     'Common routine
     '--------------------------------------------------------------------------------------------------------------------
 
+    Private DeliveryMasterList As DataTable
+
     Protected Sub grd_RowDataBound(ByVal sender As Object, ByVal e As GridViewRowEventArgs) Handles grdActiveSchedule.RowDataBound
         'Highlight the mouse-over row and make it selectable
         Dim sql As String
@@ -1336,20 +1345,24 @@ Partial Class JFCAdmin_CustSetting
                 Imgbtn.Visible = False
             End If
 
-            Using DB As New DBHelper
-                sql = "SELECT deliveryMaster_id, deliveryMasterName FROM JFCDeliveryMaster WHERE jfcBranchNr = :1 ORDER BY deliveryMasterName"
-                dt = DB.GetDataTable(sql, lblJfcBranchNr.Text)
-                dr = dt.NewRow
-                dr("deliveryMasterName") = LST_CMD_STR
-                dt.Rows.InsertAt(dr, 0)
-                lst = CType(e.Row.FindControl("lstDeliveryMaster"), DropDownList)
-                lst.DataSource = dt
-                lst.DataValueField = "deliveryMaster_id"
-                lst.DataTextField = "deliveryMasterName"
-                lst.DataBind()
-                Str = CType(e.Row.FindControl("lnkdeliveryMasterName"), LinkButton).Text
-                If lst.Items.FindByValue(Str) IsNot Nothing Then lst.Items.FindByValue(Str).Selected = True
-            End Using
+            'Load the delivery master list once per request, not once per row
+            If DeliveryMasterList Is Nothing Then
+                Using DB As New DBHelper
+                    sql = "SELECT deliveryMaster_id, deliveryMasterName FROM JFCDeliveryMaster WHERE jfcBranchNr = :1 ORDER BY deliveryMasterName"
+                    dt = DB.GetDataTable(sql, lblJfcBranchNr.Text)
+                    dr = dt.NewRow
+                    dr("deliveryMasterName") = LST_CMD_STR
+                    dt.Rows.InsertAt(dr, 0)
+                    DeliveryMasterList = dt
+                End Using
+            End If
+            lst = CType(e.Row.FindControl("lstDeliveryMaster"), DropDownList)
+            lst.DataSource = DeliveryMasterList
+            lst.DataValueField = "deliveryMaster_id"
+            lst.DataTextField = "deliveryMasterName"
+            lst.DataBind()
+            Str = CType(e.Row.FindControl("lnkdeliveryMasterName"), LinkButton).Text
+            If lst.Items.FindByValue(Str) IsNot Nothing Then lst.Items.FindByValue(Str).Selected = True
         End If
     End Sub
 
@@ -1436,61 +1449,59 @@ Partial Class JFCAdmin_CustSetting
         Dim txt As TextBox
         Dim str As String
 
-        Using DB As New DBHelper
-            If e.Row.RowType = DataControlRowType.DataRow Then
-                'Show and select hide order
-                lst = CType(e.Row.FindControl("lstHideCustOrder"), DropDownList)
-                ShowCodeMasterListLocal(DB, "NALLOWNOT", lst, False)
-                IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                str = CType(e.Row.FindControl("lblHideCustOrder"), Label).Text
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            'Show and select hide order
+            lst = CType(e.Row.FindControl("lstHideCustOrder"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "NALLOWNOT", lst, False)
+            IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
+            str = CType(e.Row.FindControl("lblHideCustOrder"), Label).Text
+            str = IIf(str = "Y", "Y", "N")
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+
+            'Show and select hide item page
+            lst = CType(e.Row.FindControl("lstHideItemPage"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "HIDEDISPLAY", lst, False)
+            str = CType(e.Row.FindControl("lblHideItemPage"), Label).Text
+            str = IIf(str = "Y", "Y", "N")
+            IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+
+            'Show and select hide payment page
+            lst = CType(e.Row.FindControl("lstHidePaymentPage"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "HIDEDISPLAY", lst, False)
+            str = CType(e.Row.FindControl("lblHidePaymentPage"), Label).Text
+            str = IIf(str = "Y", "Y", "N")
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+            IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
+
+            'Show and select hide price
+            lst = CType(e.Row.FindControl("lstHidePrice"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "HIDEDISPLAY", lst, False)
+            str = CType(e.Row.FindControl("lblHidePrice"), Label).Text
+            str = IIf(str = "Y", "Y", "N")
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+            IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
+
+            'Show and select hide chat
+            If lstAllowChat.Text = "Read Only" Then
+                lst = CType(e.Row.FindControl("lstHideChat"), DropDownList)
+                ShowCodeMasterListLocal(Nothing, "READNOT_CHAT", lst, False)
+                str = CType(e.Row.FindControl("lblHideChat"), Label).Text
                 str = IIf(str = "Y", "Y", "N")
                 If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
-
-                'Show and select hide item page
-                lst = CType(e.Row.FindControl("lstHideItemPage"), DropDownList)
-                ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lst, False)
-                str = CType(e.Row.FindControl("lblHideItemPage"), Label).Text
-                str = IIf(str = "Y", "Y", "N")
                 IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
-
-                'Show and select hide payment page
-                lst = CType(e.Row.FindControl("lstHidePaymentPage"), DropDownList)
-                ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lst, False)
-                str = CType(e.Row.FindControl("lblHidePaymentPage"), Label).Text
+            Else
+                lst = CType(e.Row.FindControl("lstHideChat"), DropDownList)
+                ShowCodeMasterListLocal(Nothing, "NALLOWNOT", lst, False)
+                str = CType(e.Row.FindControl("lblHideChat"), Label).Text
                 str = IIf(str = "Y", "Y", "N")
                 If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
                 IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-
-                'Show and select hide price
-                lst = CType(e.Row.FindControl("lstHidePrice"), DropDownList)
-                ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lst, False)
-                str = CType(e.Row.FindControl("lblHidePrice"), Label).Text
-                str = IIf(str = "Y", "Y", "N")
-                If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
-                IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-
-                'Show and select hide chat
-                If lstAllowChat.Text = "Read Only" Then
-                    lst = CType(e.Row.FindControl("lstHideChat"), DropDownList)
-                    ShowCodeMasterListLocal(DB, "READNOT_CHAT", lst, False)
-                    str = CType(e.Row.FindControl("lblHideChat"), Label).Text
-                    str = IIf(str = "Y", "Y", "N")
-                    If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
-                    IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                Else
-                    lst = CType(e.Row.FindControl("lstHideChat"), DropDownList)
-                    ShowCodeMasterListLocal(DB, "NALLOWNOT", lst, False)
-                    str = CType(e.Row.FindControl("lblHideChat"), Label).Text
-                    str = IIf(str = "Y", "Y", "N")
-                    If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
-                    IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                End If
-
-                txt = CType(e.Row.FindControl("txtCell"), TextBox)
-                IIf(IsMobile(), txt.CssClass = "cellLbl size4", "")
             End If
-        End Using
+
+            txt = CType(e.Row.FindControl("txtCell"), TextBox)
+            IIf(IsMobile(), txt.CssClass = "cellLbl size4", "")
+        End If
     End Sub
 
 

@@ -571,6 +571,9 @@ Partial Class JFCAdmin_CustItem
 
     End Sub
 
+    'True when showCustItemSearch reset the category dropdown and showCustItemList still has to fill it
+    Private CtgListPending As Boolean = False
+
     Private Sub showCustItemSearch()
         Using DB As New DBHelper
             'Show order form
@@ -588,13 +591,11 @@ Partial Class JFCAdmin_CustItem
             'Dim useCustomerCtg = Common.UseCustomerCtg(DB, customerID)
             'GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, jfcCustomerNr)
 
-            Dim custinfo As CustomerInfo = ViewState("CUSTOMER_INFO")
-
-            'GetJFCBranchAndCustomerNr(DB, customerID, jfcBranchNr, jfcCustomerNr)
-
-            Dim sql = GetSQL_CustItem(DB, "CTG", custinfo, "")
-
-            Common.ShowList(DB, sql, lstCtgSearch_custItem, True, True, LST_ALL_STR)
+            'Category list: don't run the heavy item query just for this. Reset to "All" now and let
+            'showCustItemList (always called right after this) fill it from the item list it loads anyway.
+            lstCtgSearch_custItem.Items.Clear()
+            lstCtgSearch_custItem.Items.Add(New ListItem(LST_ALL_STR, LST_ALL_STR))
+            CtgListPending = True
             'Show dropdownlist of venodrs
             Common.ShowList(DB, "VENDOR", lstCustGrp_custItem.Text, lstVendorSearch_custItem, True, True, LST_ALL_STR)
         End Using
@@ -1120,9 +1121,29 @@ Partial Class JFCAdmin_CustItem
                 dsCustItem.SelectParameters.Add(":itemdesc", "%" & txtItemSearch_custItem.Text.ToUpper & "%")
             End If
 
-            grdCustItem.DataSourceID = "dsCustItem"
+            'Run the query once and keep the rows, so the category dropdown can be built from them
+            Dim dvItems As DataView = CType(dsCustItem.Select(DataSourceSelectArguments.Empty), DataView)
+            grdCustItem.DataSourceID = ""
+            grdCustItem.DataSource = dvItems
             'If IsPostBack = False Then grd.Sort("CTGNAME_VIEW, VENDORNAME, ITEMNR, ITEM_ID, ITEMGRPNAME", SortDirection.Ascending)
             grdCustItem.DataBind()
+
+            If CtgListPending Then
+                CtgListPending = False
+                If txtItemSearch_custItem.Text = "" AndAlso lstVendorSearch_custItem.Text = LST_ALL_STR AndAlso lstItemGrpSearch_custItem.Text = LST_ALL_STR Then
+                    'No filters, so the list holds every item the category query would see
+                    Dim names As New System.Collections.Generic.SortedSet(Of String)(StringComparer.Ordinal)
+                    For Each rv As DataRowView In dvItems
+                        names.Add(CString(rv("ctgName_view")))
+                    Next
+                    For Each n In names
+                        lstCtgSearch_custItem.Items.Add(New ListItem(n, n))
+                    Next
+                Else
+                    'Filters are active - fall back to the original category query
+                    Common.ShowList(DB, GetSQL_CustItem(DB, "CTG", custInfo, ""), lstCtgSearch_custItem, True, True, LST_ALL_STR)
+                End If
+            End If
             grdCustItem.Columns(GetColumnIndex(grdCustItem, "ctgName_view")).Visible = Not IsMobile()
             'Init textchanged value
             initTextChanged_custItem()
