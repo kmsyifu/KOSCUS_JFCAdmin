@@ -1883,7 +1883,9 @@ Partial Class Common_OrderDtl
                 lblCustomerName.Text = CString(r("customerName"))
                 lblJfcBranchNr.Text = CString(r("jfcBranchNr"))
                 lblJfcCustomerNr.Text = CString(r("jfcCustomerNr"))
-                lblCurrentBalance.Text = "AR Balance: $" & GetCurrentBalance(DB, CString(r("customer_id")))
+                lnkCurrentBalance.Text = "AR Balance: $" & GetCurrentBalance(DB, CString(r("customer_id")))
+                'App-relative link (was built from Request.Url, which can be the internal server address behind the proxy)
+                lnkCurrentBalance.NavigateUrl = ResolveUrl("~/JFCAdmin/Balance.aspx") & "?customer_id=" & HttpUtility.UrlEncode(CString(r("customer_id"))) & "&cmd=show_dtl"
                 txtDeliveryDate.Text = CString(r("shipDate"))
                 lblDeliveryDate.Text = CString(r("shipDate_view"))
                 lblShipOffset.Text = IIf((ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" OrElse ViewState("ORDER_MODE") = "VIEW_WEB_ORDER") And Val(r("SHIPDATEOFFSET")) <> 0,

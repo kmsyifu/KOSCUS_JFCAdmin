@@ -118,7 +118,7 @@
             <asp:Panel ID="Panel4" runat="server" Visible='<%# Session("ORDERDTL_CMD") = "JFCADMIN" %>'>
                 <tr>
                     <td class="gray"></td>
-                    <td><asp:Label ID="lblCurrentBalance" CssClass="cellLbl" runat="server" /></td><%--AR balance as text (was a link to the Balance page)--%>
+                    <td><asp:HyperLink ID="lnkCurrentBalance" target="_blank" CssClass="linkLabel" runat="server" /></td><%--AR balance - opens this customer on the Balance page--%>
                 </tr>
             </asp:Panel>
             <asp:Panel ID="pnlCustShipPoint" runat="server">

@@ -17,8 +17,9 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Fixed: Delete Order and "Change Back to Order Placed Status" now re-check the order status at "Yes", so an order processed or canceled in the meantime is not canceled / reopened.
 *<OrderDtl>: Fixed: downloading an invoice from the order left the database reader open.
 *<OrderDtl>: Add Item to Order search (item # / keyword) fixed: the list no longer goes empty or stale after the 2nd letter, an older slow search no longer replaces the current list, picking an item (click or Enter) loads it right away, and clicking back into the search box no longer reloads the old item and clears the qty. Search starts at 2 letters.
-*<OrderDtl>: AR Balance in Order Info is plain text (was a link to the Balance page).
+*<OrderDtl>: AR Balance in Order Info is a working link again: opens the Balance page for this customer in a new tab. The link is app-relative (was built from the server address of the request).
 *<OrderDtl>: Fixed: pressing Enter could log the user out (went to Login.aspx) - in the Order Info boxes, in the item list of a new order (Update Order hidden, Approve Order shown) and in the Add Item panel for an item with no price. Enter now does nothing there.
+*<CustItem, CustSetting, BranchSetting, Tool, OrderForm, Balance, OrderHistory>: Same Enter fix: Enter in a box with no button of its own no longer goes to Login.aspx. Boxes with their own button (search, save, ...) work as before.
 *<Suggestion>: Item search (Order Detail Add Item, Customer Items) is faster: returns only the 30 rows the list shows (was every match, with an extra query per row). Item # search ignores case and a leading "#" ("#abc123" finds ABC123).
 
 KOSCUS_JFCADMIN017 (11/04/2026)

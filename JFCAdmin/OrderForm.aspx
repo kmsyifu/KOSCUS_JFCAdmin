@@ -2,6 +2,8 @@
 <%@ Import Namespace="Common" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
+<asp:Panel ID="pnlEnterKey" DefaultButton="btnEnterNoop" runat="server"><%--Enter in a box with no default button of its own does nothing (before: the menu's Logout button was used -> Login.aspx)--%>
+<asp:Button ID="btnEnterNoop" runat="server" style="display:none;" UseSubmitBehavior="false" OnClientClick="return false;" TabIndex="-1" />
     <script src="../Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -347,4 +349,5 @@
 
     </div>
 
+</asp:Panel><%--pnlEnterKey--%>
 </asp:Content>

@@ -3,6 +3,8 @@
 <%@ Import Namespace="Common" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
+<asp:Panel ID="pnlEnterKey" DefaultButton="btnEnterNoop" runat="server"><%--Enter in a box with no default button of its own does nothing (before: the menu's Logout button was used -> Login.aspx)--%>
+<asp:Button ID="btnEnterNoop" runat="server" style="display:none;" UseSubmitBehavior="false" OnClientClick="return false;" TabIndex="-1" />
     <script type="text/javascript">
         $(document).ready(function () {
             $("#tabs").tabs();
@@ -23,4 +25,5 @@
 
         <uc:Balance id="ctrBalance" runat="Server" />
      </div>
+</asp:Panel><%--pnlEnterKey--%>
 </asp:Content>
