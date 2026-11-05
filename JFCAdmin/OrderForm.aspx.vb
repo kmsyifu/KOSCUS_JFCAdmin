@@ -383,45 +383,27 @@ Partial Class JFCAdmin_OrderForm
         CType(e.Row.FindControl("lblMatchTag"), Label).Text = MatchTagHtml(drv)
     End Sub
 
-    ' During an item search: for words not found in the shown description / item ID, a tag naming the
-    ' hidden field that matched (same fields as the search SQL) with a short piece of its text.
+    ' During an item search: for words not found in the shown description / item ID but found in a hidden field
+    ' (same fields as the search SQL), a small tag with just the matched word - no field name, no long text around it.
     Private Function MatchTagHtml(drv As DataRowView) As String
         If searchWords.Count = 0 Then Return ""
         Dim desc As String = CString(drv("itemDesc_view")).ToUpper
         Dim itemID As String = CString(drv("item_id")).ToUpper
-        Dim fields As String(,) = {{"Japanese", "itemDesc_ja"}, {"Long description", "itemDesc_long"},
-                                   {"Web description", "itemWebDesc"}, {"Sales point", "salesPoint"}}
+        Dim fields As String() = {"itemDesc_ja", "itemDesc_long", "itemWebDesc", "salesPoint"}
         Dim html As New List(Of String)
-        Dim usedFields As New List(Of String)
         For Each word As String In searchWords
             If desc.Contains(word) OrElse itemID = word Then Continue For
-            For i As Integer = 0 To fields.GetUpperBound(0)
-                Dim text As String = CString(drv(fields(i, 1)))
+            For Each f As String In fields
+                Dim text As String = CString(drv(f))
                 Dim pos As Integer = text.ToUpper.IndexOf(word)
                 If pos < 0 Then Continue For
-                If Not usedFields.Contains(fields(i, 0)) Then
-                    usedFields.Add(fields(i, 0))
-                    html.Add("<span style=""display:inline-block;padding:0 6px;margin-right:4px;border-radius:3px;" &
-                             "background:#FDEBD3;color:#B35C00;font-size:smaller;"">" & fields(i, 0) & "</span>" &
-                             "<span class=""gray"" style=""font-size:smaller;"">" & Snippet(text, pos, word.Length) & "</span>")
-                End If
+                html.Add("<span style=""display:inline-block;padding:0 6px;margin-right:4px;border-radius:3px;" &
+                         "background:#FDEBD3;color:#B35C00;font-size:smaller;"">" & HttpUtility.HtmlEncode(text.Substring(pos, word.Length)) & "</span>")
                 Exit For
             Next
         Next
         If html.Count = 0 Then Return ""
-        Return "<br />" & String.Join("<br />", html)
-    End Function
-
-    ' About 60 characters of text around the match, the matched part in bold (HTML encoded)
-    Private Function Snippet(text As String, pos As Integer, len As Integer) As String
-        text = text.Replace(vbCr, " ").Replace(vbLf, " ")
-        Dim start As Integer = Math.Max(0, pos - 25)
-        Dim finish As Integer = Math.Min(text.Length, pos + len + 35)
-        Return IIf(start > 0, "...", "") &
-               HttpUtility.HtmlEncode(text.Substring(start, pos - start)) &
-               "<b>" & HttpUtility.HtmlEncode(text.Substring(pos, len)) & "</b>" &
-               HttpUtility.HtmlEncode(text.Substring(pos + len, finish - pos - len)) &
-               IIf(finish < text.Length, "...", "")
+        Return "<br />" & String.Join("", html)
     End Function
 
     ' Item check state edited since the form was opened (only rows that differ from orderForm_Item): item_id -> checked
