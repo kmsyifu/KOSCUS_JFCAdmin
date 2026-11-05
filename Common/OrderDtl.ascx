@@ -5,24 +5,26 @@
 
 <script type="text/javascript">
 
-    function clickGetItem(txtItem) {
-        var enterd = txtItem.val();
-        var lines = enterd.split(',');
-        if (lines[2] in window) {
-        }
-        else {
-            //txtEmail.val(lines[1]);
-            if (lines[2].length > 10) {
-                
-                $('#<%=btnGetItem.ClientID%>').click();
-            }
-        }
-    }
-    // Auto completion for item
+    // Auto completion for item (Add Item to Order)
+    //  - matchSubset: false -> always ask the server. With the default (true) the plugin filtered the first reply in the
+    //    browser by "starts with", but the rows start with "#item#, description", so after the 2nd letter the list went
+    //    empty or stale for keyword and item # searches.
+    //  - Picking an item (click or Enter) loads it right away (.result). Before, the item only loaded when the search
+    //    box got focus again, so clicking back into the box reloaded the old item and cleared the qty typed.
+    //  - minChars: 2 -> one letter matched most of the catalog and was the slowest reply.
+    //  - Only the latest search counts: the plugin expects the ajaxQueue plugin to cancel older requests, which is not
+    //    loaded, so a slow reply for older text could replace the list for the current text.
     $(document).ready(function () {
-        //$(".CODE_ITEM").autocomplete('<%=Request.ApplicationPath() %>/Common/Suggestion.ashx?id=<%=lblCustomerID.text%>&id2=<%=lblCustGrpVendorID.text%>&id3=<%=lblItemGrpID.text%>&code=ITEM', { minChars: 1, autoFill: false, scroll: false, max: 30 });
+        var odItemXhr = null;
+        $.ajaxPrefilter(function (opts, orig, jqXHR) {
+            if (opts.url && opts.url.indexOf('Suggestion.ashx') >= 0 && opts.url.indexOf('code=ITEM') >= 0) {
+                if (odItemXhr && odItemXhr.readyState !== 4) odItemXhr.abort();
+                odItemXhr = jqXHR;
+            }
+        });
         $(".CODE_ITEM").autocomplete('../Common/Suggestion.ashx?id=<%=lblCustomerID.text%>&id2=<%=lblCustGrpVendorID.text%>&id3=<%=lblItemGrpID.text%>&id4=<%=lblUserType.text%>&code=ITEM',
-         { minChars: 1, autoFill: false, scroll: false, max: 30 }).focus(function () { clickGetItem($('#<%=txtItem.ClientID%>')); });
+            { minChars: 2, autoFill: false, scroll: false, max: 30, matchSubset: false, selectFirst: true })
+            .result(function () { $('#<%=btnGetItem.ClientID%>').click(); });
     });
     // Detect value changed in textbox
     function textValueChanged(cmd) {

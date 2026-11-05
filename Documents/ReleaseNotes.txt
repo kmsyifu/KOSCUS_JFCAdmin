@@ -12,6 +12,11 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Edit is only shown for JFC items with a cost, for JFC admins (before: on every row, doing nothing for other items).
 *<OrderDtl>: Fixed: the Set Price OK code read a column (lbPrice_OrderByWgt) the price query does not return.
 *<OrderDtl>: Fixed: for branch 05 customers (Each qty hidden), setting a price in the Add Item panel showed the Each qty box and each price again.
+*<OrderDtl>: Fixed: Update Order / Approve Order with every qty set to 0 deleted all lines and saved (or approved and emailed) an empty order. It now asks for qty or to use Delete Order.
+*<OrderDtl>: Fixed: after "Yes" on the bottom price warning, if Update Order then stopped on another error, the next Update Order skipped the bottom price warning.
+*<OrderDtl>: Fixed: Delete Order and "Change Back to Order Placed Status" now re-check the order status at "Yes", so an order processed or canceled in the meantime is not canceled / reopened.
+*<OrderDtl>: Fixed: downloading an invoice from the order left the database reader open.
+*<OrderDtl>: Add Item to Order search (item # / keyword) fixed: the list no longer goes empty or stale after the 2nd letter, an older slow search no longer replaces the current list, picking an item (click or Enter) loads it right away, and clicking back into the search box no longer reloads the old item and clears the qty. Search starts at 2 letters.
 
 KOSCUS_JFCADMIN017 (11/04/2026)
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.

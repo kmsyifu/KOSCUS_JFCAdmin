@@ -66,6 +66,28 @@ Before
 4.3 Branch 05 customers never see Each qty (Common.HideEaQty). After setting a price in the Add Item panel, the Each qty
     box and each price came back anyway (the old popup code skipped that check). Now the same check is used.
     Test: branch 05 customer, Add Item, Edit Price + check mark: no Each box; other branch: Each box shows as before.
+4.4 Update Order / Approve Order with every qty set to 0: each line with 0 qty is deleted, so the order was saved empty
+    (Approve Order also approved it and emailed the customer). The "Order is empty" check only looked at the saved
+    order. Now: "All quantities are 0. Please enter qty for at least one item, or use Delete Order to cancel the order."
+    Test: set all qty to 0, Update Order -> message, nothing saved.
+4.5 Bottom price warning: after "Yes", the bypass flag stayed on if Update Order then stopped on another error (bad qty,
+    VP memo, ship date), so the next Update Order skipped the warning even for a new low price. The flag now only
+    covers the postback right after "Yes".
+    Test: low price -> Update -> Yes with a bad qty -> fix qty -> Update: warning shows again.
+4.6 Delete Order / Change Back to Order Placed Status: the order status is checked again when "Yes" is clicked
+    (delete only for Order Placed or SFA downloaded; change back only for SFA downloaded). The change-back dialog
+    title was "Confirm Cancelation" - now "Confirm Status Change".
+4.7 Invoice download from the order closes the database reader before sending the file.
+4.8 Add Item to Order search box (autocomplete, item # or keyword) - script at the top of OrderDtl.ascx:
+    - The list went empty / stale after the 2nd letter: the plugin filtered the first reply in the browser by
+      "starts with", but each row starts with "#item#, description". Now every search asks the server (matchSubset off).
+    - An older, slower search could replace the list for the current text (the plugin needs the ajaxQueue plugin to
+      cancel old requests and it is not loaded). Now an older search is canceled when a new one starts.
+    - Picking an item did not load it; it loaded only when the box got focus again, so clicking back into the box
+      reloaded the old item and cleared the qty typed. Now picking an item (click or Enter) loads it right away.
+    - Search starts at 2 letters (1 letter matched most of the catalog and was the slowest).
+    Test: type part of a description (e.g. 2-3 words), type an item #, pick with mouse and with arrow keys + Enter,
+    then click back into the search box (item and qty must stay).
 
 ==================================================================================================================================
 5. VERSION

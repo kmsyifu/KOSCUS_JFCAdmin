@@ -228,9 +228,15 @@ Partial Class Common_OrderDtl
                     SQL = "SELECT directory, fileName FROM customer_document " & _
                             "WHERE UPPER(docType) = 'INVOICE' AND docName = :1 AND customer_id = :2 AND custGrpVendor_id = :3"
                     r = DB.GetReader(SQL, docName, lblCustomerID.Text, lblCustGrpVendorID.Text)
-                    If r.Read Then
-                        rtn = DownloadFile(CString(r("directory")), CString(r("fileName")))
+                    'Read the file info and close the reader before the download starts (it was left open)
+                    Dim docDir As String = "", docFile As String = ""
+                    Dim docFound As Boolean = r.Read()
+                    If docFound Then
+                        docDir = CString(r("directory"))
+                        docFile = CString(r("fileName"))
                     End If
+                    r.close()
+                    If docFound Then rtn = DownloadFile(docDir, docFile)
                     If rtn = False Then MessageBox("Cannot open the document", "Error", DB)
 
                     Exit Sub
@@ -340,6 +346,13 @@ Partial Class Common_OrderDtl
                     showOrderDtlKeepEdits(custGrpItemID)
                 Case "DELETE_ORDER"
                     webOrderID = ViewState("ORDER_ID")
+                    'Re-check the status at "Yes": the order may have been processed while the dialog was open.
+                    'Delete Order is only offered for Order Placed (N) or downloaded to SFA (P) orders.
+                    orderState = GetOrderState(DB, webOrderID)
+                    If orderState <> "N" AndAlso orderState <> "P" Then
+                        MessageBox("This order cannot be canceled because it has been " & IIf(orderState = "D", "canceled", "processed") & ".", "Error", DB)
+                        Exit Select
+                    End If
                     userEmail = GetUserEmail(DB)
                     customerEmail = GetOrderEmail(DB, webOrderID, "CUSTOMER")
                     vendorEmail = GetOrderEmail(DB, webOrderID, "VENDOR")
@@ -395,6 +408,12 @@ Partial Class Common_OrderDtl
                     btnGetItem_Click(Nothing, Nothing)
                 Case "CHANGE_NEWSTATUS"
                     webOrderID = ViewState("ORDER_ID")
+                    'Only an order downloaded to SFA (P) can go back to Order Placed - re-check at "Yes"
+                    'so an order processed or canceled in the meantime is not reopened
+                    If GetOrderState(DB, webOrderID) <> "P" Then
+                        MessageBox("The status of this order has changed. It cannot be changed back to Order Placed.", "Error", DB)
+                        Exit Select
+                    End If
                     DBUpdate.UpdateOrderState(DB, webOrderID, "N")
                     Session("ORDERDTL_RETURNCMD") = "UPDATED"
 
@@ -1333,6 +1352,10 @@ Partial Class Common_OrderDtl
             Dim jfcBranchNr As String = ""
             Dim belowBottomPriceItems As String = ""
             Dim checkBottomPrice As Boolean = hdnBypassBottomPriceCheck.Value <> "YES"
+            Dim anyQty As Boolean = False
+            'The "Yes" on the bottom price warning only covers this one postback. Before, it stayed "YES" when a later check
+            'failed (e.g. bad qty), so the next Update Order skipped the bottom price warning even for new prices.
+            hdnBypassBottomPriceCheck.Value = "NO"
 
             GetJFCBranchAndCustomerNr(DB, lblCustomerID.Text, jfcBranchNr, Nothing)
             CheckItemAvail()
@@ -1419,7 +1442,17 @@ Partial Class Common_OrderDtl
                     MessageBox("Please enter VP memo for item #" & itemIdNr_view, "Error", DB)
                     Exit Sub
                 End If
+
+                If Val(txtCsQty.Text) > 0 OrElse Val(txtEaQty.Text) > 0 OrElse Val(txtLbs.Text) > 0 OrElse Val(txtCsQty_vp.Text) > 0 OrElse Val(txtEaQty_vp.Text) > 0 _
+                    OrElse Val(txtCsQty_sp.Text) > 0 OrElse Val(txtEaQty_sp.Text) > 0 Then anyQty = True
             Next
+
+            'All qty 0 -> every line would be deleted and an empty order saved (and approved / emailed with Approve Order).
+            'The "Order is empty" check above only looks at the saved order, not the qty typed now.
+            If anyQty = False Then
+                MessageBox("All quantities are 0. Please enter qty for at least one item, or use Delete Order to cancel the order.", "Error", DB)
+                Exit Sub
+            End If
 
             ' If there are items below bottom price, show custom warning dialog and stop
             If belowBottomPriceItems <> "" Then
@@ -1431,9 +1464,6 @@ Partial Class Common_OrderDtl
                 Page.ClientScript.RegisterStartupScript(Me.GetType(), "BottomPriceWarning", script, True)
                 Exit Sub
             End If
-
-            ' Reset the bypass flag
-            hdnBypassBottomPriceCheck.Value = "NO"
 
             ' Perform the actual update - NO DIALOG PROCESSING, just direct call
             PerformOrderUpdate(sender.ID)
@@ -2426,7 +2456,7 @@ Partial Class Common_OrderDtl
             ''Get email body for vendor from email template in user control
             'CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "VENDOR", "DELETED", txtEmailMsg.Text)
             'ViewState("DIALOG_ARG2") = emailBody
-            MessageBoxYesNo("Are you sure you want to change back to order placed status?", "Confirm Cancelation", DB)
+            MessageBoxYesNo("Are you sure you want to change back to order placed status?", "Confirm Status Change", DB)
         End Using
 
 
