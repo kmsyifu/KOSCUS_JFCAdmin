@@ -27,12 +27,25 @@ Partial Class BranchSetting
         End If
     End Sub
 
+    'User is JFC HO admin or KMS support. Read once per request - IsJfcHoAdmin and IsKmsSupport run the same query,
+    'and this was checked in Page_Load, the homepage image detail, and once per branch inside the save loop.
+    Private hoOrKmsUser As Nullable(Of Boolean)
+    Private Function IsHoOrKmsUser(ByVal DB As DBHelper, ByVal email As String) As Boolean
+        If Not hoOrKmsUser.HasValue Then
+            Dim role As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+            hoOrKmsUser = (role = "JFC_HO" OrElse role = "KMS_SUPPORT")
+        End If
+        Return hoOrKmsUser.Value
+    End Function
+
     Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
 
         Dim SQL As String
         Dim email As String
 
-        Using DB As New DBHelper
+        'Only open a DB connection on first load - the postback branch below doesn't use it
+        Dim DB As DBHelper = If(IsPostBack, Nothing, New DBHelper)
+        Try
             'Post process for modal dialog box
             If Request("DialogResult") = "YES" Then
                 dialogResult_yes(ViewState("DIALOG_CMD"), ViewState("DIALOG_ARG1"))
@@ -54,7 +67,7 @@ Partial Class BranchSetting
 
                 ''Show company list
                 email = GetUserEmail(DB)
-                If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                If IsHoOrKmsUser(DB, email) Then
                     ShowBranchList(DB, email, True, lstBranch)
                 Else
                     ShowBranchList(DB, email, False, lstBranch)
@@ -175,7 +188,9 @@ Partial Class BranchSetting
             End If
             'setJavaScript(ViewState("MASTER_TAB"))
 
-        End Using
+        Finally
+            If DB IsNot Nothing Then DB.Dispose()
+        End Try
     End Sub
 
     Protected Sub lstBranch_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstBranch.SelectedIndexChanged
@@ -376,7 +391,7 @@ Partial Class BranchSetting
             cblBranch.DataBind()
             Dim email = GetUserEmail(DB)
 
-            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+            If IsHoOrKmsUser(DB, email) Then
                 cbAll.Visible = True
                 pnlBranchList.Visible = True
             Else
@@ -407,9 +422,10 @@ Partial Class BranchSetting
 
             Else
 
-                SQL = "SELECT * FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE IMGNAME = '" & HomePageName & "' and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text) & " order by JFCBRANCHNR"
+                SQL = "SELECT * FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE IMGNAME = :1 and ImgCtg = :2 order by JFCBRANCHNR"
 
-                Dim r = DB.GetReader(SQL)
+                'Bind the image name - an apostrophe in the name used to break this query
+                Dim r = DB.GetReader(SQL, HomePageName, lstImgCtg.Text)
 
                 'ViewState("HomePageId") = CString(r("HOMEPAGEIMG_ID"))
 
@@ -438,6 +454,7 @@ Partial Class BranchSetting
                     End If
 
                 End While
+                r.close()
 
             End If
 
@@ -558,7 +575,7 @@ Partial Class BranchSetting
                         ' Handle cases where branch is selected
                         If fuHomepage.HasFile Then
                             ' New image uploaded - save/update with new image
-                            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                            If IsHoOrKmsUser(DB, email) Then
                                 Sql = "SELECT Min(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
                                 disOrder = Val(DB.GetScalar(Sql, item.Text.Substring(0, 2), lstImgCtg.Text)) - 1
                             End If
@@ -570,7 +587,7 @@ Partial Class BranchSetting
                             End If
                         ElseIf item.Value.Length < 3 Then
                             ' Copy image from another branch
-                            If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                            If IsHoOrKmsUser(DB, email) Then
                                 Sql = "SELECT Min(dispOrder) OVER () max_dispOrder FROM " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE JFCBRANCHNR = :1 AND ImgCtg =:2 FOR UPDATE OF dispOrder"
                                 disOrder = Val(DB.GetScalar(Sql, item.Text.Substring(0, 2), lstImgCtg.Text)) - 1
                             End If
@@ -1090,49 +1107,48 @@ Partial Class BranchSetting
         Dim txt As TextBox
         Dim str As String
 
-        Using DB As New DBHelper
-            If e.Row.RowType = DataControlRowType.DataRow Then
-                'Show and select hide order
-                'lst = CType(e.Row.FindControl("lstPMAM"), DropDownList)
-                'ShowCodeMasterListLocal(DB, "AMPM", lst, False)
-                'IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                'str = CType(e.Row.FindControl("lstPMAM"), Label).Text
-                'str = IIf(str = "AM", "1", "2")
-                'If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+        'No DB connection here - these lists are built in memory (was 1 connection per row)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            'Show and select hide order
+            'lst = CType(e.Row.FindControl("lstPMAM"), DropDownList)
+            'ShowCodeMasterListLocal(Nothing, "AMPM", lst, False)
+            'If IsMobile() Then lst.CssClass = "cellLbl drpList size4"
+            'str = CType(e.Row.FindControl("lstPMAM"), Label).Text
+            'str = IIf(str = "AM", "1", "2")
+            'If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
 
-                lst = CType(e.Row.FindControl("lstOrderTime"), DropDownList)
-                ShowCodeMasterListLocal(DB, "TIMEOFDAY", lst, True)
-                str = CType(e.Row.FindControl("lblOrderTime"), Label).Text
-                If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+            lst = CType(e.Row.FindControl("lstOrderTime"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "TIMEOFDAY", lst, True)
+            str = CType(e.Row.FindControl("lblOrderTime"), Label).Text
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
 
-                lst = CType(e.Row.FindControl("lstOrderByAmPm"), DropDownList)
-                ShowCodeMasterListLocal(DB, "AMPM", lst, True)
-                IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                str = CType(e.Row.FindControl("lblOrderByAmPm"), Label).Text
+            lst = CType(e.Row.FindControl("lstOrderByAmPm"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "AMPM", lst, True)
+            If IsMobile() Then lst.CssClass = "cellLbl drpList size4"
+            str = CType(e.Row.FindControl("lblOrderByAmPm"), Label).Text
 
-                If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
 
-                lst = CType(e.Row.FindControl("lstSendReminder"), DropDownList)
-                ShowCodeMasterListLocal(DB, "YESNO", lst, True)
-                IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
-                str = CType(e.Row.FindControl("lblSendReminder"), Label).Text
-                str = IIf(str = "Y", "Yes", "No")
-                If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+            lst = CType(e.Row.FindControl("lstSendReminder"), DropDownList)
+            ShowCodeMasterListLocal(Nothing, "YESNO", lst, True)
+            If IsMobile() Then lst.CssClass = "cellLbl drpList size4"
+            str = CType(e.Row.FindControl("lblSendReminder"), Label).Text
+            str = IIf(str = "Y", "Yes", "No")
+            If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
 
 
-                'Show and select hide order
-                'lst = CType(e.Row.FindControl("lstHidePrice"), DropDownList)
-                'ShowCodeMasterListLocal(DB, "HIDEDISPLAY", lst, False)
-                'str = CType(e.Row.FindControl("lblHidePrice"), Label).Text
-                'str = IIf(str = "Y", "Y", "N")
-                'If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
-                'IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
+            'Show and select hide order
+            'lst = CType(e.Row.FindControl("lstHidePrice"), DropDownList)
+            'ShowCodeMasterListLocal(Nothing, "HIDEDISPLAY", lst, False)
+            'str = CType(e.Row.FindControl("lblHidePrice"), Label).Text
+            'str = IIf(str = "Y", "Y", "N")
+            'If lst.Items.FindByValue(str) IsNot Nothing Then lst.Items.FindByValue(str).Selected = True
+            'If IsMobile() Then lst.CssClass = "cellLbl drpList size4"
 
-                'txt = CType(e.Row.FindControl("txtCell"), TextBox)
-                'IIf(IsMobile(), txt.CssClass = "cellLbl size4", "")
+            'txt = CType(e.Row.FindControl("txtCell"), TextBox)
+            'IIf(IsMobile(), txt.CssClass = "cellLbl size4", "")
 
-            End If
-        End Using
+        End If
     End Sub
 
     Protected Sub lstOrderBy_order_TextChanged(sender As Object, e As System.EventArgs) Handles lstOrderBy_order.TextChanged
@@ -1149,7 +1165,7 @@ Partial Class BranchSetting
             MessageBox("Delivery Date has to be in " & DATE_FMT.ToLower & " format", "Error")
             Exit Sub
         End If
-        If txtDeliveryDateTo.Text <> "" AndAlso DateTime.TryParseExact(txtDeliveryDateFrom.Text, DATE_FMT, Nothing, Nothing, dateVal) = False Then
+        If txtDeliveryDateTo.Text <> "" AndAlso DateTime.TryParseExact(txtDeliveryDateTo.Text, DATE_FMT, Nothing, Nothing, dateVal) = False Then
             MessageBox("Delivery date has to be in " & DATE_FMT.ToLower & " format", "Error")
             Exit Sub
         End If
@@ -1160,6 +1176,7 @@ Partial Class BranchSetting
         Dim DeliveryDate As DateTime
         Dim Orderdate As DateTime
         Dim IsSendEmail As Boolean = False
+        Dim VendorEmail As String = Nothing
         Dim origCulture As CultureInfo = Thread.CurrentThread.CurrentCulture
         Dim origUICulture As CultureInfo = Thread.CurrentThread.CurrentUICulture
         Using DB As New DBHelper
@@ -1212,14 +1229,10 @@ Partial Class BranchSetting
                         "AND uc.usercompany_id <> 'JFC' AND c.allowCustOrder = 'Y' AND NVL(uc.hideCustOrder, ' ') <> 'Y' " &
                         "AND c.customer_id = '" & lblcustomerID.Text & "' order by c.customer_id"
                     Dim dt = DB.GetDataTable(Sql)
-                    Dim sql2 As String = "SELECT email, jfcBranchNr FROM jfcVendor WHERE jfcBranchNr = :1"
-                    Dim r2 As DataReader
-                    r2 = DB.GetReader(sql2, lstBranch.Text)
-                    Dim VendorEmail As String = ""
-                    If r2.Read() Then
-                        VendorEmail = CString(r2("email"))
+                    'Branch email is the same for every row - read it once, not once per checked row
+                    If VendorEmail Is Nothing Then
+                        VendorEmail = CString(DB.GetScalar("SELECT email FROM jfcVendor WHERE jfcBranchNr = :1", lstBranch.Text))
                     End If
-                    r2.close()
 
 
                     '2023
@@ -1284,7 +1297,11 @@ Partial Class BranchSetting
             lstFrequency.Items.Remove("Daily")
             lstFrequency.Text = "Weekly" 'Set weekly by default
             ShowCodeMasterList(DB, "DAYOFWEEK", lstOrderbyDate, True)
-            ShowCodeMasterList(DB, "DAYOFWEEK", lstDelivery, True)
+            'Same list - copy it instead of querying again
+            lstDelivery.Items.Clear()
+            For Each it As ListItem In lstOrderbyDate.Items
+                lstDelivery.Items.Add(New ListItem(it.Text, it.Value))
+            Next
             'lst = CType(e.Row.FindControl("lstOrderByDiff"), DropDownList)
             'ShowCodeMasterList(DB, "DAYDIFF", lst, True, True)
             ShowCodeMasterListLocal(DB, "TIMEOFDAY", lstOrderbyTime, True)
@@ -1335,6 +1352,7 @@ Partial Class BranchSetting
 
     End Sub
     Private MonthData As DataTable
+    Private MonthDataLoaded As Boolean = False
 
     Protected Sub cldSchedule_DayRender(sender As Object, e As System.Web.UI.WebControls.DayRenderEventArgs) Handles cldSchedule.DayRender
 
@@ -1347,11 +1365,13 @@ Partial Class BranchSetting
         'End If
         ' Load data once per month
         If hfActiveTab.Value = CType(Master_Tab.DELIVERYMASTER, Integer).ToString() AndAlso pnlList_schedule.Visible Then
-            If MonthData Is Nothing OrElse MonthData.Rows.Count = 0 Then
+            'Use a flag, not Rows.Count = 0, so an empty month doesn't query again for every day cell
+            If Not MonthDataLoaded Then
                 ' Fetch data for the entire month once
                 Using DB As New DBHelper
                     MonthData = Common.GetMonthlyData(DB, lstBranch.Text, e.Day.Date)
                 End Using
+                MonthDataLoaded = True
             End If
 
             ' Render day events from the cached MonthData

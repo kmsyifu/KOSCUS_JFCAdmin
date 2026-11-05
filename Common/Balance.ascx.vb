@@ -8,7 +8,33 @@ Imports System.Security.Cryptography.X509Certificates
 
 Partial Class Common_Balance
     Inherits System.Web.UI.UserControl
-    Private mDB As New DBHelper
+    'DB connection is opened on first use and closed when the control unloads.
+    'It used to be opened for every request (even when unused) and never closed.
+    Private _mDB As DBHelper
+    Private ReadOnly Property mDB As DBHelper
+        Get
+            If _mDB Is Nothing Then _mDB = New DBHelper
+            Return _mDB
+        End Get
+    End Property
+
+    'True once the Balance tab's company / group / customer lists were loaded in this request.
+    'The Payment and Download tabs show the same lists, so they copy them instead of running the same queries again.
+    Private balanceListsLoaded As Boolean = False
+
+    Private Shared Sub CopyListItems(ByVal src As DropDownList, ByVal dst As DropDownList)
+        dst.Items.Clear()
+        For Each it As ListItem In src.Items
+            dst.Items.Add(New ListItem(it.Text, it.Value))
+        Next
+    End Sub
+
+    Protected Sub CloseDB_Unload(sender As Object, e As System.EventArgs) Handles Me.Unload
+        If _mDB IsNot Nothing Then
+            _mDB.Dispose()
+            _mDB = Nothing
+        End If
+    End Sub
     Private Const mOldestIndex As Integer = -3
     Private SSL_Certificate_Validation_Errors As String
 
@@ -101,6 +127,7 @@ Partial Class Common_Balance
 
                 'Show list of customer company
                 Common.ShowCustCompanyList(mDB, GetUserEmail(mDB), IIf(Session("BALANCE_CMD") = "CUSTADMIN", True, False), lstCustCompany_balance)
+                balanceListsLoaded = True
                 If ViewState("CUSTCOMPANY_ID") <> String.Empty Then
                     lstCustCompany_balance.Text = ViewState("CUSTCOMPANY_ID")
                 ElseIf Session("BALANCE_CMD") = "CUST" OrElse Session("BALANCE_CMD") = "CUSTADMIN" Then
@@ -178,7 +205,12 @@ Partial Class Common_Balance
                 'customerID = IIf(Session("BALANCE_CMD") = "CUST", Session("BALANCE_CUSTID"), lstCustomer_payment.Text)
 
                 'Show list of customer company
-                Common.ShowCustCompanyList(mDB, GetUserEmail(mDB), IIf(Session("BALANCE_CMD") = "CUSTADMIN", True, False), lstCustCompany_payment)
+                'Same list as the Balance tab - copy it instead of querying again
+                If balanceListsLoaded Then
+                    CopyListItems(lstCustCompany_balance, lstCustCompany_payment)
+                Else
+                    Common.ShowCustCompanyList(mDB, GetUserEmail(mDB), IIf(Session("BALANCE_CMD") = "CUSTADMIN", True, False), lstCustCompany_payment)
+                End If
                 If ViewState("CUSTCOMPANY_ID") <> String.Empty Then
                     lstCustCompany_payment.Text = ViewState("CUSTCOMPANY_ID")
                 ElseIf Session("BALANCE_CMD") = "CUST" OrElse Session("BALANCE_CMD") = "CUSTADMIN" Then
@@ -187,10 +219,18 @@ Partial Class Common_Balance
                 'Show list of customer group and customer
                 'lstCustCompany_payment_SelectedIndexChanged(Nothing, Nothing)
                 'Show list of customer group
-                Common.ShowCustGrpList(mDB, lstCustCompany_payment.Text, lstCustGrp_payment)
+                If balanceListsLoaded AndAlso lstCustCompany_payment.Text = lstCustCompany_balance.Text Then
+                    CopyListItems(lstCustGrp_balance, lstCustGrp_payment)
+                Else
+                    Common.ShowCustGrpList(mDB, lstCustCompany_payment.Text, lstCustGrp_payment)
+                End If
                 If ViewState("CUSTGRP_ID") <> String.Empty Then lstCustGrp_payment.Text = ViewState("CUSTGRP_ID")
                 'Show list of customer
-                Common.ShowCustomerList(mDB, lstCustGrp_payment.Text, lstCustomer_payment)
+                If balanceListsLoaded AndAlso lstCustGrp_payment.Text = lstCustGrp_balance.Text AndAlso lstCustCompany_payment.Text = lstCustCompany_balance.Text Then
+                    CopyListItems(lstCustomer_balance, lstCustomer_payment)
+                Else
+                    Common.ShowCustomerList(mDB, lstCustGrp_payment.Text, lstCustomer_payment)
+                End If
                 If ViewState("CUSTOMER_ID") <> String.Empty Then lstCustomer_payment.Text = ViewState("CUSTOMER_ID")
                 'Show document type
                 'Common.ShowCodeMasterList(mDB, "DOCTYPE", lstDocType, True, True, LST_ALL_STR)
@@ -254,7 +294,12 @@ Partial Class Common_Balance
                 'customerID = IIf(Session("BALANCE_CMD") = "CUST", Session("BALANCE_CUSTID"), lstCustomer_download.Text)
 
                 'Show list of customer company
-                Common.ShowCustCompanyList(mDB, GetUserEmail(mDB), IIf(Session("BALANCE_CMD") = "CUSTADMIN", True, False), lstCustCompany_download)
+                'Same list as the Balance tab - copy it instead of querying again
+                If balanceListsLoaded Then
+                    CopyListItems(lstCustCompany_balance, lstCustCompany_download)
+                Else
+                    Common.ShowCustCompanyList(mDB, GetUserEmail(mDB), IIf(Session("BALANCE_CMD") = "CUSTADMIN", True, False), lstCustCompany_download)
+                End If
                 If ViewState("CUSTCOMPANY_ID") <> String.Empty Then
                     lstCustCompany_download.Text = ViewState("CUSTCOMPANY_ID")
                 ElseIf Session("BALANCE_CMD") = "CUST" OrElse Session("BALANCE_CMD") = "CUSTADMIN" Then
@@ -264,10 +309,18 @@ Partial Class Common_Balance
                 'Show list of customer group and customer
                 'lstCustCompany_download_SelectedIndexChanged(Nothing, Nothing)
                 'Show list of customer group
-                Common.ShowCustGrpList(mDB, lstCustCompany_download.Text, lstCustGrp_download)
+                If balanceListsLoaded AndAlso lstCustCompany_download.Text = lstCustCompany_balance.Text Then
+                    CopyListItems(lstCustGrp_balance, lstCustGrp_download)
+                Else
+                    Common.ShowCustGrpList(mDB, lstCustCompany_download.Text, lstCustGrp_download)
+                End If
                 If ViewState("CUSTGRP_ID") <> String.Empty Then lstCustGrp_download.Text = ViewState("CUSTGRP_ID")
                 'Show list of customer
-                Common.ShowCustomerList(mDB, lstCustGrp_download.Text, lstCustomer_download)
+                If balanceListsLoaded AndAlso lstCustGrp_download.Text = lstCustGrp_balance.Text AndAlso lstCustCompany_download.Text = lstCustCompany_balance.Text Then
+                    CopyListItems(lstCustomer_balance, lstCustomer_download)
+                Else
+                    Common.ShowCustomerList(mDB, lstCustGrp_download.Text, lstCustomer_download)
+                End If
                 If ViewState("CUSTOMER_ID") <> String.Empty Then lstCustomer_download.Text = ViewState("CUSTOMER_ID")
                 'Show document type
                 Common.ShowCodeMasterList(mDB, "DOCTYPE", lstDocType, True, True, LST_ALL_STR)
@@ -726,17 +779,21 @@ Partial Class Common_Balance
     '    pnlAddPaymentAcc.Visible = False
     'End Sub
 
+    Private payDtlWebDiscType As String = Nothing
+
     Protected Sub grdPayDtl_RowDataBound(sender As Object, e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles grdPayDtl.RowDataBound
         Dim btn As ImageButton
         Dim lbl As Label
         Dim customerID As String = IIf(Session("BALANCE_CMD") = "CUST", Session("BALANCE_CUSTID"), lstCustomer_balance.Text)
-        Dim webDiscType As String = GetCustWebDiscType(mDB, customerID)
         'Dim webDiscRate As Decimal = GetCustWebDiscRate(mDB, customerID)
         Dim webDiscDesc_A As String = WebdiscRate_A & "% off if paid within " & WebDiscDays_A & " days"
         Dim webDiscDesc_B As String = WebdiscRate_B & "% off if paid within " & WebDiscDays_B & " days"
    
         Session("BALANCE_TAB") = Balance_Tab.BALANCE
         If grdPayDtl.HeaderRow IsNot Nothing Then
+            'Look up the web discount type once per request, not once per row (was 1 query per row)
+            If payDtlWebDiscType Is Nothing Then payDtlWebDiscType = GetCustWebDiscType(mDB, customerID)
+            Dim webDiscType As String = payDtlWebDiscType
             lbl = grdPayDtl.HeaderRow.FindControl("lblWebDiscHdr")
             btn = grdPayDtl.HeaderRow.FindControl("btnInfo_webDisc")
             If webDiscType = String.Empty OrElse webDiscType = "Z" Then
@@ -1486,11 +1543,21 @@ Partial Class Common_Balance
         End If
 
         'autoPayType = GetCustAutoPayType(mDB, customerID)
-        Dim autoPayTypeALL = GetCustAutoPayType(mDB, customerID, "AUTOPAYTYPEID_ALL")
-        Dim autoPayTypeNONLIQ = GetCustAutoPayType(mDB, customerID, "AUTOPAYTYPEID_NONLIQ")
-        Dim autoPayTypeBEER = GetCustAutoPayType(mDB, customerID, "AUTOPAYTYPEID_BEER")
-        Dim autoPayTypeWINE = GetCustAutoPayType(mDB, customerID, "AUTOPAYTYPEID_WINE")
-        Dim autoPayTypeLIQUOR = GetCustAutoPayType(mDB, customerID, "AUTOPAYTYPEID_LIQUOR")
+        'Read the five auto pay columns in one query (was 5 separate GetCustAutoPayType queries on the same row)
+        Dim autoPayTypeALL As String = ""
+        Dim autoPayTypeNONLIQ As String = ""
+        Dim autoPayTypeBEER As String = ""
+        Dim autoPayTypeWINE As String = ""
+        Dim autoPayTypeLIQUOR As String = ""
+        Dim rAutoPay As DataReader = mDB.GetReader("SELECT AUTOPAYTYPEID_ALL, AUTOPAYTYPEID_NONLIQ, AUTOPAYTYPEID_BEER, AUTOPAYTYPEID_WINE, AUTOPAYTYPEID_LIQUOR FROM customer WHERE customer_id = :1", customerID)
+        If rAutoPay.Read() Then
+            autoPayTypeALL = CString(rAutoPay("AUTOPAYTYPEID_ALL"))
+            autoPayTypeNONLIQ = CString(rAutoPay("AUTOPAYTYPEID_NONLIQ"))
+            autoPayTypeBEER = CString(rAutoPay("AUTOPAYTYPEID_BEER"))
+            autoPayTypeWINE = CString(rAutoPay("AUTOPAYTYPEID_WINE"))
+            autoPayTypeLIQUOR = CString(rAutoPay("AUTOPAYTYPEID_LIQUOR"))
+        End If
+        rAutoPay.close()
 
         If Session("BALANCE_CMD") = "CUST" Then
             'pnlEditAutoPay.Visible = True

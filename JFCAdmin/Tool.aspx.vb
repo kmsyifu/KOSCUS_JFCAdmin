@@ -25,7 +25,9 @@ Partial Class Tool
 
         Dim email As String
 
-        Using DB As New DBHelper
+        'Only open a DB connection on first load - postbacks don't use it here
+        Dim DB As DBHelper = If(IsPostBack, Nothing, New DBHelper)
+        Try
             'Post process for modal dialog box
             If Request("DialogResult") = "YES" Then
                 dialogResult_yes(ViewState("DIALOG_CMD"), ViewState("DIALOG_ARG1"))
@@ -40,7 +42,18 @@ Partial Class Tool
 
                 ''Show company list
                 email = GetUserEmail(DB)
-                If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                'Read the user's JFC role once (IsJfcHoAdmin / IsKmsSupport / IsJfcBranchAdmin run the same query)
+                Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+
+                'The menu only shows Tool to branch / HO admins and KMS support - enforce the same rule here,
+                'so typing the URL doesn't give other admin users access to the reports
+                If Not (jfcRole = "JFC_BRANCH" OrElse jfcRole = "JFC_HO" OrElse jfcRole = "KMS_SUPPORT") Then
+                    Response.Redirect("Home.aspx", False)
+                    Context.ApplicationInstance.CompleteRequest()
+                    Exit Sub
+                End If
+
+                If jfcRole = "JFC_HO" OrElse jfcRole = "KMS_SUPPORT" Then
                     ShowBranchList(DB, email, True, lstBranch, True, LST_ALL_STR)
                 Else
                     ShowBranchList(DB, email, False, lstBranch)
@@ -59,36 +72,50 @@ Partial Class Tool
                 '--------------------------------------------------------------------------------------------------------------------
                 ShowList(DB, "select Report_id as id, Reportname AS name from report order by dispOrder", lstKeywordReport, False)
 
-                ViewState("IsExcepPriceCustomer") = Common.IsExcepPriceCustomer(DB, ViewState("CUSTSETTING_CUSTID"))
+                'Removed: ViewState("IsExcepPriceCustomer") = IsExcepPriceCustomer(...) - its key was never set and the result never read
 
-                pnlDateFromTo.Visible = IIf(CString(DB.GetScalar("select FILTERBYDATE from report where Report_id = :1", lstKeywordReport.SelectedValue)) = "Y", True, False)
-                pnlItemCode.Visible = IIf(CString(DB.GetScalar("select FILTERBYITEM from report where Report_id = :1", lstKeywordReport.SelectedValue)) = "Y", True, False)
+                ShowReportFilters(DB)
             End If
-        End Using
+        Finally
+            If DB IsNot Nothing Then DB.Dispose()
+        End Try
+    End Sub
+
+    'Show the date / item filters for the selected report. Both flags come from the same report row - read them in one query.
+    Private Sub ShowReportFilters(ByVal DB As DBHelper)
+        Dim filterByDate As String = ""
+        Dim filterByItem As String = ""
+        Dim r As DataReader = DB.GetReader("select FILTERBYDATE, FILTERBYITEM from report where Report_id = :1", lstKeywordReport.SelectedValue)
+        If r.Read() Then
+            filterByDate = CString(r("FILTERBYDATE"))
+            filterByItem = CString(r("FILTERBYITEM"))
+        End If
+        r.close()
+        pnlDateFromTo.Visible = (filterByDate = "Y")
+        pnlItemCode.Visible = (filterByItem = "Y")
     End Sub
 
 
     Private Sub dialogResult_yes(ByVal dialogCmd As String, ByVal dialogArg1 As String)
         Dim id As String = dialogArg1
 
-        Using DB As New DBHelper
-            Select Case dialogCmd
-                'Case "DELETE_HOMEPAGE"
-                '    setJavaScript(Tool_Tab.Report)
-                '    deleteHomepageImg(DB, Path.GetFileNameWithoutExtension(id), lstBranch.SelectedValue)
-                '    DeleteHomePageFile(lstBranch.SelectedValue, id)
-                '    InsertEventLog(DB, "Deleted Homepageimg", Nothing, Nothing, Nothing, True)
-                '    MessageLine("CONFIRM", "Successfully deleted")
+        'No DB needed - nothing in here uses it any more
+        Select Case dialogCmd
+            'Case "DELETE_HOMEPAGE"
+            '    setJavaScript(Tool_Tab.Report)
+            '    deleteHomepageImg(DB, Path.GetFileNameWithoutExtension(id), lstBranch.SelectedValue)
+            '    DeleteHomePageFile(lstBranch.SelectedValue, id)
+            '    InsertEventLog(DB, "Deleted Homepageimg", Nothing, Nothing, Nothing, True)
+            '    MessageLine("CONFIRM", "Successfully deleted")
 
-                'Case "DELETE_PRICEINQUIRY"
-                '    setJavaScript(MTool_Tab.Report)
+            'Case "DELETE_PRICEINQUIRY"
+            '    setJavaScript(MTool_Tab.Report)
 
-                '    InsertEventLog(DB, "Deleted Price Inquiry's item", Nothing, Nothing, Nothing, True)
-                '    MessageLine("CONFIRM", "Successfully deleted")
-                Case Else
+            '    InsertEventLog(DB, "Deleted Price Inquiry's item", Nothing, Nothing, Nothing, True)
+            '    MessageLine("CONFIRM", "Successfully deleted")
+            Case Else
 
-            End Select
-        End Using
+        End Select
     End Sub
 
     Private Sub dialogResult_no(ByVal dialogCmd As String)
@@ -122,10 +149,7 @@ Partial Class Tool
         Dim ShowDateTime As Boolean
         If lstKeywordReport.SelectedValue IsNot Nothing Then
             Using DB As New DBHelper
-                ShowDateTime = IIf(DB.GetScalar("select FILTERBYDATE from report where Report_id = :1", lstKeywordReport.SelectedValue) = "Y", True, False)
-                pnlDateFromTo.Visible = ShowDateTime
-
-                pnlItemCode.Visible = IIf(CString(DB.GetScalar("select FILTERBYITEM from report where Report_id = :1", lstKeywordReport.SelectedValue)) = "Y", True, False)
+                ShowReportFilters(DB)
 
                 If Not pnlItemCode.Visible Then
                     txtItemcode.Text = ""
@@ -223,7 +247,7 @@ Partial Class Tool
         Dim vFileName As String = lstKeywordReport.SelectedItem.ToString().Replace(" ", "") & " " & DateTime.Now.ToString("yyyyMMdd") & ".xlsx"
         Dim lstHeader As New List(Of String)
         Dim vMaxCol As Integer
-        MessageBox("Item # can not be empty.", "Error")
+        'Removed a leftover MessageBox("Item # can not be empty.") that ran on every export
         For i As Integer = 0 To ds.Tables.Count - 1
             Dim sheet As ExcelWorksheet
 

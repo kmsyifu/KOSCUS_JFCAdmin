@@ -1,0 +1,184 @@
+﻿----------------------------------------------------------------------------------------------------------------------------------
+Release Note - KOSCUS_JFCADMIN017 (11/04/2026)
+Full detail of every change: what changed, where, why, and what to test.
+Short version is in ReleaseNotes.txt.
+----------------------------------------------------------------------------------------------------------------------------------
+
+Branches
+  version-ExceptionPrice : inventory label fix
+  version-2.0            : + CustSetting / CustItem speed, wider Search Items panel
+  version-2.1            : + order / branch setting bug fixes, master page speed, and the rest below
+
+Background
+  Every "New DBHelper" (App_Code/DBHelper.vb) reads the registry 3 times, opens an Oracle connection and runs
+  "SELECT 1 FROM dual" before any real query. The connection string also has "Connection Lifetime=20", so a
+  connection older than 20 seconds is thrown away instead of reused. That makes every extra connection costly,
+  and is the likely reason pages are slow only "sometimes". Most speed fixes below remove extra connections and
+  repeated queries. DBHelper itself was NOT changed (shared by every page) - see "Not changed" at the end.
+
+
+==================================================================================================================================
+1. CUSTOMER ITEMS (JFCAdmin/CustItem.aspx, CustItem.aspx.vb)
+==================================================================================================================================
+1.1 Inventory shows "xx cs, xx ea"
+    - Edit Item Info popup: Inventory was "56 /cs, 0 /ea", which looks like a price. Now "56 cs, 0 ea".
+    - CustItem.aspx.vb, both places that set lblPopEditInventory.
+    - Test: open Edit Item Info for any item.
+
+1.2 Search Items panel wider
+    - Width 400px -> 500px (desktop only, Page_Load). Add / Update Item panel margin-left 433px -> 533px so they don't overlap.
+    - Test: Customer Items on desktop; narrow the window and check the two panels.
+
+1.3 Category dropdown no longer runs the heavy item query a second time
+    - Before: on first load and on customer group change, the same big item query ran twice - once only to build the
+      Category dropdown, once for the item list.
+    - Now: showCustItemSearch resets Category to "All"; showCustItemList runs the item query once and builds the
+      Category list from those rows. If an item search text is filled in, it falls back to the old category query.
+    - The item grid is now bound from the query result (DataSource) instead of DataSourceID.
+    - Categories are listed alphabetically (before: whatever order the database returned).
+    - The /*+rule*/ hint was tested and is faster - kept on purpose.
+    - Test: Category filter on first load, change customer group, filter by category, item search, save drag-and-drop sort.
+
+
+==================================================================================================================================
+2. CUSTOMER SETTINGS (JFCAdmin/CustSetting.aspx.vb)
+==================================================================================================================================
+2.1 Schedule grid: delivery master dropdown loaded once per page (was 1 connection + 1 query per schedule row).
+2.2 User grid: no DB connection per user row (the dropdown lists are built in memory; nothing used the connection).
+2.3 Delivery calendar: month data loaded once, even when the month has no deliveries (was up to 42 queries,
+    one per day cell, each with its own connection).
+2.4 Auto pay info read from the customer row already loaded (5 fewer queries).
+2.5 User's JFC role checked with one query instead of four (IsJfcBranchAdmin / IsJfcHoAdmin / IsKmsSupport run the same SELECT).
+    - Test: customer info box (auto pay line), user grid dropdowns, schedule master dropdown, calendar on a month
+      with and without deliveries, Save.
+
+
+==================================================================================================================================
+3. BRANCH SETTINGS (JFCAdmin/BranchSetting.aspx.vb)
+==================================================================================================================================
+Bugs
+3.1 Save twice deleted a delivery record (Delivery Master detail grid)
+    - After Save the grid was not reloaded, so the hidden "old date" still had the date from before the change.
+      A second Save treated it as changed again: UpdateDeliveryDate deleted the record already on the new date
+      (the one just saved), then updated nothing. The record was gone.
+    - Fix: reload the grid after a successful Save. Side effect: the grid goes back to page 1 (same as delete).
+3.2 Page stayed in the customer's language after Save with "Send Email"
+    - The email loop switches the thread culture to each customer's language and never switched back.
+    - Fix: restore the original culture before reloading the grid.
+3.3 "Delivery Date To" format check was checking the From box. Fixed.
+3.4 Apostrophe (') in a homepage image name caused an Oracle error when opening it.
+    - The name was put straight into the SQL. Now passed as a bind variable. The reader is also closed now.
+3.5 Mobile style on the detail grid's time / AM-PM / reminder dropdowns was never applied
+    (IIf(IsMobile(), lst.CssClass = "...", "") compared instead of assigning). Fixed.
+
+Speed
+3.6 Delivery Master detail grid: no DB connection per row (up to 50 per page; lists are built in memory).
+3.7 Delivery calendar: loads once even for a month with no deliveries (was up to 42 queries).
+3.8 Day-of-week list loaded once and copied to both dropdowns (was the same query twice).
+3.9 Branch email read once per Save (was once per row with "Send Email" checked).
+3.10 HO admin / KMS support check runs once per page (was in Page_Load, the image detail, and once per branch inside
+     the image Save loop).
+3.11 Page_Load opens a DB connection only on first load (clicks / tab switches no longer open an unused one).
+    - Test: Delivery Master detail - change a date, Save, Save again (date must still be there); once with Send Email;
+      paging; Search with bad From / To dates; calendar; open and save a homepage image (try a name with ');
+      HO admin saving an image to several branches.
+
+
+==================================================================================================================================
+4. ORDER DETAIL (Common/OrderDtl.ascx.vb) - used by Order History
+==================================================================================================================================
+4.1 Cancel Order could email the wrong text
+    - The Cancel Order button did not clear the email subject / body saved by an earlier cancel dialog (for example
+      one answered "No", possibly for another order). Confirming then emailed that old text to this order's customer.
+    - Fix: clear both before showing the confirm. (This button does not send a cancel email itself today.)
+4.2 Update Order crashed on a blank ship date
+    - A blank ship date is allowed for branch 05 customers with Anytime Delivery, but the save always parsed it as a
+      date. It threw in the middle of the transaction and the changes were lost.
+    - Fix: blank saves as no ship date. A typed date is read as MM/dd/yyyy (any other format is read as before).
+    - Decision to confirm: blank = no ship date. If it should keep the order's existing date instead, tell Yi.
+    - Test: cancel an order (Yes and No); update an order with a ship date and with it blank (branch 05 + Anytime Delivery).
+
+
+==================================================================================================================================
+5. ORDER HISTORY (Common/OrderHistory.ascx.vb)
+==================================================================================================================================
+5.1 Bad order date crashed the page
+    - The date format was only checked on Search. Sort, paging, checkbox / company changes and refresh after update
+      or delete also load the list, and a bad date reached TO_DATE -> Oracle error.
+    - Fix: the check runs every time the list loads; a bad date shows the normal "mm/dd/yyyy format" message.
+5.2 "Total N Orders" taken from the grid's own query (dsOrder_Selected) - the whole order query no longer runs a
+    second time just to count.
+5.3 Removed a customer list query that ran on every list load for JFC admins; its result was only used by the
+    CUST / CUSTADMIN cases, which never reach that code.
+5.4 DB connection opened only when needed and closed when the page is done (see 7.1).
+    - Test: search (check the total count), bad date then change sort, paging, open an order.
+
+
+==================================================================================================================================
+6. BALANCE (Common/Balance.ascx.vb, Common/PaymentDtl.ascx.vb)
+==================================================================================================================================
+6.1 Payment and Download tabs reuse the Balance tab's company / group / customer lists (were the same 3 queries x3).
+6.2 Web discount type read once per page (was 1 query per row in the payment detail grid).
+6.3 The 5 auto pay columns read in one query (was 5).
+6.4 DB connections opened only when needed and closed (see 7.1).
+    - Test: all three tabs and their dropdowns; payment detail grid header; Auto Pay.
+
+
+==================================================================================================================================
+7. COMMON / EVERY ADMIN PAGE
+==================================================================================================================================
+7.1 DB connections left open (connection leak)
+    - Balance, Payment Detail (twice on the Balance page), Order History and Item Detail controls each created a
+      DB connection for every request, used or not, and never closed it. Under load this can run out of connections.
+    - Fix: opened on first use, closed when the control unloads.
+      Files: Common/Balance.ascx.vb, Common/PaymentDtl.ascx.vb, Common/OrderHistory.ascx.vb, Common/ShowItemDtl.ascx.vb
+7.2 Desktop master (JFCAdmin/JFCAdmin.master.vb): opens a DB connection only on first load (was every click on every
+    page) and reads the user's role with one query (was 2-4).
+7.3 Mobile master (JFCAdmin/JFCAdmin_Mobile.master.vb): no longer opens a DB connection (it never used one).
+    - Test: Branch Settings and Tool menu links show for branch / HO admin and KMS support, hidden for others.
+
+
+==================================================================================================================================
+8. HOME (JFCAdmin/Home.aspx.vb)
+==================================================================================================================================
+8.1 One role query instead of up to 8; no DB connection on clicks; the calendar update check only runs for KMS
+    support (the only users who can see it) and uses the page's connection instead of opening a second one.
+8.2 Fixed: the next delivery calendar year is compared as a number (was a text compare), and a missing setting no
+    longer shows the update button.
+    - Test: Home as KMS support (update panel) and as a regular admin.
+
+
+==================================================================================================================================
+9. TOOL (JFCAdmin/Tool.aspx.vb)
+==================================================================================================================================
+9.1 Permission check added
+    - The menu only shows Tool to branch / HO admins and KMS support, but the page itself had no check: any admin
+      user who typed the URL could run and export reports. Others are now sent to Home.
+    - This changes who can open the page.
+9.2 Removed a leftover MessageBox("Item # can not be empty.") that ran on every export.
+9.3 Report date / item filter flags read in one query (was 2), role checked once, removed a dead
+    IsExcepPriceCustomer call, no DB connection on clicks.
+    - Test: open Tool as a non-admin user (goes to Home); as admin pick each report (filters show / hide), run an export.
+
+
+==================================================================================================================================
+10. VERSION (App_Code/Common.vb)
+==================================================================================================================================
+10.1 Common.VERSION changed from "011" to "017" to match this release. It is added to the CSS / JS links (?v=017), so
+     browsers load the new files instead of old cached copies.
+
+==================================================================================================================================
+Not changed (ideas for later)
+==================================================================================================================================
+- DBHelper "Connection Lifetime=20" (App_Code/DBHelper.vb): raising or removing it should help every page, but it is
+  shared by the whole site. Needs a decision.
+- debug="true" in Web.config: pages download the full-size debug Ajax scripts. Site-wide decision.
+- Order detail: opening one order still runs about 30 queries on several connections; Update Order on a large order
+  makes hundreds of round trips (UpSertItemInOrder per line). Bigger change, needs testing.
+- Order History: the list query can still run 2-4 times when several filters change before Search; paging runs it
+  twice. Needs testing.
+- Balance: all three tabs load on first load though only one is shown. Needs a decision (load on tab click).
+- OrderForm: extra connections, one INSERT per checked row on Save, large ViewState on the item grid.
+- The admin user-type check in the master pages runs only on first load, not on clicks. Changing it changes access.
+- Balance: GetCustCompanyID (Common.vb) returns custGrp_id instead of custCompany_id - check against data before fixing.
+- Global.asax Application_Error can fail when there is no session (error email not sent).

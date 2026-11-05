@@ -4,7 +4,22 @@ Imports DBUpdate
 
 Partial Class Common_OrderHistory
     Inherits System.Web.UI.UserControl
-    Private mDB As New DBHelper
+    'DB connection is opened on first use and closed when the control unloads.
+    'It used to be opened for every request (even when unused) and never closed.
+    Private _mDB As DBHelper
+    Private ReadOnly Property mDB As DBHelper
+        Get
+            If _mDB Is Nothing Then _mDB = New DBHelper
+            Return _mDB
+        End Get
+    End Property
+
+    Protected Sub CloseDB_Unload(sender As Object, e As System.EventArgs) Handles Me.Unload
+        If _mDB IsNot Nothing Then
+            _mDB.Dispose()
+            _mDB = Nothing
+        End If
+    End Sub
 
     '--------------------------------------------------------------------------------------------------------------------
     'Parameters passed by caller
@@ -339,26 +354,8 @@ Partial Class Common_OrderHistory
         ElseIf lstCustomer_order.Text <> String.Empty Then
             customers = "(1, " & mDB.SqlEsc(lstCustomer_order.Text) & ")"
             'customers = mDB.SqlEsc(lstCustomer_order.Text) 'Error occurred as customers are too long
-        Else
-            'All customer is selected or customer ID is specified for JFCAdmin
-            'SQL = "SELECT '''' || REPLACE(WM_CONCAT(customer_id), ',', ''',''') || '''' FROM webuser_customer WHERE customer_id <> 'ADMIN' AND email = " & mDB.SqlEsc(GetUserEmail(mDB))
-            'customers = CString(mDB.GetScalar(SQL))
-            'SQL = "SELECT '''' || customer_id || ''',' AS customerID FROM webuser_customer WHERE customer_id <> 'ADMIN' AND email = " & mDB.SqlEsc(GetUserEmail(mDB)) & " GROUP BY customer_id" 'Error occurred as customers are too long
-            SQL = "SELECT '(1, ''' || customer_id || '''),' AS customerID " & _
-                    "FROM webuser_customer " & _
-                    "WHERE customer_id <> 'ADMIN' AND email = " & mDB.SqlEsc(GetUserEmail(mDB)) & _
-                    IIf(chkShowWebOrder.Checked = True, "  AND customer_id IN (SELECT customer_id FROM customer WHERE allowCustOrder = 'Y') ", "") & _
-                    IIf(txtJfcCustomerNr_order.Text <> String.Empty, " AND customer_id IN (SELECT customer_id FROM customer WHERE jfcCustomerNr = " & mDB.SqlEsc(txtJfcCustomerNr_order.Text) & ") ", "") & _
-                    "GROUP BY customer_id"
-            r = mDB.GetReader(SQL)
-            While r.Read()
-                customers &= CString(r("customerID"))
-            End While
-            r.close()
-            If customers <> String.Empty Then
-                'Remove the last comma
-                customers = Left(customers, customers.Length - 1)
-            End If
+        'Else (JFCADMIN, all customers): nothing to do. The customer list query that used to run here
+        'was only used by the CUST / CUSTADMIN cases below, which never reach this branch.
         End If
 
         Select Case Session("ORDER_HISTORY_CMD")
@@ -474,7 +471,7 @@ Partial Class Common_OrderHistory
         grdOrder.Sort(lstOrderBy_order.SelectedValue, Nothing)
         If Session("ORDER_HISTORY_CMD") = "CUST" Then grdOrder.Columns(GetColumnIndex(grdOrder, "customerName")).Visible = False
         grdOrder.DataBind()
-        lblTotalOrderAmt.Text = String.Format("Total {0} Orders", CType(dsOrder.Select(DataSourceSelectArguments.Empty), DataView).Count)
+        'Total count is set in dsOrder_Selected from the rows the grid already loaded (no second run of the query)
         ViewState("GRDORDER_NUMBER") = grdOrder.PagerSettings.PageButtonCount
     End Sub
 
@@ -484,6 +481,13 @@ Partial Class Common_OrderHistory
     '    showOrderList()
     '    'bindGrid()
     'End Sub
+
+    'Set "Total N Orders" from the grid's own query instead of running the whole order query again
+    Protected Sub dsOrder_Selected(sender As Object, e As SqlDataSourceStatusEventArgs) Handles dsOrder.Selected
+        If e.Exception Is Nothing Then
+            lblTotalOrderAmt.Text = String.Format("Total {0} Orders", e.AffectedRows)
+        End If
+    End Sub
 
     Private Sub showOrderDtl(ByVal orderID As String, ByVal customerID As String, ByVal showWebOrder As Boolean)
         'Show detail of the order

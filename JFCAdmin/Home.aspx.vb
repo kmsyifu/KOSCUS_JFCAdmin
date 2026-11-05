@@ -36,20 +36,23 @@ Partial Class JFCAdmin_Home
         '    End If
         'End If
 
-        Using DB As New DBHelper
-            If IsPostBack = False Then
+        'Only open a DB connection on first load - postbacks don't use it here
+        If IsPostBack = False Then
+            Using DB As New DBHelper
                 'Init
                 DataBind() 'Fill in customer company type
                 email = GetUserEmail(DB)
                 'Set properties
-                kmsSupport = IsKmsSupport(DB, email)
+                'Read the user's JFC role once (IsKmsSupport / IsJfcBranchAdmin / IsJfcHoAdmin run the same query)
+                Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+                kmsSupport = (jfcRole = "KMS_SUPPORT")
                 'pnlLinks.Visible = kmsSupport
                 pnlUpdate.Visible = kmsSupport
                 'Dim useApp As Boolean = Common.UseApp(DB, email)
                 pnlCustSetting.Visible = True
                 pnlCustItem.Visible = True
                 'Yi Fu 12/10/2020
-                Dim jfcbranchAdmin As Boolean = IsJfcBranchAdmin(DB, email) Or IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email)
+                Dim jfcbranchAdmin As Boolean = (jfcRole = "JFC_BRANCH" OrElse jfcRole = "JFC_HO" OrElse kmsSupport)
                 pnlBranchsetting.Visible = jfcbranchAdmin
                 pnltool.Visible = jfcbranchAdmin
 
@@ -62,11 +65,11 @@ Partial Class JFCAdmin_Home
                     pnlMenu.Visible = True
                 End If
 
-                'Show available updates
-                showAvailUpdate()
-            End If
-            'showCustList()
-        End Using
+                'Show available updates (the update panel is only visible to KMS support, so skip the lookup for everyone else)
+                If kmsSupport Then showAvailUpdate(DB, kmsSupport)
+            End Using
+        End If
+        'showCustList()
     End Sub
 
     'Protected Sub lnkFullSite_Click(sender As Object, e As System.EventArgs) Handles lnkFullSite.Click
@@ -82,7 +85,8 @@ Partial Class JFCAdmin_Home
         Using DB As New DBHelper
             nextUpdateYear = GetParam(DB, "UPDATE", "NEXT_UPDATE_DELIVERY_YEAR")
             nextYear = Today.AddYears(1).Year.ToString
-            If nextUpdateYear <= nextYear Then
+            'Compare as numbers (was a string compare), and do nothing if the param is missing
+            If nextUpdateYear <> "" AndAlso Val(nextUpdateYear) <= Val(nextYear) Then
                 DB.BeginTransaction()
                 'Update delivery
                 UpdateDeliveryCelendar(DB, nextUpdateYear, False)
@@ -91,30 +95,30 @@ Partial Class JFCAdmin_Home
                 DB.CommitTransaction()
 
                 'Calendar updated
-                showAvailUpdate()
+                showAvailUpdate(DB, IsKmsSupport(DB, GetUserEmail(DB)))
                 InsertEventLog(DB, "Saved calendar", nextUpdateYear, Nothing, Nothing, True)
                 MessageLine("CONFIRM", "Successfully updated")
             End If
         End Using
     End Sub
 
-    Private Sub showAvailUpdate()
+    'Uses the caller's DB connection (used to open its own while the caller's was still open)
+    Private Sub showAvailUpdate(ByVal DB As DBHelper, ByVal kmsSupport As Boolean)
         Dim nextUpdateYear As String
         Dim nextYear As String
 
-        Using DB As New DBHelper
-            'Update next year's delivery calendar
-            nextUpdateYear = GetParam(DB, "UPDATE", "NEXT_UPDATE_DELIVERY_YEAR")
-            nextYear = Today.AddYears(1).Year.ToString
-            btnUpdateCalendar.Visible = False
-            lblUpdateCmd.Text = "No update is needed"
-            lblUpdateCmd.CssClass = "black"
-            If nextUpdateYear <= nextYear Then
-                btnUpdateCalendar.Visible = IsKmsSupport(DB, GetUserEmail(DB))
-                lblUpdateCmd.Text = "The following updates are ready. Please click each available button below to update"
-                lblUpdateCmd.CssClass = "red"
-            End If
-        End Using
+        'Update next year's delivery calendar
+        nextUpdateYear = GetParam(DB, "UPDATE", "NEXT_UPDATE_DELIVERY_YEAR")
+        nextYear = Today.AddYears(1).Year.ToString
+        btnUpdateCalendar.Visible = False
+        lblUpdateCmd.Text = "No update is needed"
+        lblUpdateCmd.CssClass = "black"
+        'Compare as numbers (was a string compare), and treat a missing param as "no update"
+        If nextUpdateYear <> "" AndAlso Val(nextUpdateYear) <= Val(nextYear) Then
+            btnUpdateCalendar.Visible = kmsSupport
+            lblUpdateCmd.Text = "The following updates are ready. Please click each available button below to update"
+            lblUpdateCmd.CssClass = "red"
+        End If
     End Sub
 
 End Class

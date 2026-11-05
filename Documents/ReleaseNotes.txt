@@ -1,6 +1,38 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN017 (11/04/2026)
+*<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
+*<CustItem>: Search Items panel is wider (400px -> 500px). The Add / Update Item panel moved right to match.
+*<CustItem>: Faster: the Category dropdown is built from the item list already loaded, so the heavy item query runs once instead of twice. Categories are listed in alphabetical order.
+*<CustSetting>: Faster: the delivery schedule master dropdown is loaded once per page, not once per schedule row.
+*<CustSetting>: Faster: the user list no longer opens a DB connection for every user row.
+*<CustSetting>: Faster: the delivery calendar loads its data once, even for a month with no deliveries (before: up to 42 queries).
+*<CustSetting>: Faster: auto pay info is read from the customer row already loaded (5 fewer queries), and the user's JFC role is checked with one query instead of four.
+*<BranchSetting>: Fixed: clicking Save twice on the Delivery Master detail grid deleted the delivery record that was just moved to a new date. The grid now reloads after Save.
+*<BranchSetting>: Fixed: after Save with "Send Email", the page stayed in the last customer's language. It now switches back.
+*<BranchSetting>: Fixed: the "Delivery Date To" format check was checking the From box.
+*<BranchSetting>: Fixed: an apostrophe (') in a homepage image name caused an Oracle error when opening it.
+*<BranchSetting>: Fixed: mobile style on the detail grid's time / AM-PM / reminder dropdowns was never applied.
+*<BranchSetting>: Faster: the Delivery Master detail grid no longer opens a DB connection for every row (up to 50 per page).
+*<BranchSetting>: Faster: the delivery calendar loads its data once, even for a month with no deliveries.
+*<BranchSetting>: Faster: the day-of-week list is loaded once for both dropdowns, the branch email is read once per Save (not per row), the HO / KMS support check runs once per page (not per branch on Save), and clicks no longer open an unused DB connection.
+*<OrderDtl>: Fixed: Cancel Order could email the subject / text left over from an earlier cancel (possibly another order) to this order's customer.
+*<OrderDtl>: Fixed: Update Order crashed when the ship date was blank (allowed for branch 05 + Anytime Delivery) and the changes were lost. A blank ship date now saves as no ship date. Typed dates are read as MM/dd/yyyy.
+*<OrderHistory>: Fixed: a bad order date crashed the page with an Oracle error when sorting, paging or ticking a checkbox. The date is now checked every time the list loads.
+*<OrderHistory>: Faster: "Total N Orders" is taken from the grid's own query instead of running the whole order query a second time.
+*<OrderHistory>: Faster: removed a customer list query that ran on every search for JFC admins but was never used.
+*<Balance>: Faster: the Payment and Download tabs reuse the Balance tab's company / group / customer lists instead of loading them again.
+*<Balance>: Faster: the web discount type is read once per page (was once per row in the payment detail grid), and the 5 auto pay columns are read in one query.
+*<Common>: Fixed DB connections left open: Balance, Payment Detail, Order History and Item Detail controls opened a DB connection on every request and never closed it. They now open it only when needed and close it when the page is done.
+*<Common>: Faster on every admin page: the menu (master page) opens a DB connection only on first load (not on every click) and checks the user's role with one query instead of 2-4. The mobile master no longer opens a DB connection it never used.
+*<Home>: Faster: one role query instead of up to 8, no DB connection on clicks, and the calendar update check only runs for KMS support (the only users who see it).
+*<Home>: Fixed: the next delivery calendar year is compared as a number, and a missing setting no longer shows the update button.
+*<Tool>: Fixed: the page now checks permission. Only branch / HO admins and KMS support can open it (same rule as the menu link); others go to Home.
+*<Tool>: Fixed: removed a leftover "Item # can not be empty" message that ran on every export.
+*<Tool>: Faster: the report's date / item filter flags are read in one query, the role is checked once, and clicks no longer open an unused DB connection.
+*<Common>: Version changed to 017 (Common.VERSION), so browsers load the new CSS / JS files.
+
 KOSCUS_JFCADMIN016 (11/02/2026)
 *<Common>: Fixed stylesheet links so browsers load the new CSS after a version change. The ?v=<%= Common.VERSION %> in the <head> links was never filled in, so old CSS stayed cached. Links now use Common.CssLink in all master pages and Print.aspx.
 *<Common>: New loading screen on all pages, styled like the message box (orange "Processing" title bar, spinner and "Please wait..."). Always shown in the center of the screen.

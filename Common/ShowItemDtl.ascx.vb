@@ -3,7 +3,22 @@ Imports Common
 
 Partial Class Common_ShowItemDtl
     Inherits System.Web.UI.UserControl
-    Private mDB As New DBHelper
+    'DB connection is opened on first use and closed when the control unloads.
+    'It used to be opened for every request (even when unused) and never closed.
+    Private _mDB As DBHelper
+    Private ReadOnly Property mDB As DBHelper
+        Get
+            If _mDB Is Nothing Then _mDB = New DBHelper
+            Return _mDB
+        End Get
+    End Property
+
+    Protected Sub CloseDB_Unload(sender As Object, e As System.EventArgs) Handles Me.Unload
+        If _mDB IsNot Nothing Then
+            _mDB.Dispose()
+            _mDB = Nothing
+        End If
+    End Sub
 
     Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     End Sub
