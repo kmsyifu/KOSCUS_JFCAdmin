@@ -387,11 +387,14 @@
                     <%--Edit price right in the list (JFC admin, JFC item). Nothing is saved until Update Order. Unit list is filled in grdItem_RowDataBound--%>
                     <asp:PlaceHolder runat="server" ID="phEditPrice" Visible='<%# CanEditRowPrice() AndAlso CString(Eval("itemType")) = "JFCItems" %>'>
                         <a href="#" class="cellLink od-edit" style="color:#4169E1;" title="Change the price for this order" onclick="return odEditPrice(this);">Edit</a>
-                        <span class="od-edit-box" style="display:none;"><br />
-                            <asp:TextBox runat="server" ID="txtEditPrice" CssClass="cellQtyTxt od-price" autocomplete="off" onFocus="this.select()" />
-                            <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender14" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtEditPrice" />
-                            <asp:DropDownList runat="server" ID="lstEditPriceUnit" CssClass="drpList od-unit" />
-                            <a href="#" class="cellLink" title="Cancel price change" onclick="return odCancelPrice(this);">x</a>
+                        <span class="od-edit-box" style="display:none;">
+                            <span class="od-edit-inputs" style="display:inline-block; white-space:nowrap; text-align:right; margin-top:2px;">
+                                <asp:TextBox runat="server" ID="txtEditPrice" CssClass="cellQtyTxt od-price" autocomplete="off" onFocus="this.select()" /><br />
+                                <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender14" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtEditPrice" />
+                                <asp:DropDownList runat="server" ID="lstEditPriceUnit" CssClass="od-unit" style="font-size:11px; padding:0; margin:2px 0 0 0; width:auto;" />
+                                <a href="#" class="od-ok" title="OK (saved when you click Update Order)" style="color:green; font-weight:bold; text-decoration:none; font-size:15px; margin-left:3px;" onclick="return odOkPrice(this);">&#10004;</a>
+                                <a href="#" class="od-cancel" title="Cancel price change" style="color:red; font-weight:bold; text-decoration:none; font-size:15px; margin-left:3px;" onclick="return odCancelPrice(this);">&#10006;</a>
+                            </span>
                             <br /><span class="od-preview cellLbl"></span>
                         </span>
                     </asp:PlaceHolder>
@@ -752,7 +755,7 @@
         var d = od.data(s);
         var priceTxt = tr.find('input.od-price'), unit = tr.find('select.od-unit').val();
         var P = priceTxt.length ? od.n(priceTxt.val()) : 0;
-        var editing = P > 0 && tr.find('.od-edit-box').is(':visible');
+        var editing = P > 0 && tr.attr('data-od-edit') === '1';
         var p = editing ? od.calc(d, unit, P) : { cs: d.cs, ea: d.ea, lb: d.lbq };
         var csq = od.qty(tr, 'od-cs', d.csq), eaq = od.qty(tr, 'od-ea', d.eaq), lbs = od.qty(tr, 'od-lbs', d.lbs);
         var amt = od.r2(p.cs * csq + p.ea * eaq + d.lbw * lbs);
@@ -766,7 +769,9 @@
         if (editing) {
             var g = od.gp(d, p);
             gpEl.text(g === null ? '' : od.pct(g)).css({ 'font-weight': 'bold', 'color': (g !== null && g < 0) ? 'red' : '' });
-            prev.html('= ' + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea') + (below ? '<br /><span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : ''));
+            var done = !tr.find('.od-edit-inputs').is(':visible');
+            prev.html((done ? '<span class="green bold">New: ' : '= ') + od.priceText(p, d.lbq !== 0 ? 'pc' : 'ea') + (done ? '</span>' : '') +
+                (below ? '<br /><span class="red bold">Below bottom ' + od.money(d.btmcs) + '/cs</span>' : ''));
         } else {
             gpEl.text(tr.data('odGp0')).css({ 'font-weight': '', 'color': '' });
             prev.html('');
@@ -801,16 +806,29 @@
 
     function odEditPrice(a) {
         var tr = $(a).closest('tr');
+        tr.attr('data-od-edit', '1');
         $(a).hide();
         tr.find('.od-edit-box').show();
+        tr.find('.od-edit-inputs').show();
         odSetPlaceholder(tr);
         tr.find('input.od-price').focus();
         odRecalcRow(tr); odRecalcTotals();
         return false;
     }
 
+    // Check mark: keep the new price (saved by Update Order), close the inputs, show "New: $x/cs"
+    function odOkPrice(a) {
+        var tr = $(a).closest('tr');
+        if (od.n(tr.find('input.od-price').val()) <= 0) return odCancelPrice(a);
+        tr.find('.od-edit-inputs').hide();
+        tr.find('a.od-edit').show();
+        odRecalcRow(tr); odRecalcTotals();
+        return false;
+    }
+
     function odCancelPrice(a) {
         var tr = $(a).closest('tr');
+        tr.attr('data-od-edit', '0');
         tr.find('input.od-price').val('');
         tr.find('.od-edit-box').hide();
         tr.find('a.od-edit').show();
@@ -865,8 +883,8 @@
             if ($(this).is('select.od-unit')) odSetPlaceholder(tr);
             odRecalcRow(tr); odRecalcTotals();
         });
-        // Enter in a list price box should not submit the page (Update Order is the default button there)
-        $(document).on('keydown', 'input.od-price', function (e) { if (e.keyCode === 13) { $(this).blur(); return false; } });
+        // Enter in a list price box = check mark (must not submit the page - Update Order is the default button there)
+        $(document).on('keydown', 'input.od-price', function (e) { if (e.keyCode === 13) { odOkPrice(this); return false; } });
         // Panel: price / unit / qty typed -> recalc preview
         $(document).on('keyup change', '#<%=txtNewSetPrice.ClientID%>, #<%=lstNewSetPriceUnit.ClientID%>, #<%=txtNewCsQty.ClientID%>, #<%=txtNewEaQty.ClientID%>, #<%=txtNewLbs.ClientID%>', function () {
             if ($(this).is('select')) odNewShowPrice(); else odNewRecalc();
@@ -877,8 +895,10 @@
             var tr = $(this).closest('tr'), d = od.data($(this));
             var priceTxt = tr.find('input.od-price');
             if (priceTxt.length && $.trim(priceTxt.val()) !== '') {
-                tr.find('a.od-edit').hide();
+                // price changed but not saved yet: show it as accepted ("New: ..."), Edit reopens it
+                tr.attr('data-od-edit', '1');
                 tr.find('.od-edit-box').show();
+                tr.find('.od-edit-inputs').hide();
                 odSetPlaceholder(tr);
                 odRecalcRow(tr);
             } else if (od.qty(tr, 'od-cs', d.csq) !== d.csq || od.qty(tr, 'od-ea', d.eaq) !== d.eaq || od.qty(tr, 'od-lbs', d.lbs) !== d.lbs) {

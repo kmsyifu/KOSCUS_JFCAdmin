@@ -871,7 +871,18 @@ Partial Class Common_OrderDtl
     'the price is saved by Add to Order / Update, which also calls this so a typed price is never lost.
     Protected Sub btnNewApplyPrice_Click(sender As Object, e As System.EventArgs) Handles btnNewApplyPrice.Click
         Using DB As New DBHelper
-            ApplyNewItemPrice(DB)
+            If ApplyNewItemPrice(DB) = True Then
+                'The new price is now in the panel's Price line (and is what Add to Order / Update saves),
+                'so close the price box and say so - before, the box stayed open and it looked like nothing happened
+                Dim warning As String = lblNewMsg.Text
+                txtNewSetPrice.Text = ""
+                lblNewMsg.Text = "<span class='green bold'>New price applied: " &
+                    IIf(lblNewCsPrice_view.Visible, lblNewCsPrice_view.Text.Replace("<br />", "") & " ", "") &
+                    IIf(lblNewEaPrice_view.Visible, lblNewEaPrice_view.Text & " ", "") &
+                    IIf(lblNewLbPrice_OrderByQty_view.Visible, lblNewLbPrice_OrderByQty_view.Text, "") &
+                    ". Click """ & btnAddItem.Text & """ to save it.</span>" &
+                    IIf(warning <> "", "<br />" & warning, "")
+            End If
         End Using
     End Sub
 

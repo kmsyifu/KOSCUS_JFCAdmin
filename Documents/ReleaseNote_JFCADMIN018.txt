@@ -16,8 +16,10 @@ Before
 ==================================================================================================================================
 1. EDIT PRICE IN THE ORDER ITEM LIST
 ==================================================================================================================================
-1.1 Click Edit under the price -> a price box and unit list (/lb, /cs, /ea - same units as the old popup) appear in
-    the row. x cancels. No popup, no page reload.
+1.1 Click Edit under the price -> a price box, and under it the unit list (/lb, /cs, /ea - same units as the old
+    popup) with a check mark and an X, appear in the row. No popup, no page reload.
+    Check mark (or Enter): keeps the new price - the box closes and the row shows "New: $x/cs, ..." (Edit reopens it).
+    X: cancels the change.
 1.2 While typing (price or qty), JavaScript updates:
       - the row's new prices (= $x/cs, $y/ea, $z/lb), GP % (bold, red if negative) and line amount
       - Total amount (header and bottom line) and Total GP
@@ -32,8 +34,9 @@ Before
 ==================================================================================================================================
 2. ADD ITEM TO ORDER PANEL
 ==================================================================================================================================
-2.1 Set Price opens a price box in the panel with Cost and Bottom shown (was a popup). Apply shows the new price in the
-    panel (needed for an item with no price yet, so the qty boxes and Add to Order appear). Cancel closes it.
+2.1 Set Price opens a price box in the panel with Cost and Bottom shown (was a popup). Apply puts the new price in the
+    panel's Price line, closes the box and shows "New price applied: ... Click Add to Order / Update to save it."
+    (needed for an item with no price yet, so the qty boxes and Add to Order appear). Cancel closes it.
 2.2 GP % and Amount update while typing the price or qty.
 2.3 Add to Order / Update uses the typed price even if Apply was not clicked. A below-bottom price is allowed and
     the warning is shown in the success message (same as the old popup).
@@ -65,7 +68,8 @@ TEST (as JFC admin, an order in Order Placed status)
   - Same with the /ea unit.
   - Scaled item: Edit with /lb and /cs; check the derived prices after Update Order.
   - Price below bottom: row turns yellow; Update Order shows the warning; No keeps the page, Yes saves.
-  - Edit then x: price goes back, nothing saved.
+  - Edit, type a price, check mark: row shows "New: ...", totals updated. Edit then X: price goes back, nothing saved.
+  - Add Item panel: Set Price -> Apply: box closes, new price in the Price line, green message; then Add to Order.
   - Change qty in two rows, add a new item: the two rows keep the typed qty; Update Order saves them.
   - Change qty in a row, delete another row (Yes): typed qty kept.
   - Add Item panel: JFC item shows GP; Set Price -> type price -> Add to Order without Apply: saved with new price.
