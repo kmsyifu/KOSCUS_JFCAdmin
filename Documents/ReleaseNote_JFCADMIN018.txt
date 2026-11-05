@@ -129,6 +129,14 @@ Before
      Test: Login page, type a password, click the eye (shown), click again (hidden), press Enter (logs in).
 4.19 Order Form (JFCAdmin/OrderForm.aspx.vb): sort by "Selected" lists the selected items first, then by item #
      (was by description). Item # is sorted as text, same as the "Item #" sort.
+4.20 Order Form (JFCAdmin/OrderForm.aspx.vb BindItemsGrid): the "no price" check now also looks at lbPrice_orderByWgt,
+     so items priced only by weight are listed (before, hidden). Lb Price column (OrderForm.aspx) shows lbPrice_orderByQty,
+     else lbPrice_orderByWgt. Same rule as the app order form list (API #91).
+     Test: exception group with a weight-priced item: it is listed with its lb price and can be saved on the form.
+4.21 Login page show-password eye (4.18): styles moved from Login/Styles/Login.css into Login.aspx. With an old Login.css
+     in the browser cache the button and both icons showed full size below the box. Icons have a fixed 20px size;
+     Edge's own reveal icon (::-ms-reveal) is hidden so there is only one eye.
+     Test: Login page (after a normal refresh, no cache clear): eye is inside the right edge of the password box.
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.
