@@ -214,21 +214,24 @@ Partial Class Common_OrderHistory
     End Sub
 
     Protected Sub btnSearch_order_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSearch.Click
-        Dim dateVal As Date
+        'Show order list (date check is done inside showOrderList)
+        showOrderList()
+    End Sub
 
-        'Error check
+    'Checks the order date boxes. showOrderList runs from sort, paging, checkbox/company changes and after
+    'update/delete too - not only Search - so the check has to live there, or a bad date reaches TO_DATE and crashes.
+    Private Function OrderDatesValid() As Boolean
+        Dim dateVal As Date
         If txtOrderDateFrom.Text <> "" AndAlso DateTime.TryParseExact(txtOrderDateFrom.Text, DATE_FMT, Nothing, Nothing, dateVal) = False Then
             MessageBox("Order Date has to be in " & DATE_FMT.ToLower & " format", "Error", mDB)
-            Exit Sub
+            Return False
         End If
         If txtOrderDateTo.Text <> "" AndAlso DateTime.TryParseExact(txtOrderDateTo.Text, DATE_FMT, Nothing, Nothing, dateVal) = False Then
             MessageBox("Order date has to be in " & DATE_FMT.ToLower & " format", "Error", mDB)
-            Exit Sub
+            Return False
         End If
-
-        'Show order list
-        showOrderList()
-    End Sub
+        Return True
+    End Function
 
     Protected Sub chkShowWebOrder_CheckedChanged(sender As Object, e As System.EventArgs) Handles chkShowWebOrder.CheckedChanged
         showOrderList()
@@ -294,6 +297,8 @@ Partial Class Common_OrderHistory
         Dim joinJets As String = ""
         Dim customers As String = ""
         Dim r As DataReader
+
+        If Not OrderDatesValid() Then Exit Sub
 
         'Show order list
         pnlList_order.Visible = True

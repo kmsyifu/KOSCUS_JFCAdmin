@@ -17,8 +17,9 @@ Partial Class JFCAdmin_JFCAdmin
             Exit Sub
         End If
 
-        Using DB As New DBHelper
-            If IsPostBack = False Then
+        'Only open a DB connection on first load - postbacks don't use it (was opened on every request)
+        If IsPostBack = False Then
+            Using DB As New DBHelper
                 'Check error
                 If Session("SYS_SESSION_USERTYPE") <> "JFCADMIN" Then
                     Session("MSG_TYPE") = "ERROR"
@@ -40,7 +41,9 @@ Partial Class JFCAdmin_JFCAdmin
                 'End If
 
                 'Set properties
-                kmsSupport = IsKmsSupport(DB, email)
+                'Read the user's JFC role once (IsKmsSupport / IsJfcBranchAdmin / IsJfcHoAdmin each run this same query)
+                Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+                kmsSupport = (jfcRole = "KMS_SUPPORT")
                 'Only if the user is KMS Support, show JFC settings in the menu
                 'pnlJFCAdmin.Visible = kmsSupport
                 'pnlCustAdmin.Visible = kmsSupport
@@ -51,7 +54,7 @@ Partial Class JFCAdmin_JFCAdmin
                 pnlCustItem.Visible = True 'useApp
                 pnlOrderForm.Visible = True
                 'Yi Fu 12/10/2020
-                Dim jfcbranchAdmin As Boolean = IsJfcBranchAdmin(DB, email) OrElse IsJfcHoAdmin(DB, email) OrElse IsKmsSupport(DB, email)
+                Dim jfcbranchAdmin As Boolean = (jfcRole = "JFC_BRANCH" OrElse jfcRole = "JFC_HO" OrElse kmsSupport)
                 pnlBranchSetting.Visible = jfcbranchAdmin
                 pnlTool.Visible = jfcbranchAdmin
 
@@ -83,8 +86,8 @@ Partial Class JFCAdmin_JFCAdmin
                         'Case "MyAccount.aspx"
                         '    aMyAccount.Attributes("class") = "menuSelected"
                 End Select
-            End If
-        End Using
+            End Using
+        End If
     End Sub
 
     Protected Sub lnkMobileSite_Click(sender As Object, e As System.EventArgs) Handles lnkMobileSite.Click

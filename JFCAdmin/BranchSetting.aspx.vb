@@ -1160,6 +1160,8 @@ Partial Class BranchSetting
         Dim DeliveryDate As DateTime
         Dim Orderdate As DateTime
         Dim IsSendEmail As Boolean = False
+        Dim origCulture As CultureInfo = Thread.CurrentThread.CurrentCulture
+        Dim origUICulture As CultureInfo = Thread.CurrentThread.CurrentUICulture
         Using DB As New DBHelper
             For Each row As GridViewRow In grdDtlCustDelSchMaster.Rows
                 Dim TxtdeliverOn = CType(row.FindControl("txtDeliveryOn"), TextBox)
@@ -1251,6 +1253,14 @@ Partial Class BranchSetting
 
             Next
             InsertEventLog(DB, "Updated delivery date for delivery Master", lblMasterID.Text, Nothing, Nothing, True)
+
+            'The email loop switches the thread culture to each customer's language - put it back before rendering
+            Thread.CurrentThread.CurrentCulture = origCulture
+            Thread.CurrentThread.CurrentUICulture = origUICulture
+
+            'Reload the grid so the hidden "old" values match what was just saved. Without this, a second Save
+            'treats the old date as changed again, deletes the record now on the new date, and updates nothing.
+            showDtlCustDelSchMaster(lblMasterID.Text)
             If IsSendEmail Then
                 MessageLine("CONFIRM", "Successfully saved and send email")
             Else

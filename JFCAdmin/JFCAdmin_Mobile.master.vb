@@ -14,21 +14,20 @@ Partial Class JFCAdmin_JFCAdmin_Mobile
             Exit Sub
         End If
 
-        Using DB As New DBHelper
-            If IsPostBack = False Then
-                'Check error
-                If Session("SYS_SESSION_USERTYPE") <> "JFCADMIN" Then
-                    Session("MSG_TYPE") = "ERROR"
-                    Session("MSG") = "You have to log in as a JFC administrator to access the page you requested. Please relogin."
-                    Response.Redirect("~/Login/Login.aspx?ReturnUrl=" & Request.Url.PathAndQuery)
-                End If
-
-                ''Not to cache so that user cannot re-enter using back button after logout
-                'Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1))
-                'Response.Cache.SetCacheability(HttpCacheability.NoCache)
-                'Response.Cache.SetNoStore()
+        'No DB needed here (only Session is read) - the connection that used to be opened on every request was never used
+        If IsPostBack = False Then
+            'Check error
+            If Session("SYS_SESSION_USERTYPE") <> "JFCADMIN" Then
+                Session("MSG_TYPE") = "ERROR"
+                Session("MSG") = "You have to log in as a JFC administrator to access the page you requested. Please relogin."
+                Response.Redirect("~/Login/Login.aspx?ReturnUrl=" & Request.Url.PathAndQuery)
             End If
-        End Using
+
+            ''Not to cache so that user cannot re-enter using back button after logout
+            'Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1))
+            'Response.Cache.SetCacheability(HttpCacheability.NoCache)
+            'Response.Cache.SetNoStore()
+        End If
     End Sub
 
     Protected Sub lnkFullSite_Click(sender As Object, e As System.EventArgs) Handles lnkFullSite.Click

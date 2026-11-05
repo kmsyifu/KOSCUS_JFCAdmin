@@ -469,6 +469,10 @@ Partial Class Common_OrderDtl
             'Check error
             'Confirm
             ViewState("DIALOG_CMD") = "DELETE_ORDER"
+            'Clear email subject/body left over from an earlier cancel dialog (possibly for another order),
+            'otherwise dialogResult_yes would email that old text to this order's customer
+            ViewState("DIALOG_ARG1") = Nothing
+            ViewState("DIALOG_ARG2") = Nothing
             ''Get email body for user from email template in user control
             'CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "DELETED", txtEmailMsg.Text)
             'ViewState("DIALOG_ARG1") = emailBody
@@ -1955,10 +1959,19 @@ Partial Class Common_OrderDtl
                 End If
             Next
 
-            Dim DeliveryDate = DateTime.Parse(txtDeliveryDate.Text).AddDays(GetShipdateOffset(DB, lblCustomerID.Text))
+            'Ship date can be blank (branch 05 + Anytime Delivery - see btnUpdate_Click). DateTime.Parse("") threw here
+            'mid-transaction, so the whole update was lost. Blank now saves as no ship date.
+            Dim deliveryDateStr As String = ""
+            If txtDeliveryDate.Text.Trim() <> "" Then
+                Dim parsedDate As Date
+                If Not DateTime.TryParseExact(txtDeliveryDate.Text.Trim(), DATE_FMT, CultureInfo.InvariantCulture, DateTimeStyles.None, parsedDate) Then
+                    parsedDate = DateTime.Parse(txtDeliveryDate.Text) 'same as before for any other format
+                End If
+                deliveryDateStr = parsedDate.AddDays(GetShipdateOffset(DB, lblCustomerID.Text)).ToString(DATE_FMT, CultureInfo.InvariantCulture)
+            End If
 
             'Update order info and total amount txtDeliveryDate.Text
-            DBUpdate.UpdateOrder(DB, webOrderID, DeliveryDate.ToShortDateString(), txtCustOrderNr.Text, txtMessage.Text, txtVendorNote.Text, False)
+            DBUpdate.UpdateOrder(DB, webOrderID, deliveryDateStr, txtCustOrderNr.Text, txtMessage.Text, txtVendorNote.Text, False)
 
             orderState = GetOrderState(DB, webOrderID)
             If orderState = "N" Then
