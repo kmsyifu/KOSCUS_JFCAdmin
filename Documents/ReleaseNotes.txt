@@ -22,7 +22,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<CustItem, CustSetting, BranchSetting, Tool, OrderForm, Balance, OrderHistory>: Same Enter fix: Enter in a box with no button of its own no longer goes to Login.aspx. Boxes with their own button (search, save, ...) work as before.
 *<OrderDtl>: Fixed: deleting a row did not update the order total shown in Order History (until Update Order); the status is re-checked at "Yes". Row colors no longer change after a click (one rule for load and postback); a $0-price row is no longer yellow; non-JFC items are no longer shown as out of stock (pink). Restore-deleted-item dialog: reader closed, title fixed.
 *<OrderDtl>: Changed price label "New" is now "Updated". "Below bottom $x/cs" warning stays on one line.
-*<OrderForm>: Item search match tag shows only the matched word (no field name like "Long description", no text around it).
+*<OrderForm>: Item search match shows only the text around the matched word (word in bold) - the field name tag (e.g. "Long description") is removed.
 *<Suggestion>: Item search (Order Detail Add Item, Customer Items) is faster: returns only the 30 rows the list shows (was every match, with an extra query per row). Item # search ignores case and a leading "#" ("#abc123" finds ABC123).
 
 KOSCUS_JFCADMIN017 (11/04/2026)

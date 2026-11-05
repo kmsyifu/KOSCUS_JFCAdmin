@@ -120,9 +120,9 @@ Before
 4.16 Changed price label "New" -> "Updated" (list and Add Item panel, and the "Updated price is set" message).
      "Below bottom $x/cs" stays on one line (was wrapped in the narrow price cell).
 4.17 Order Form (JFCAdmin/OrderForm.aspx.vb MatchTagHtml) item search: when a search word is not in the description or
-     item ID, the tag under the description now shows only the matched word. Before it showed the field name
-     (Japanese / Long description / Web description / Sales point) and about 60 characters of text around the match.
-     Test: Order Form, search a word that is only in the long description: the item shows a small tag with that word.
+     item ID, the line under the description shows only about 60 characters of text around the match, the word in
+     bold. The field name tag before it (Japanese / Long description / Web description / Sales point) is removed.
+     Test: Order Form, search a word that is only in the long description: the item shows the text around that word.
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.
