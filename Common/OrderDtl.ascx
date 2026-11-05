@@ -32,6 +32,12 @@
     };
 </script> 
 
+<%--Enter key: when a box has no working default button (Order Info boxes, the item list when Update Order is hidden
+    because Approve Order shows, the Add Item panel when Add to Order is hidden), the browser "clicked" the first submit
+    button on the page - the menu's Logout button - and went to Login.aspx. This outer panel catches Enter with a button
+    that does nothing. Inner panels (Get Item, Add to Order, Update Order) still handle Enter first when their button shows.--%>
+<asp:Panel ID="pnlEnterKey" DefaultButton="btnEnterNoop" runat="server">
+<asp:Button ID="btnEnterNoop" runat="server" style="display:none;" UseSubmitBehavior="false" OnClientClick="return false;" TabIndex="-1" />
 <%--<asp:LinkButton ID="lnkBack" CssClass="linkLabel" runat="server" Text="<< Go back to orders..." ></asp:LinkButton>--%>
 <h1><asp:Label ID="lblTitle" Text="View / Edit Order" runat="server" />&nbsp;<asp:Label ID="lblTitle2" CssClass="red" Text="(Non Web Order)" runat="server" /></h1>
 <asp:HiddenField ID="hdnBypassBottomPriceCheck" runat="server" Value="NO" />
@@ -673,6 +679,8 @@
      <br class="turnOffFloat" />
    
 </asp:Panel>
+
+</asp:Panel><%--pnlEnterKey--%>
 
 <%--Popup window to show item detail--%>
 <uc:ShowItemDtl id="ctrShowItemDtl" runat="Server" />
