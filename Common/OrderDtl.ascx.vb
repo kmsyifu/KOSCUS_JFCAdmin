@@ -45,72 +45,71 @@ Partial Class Common_OrderDtl
     Public Sub pageLoad()
         Dim reason As String = ""
 
-        Using DB As New DBHelper
-            'Init textchanged value
-            If lblTextChanged.Value <> "YES" Then lblTextChanged.Value = ViewState("TEXT_CHANGED")
+        'No DB connection here - nothing in pageLoad used it (the subs it calls open their own)
+        'Init textchanged value
+        If lblTextChanged.Value <> "YES" Then lblTextChanged.Value = ViewState("TEXT_CHANGED")
 
-            'Get images and customer company type
-            DataBind()
+        'Get images and customer company type
+        DataBind()
 
-            'Set ViewState
-            ViewState("ORDER_CMD") = Session("ORDERDTL_CMD")
-            ViewState("ORDER_ID") = Session("ORDERDTL_ORDERID")
-            ViewState("CUSTOMER_ID") = Session("ORDERDTL_CUSTID")
-            'ViewState("TAB") = Request.QueryString("TAB")
+        'Set ViewState
+        ViewState("ORDER_CMD") = Session("ORDERDTL_CMD")
+        ViewState("ORDER_ID") = Session("ORDERDTL_ORDERID")
+        ViewState("CUSTOMER_ID") = Session("ORDERDTL_CUSTID")
+        'ViewState("TAB") = Request.QueryString("TAB")
 
-            'Set properties
-            pnlOrderDtl_View.Visible = False
-            pnlOrderDtl_Edit.Visible = False
-            'pnlOrderDtl_jetsView.Visible = False
-            InvisibleCtrl({lblDeliveryDate, lblCustOrderNr, lblMessage, lblVendorNote})
-            InvisibleCtrl({txtDeliveryDate, txtCustOrderNr, txtMessage, txtVendorNote, txtEmailMsg})
-            ClearCtrl({txtEmailMsg})
-            pnlItem.Visible = False
-            'lblTitle2.Visible = False
-            btnEmailUser_view.Visible = False
-            btnEmailOther_view.Visible = False
+        'Set properties
+        pnlOrderDtl_View.Visible = False
+        pnlOrderDtl_Edit.Visible = False
+        'pnlOrderDtl_jetsView.Visible = False
+        InvisibleCtrl({lblDeliveryDate, lblCustOrderNr, lblMessage, lblVendorNote})
+        InvisibleCtrl({txtDeliveryDate, txtCustOrderNr, txtMessage, txtVendorNote, txtEmailMsg})
+        ClearCtrl({txtEmailMsg})
+        pnlItem.Visible = False
+        'lblTitle2.Visible = False
+        btnEmailUser_view.Visible = False
+        btnEmailOther_view.Visible = False
 
-            setOrderMode(ViewState("ORDER_ID"), reason)
-            If ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" Then
-                VisibleCtrl({txtCustOrderNr})
-                If ViewState("ORDER_CMD") = "JFCADMIN" Then
-                    VisibleCtrl({txtDeliveryDate, txtVendorNote})
-                    VisibleCtrl({lblMessage})
-                Else
-                    VisibleCtrl({lblDeliveryDate, lblVendorNote})
-                    VisibleCtrl({txtMessage})
-                End If
-                pnlOrderDtl_Edit.Visible = True
-                If ViewState("ORDER_CMD") = "JFCADMIN" Then pnlItem.Visible = True
-                lblTitle.Text = "Edit Order"
-                VisibleCtrl({txtEmailMsg})
-            ElseIf ViewState("ORDER_MODE") = "VIEW_WEB_ORDER" Then
-                VisibleCtrl({lblDeliveryDate, lblCustOrderNr, lblMessage, lblVendorNote})
-                pnlOrderDtl_View.Visible = True
-                lblTitle.Text = "View Order"
-                lblViewOnlyReason.Text = reason
-                btnEmailUser_view.Visible = True
-                'btnEmailOther_view.Visible = True
-            ElseIf ViewState("ORDER_MODE") = "VIEW_JETS_ORDER" Then
-                VisibleCtrl({lblDeliveryDate, lblCustOrderNr, lblMessage, lblVendorNote})
-                pnlOrderDtl_View.Visible = True
-                lblTitle.Text = "View Order"
-                'lblTitle2.Visible = True 'Show (Non Web Order)
-                lblViewOnlyReason.Text = reason
+        setOrderMode(ViewState("ORDER_ID"), reason)
+        If ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" Then
+            VisibleCtrl({txtCustOrderNr})
+            If ViewState("ORDER_CMD") = "JFCADMIN" Then
+                VisibleCtrl({txtDeliveryDate, txtVendorNote})
+                VisibleCtrl({lblMessage})
+            Else
+                VisibleCtrl({lblDeliveryDate, lblVendorNote})
+                VisibleCtrl({txtMessage})
             End If
+            pnlOrderDtl_Edit.Visible = True
+            If ViewState("ORDER_CMD") = "JFCADMIN" Then pnlItem.Visible = True
+            lblTitle.Text = "Edit Order"
+            VisibleCtrl({txtEmailMsg})
+        ElseIf ViewState("ORDER_MODE") = "VIEW_WEB_ORDER" Then
+            VisibleCtrl({lblDeliveryDate, lblCustOrderNr, lblMessage, lblVendorNote})
+            pnlOrderDtl_View.Visible = True
+            lblTitle.Text = "View Order"
+            lblViewOnlyReason.Text = reason
+            btnEmailUser_view.Visible = True
+            'btnEmailOther_view.Visible = True
+        ElseIf ViewState("ORDER_MODE") = "VIEW_JETS_ORDER" Then
+            VisibleCtrl({lblDeliveryDate, lblCustOrderNr, lblMessage, lblVendorNote})
+            pnlOrderDtl_View.Visible = True
+            lblTitle.Text = "View Order"
+            'lblTitle2.Visible = True 'Show (Non Web Order)
+            lblViewOnlyReason.Text = reason
+        End If
 
-            'Init
-            If ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" Then
-                txtItem.Text = ""
-                clearItemDtl()
-            End If
+        'Init
+        If ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" Then
+            txtItem.Text = ""
+            clearItemDtl()
+        End If
 
-            'Show order header
-            showOrderHdr()
+        'Show order header
+        showOrderHdr()
 
-            'Show item list
-            showOrderDtl()
-        End Using
+        'Show item list
+        showOrderDtl()
     End Sub
 
     Protected Sub grdItem_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs) Handles grdItem_edit.RowCommand, grdItem_view.RowCommand
@@ -626,8 +625,10 @@ Partial Class Common_OrderDtl
                     btmcsPirce = Val(r("btmcsPrice"))
                     minSalCnt = IIf(Val(r("minSalCnt")) = 0, 1, Val(r("minSalCnt")))
                     lbsPerEa = GetJfcLbsPerEa(DB, lblCustomerID.Text, custGrpItemID)
-                    Common.CovertPrice(csCost, eaCost, lbCost, r("eapercs"), minSalCnt, IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID), lbsPerEa, r("avgcswgt"), r("avgeawgt"))
-                    Common.CovertPrice(btmcsPirce, btmeaPirce, btmlbPirce, r("eapercs"), minSalCnt, IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID), lbsPerEa, r("avgcswgt"), r("avgeawgt"))
+                    'Scaled-item lookup is 3 queries - run it once for both conversions
+                    Dim scaledForPrice As Boolean = IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID)
+                    Common.CovertPrice(csCost, eaCost, lbCost, r("eapercs"), minSalCnt, scaledForPrice, lbsPerEa, r("avgcswgt"), r("avgeawgt"))
+                    Common.CovertPrice(btmcsPirce, btmeaPirce, btmlbPirce, r("eapercs"), minSalCnt, scaledForPrice, lbsPerEa, r("avgcswgt"), r("avgeawgt"))
 
                     ''GetCostAndGp(Val(r("eaPerCs")), Val(r("csCost")), lblNewLbPrice_OrderByQty_view.Visible, Val(r("csPrice")), Val(r("lbPrice_orderByQty")), Val(r("avgeawgt")), avgEaWgt, lbsPerEa, csCost, eaCost, lbCost, gp)
                     'If IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID) = True Then
@@ -851,8 +852,10 @@ Partial Class Common_OrderDtl
                     btmcsPirce = Val(r("btmcsPrice"))
                     minSalCnt = IIf(Val(r("minSalCnt")) = 0, 1, Val(r("minSalCnt")))
                     lbsPerEa = GetJfcLbsPerEa(DB, lblCustomerID.Text, custGrpItemID)
-                    Common.CovertPrice(csCost, eaCost, lbCost, r("eapercs"), minSalCnt, IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID), lbsPerEa, r("avgcswgt"), r("avgeawgt"))
-                    Common.CovertPrice(btmcsPirce, btmeaPirce, btmlbPirce, r("eapercs"), minSalCnt, IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID), lbsPerEa, r("avgcswgt"), r("avgeawgt"))
+                    'Scaled-item lookup is 3 queries - run it once for both conversions
+                    Dim scaledForPrice As Boolean = IsJfcScaledItem(DB, lblCustomerID.Text, custGrpItemID)
+                    Common.CovertPrice(csCost, eaCost, lbCost, r("eapercs"), minSalCnt, scaledForPrice, lbsPerEa, r("avgcswgt"), r("avgeawgt"))
+                    Common.CovertPrice(btmcsPirce, btmeaPirce, btmlbPirce, r("eapercs"), minSalCnt, scaledForPrice, lbsPerEa, r("avgcswgt"), r("avgeawgt"))
 
 
                     lblNewGp.Text = IIf(gp <> 0, "<br />GP " & Math.Round(gp * 100, 1) & "%", "")
@@ -2083,14 +2086,14 @@ Partial Class Common_OrderDtl
                 ElseIf ViewState("ORDER_MODE") = "VIEW_WEB_ORDER" Then
                     'lblCustOrderNr.Text = CString(r("custOrderNr"))
                     'lblMessage.Text = CString(r("message"))
-                    nrItems = Val(DB.GetScalar("SELECT COUNT(*) FROM sodtl WHERE webOrder_id = " & DB.SqlEsc(ViewState("ORDER_ID"))))
+                    'Removed: COUNT(*) of sodtl into nrItems - the count was never used
                     'lblNrItem.Text = nrItems & " items"
                     lblTotalAmt.Text = String.Format("{0:c}", Val(r("totalAmt")))
                     'lblOrderMsg.Text = nrItems & " items exist in this order. Total amount is <span class='red'>" & lblTotalAmt.Text & "</span>"
                 ElseIf ViewState("ORDER_MODE") = "VIEW_JETS_ORDER" Then
                     'lblCustOrderNr.Text = CString(r("custOrderNr"))
                     'lblMessage.Text = CString(r("message"))
-                    nrItems = Val(DB.GetScalar("SELECT COUNT(*) FROM sodtl_jets WHERE jfcBranchNr = " & DB.SqlEsc(jfcBranchNr) & " AND orderNr = " & DB.SqlEsc(ViewState("ORDER_ID"))))
+                    'Removed: COUNT(*) of sodtl_jets into nrItems - the count was never used
                     'lblTotalAmt.Text = String.Empty
                 End If
                 'Set more properties

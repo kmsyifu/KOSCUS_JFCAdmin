@@ -32,6 +32,10 @@ KOSCUS_JFCADMIN017 (11/04/2026)
 *<Tool>: Fixed: removed a leftover "Item # can not be empty" message that ran on every export.
 *<Tool>: Faster: the report's date / item filter flags are read in one query, the role is checked once, and clicks no longer open an unused DB connection.
 *<Common>: Version changed to 017 (Common.VERSION), so browsers load the new CSS / JS files.
+*<Common>: Fixed: the error email failed (and was not sent) for errors raised before the session loads, e.g. a missing page.
+*<Balance>: Fixed: the document reader was left open when opening an invoice / document.
+*<OrderForm>: Faster: opening a form or changing the Exception Price Group binds both grids on one DB connection (was 3), the role check runs once, and the hidden Japanese / long / web / sales point text is only loaded during an item search.
+*<OrderDtl>: Faster: opening an order no longer opens an unused DB connection or runs two item counts that were never used; Get Item / Set Price look up "scaled item" once instead of twice.
 
 KOSCUS_JFCADMIN016 (11/02/2026)
 *<Common>: Fixed stylesheet links so browsers load the new CSS after a version change. The ?v=<%= Common.VERSION %> in the <head> links was never filled in, so old CSS stayed cached. Links now use Common.CssLink in all master pages and Print.aspx.

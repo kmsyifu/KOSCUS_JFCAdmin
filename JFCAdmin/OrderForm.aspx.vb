@@ -32,7 +32,9 @@ Partial Class JFCAdmin_OrderForm
             Using DB As New DBHelper
                 Dim email As String = GetUserEmail(DB)
                 ' Reuse same helper as CustItem — fills branch dropdown
-                If IsJfcHoAdmin(DB, email) Or IsKmsSupport(DB, email) Then
+                'IsJfcHoAdmin and IsKmsSupport run the same query (and "Or" ran both) - read the role once
+                Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+                If jfcRole = "JFC_HO" OrElse jfcRole = "KMS_SUPPORT" Then
                     ShowBranchList(DB, email, True, lstBranch)
                 Else
                     ShowBranchList(DB, email, False, lstBranch)
@@ -206,10 +208,11 @@ Partial Class JFCAdmin_OrderForm
                 lstCtgSearch.Items.Add(New ListItem("Other", "Other"))
             End If
             lstCtgSearch.SelectedIndex = 0   ' All
-        End Using
 
-        BindCustomersGrid(orderFormID)
-        BindItemsGrid(orderFormID, False)
+            'Bind both grids on this connection (each used to open its own)
+            BindCustomersGrid(orderFormID, DB)
+            BindItemsGrid(orderFormID, False, DB)
+        End Using
     End Sub
 
     Private Sub LoadExcepPriceGrpDDL(DB As DBHelper, jfcBranchNr As String)
@@ -230,8 +233,10 @@ Partial Class JFCAdmin_OrderForm
     '  CUSTOMERS GRID
     ' ════════════════════════════════════════════════════════════════
 
-    Private Sub BindCustomersGrid(orderFormID As String)
-        Using DB As New DBHelper
+    'dbIn: the caller's connection, if it has one open (otherwise a connection is opened here)
+    Private Sub BindCustomersGrid(orderFormID As String, Optional dbIn As DBHelper = Nothing)
+        Dim DB As DBHelper = If(dbIn, New DBHelper)
+        Try
             ' All customers of the selected exception price group; pre-check assigned ones
             Dim SQL As String =
                 "SELECT c.customer_id, c.customerName, " &
@@ -249,15 +254,19 @@ Partial Class JFCAdmin_OrderForm
                 lblBranchID.Text,
                 SelectedExcepGrpID())
             grdCustomers.DataBind()
-        End Using
+        Finally
+            If dbIn Is Nothing Then DB.Dispose()
+        End Try
     End Sub
 
     Protected Sub lstExcepPriceGrp_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstExcepPriceGrp.SelectedIndexChanged
         ' Customers and items both depend on the exception price group.
         ' Start the item list fresh: drop unsaved checks made under the previous group.
         ViewState("ItemChecks") = Nothing
-        BindCustomersGrid(hfOrderFormID.Value)
-        BindItemsGrid(hfOrderFormID.Value, False)
+        Using DB As New DBHelper
+            BindCustomersGrid(hfOrderFormID.Value, DB)
+            BindItemsGrid(hfOrderFormID.Value, False, DB)
+        End Using
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
@@ -266,9 +275,11 @@ Partial Class JFCAdmin_OrderForm
 
     ' captureChecks: remember the grid's current checkbox state before rebinding, so unsaved
     ' check/uncheck edits survive search, sort and add/remove postbacks until Save.
-    Private Sub BindItemsGrid(orderFormID As String, Optional captureChecks As Boolean = True)
+    'dbIn: the caller's connection, if it has one open (otherwise a connection is opened here)
+    Private Sub BindItemsGrid(orderFormID As String, Optional captureChecks As Boolean = True, Optional dbIn As DBHelper = Nothing)
         If captureChecks Then CaptureItemChecks()
-        Using DB As New DBHelper
+        Dim DB As DBHelper = If(dbIn, New DBHelper)
+        Try
             Dim jfcBranchNr As String = lblBranchID.Text
             Dim searchText As String = IIf(watItemSearch.WatermarkText = txtItemSearch.Text, "", txtItemSearch.Text.Trim())
             Dim ctgFilter As String = lstCtgSearch.SelectedValue
@@ -308,7 +319,8 @@ Partial Class JFCAdmin_OrderForm
                 "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
                 "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, " &
                 "'' AS availMsg, " &
-                "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, a.salesPoint, " &
+                IIf(searchWords.Count > 0, "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, a.salesPoint, ",
+                    "NULL AS itemDesc_ja, NULL AS itemDesc_long, NULL AS itemWebDesc, NULL AS salesPoint, ") &
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
                 "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
                 "FROM   jfcItem a " &
@@ -353,7 +365,9 @@ Partial Class JFCAdmin_OrderForm
                 lblItemPendingMsg.Text &= IIf(lblItemPendingMsg.Text <> "", "<br />", "") &
                     "Exception Price Group changed - items saved for the previous group will be removed when you click """ & btnSaveForm.Text & """."
             End If
-        End Using
+        Finally
+            If dbIn Is Nothing Then DB.Dispose()
+        End Try
     End Sub
 
     ' Upper-cased item search words of the last BindItemsGrid (for the match tag)

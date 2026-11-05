@@ -20,7 +20,10 @@
         'Using DB As New DBHelper
         'Send email when running time error occurs
         Dim httpUnhandledException As HttpUnhandledException = New HttpUnhandledException(Server.GetLastError().Message, Server.GetLastError())
-        Dim emailBody As String = "User: " & GetUserEmail(Nothing) & "<br />" & httpUnhandledException.GetHtmlErrorMessage()
+        'Session is Nothing for errors raised before session state loads (e.g. 404s) - GetUserEmail would then throw
+        'and the error email would never be sent
+        Dim userEmail As String = If(HttpContext.Current IsNot Nothing AndAlso HttpContext.Current.Session IsNot Nothing, CStr(GetUserEmail(Nothing)), "(no session)")
+        Dim emailBody As String = "User: " & userEmail & "<br />" & httpUnhandledException.GetHtmlErrorMessage()
         SendMail(SYSTEM_EMAIL, Common.GetSupportEmail(), Nothing, "KOSCUS_JFCAdmin Error", emailBody, Nothing, True, Nothing)
         'End Using
     End Sub

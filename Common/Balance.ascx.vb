@@ -444,8 +444,17 @@ Partial Class Common_Balance
             SQL = "SELECT directory, fileName FROM customer_document " & _
                         "WHERE UPPER(docType) = 'INVOICE' AND customer_id = :1 AND docName = :2"
             r = mDB.GetReader(SQL, customerID, reference)
-            If r.Read Then
-                rtn = DownloadFile(CString(r("directory")), CString(r("fileName")))
+            'Read the file info and close the reader before downloading (it was left open)
+            Dim docDir As String = ""
+            Dim docFile As String = ""
+            Dim docFound As Boolean = r.Read()
+            If docFound Then
+                docDir = CString(r("directory"))
+                docFile = CString(r("fileName"))
+            End If
+            r.close()
+            If docFound Then
+                rtn = DownloadFile(docDir, docFile)
             End If
             If rtn = False Then MessageBox("Cannot open the document", "Error", mDB)
         End If
@@ -866,8 +875,17 @@ Partial Class Common_Balance
             docName = Convert.ToString(e.CommandArgument)
             SQL = "SELECT directory, fileName FROM customer_document WHERE customer_id = :1 AND docName = :2"
             r = mDB.GetReader(SQL, customerID, docName)
-            If r.Read Then
-                rtn = DownloadFile(CString(r("directory")), CString(r("fileName")))
+            'Read the file info and close the reader before downloading (it was left open)
+            Dim docDir As String = ""
+            Dim docFile As String = ""
+            Dim docFound As Boolean = r.Read()
+            If docFound Then
+                docDir = CString(r("directory"))
+                docFile = CString(r("fileName"))
+            End If
+            r.close()
+            If docFound Then
+                rtn = DownloadFile(docDir, docFile)
             End If
             If rtn = False Then MessageBox("Cannot open the document", "Error", mDB)
         ElseIf e.CommandName = "CHANGE_ALL_ROW" Then
@@ -1761,8 +1779,17 @@ Partial Class Common_Balance
             customerID = IIf(Session("BALANCE_CMD") = "CUST", Session("BALANCE_CUSTID"), lstCustomer_download.Text)
             SQL = "SELECT directory, fileName FROM customer_document WHERE customer_id = :1 AND docName = :2"
             r = mDB.GetReader(SQL, customerID, docName)
-            If r.Read Then
-                rtn = DownloadFile(CString(r("directory")), CString(r("fileName")))
+            'Read the file info and close the reader before downloading (it was left open)
+            Dim docDir As String = ""
+            Dim docFile As String = ""
+            Dim docFound As Boolean = r.Read()
+            If docFound Then
+                docDir = CString(r("directory"))
+                docFile = CString(r("fileName"))
+            End If
+            r.close()
+            If docFound Then
+                rtn = DownloadFile(docDir, docFile)
             End If
             If rtn = False Then MessageBox("Cannot open the document", "Error", mDB)
         End If

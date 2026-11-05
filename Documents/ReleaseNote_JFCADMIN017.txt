@@ -168,17 +168,41 @@ Speed
      browsers load the new files instead of old cached copies.
 
 ==================================================================================================================================
+11. MORE FIXES (after the first 017 commit)
+==================================================================================================================================
+11.1 Global.asax - error email
+     - Application_Error read the user email from Session. For errors raised before session state loads (for
+       example a missing page), Session is Nothing, so the handler itself crashed and no error email was sent.
+     - Fix: use "(no session)" as the user when there is no session.
+11.2 Balance (Common/Balance.ascx.vb) - document reader left open
+     - Opening an invoice / payment document / download read the file info and left the reader open (also when no
+       document was found). Now the reader is closed before the download starts. Same behavior otherwise.
+     - Test: open an invoice from Balance, a document from Payment detail, and a file from Download.
+11.3 Order Form (JFCAdmin/OrderForm.aspx.vb)
+     - Opening a form and changing the Exception Price Group bind the customer and item grids on one DB connection
+       (opening a form used 3, the group change used 2).
+     - The HO admin / KMS support check reads the role once ("Or" ran the same query twice).
+     - The item grid only loads the Japanese / long / web / sales point text when an item search is entered; that
+       text is only used for the match tag during a search.
+     - Test: open an existing form and Add Exception Price Group Order Form; change the group; item search (match
+       tags still show); save.
+11.4 Order Detail (Common/OrderDtl.ascx.vb)
+     - pageLoad no longer opens a DB connection it never used.
+     - Removed two item COUNT(*) queries whose result was never used.
+     - Get Item / Set Price: the "scaled item" lookup (3 queries) runs once instead of twice.
+     - Test: open web and JETS orders; Get Item and Set Price on a scaled and a normal item.
+
+==================================================================================================================================
 Not changed (ideas for later)
 ==================================================================================================================================
 - DBHelper "Connection Lifetime=20" (App_Code/DBHelper.vb): raising or removing it should help every page, but it is
   shared by the whole site. Needs a decision.
 - debug="true" in Web.config: pages download the full-size debug Ajax scripts. Site-wide decision.
-- Order detail: opening one order still runs about 30 queries on several connections; Update Order on a large order
+- Order detail: opening one order still runs many queries on several connections; Update Order on a large order
   makes hundreds of round trips (UpSertItemInOrder per line). Bigger change, needs testing.
 - Order History: the list query can still run 2-4 times when several filters change before Search; paging runs it
   twice. Needs testing.
 - Balance: all three tabs load on first load though only one is shown. Needs a decision (load on tab click).
-- OrderForm: extra connections, one INSERT per checked row on Save, large ViewState on the item grid.
+- OrderForm: one INSERT per checked row on Save, large ViewState on the item grid.
 - The admin user-type check in the master pages runs only on first load, not on clicks. Changing it changes access.
 - Balance: GetCustCompanyID (Common.vb) returns custGrp_id instead of custCompany_id - check against data before fixing.
-- Global.asax Application_Error can fail when there is no session (error email not sent).
