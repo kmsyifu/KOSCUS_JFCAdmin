@@ -96,6 +96,14 @@ Before
      Add to Order and Update Order where those buttons show.
      Test: Enter in each Order Info box, in a qty box of a new order and of an approved order (Update Order), in the
      item search and the Add Item qty box - never goes to the login page.
+     Same fix on the other pages (JFCAdmin/CustItem, CustSetting, BranchSetting, Tool, OrderForm, Balance, OrderHistory .aspx):
+     the page content is in a panel pnlEnterKey whose default button btnEnterNoop does nothing. Boxes inside a panel with
+     its own default button (search, save, popups) still run that button.
+     Test: on each page press Enter in every kind of box (search, grid, popup) - runs its button or nothing, never logs out.
+4.11 AR Balance link (Order Info, JFC admin) works again: opens JFCAdmin/Balance.aspx?customer_id=...&cmd=show_dtl in a new
+     tab (that customer selected, payment detail shown). The URL is app-relative (ResolveUrl) - it was built from
+     Request.Url, which can be the internal server address behind the proxy. Customer id is URL-encoded.
+     Test: open an order, click AR Balance: Balance page opens for the same customer.
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.
