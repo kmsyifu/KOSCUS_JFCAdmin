@@ -187,7 +187,7 @@ Partial Class JFCAdmin_OrderForm
 
             ' Sort by DDL init
             If lstSortBy.Items.Count = 0 Then
-                lstSortBy.Items.Add(New ListItem("Selected", "isAssigned DESC, itemDesc_view"))
+                lstSortBy.Items.Add(New ListItem("Selected", "isAssigned DESC, item_id"))   ' selected first, then by item #
                 lstSortBy.Items.Add(New ListItem("Category", "ctgDispOrder, itemDesc_view"))
                 lstSortBy.Items.Add(New ListItem("Item Description", "itemDesc_view"))
                 lstSortBy.Items.Add(New ListItem("Item #", "item_id"))

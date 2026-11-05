@@ -2,6 +2,7 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN017 (11/04/2026)
+*<OrderForm>: Sort by "Selected" - selected items first, then by item # (was by description).
 *<Login>: Password box has an eye button to show / hide the password.
 *<OrderForm>: Item search match shows only the text around the matched word (word in bold) - the field name tag (e.g. "Long description") is removed.
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
