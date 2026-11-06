@@ -2,6 +2,11 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN017 (11/04/2026)
+*<OrderForm>: Customers and items in pages (25 customers, 50 items per page). Checks are kept when the page, search, sort or category changes, and Save saves the checks of every page.
+*<OrderForm>: Customer search (customer # or name). Customers sorted by customer #.
+*<OrderForm>: "Items" title -> "Assigned Items"; list column "Exception Price Group" -> "Price Group"; "Go back to order forms..."; delete message without "and all its items"; smaller Exception Price Group dropdown.
+*<OrderForm>: Mobile view: smaller boxes, one search control per line. Normal view: item search box on the same line as Sort by / Category.
+*<OrderForm>: Order Form menu (and the page) only for the same people as Branch Settings (branch / HO admin, KMS support). Order Form link added to the mobile Home menu.
 *<OrderForm>: Items priced only by weight (lb price by weight) are listed and can be selected (before, they were treated as having no price and hidden). The Lb Price column shows the by-weight price when there is no lb-by-quantity price.
 *<Login>: Show-password eye stays inside the right edge of the password box (its styles are in the page, so an old cached Login.css no longer shows it below the box). Edge's own reveal icon is hidden.
 *<OrderForm>: Sort by "Selected" - selected items first, then by item # (was by description).

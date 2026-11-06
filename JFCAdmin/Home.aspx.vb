@@ -54,6 +54,7 @@ Partial Class JFCAdmin_Home
                 'Yi Fu 12/10/2020
                 Dim jfcbranchAdmin As Boolean = (jfcRole = "JFC_BRANCH" OrElse jfcRole = "JFC_HO" OrElse kmsSupport)
                 pnlBranchsetting.Visible = jfcbranchAdmin
+                pnlOrderForm.Visible = jfcbranchAdmin   'same people as Branch Settings
                 pnltool.Visible = jfcbranchAdmin
 
                 pnlMenu.Visible = False
