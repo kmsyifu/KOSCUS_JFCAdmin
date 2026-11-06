@@ -189,9 +189,15 @@ Partial Class JFCAdmin_OrderForm
             ' Exception Price Group DDL
             LoadExcepPriceGrpDDL(DB, lblBranchID.Text)
             Dim savedGrp As String = CString(ViewState("ExcepPriceGrpID"))
+            ' A saved group with no customers left is not in the list: add it so the form still shows (and keeps) its group
+            If savedGrp <> "" AndAlso lstExcepPriceGrp.Items.FindByValue(savedGrp) Is Nothing Then
+                lstExcepPriceGrp.Items.Add(New ListItem(savedGrp, savedGrp))
+            End If
             If lstExcepPriceGrp.Items.FindByValue(savedGrp) IsNot Nothing Then
                 lstExcepPriceGrp.SelectedValue = savedGrp
             End If
+            ' The group can only be picked when adding a form; an existing form keeps its group
+            lstExcepPriceGrp.Enabled = isNew
 
             ' Sort by DDL init
             If lstSortBy.Items.Count = 0 Then
@@ -592,6 +598,10 @@ Partial Class JFCAdmin_OrderForm
         End If
 
         Dim excepGrpID As String = SelectedExcepGrpID()
+        If hfOrderFormID.Value <> "" AndAlso excepGrpID <> CString(ViewState("ExcepPriceGrpID")) Then
+            ShowSaveError("The Exception Price Group of an existing order form cannot be changed.")
+            Return
+        End If
         If excepGrpID = "" Then
             ShowSaveError("Please select an Exception Price Group.")
             Return

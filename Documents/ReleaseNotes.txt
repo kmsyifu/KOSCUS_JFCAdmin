@@ -2,6 +2,7 @@
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
 KOSCUS_JFCADMIN017 (11/04/2026)
+*<OrderForm>: Exception Price Group can only be picked when adding a form. When updating a form the dropdown is locked to the saved group.
 *<OrderForm>: Customer list sorted by selected customers first (including checks not saved yet), then by customer #.
 *<OrderForm>: Add / Update requires at least one selected customer and one selected item (checks on every page count).
 *<OrderForm>: Fixed: duplicate Order Form Name check now ignores upper / lower case and spaces around the name. Save errors also show in red at the top of the detail panel.
