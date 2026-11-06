@@ -138,6 +138,9 @@
         <asp:Panel ID="pnlCustItem" runat="server">
                 <ul class="menuLink">  <li><a runat="server" id="aCustItem" href="~/JFCAdmin/CustItem.aspx" class='linkcolor'>Customer Items </a></li></ul>  
           </asp:Panel>
+        <asp:Panel ID="pnlOrderForm" runat="server">
+                <ul class="menuLink">  <li><a runat="server" id="aOrderForm_m" href="~/JFCAdmin/OrderForm.aspx" class='linkcolor'>Order Form</a></li></ul>
+        </asp:Panel>
         <asp:Panel ID="pnlBranchSetting" runat="server">
                 <ul class="menuLink">  <li><a runat="server" id="aBranchSetting" href="~/JFCAdmin/BranchSetting.aspx" class='linkcolor'>Branch Settings </a></li></ul>  
           </asp:Panel>

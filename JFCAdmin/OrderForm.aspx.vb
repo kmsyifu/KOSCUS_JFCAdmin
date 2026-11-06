@@ -34,6 +34,10 @@ Partial Class JFCAdmin_OrderForm
                 ' Reuse same helper as CustItem — fills branch dropdown
                 'IsJfcHoAdmin and IsKmsSupport run the same query (and "Or" ran both) - read the role once
                 Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
+                ' Same people as Branch Settings (menu link is hidden for everyone else): branch / HO admin, KMS support
+                If jfcRole <> "JFC_BRANCH" AndAlso jfcRole <> "JFC_HO" AndAlso jfcRole <> "KMS_SUPPORT" Then
+                    Response.Redirect("Home.aspx")
+                End If
                 If jfcRole = "JFC_HO" OrElse jfcRole = "KMS_SUPPORT" Then
                     ShowBranchList(DB, email, True, lstBranch)
                 Else
@@ -122,7 +126,7 @@ Partial Class JFCAdmin_OrderForm
                 ViewState("DIALOG_CMD") = "DELETE_ORDERFORM"
                 ViewState("DIALOG_ARG1") = e.CommandArgument.ToString()
                 Using DB As New DBHelper
-                    MessageBoxYesNo("Are you sure you want to delete this order form and all its items?", "Confirm Deletion", DB)
+                    MessageBoxYesNo("Are you sure you want to delete this order form?", "Confirm Deletion", DB)
                 End Using
         End Select
     End Sub
@@ -146,7 +150,11 @@ Partial Class JFCAdmin_OrderForm
         lblDetailMsg.Text = ""
         lblItemMsg.Text = ""
         ViewState("ItemChecks") = Nothing
+        ViewState("CustChecks") = Nothing
         ViewState("ExcepPriceGrpID") = ""
+        grdCustomers.PageIndex = 0
+        grdItems.PageIndex = 0
+        txtCustSearch.Text = ""
         hfOrderFormID.Value = orderFormID
         Dim isNew As Boolean = (orderFormID = "")
         pnlBranch.Visible = False
@@ -210,7 +218,7 @@ Partial Class JFCAdmin_OrderForm
             lstCtgSearch.SelectedIndex = 0   ' All
 
             'Bind both grids on this connection (each used to open its own)
-            BindCustomersGrid(orderFormID, DB)
+            BindCustomersGrid(orderFormID, False, DB)
             BindItemsGrid(orderFormID, False, DB)
         End Using
     End Sub
@@ -233,38 +241,112 @@ Partial Class JFCAdmin_OrderForm
     '  CUSTOMERS GRID
     ' ════════════════════════════════════════════════════════════════
 
+    ' captureChecks: remember the grid's current checkbox state before rebinding, so unsaved
+    ' check/uncheck edits survive search and page changes until Save.
     'dbIn: the caller's connection, if it has one open (otherwise a connection is opened here)
-    Private Sub BindCustomersGrid(orderFormID As String, Optional dbIn As DBHelper = Nothing)
+    Private Sub BindCustomersGrid(orderFormID As String, Optional captureChecks As Boolean = True, Optional dbIn As DBHelper = Nothing)
+        If captureChecks Then CaptureCustChecks()
         Dim DB As DBHelper = If(dbIn, New DBHelper)
         Try
-            ' All customers of the selected exception price group; pre-check assigned ones
-            Dim SQL As String =
-                "SELECT c.customer_id, c.customerName, " &
-                "CASE WHEN c.jfcCustomerNr IS NOT NULL THEN c.jfcBranchNr || '-' || c.jfcCustomerNr " &
-                "     ELSE SUBSTR(c.custGrp_id, 1, 2) || '-' || SUBSTR(c.custGrp_id, 3) END AS custNr_view, " &
-                "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned " &
-                "FROM   customer c " &
-                "LEFT   JOIN orderForm_Customer fc " &
-                "         ON fc.customer_id = c.customer_id AND fc.orderForm_id = :1 " &
-                "WHERE  c.jfcBranchNr = :2 " &
-                "  AND  c.JFCPRICEGRPID_ORIG = :3 " &
-                "ORDER  BY c.customerName"
-            grdCustomers.DataSource = DB.GetDataTable(SQL,
-                IIf(orderFormID = "", "~~NONE~~", orderFormID),
-                lblBranchID.Text,
-                SelectedExcepGrpID())
+            Dim searchText As String = IIf(watCustSearch.WatermarkText = txtCustSearch.Text, "", txtCustSearch.Text.Trim())
+            Dim dt As DataTable = GetCustomersTable(DB, orderFormID, searchText)
+            grdCustomers.DataSource = dt
+            SetPageInRange(grdCustomers, dt.Rows.Count)
             grdCustomers.DataBind()
         Finally
             If dbIn Is Nothing Then DB.Dispose()
         End Try
     End Sub
 
+    ' Customers of the selected exception price group, sorted by customer #.
+    ' isSaved = in orderForm_Customer, isAssigned = what the checkbox shows (saved + unsaved check edits).
+    ' searchText: customer # (e.g. 1234, 30-1234, 301234) or part of the name; "" = all customers of the group.
+    Private Function GetCustomersTable(DB As DBHelper, orderFormID As String, searchText As String) As DataTable
+        Dim searchCond As String = ""
+        If searchText <> "" Then
+            Dim nameLike As String = DB.SqlEsc("%" & searchText.ToUpper & "%")
+            Dim custNr As String = searchText.ToUpper.Replace("-", "").Replace(" ", "")
+            Dim nrLike As String = DB.SqlEsc("%" & custNr & "%")
+            searchCond = " AND (UPPER(c.customerName) LIKE " & nameLike &
+                         " OR UPPER(c.jfcCustomerNr) LIKE " & nrLike &
+                         " OR UPPER(c.jfcBranchNr || c.jfcCustomerNr) LIKE " & nrLike &
+                         " OR UPPER(c.custGrp_id) LIKE " & nrLike & ") "
+        End If
+        Dim SQL As String =
+            "SELECT c.customer_id, c.customerName, " &
+            "CASE WHEN c.jfcCustomerNr IS NOT NULL THEN c.jfcBranchNr || '-' || c.jfcCustomerNr " &
+            "     ELSE SUBSTR(c.custGrp_id, 1, 2) || '-' || SUBSTR(c.custGrp_id, 3) END AS custNr_view, " &
+            "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
+            "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
+            "FROM   customer c " &
+            "LEFT   JOIN orderForm_Customer fc " &
+            "         ON fc.customer_id = c.customer_id AND fc.orderForm_id = :1 " &
+            "WHERE  c.jfcBranchNr = :2 " &
+            "  AND  c.JFCPRICEGRPID_ORIG = :3 " & searchCond &
+            "ORDER  BY LPAD(NVL(c.jfcCustomerNr, SUBSTR(c.custGrp_id, 3)), 20, '0'), c.customerName"   ' customer # in number order (12 before 100)
+        Dim dt As DataTable = DB.GetDataTable(SQL,
+            IIf(orderFormID = "", "~~NONE~~", orderFormID),
+            lblBranchID.Text,
+            SelectedExcepGrpID())
+        Dim checks As Dictionary(Of String, Boolean) = CustChecks()
+        For Each dr As DataRow In dt.Rows
+            Dim custID As String = CString(dr("customer_id"))
+            If checks.ContainsKey(custID) Then dr("isAssigned") = IIf(checks(custID), 1, 0)
+        Next
+        Return dt
+    End Function
+
+    ' Customer check state edited since the form was opened (only rows that differ from orderForm_Customer): customer_id -> checked
+    Private Function CustChecks() As Dictionary(Of String, Boolean)
+        If ViewState("CustChecks") Is Nothing Then
+            ViewState("CustChecks") = New Dictionary(Of String, Boolean)
+        End If
+        Return CType(ViewState("CustChecks"), Dictionary(Of String, Boolean))
+    End Function
+
+    Private Sub CaptureCustChecks()
+        Dim checks As Dictionary(Of String, Boolean) = CustChecks()
+        For Each row As GridViewRow In grdCustomers.Rows
+            Dim chk = CType(row.FindControl("chkCustRow"), CheckBox)
+            If chk IsNot Nothing Then
+                Dim custID As String = CString(grdCustomers.DataKeys(row.RowIndex)("customer_id"))
+                If chk.Checked = (Val(grdCustomers.DataKeys(row.RowIndex)("isSaved")) = 1) Then
+                    checks.Remove(custID)
+                Else
+                    checks(custID) = chk.Checked
+                End If
+            End If
+        Next
+        ViewState("CustChecks") = checks
+    End Sub
+
+    Protected Sub grdCustomers_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdCustomers.PageIndexChanging
+        CaptureCustChecks()
+        grdCustomers.PageIndex = e.NewPageIndex
+        BindCustomersGrid(hfOrderFormID.Value, False)
+    End Sub
+
+    Protected Sub btnSearchCust_Click(sender As Object, e As EventArgs) Handles btnSearchCust.Click
+        CaptureCustChecks()
+        grdCustomers.PageIndex = 0
+        BindCustomersGrid(hfOrderFormID.Value, False)
+    End Sub
+
+    ' After a search the list can be shorter: keep the page index inside the page count
+    Private Sub SetPageInRange(grd As GridView, rowCount As Integer)
+        Dim pageCount As Integer = Math.Max(1, CInt(Math.Ceiling(rowCount / grd.PageSize)))
+        If grd.PageIndex >= pageCount Then grd.PageIndex = pageCount - 1
+    End Sub
+
     Protected Sub lstExcepPriceGrp_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstExcepPriceGrp.SelectedIndexChanged
         ' Customers and items both depend on the exception price group.
         ' Start the item list fresh: drop unsaved checks made under the previous group.
         ViewState("ItemChecks") = Nothing
+        ViewState("CustChecks") = Nothing
+        grdCustomers.PageIndex = 0
+        grdItems.PageIndex = 0
         Using DB As New DBHelper
-            BindCustomersGrid(hfOrderFormID.Value, DB)
+            BindCustomersGrid(hfOrderFormID.Value, False, DB)
             BindItemsGrid(hfOrderFormID.Value, False, DB)
         End Using
     End Sub
@@ -280,79 +362,12 @@ Partial Class JFCAdmin_OrderForm
         If captureChecks Then CaptureItemChecks()
         Dim DB As DBHelper = If(dbIn, New DBHelper)
         Try
-            Dim jfcBranchNr As String = lblBranchID.Text
-            Dim searchText As String = IIf(watItemSearch.WatermarkText = txtItemSearch.Text, "", txtItemSearch.Text.Trim())
-            Dim ctgFilter As String = lstCtgSearch.SelectedValue
-            Dim sortBy As String = lstSortBy.SelectedValue
-            Dim priceGrpID As String = GetFormPriceGrpID(DB)
-
-            ' Same prices as v_excepcust_custgrpitem_small: jfcCustomerPrice rows whose customer_id is the
-            ' exception price group (customer.jfcPriceGrpID_orig). Those rows are the group's item list.
-            ' jets_price (branch price group) only supplies the branch description / category / ea per cs.
-            ' Every listed item must be in that group (enabled, non-zero price). Search text / category only
-            ' narrow the list; checked and saved items of the group are always listed so Save
-            ' (delete + re-insert checked rows) never drops them.
-            Dim groupCond As String = "cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
-                                      " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0 AND NVL(cp.lbPrice_orderByWgt, 0) = 0)"
-            Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
-                                      " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
-            Dim searchCond As String = ""
-            searchWords = New List(Of String)
-            For Each word As String In searchText.ToUpper.Split(New Char() {" ", ",", "."})
-                If word.Trim <> "" Then
-                    searchCond &= String.Format(searchSQL, DB.SqlEsc("%" & word & "%"), DB.SqlEsc(word))
-                    searchWords.Add(word.Trim)
-                End If
-            Next
-            If ctgFilter <> "" AndAlso ctgFilter <> LST_ALL_STR Then
-                searchCond &= " AND NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) = " & DB.SqlEsc(ctgFilter)
-            End If
-
-            ' Unsaved edits: isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
-            ' isAssigned is set from ItemChecks() after the query (no IN list, Oracle allows max 1000 per list).
-            Dim checkedCond As String = ItemInCond(DB, "a.item_id", True)
-
-            Dim SQL As String =
-                "SELECT a.item_id, NULL AS itemNr, " &
-                "NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
-                "NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) AS ctgName_view, " &
-                "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
-                "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, NVL(cp.lbPrice_orderByWgt, 0) AS lbPrice_OrderByWgt, " &
-                "'' AS availMsg, " &
-                IIf(searchWords.Count > 0, "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, a.salesPoint, ",
-                    "NULL AS itemDesc_ja, NULL AS itemDesc_long, NULL AS itemWebDesc, NULL AS salesPoint, ") &
-                "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
-                "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
-                "FROM   jfcItem a " &
-                "LEFT   JOIN jfcCustomerPrice cp ON cp.item_id = a.item_id AND cp.customer_id = :1 " &
-                "LEFT   JOIN jets_price p ON p.itemcode = a.item_id AND p.pricegpid = :2 " &
-                "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
-                "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
-                "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
-                "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
-                "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :3 " &
-                "WHERE  " & groupCond &
-                "  AND  (fi.item_id IS NOT NULL" &
-                IIf(checkedCond <> "", " OR " & checkedCond, "") &
-                " OR (1 = 1" & searchCond & ")) "
-
-            ' Saved items belong to the form's saved group; after switching groups none are checked
-            ' (Save then replaces them with the items checked under the new group).
-            Dim grpChanged As Boolean = (orderFormID <> "" AndAlso SelectedExcepGrpID() <> CString(ViewState("ExcepPriceGrpID")))
-
-            ' DBHelper binds args in the order the :n placeholders appear in the SQL (not by number)
-            Dim dt As DataTable = DB.GetDataTable(SQL,
-                SelectedExcepGrpID(),
-                priceGrpID,
-                IIf(orderFormID = "" OrElse grpChanged, "~~NONE~~", orderFormID))
-            Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
-            For Each dr As DataRow In dt.Rows
-                Dim itemID As String = CString(dr("item_id"))
-                If checks.ContainsKey(itemID) Then dr("isAssigned") = IIf(checks(itemID), 1, 0)
-            Next
+            Dim grpChanged As Boolean
+            Dim dt As DataTable = GetItemsTable(DB, orderFormID, True, grpChanged)
             ' Sorted after isAssigned is set, so "Selected" shows unsaved checks at the top
-            dt.DefaultView.Sort = sortBy
+            dt.DefaultView.Sort = lstSortBy.SelectedValue
             grdItems.DataSource = dt.DefaultView
+            SetPageInRange(grdItems, dt.Rows.Count)
             grdItems.DataBind()
 
             Dim changes As Integer = 0
@@ -369,6 +384,83 @@ Partial Class JFCAdmin_OrderForm
             If dbIn Is Nothing Then DB.Dispose()
         End Try
     End Sub
+
+    ' Items of the form's exception price group. isSaved = in orderForm_Item, isAssigned = what the checkbox
+    ' shows (saved + unsaved check edits). forList = True: the grid list (search / category apply; saved and
+    ' checked items are always listed). forList = False: only saved and checked items (Save - every page).
+    Private Function GetItemsTable(DB As DBHelper, orderFormID As String, forList As Boolean, ByRef grpChanged As Boolean) As DataTable
+        Dim jfcBranchNr As String = lblBranchID.Text
+        Dim searchText As String = IIf(watItemSearch.WatermarkText = txtItemSearch.Text, "", txtItemSearch.Text.Trim())
+        Dim ctgFilter As String = lstCtgSearch.SelectedValue
+        Dim priceGrpID As String = GetFormPriceGrpID(DB)
+
+        ' Same prices as v_excepcust_custgrpitem_small: jfcCustomerPrice rows whose customer_id is the
+        ' exception price group (customer.jfcPriceGrpID_orig). Those rows are the group's item list.
+        ' jets_price (branch price group) only supplies the branch description / category / ea per cs.
+        ' Every listed item must be in that group (enabled, non-zero price). Search text / category only
+        ' narrow the list; checked and saved items of the group are always listed so Save
+        ' (delete + re-insert checked rows) never drops them.
+        Dim groupCond As String = "cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
+                                  " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0 AND NVL(cp.lbPrice_orderByWgt, 0) = 0)"
+        Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
+                                  " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
+        Dim searchCond As String = ""
+        searchWords = New List(Of String)
+        If Not forList Then searchText = ""
+        For Each word As String In searchText.ToUpper.Split(New Char() {" ", ",", "."})
+            If word.Trim <> "" Then
+                searchCond &= String.Format(searchSQL, DB.SqlEsc("%" & word & "%"), DB.SqlEsc(word))
+                searchWords.Add(word.Trim)
+            End If
+        Next
+        If forList AndAlso ctgFilter <> "" AndAlso ctgFilter <> LST_ALL_STR Then
+            searchCond &= " AND NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) = " & DB.SqlEsc(ctgFilter)
+        End If
+
+        ' Unsaved edits: isAssigned = what the checkbox shows, isSaved = what is in orderForm_Item.
+        ' isAssigned is set from ItemChecks() after the query (no IN list, Oracle allows max 1000 per list).
+        Dim checkedCond As String = ItemInCond(DB, "a.item_id", True)
+
+        Dim SQL As String =
+            "SELECT a.item_id, NULL AS itemNr, " &
+            "NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc_view, " &
+            "NVL(jctgGrp2.ctgGrpDesc, NVL(jctgGrp.ctgGrpDesc, 'Other')) AS ctgName_view, " &
+            "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
+            "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, NVL(cp.lbPrice_orderByWgt, 0) AS lbPrice_OrderByWgt, " &
+            "'' AS availMsg, " &
+            IIf(searchWords.Count > 0, "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, a.salesPoint, ",
+                "NULL AS itemDesc_ja, NULL AS itemDesc_long, NULL AS itemWebDesc, NULL AS salesPoint, ") &
+            "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
+            "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
+            "FROM   jfcItem a " &
+            "LEFT   JOIN jfcCustomerPrice cp ON cp.item_id = a.item_id AND cp.customer_id = :1 " &
+            "LEFT   JOIN jets_price p ON p.itemcode = a.item_id AND p.pricegpid = :2 " &
+            "LEFT   JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
+            "LEFT   JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id " &
+            "LEFT   JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
+            "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
+            "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :3 " &
+            "WHERE  " & groupCond &
+            "  AND  (fi.item_id IS NOT NULL" &
+            IIf(checkedCond <> "", " OR " & checkedCond, "") &
+            IIf(forList, " OR (1 = 1" & searchCond & ")", "") & ") "
+
+        ' Saved items belong to the form's saved group; after switching groups none are checked
+        ' (Save then replaces them with the items checked under the new group).
+        grpChanged = (orderFormID <> "" AndAlso SelectedExcepGrpID() <> CString(ViewState("ExcepPriceGrpID")))
+
+        ' DBHelper binds args in the order the :n placeholders appear in the SQL (not by number)
+        Dim dt As DataTable = DB.GetDataTable(SQL,
+            SelectedExcepGrpID(),
+            priceGrpID,
+            IIf(orderFormID = "" OrElse grpChanged, "~~NONE~~", orderFormID))
+        Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
+        For Each dr As DataRow In dt.Rows
+            Dim itemID As String = CString(dr("item_id"))
+            If checks.ContainsKey(itemID) Then dr("isAssigned") = IIf(checks(itemID), 1, 0)
+        Next
+        Return dt
+    End Function
 
     ' Upper-cased item search words of the last BindItemsGrid (for the match tag)
     Private searchWords As New List(Of String)
@@ -461,15 +553,27 @@ Partial Class JFCAdmin_OrderForm
     End Function
 
     Protected Sub lstSortBy_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstSortBy.SelectedIndexChanged
-        BindItemsGrid(hfOrderFormID.Value)
+        CaptureItemChecks()
+        grdItems.PageIndex = 0
+        BindItemsGrid(hfOrderFormID.Value, False)
     End Sub
 
     Protected Sub lstCtgSearch_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstCtgSearch.SelectedIndexChanged
-        BindItemsGrid(hfOrderFormID.Value)
+        CaptureItemChecks()
+        grdItems.PageIndex = 0
+        BindItemsGrid(hfOrderFormID.Value, False)
     End Sub
 
     Protected Sub btnSearchItem_Click(sender As Object, e As EventArgs) Handles btnSearchItem.Click
-        BindItemsGrid(hfOrderFormID.Value)
+        CaptureItemChecks()
+        grdItems.PageIndex = 0
+        BindItemsGrid(hfOrderFormID.Value, False)
+    End Sub
+
+    Protected Sub grdItems_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdItems.PageIndexChanging
+        CaptureItemChecks()
+        grdItems.PageIndex = e.NewPageIndex
+        BindItemsGrid(hfOrderFormID.Value, False)
     End Sub
 
     ' ════════════════════════════════════════════════════════════════
@@ -492,6 +596,10 @@ Partial Class JFCAdmin_OrderForm
         Dim jfcBranchNr As String = lblBranchID.Text
         Dim orderFormID As String = hfOrderFormID.Value
         Dim isNew As Boolean = (orderFormID = "")
+
+        ' Checks on the shown pages (other pages are already in ViewState)
+        CaptureCustChecks()
+        CaptureItemChecks()
 
         Using DB As New DBHelper
             ' Duplicate check
@@ -529,29 +637,31 @@ Partial Class JFCAdmin_OrderForm
                     formName, excepGrpID, userEmail, orderFormID)
             End If
 
+            ' Checked customers and items of every page (not only the rows shown): saved rows plus check edits.
+            ' Read before the deletes below (isSaved comes from the rows being replaced). A new form has no saved rows.
+            Dim grpChanged As Boolean
+            Dim dtCust As DataTable = GetCustomersTable(DB, IIf(isNew, "", orderFormID), "")
+            Dim dtItem As DataTable = GetItemsTable(DB, IIf(isNew, "", orderFormID), False, grpChanged)
+
             ' Save checked customers
             DB.ExecuteNonQuery(
                 "DELETE FROM orderForm_Customer WHERE orderForm_id = :1", orderFormID)
-            For Each row As GridViewRow In grdCustomers.Rows
-                Dim chk = CType(row.FindControl("chkCustRow"), CheckBox)
-                If chk IsNot Nothing AndAlso chk.Checked Then
-                    Dim custID As String = CString(grdCustomers.DataKeys(row.RowIndex).Value)
+            For Each dr As DataRow In dtCust.Rows
+                If Val(dr("isAssigned")) = 1 Then
                     DB.ExecuteNonQuery(
                         "INSERT INTO orderForm_Customer (orderForm_id, customer_id) VALUES (:1, :2)",
-                        orderFormID, custID)
+                        orderFormID, CString(dr("customer_id")))
                 End If
             Next
 
             ' Save checked items
             DB.ExecuteNonQuery(
                 "DELETE FROM orderForm_Item WHERE orderForm_id = :1", orderFormID)
-            For Each row As GridViewRow In grdItems.Rows
-                Dim chk = CType(row.FindControl("chkItemRow"), CheckBox)
-                If chk IsNot Nothing AndAlso chk.Checked Then
-                    Dim itemID As String = CString(grdItems.DataKeys(row.RowIndex).Value)
+            For Each dr As DataRow In dtItem.Rows
+                If Val(dr("isAssigned")) = 1 Then
                     DB.ExecuteNonQuery(
                         "INSERT INTO orderForm_Item (orderForm_id, item_id) VALUES (:1, :2)",
-                        orderFormID, itemID)
+                        orderFormID, CString(dr("item_id")))
                 End If
             Next
 
@@ -569,7 +679,7 @@ Partial Class JFCAdmin_OrderForm
         ViewState("DIALOG_CMD") = "DELETE_ORDERFORM"
         ViewState("DIALOG_ARG1") = hfOrderFormID.Value
         Using DB As New DBHelper
-            MessageBoxYesNo("Are you sure you want to delete this order form and all its items?", "Confirm Deletion", DB)
+            MessageBoxYesNo("Are you sure you want to delete this order form?", "Confirm Deletion", DB)
         End Using
     End Sub
 

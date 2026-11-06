@@ -137,6 +137,20 @@ Before
      in the browser cache the button and both icons showed full size below the box. Icons have a fixed 20px size;
      Edge's own reveal icon (::-ms-reveal) is hidden so there is only one eye.
      Test: Login page (after a normal refresh, no cache clear): eye is inside the right edge of the password box.
+4.22 Order Form (JFCAdmin/OrderForm.aspx, OrderForm.aspx.vb):
+     - Customers 25 per page, items 50 per page (GridView paging, same pager as Balance).
+     - Checks are kept per row in ViewState (CustChecks / ItemChecks: only rows that differ from what is saved) when the
+       page, search, sort or category changes. Save no longer reads only the grid rows: GetCustomersTable /
+       GetItemsTable(forList:=False) return the saved rows plus the check edits of every page.
+     - Customer search (customer # as 1234, 30-1234 or 301234, or part of the name). Customers sorted by customer #
+       (number order).
+     - "Items" -> "Assigned Items"; list column "Exception Price Group" -> "Price Group"; "Go back to order forms...";
+       delete message "Are you sure you want to delete this order form?"; Exception Price Group dropdown drpList (smaller).
+     - Mobile: smaller text boxes / dropdowns, one search control per line. Normal view: item search box on the same
+       line as Sort by / Category.
+     Test: check items on page 1 and 2, search, clear search, Save, reopen: all checks saved. Same for customers.
+4.23 Order Form menu (JFCAdmin.master.vb, Home.aspx mobile menu) only for JFC_BRANCH / JFC_HO / KMS_SUPPORT, same as
+     Branch Settings. OrderForm.aspx sends other users to Home.aspx.
 4.9 Item search query (Common/Suggestion.ashx, code=ITEM - used by Order Detail Add Item and Customer Items):
     - Returns only as many rows as the list shows (limit sent by the autocomplete, 30; max 150). Before, every match
       was returned and the list showed 30 - a short search returned most of the catalog.

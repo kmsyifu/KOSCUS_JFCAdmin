@@ -71,12 +71,12 @@
             <asp:Panel ID="pnlSearch" DefaultButton="btnSearch" CssClass="visiblePnl" runat="server">
            
             <asp:Label ID="lblSearch" runat="server" Text="Search" CssClass="gray" />
-               <asp:TextBox ID="txtSearchOrderForm" CssClass="largeTxt size48" runat="server" autocomplete="off" />
+               <asp:TextBox ID="txtSearchOrderForm" CssClass='<%# "largeTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" autocomplete="off" />
                 <ajaxToolkit:TextBoxWatermarkExtender ID="watSearchOrderForm" runat="server"
                     TargetControlID="txtSearchOrderForm"
                     WatermarkText="Search by Order Form"
-                    WatermarkCssClass="watermark largeTxt size48" />
-                &nbsp;
+                    WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size48") %>' />
+                <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
                 <asp:Label runat="server" Text="Customer #" CssClass="gray" />
                 <asp:TextBox ID="txtSearchCustNr" CssClass="stdTxt size8" runat="server" autocomplete="off" />
                 <asp:ImageButton ID="btnSearch" CssClass="xsImgBtn" ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
@@ -101,7 +101,7 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:BoundField HeaderText="Exception Price Group" DataField="JFCPriceGrpID_Orig"
+                    <asp:BoundField HeaderText="Price Group" DataField="JFCPriceGrpID_Orig"
                         HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48 cellLbl gray"
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-HorizontalAlign="Left"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px" />
@@ -132,7 +132,7 @@
              DETAIL view  (Add / Update)
         ──────────────────────────────────────────── --%>
         <asp:Panel ID="pnlDetail" runat="server" Visible="false">
-            <asp:LinkButton ID="lnkBack_order" CssClass="linkLabel" ForeColor="#4169E1" runat="server" Text="<< Go back to order Forms..." ></asp:LinkButton>
+            <asp:LinkButton ID="lnkBack_order" CssClass="linkLabel" ForeColor="#4169E1" runat="server" Text="<< Go back to order forms..." ></asp:LinkButton>
            
             <br />
             <asp:Label ID="lblDetailMsg" CssClass="red" runat="server" /><br />
@@ -145,14 +145,14 @@
                 <tr>
                     <td class="rowHdr">Order Form Name</td>
                     <td>
-                        <asp:TextBox ID="txtFormName" CssClass="stdTxt size48 disableEnter"
+                        <asp:TextBox ID="txtFormName" CssClass='<%# "stdTxt disableEnter " & IIf(IsMobile(), "size32", "size48") %>'
                             runat="server" autocomplete="off" />
                     </td>
                 </tr>
                 <tr>
                     <td class="rowHdr">Exception Price Group</td>
                     <td>
-                        <asp:DropDownList ID="lstExcepPriceGrp" CssClass="largeDrpList" runat="server"
+                        <asp:DropDownList ID="lstExcepPriceGrp" CssClass="drpList" runat="server"
                             AutoPostBack="True" />
                     </td>
                 </tr>
@@ -173,11 +173,30 @@
             <%-- ── Assigned Customers ── --%>
             <h3>Assigned Customers</h3>
 
-            <%-- All customers of the selected exception price group; checked = saved to the form --%>
+            <asp:Panel ID="pnlSearchCust" CssClass="visiblePnl"
+                DefaultButton="btnSearchCust" runat="server">
+                <b>Search Customers</b><br />
+                <asp:TextBox ID="txtCustSearch" CssClass='<%# "largeTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" autocomplete="off" />
+                <ajaxToolkit:TextBoxWatermarkExtender ID="watCustSearch" runat="server"
+                    TargetControlID="txtCustSearch"
+                    WatermarkText="Search by customer # or name"
+                    WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size48") %>' />
+                <asp:ImageButton ID="btnSearchCust" CssClass="xsImgBtn"
+                    ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
+                <br />
+            </asp:Panel>
+
+            <br style="clear:both;" />
+
+            <%-- All customers of the selected exception price group, by customer #; checked = saved to the form.
+                 25 per page; checks are kept when the page or search changes (ViewState CustChecks) --%>
             <asp:GridView ID="grdCustomers" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
-                DataKeyNames="customer_id">
+                DataKeyNames="customer_id,isSaved"
+                AllowPaging="True" PageSize="25">
+                <PagerStyle CssClass="pgtr" HorizontalAlign="left" ForeColor="#4169E1" />
+                <PagerSettings Mode="NumericFirstLast" Position="Bottom" FirstPageText="<<" LastPageText=">>" />
                 <Columns>
                     <asp:TemplateField HeaderStyle-CssClass="th center4" ItemStyle-CssClass="center4"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px">
@@ -202,7 +221,7 @@
                         HeaderStyle-Height="30px" ItemStyle-Height="30px" />
                 </Columns>
                 <EmptyDataTemplate>
-                    <asp:Label runat="server" CssClass="gray" Text="No customers in this exception price group." />
+                    <asp:Label runat="server" CssClass="gray" Text="No customers found." />
                 </EmptyDataTemplate>
             </asp:GridView>
 
@@ -210,26 +229,26 @@
           <%--  <hr />--%>
 
             <%-- ── Items ── --%>
-            <h3>Items</h3>
+            <h3>Assigned Items</h3>
 
             <asp:Panel ID="pnlSearchItem" CssClass="visiblePnl"
                 DefaultButton="btnSearchItem" runat="server">
                 <b>Search Items</b><br />
                 <asp:Label runat="server" Text="Sort by" CssClass="gray" />
-                <asp:DropDownList ID="lstSortBy" CssClass="largeDrpList"
+                <asp:DropDownList ID="lstSortBy" CssClass='<%# IIf(IsMobile(), "drpList size24", "largeDrpList") %>'
                     runat="server"
                     AutoPostBack="True" OnSelectedIndexChanged="lstSortBy_SelectedIndexChanged" />
-                &nbsp;
+                <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
                 <asp:Label runat="server" Text="Category" CssClass="gray" />
-                <asp:DropDownList ID="lstCtgSearch" CssClass="largeDrpList"
+                <asp:DropDownList ID="lstCtgSearch" CssClass='<%# IIf(IsMobile(), "drpList size24", "largeDrpList") %>'
                     runat="server"
                     AutoPostBack="True" OnSelectedIndexChanged="lstCtgSearch_SelectedIndexChanged" />
-                <br />
-                <asp:TextBox ID="txtItemSearch" CssClass="largeTxt size48" runat="server" autocomplete="off" />
+                <%= IIf(IsMobile(), "<br />", "&nbsp;") %><%--normal view: search box on the same line--%>
+                <asp:TextBox ID="txtItemSearch" CssClass='<%# "largeTxt " & IIf(IsMobile(), "size24", "size32") %>' runat="server" autocomplete="off" />
                 <ajaxToolkit:TextBoxWatermarkExtender ID="watItemSearch" runat="server"
                     TargetControlID="txtItemSearch"
                     WatermarkText="Search by item"
-                    WatermarkCssClass="watermark largeTxt size48" />
+                    WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size32") %>' />
                 <asp:ImageButton ID="btnSearchItem" CssClass="xsImgBtn"
                     ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server"
                     OnClick="btnSearchItem_Click" />
@@ -247,7 +266,10 @@
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
                 DataKeyNames="item_id,isSaved"
-                OnRowDataBound="grdItems_RowDataBound">
+                OnRowDataBound="grdItems_RowDataBound"
+                AllowPaging="True" PageSize="50"><%--checks are kept when the page changes (ViewState ItemChecks)--%>
+                <PagerStyle CssClass="pgtr" HorizontalAlign="left" ForeColor="#4169E1" />
+                <PagerSettings Mode="NumericFirstLast" Position="Bottom" FirstPageText="<<" LastPageText=">>" />
                 <Columns>
                     <asp:TemplateField HeaderStyle-CssClass="th center4" ItemStyle-CssClass="center4"
                         HeaderStyle-Height="30px" ItemStyle-Height="30px">

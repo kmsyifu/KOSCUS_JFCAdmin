@@ -52,10 +52,10 @@ Partial Class JFCAdmin_JFCAdmin
                 'Dim useApp As Boolean = Common.UseApp(DB, email)
                 pnlCustSetting.Visible = True 'useApp
                 pnlCustItem.Visible = True 'useApp
-                pnlOrderForm.Visible = True
                 'Yi Fu 12/10/2020
                 Dim jfcbranchAdmin As Boolean = (jfcRole = "JFC_BRANCH" OrElse jfcRole = "JFC_HO" OrElse kmsSupport)
                 pnlBranchSetting.Visible = jfcbranchAdmin
+                pnlOrderForm.Visible = jfcbranchAdmin   'same people as Branch Settings (branch / HO admin, KMS support)
                 pnlTool.Visible = jfcbranchAdmin
 
 
