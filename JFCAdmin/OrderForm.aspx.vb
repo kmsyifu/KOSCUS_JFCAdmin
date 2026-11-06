@@ -267,6 +267,7 @@ Partial Class JFCAdmin_OrderForm
     End Sub
 
     ' Customers of the selected exception price group, sorted by customer # (the grid then puts selected customers first).
+    ' custNrSort = customer # padded with zeros, so it sorts in number order (12 before 100).
     ' isSaved = in orderForm_Customer, isAssigned = what the checkbox shows (saved + unsaved check edits).
     ' searchText: customer # (e.g. 1234, 30-1234, 301234) or part of the name; "" = all customers of the group.
     Private Function GetCustomersTable(DB As DBHelper, orderFormID As String, searchText As String) As DataTable
@@ -284,7 +285,7 @@ Partial Class JFCAdmin_OrderForm
             "SELECT c.customer_id, c.customerName, " &
             "CASE WHEN c.jfcCustomerNr IS NOT NULL THEN c.jfcBranchNr || '-' || c.jfcCustomerNr " &
             "     ELSE SUBSTR(c.custGrp_id, 1, 2) || '-' || SUBSTR(c.custGrp_id, 3) END AS custNr_view, " &
-            "LPAD(NVL(c.jfcCustomerNr, SUBSTR(c.custGrp_id, 3)), 20, '0') AS custNrSort, " &   ' customer # in number order (12 before 100)
+            "LPAD(NVL(c.jfcCustomerNr, SUBSTR(c.custGrp_id, 3)), 20, '0') AS custNrSort, " &
             "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
             "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
             "FROM   customer c " &
