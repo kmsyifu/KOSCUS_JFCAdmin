@@ -250,7 +250,9 @@ Partial Class JFCAdmin_OrderForm
         Try
             Dim searchText As String = IIf(watCustSearch.WatermarkText = txtCustSearch.Text, "", txtCustSearch.Text.Trim())
             Dim dt As DataTable = GetCustomersTable(DB, orderFormID, searchText)
-            grdCustomers.DataSource = dt
+            ' Selected customers first, then by customer #. Sorted after isAssigned is set, so unsaved checks are at the top too
+            dt.DefaultView.Sort = "isAssigned DESC, custNrSort, customerName"
+            grdCustomers.DataSource = dt.DefaultView
             SetPageInRange(grdCustomers, dt.Rows.Count)
             grdCustomers.DataBind()
         Finally
@@ -258,7 +260,7 @@ Partial Class JFCAdmin_OrderForm
         End Try
     End Sub
 
-    ' Customers of the selected exception price group, sorted by customer #.
+    ' Customers of the selected exception price group, sorted by customer # (the grid then puts selected customers first).
     ' isSaved = in orderForm_Customer, isAssigned = what the checkbox shows (saved + unsaved check edits).
     ' searchText: customer # (e.g. 1234, 30-1234, 301234) or part of the name; "" = all customers of the group.
     Private Function GetCustomersTable(DB As DBHelper, orderFormID As String, searchText As String) As DataTable
@@ -276,6 +278,7 @@ Partial Class JFCAdmin_OrderForm
             "SELECT c.customer_id, c.customerName, " &
             "CASE WHEN c.jfcCustomerNr IS NOT NULL THEN c.jfcBranchNr || '-' || c.jfcCustomerNr " &
             "     ELSE SUBSTR(c.custGrp_id, 1, 2) || '-' || SUBSTR(c.custGrp_id, 3) END AS custNr_view, " &
+            "LPAD(NVL(c.jfcCustomerNr, SUBSTR(c.custGrp_id, 3)), 20, '0') AS custNrSort, " &   ' customer # in number order (12 before 100)
             "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
             "CASE WHEN fc.customer_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
             "FROM   customer c " &
