@@ -44,7 +44,7 @@
         <asp:Label ID="lblGetBranchType" runat="server" Text="Branch" CssClass="gray" />
         <asp:DropDownList ID="lstBranch" CssClass='<%# "drpList " & IIf(IsMobile(), "size24", "size48") %>'
             runat="server"
-            AutoPostBack="True" OnSelectedIndexChanged="lstBranch_SelectedIndexChanged" />
+            AutoPostBack="True" />
         &nbsp;
         <asp:Label ID="lblBranchID" CssClass="visiblePnl" runat="server" Visible="false" />
     </asp:Panel>    
@@ -86,8 +86,7 @@
             <asp:GridView ID="grdOrderForms" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
-                DataKeyNames="orderForm_id"
-                OnRowCommand="grdOrderForms_RowCommand">
+                DataKeyNames="orderForm_id">
                 <Columns>
                     <asp:TemplateField HeaderText="Name"
                         HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48"
@@ -237,12 +236,12 @@
                 <asp:Label runat="server" Text="Sort by" CssClass="gray" />
                 <asp:DropDownList ID="lstSortBy" CssClass='<%# IIf(IsMobile(), "drpList size24", "largeDrpList") %>'
                     runat="server"
-                    AutoPostBack="True" OnSelectedIndexChanged="lstSortBy_SelectedIndexChanged" />
+                    AutoPostBack="True" />
                 <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
                 <asp:Label runat="server" Text="Category" CssClass="gray" />
                 <asp:DropDownList ID="lstCtgSearch" CssClass='<%# IIf(IsMobile(), "drpList size24", "largeDrpList") %>'
                     runat="server"
-                    AutoPostBack="True" OnSelectedIndexChanged="lstCtgSearch_SelectedIndexChanged" />
+                    AutoPostBack="True" />
                 <%= IIf(IsMobile(), "<br />", "&nbsp;") %><%--normal view: search box on the same line--%>
                 <asp:TextBox ID="txtItemSearch" CssClass='<%# "largeTxt " & IIf(IsMobile(), "size24", "size32") %>' runat="server" autocomplete="off" />
                 <ajaxToolkit:TextBoxWatermarkExtender ID="watItemSearch" runat="server"
@@ -250,8 +249,7 @@
                     WatermarkText="Search by item"
                     WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size32") %>' />
                 <asp:ImageButton ID="btnSearchItem" CssClass="xsImgBtn"
-                    ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server"
-                    OnClick="btnSearchItem_Click" />
+                    ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
                 <br />
             </asp:Panel>
 
@@ -266,7 +264,6 @@
                 CssClass="STDTABLE" AutoGenerateColumns="false"
                 GridLines="Horizontal" ShowHeaderWhenEmpty="true"
                 DataKeyNames="item_id,isSaved"
-                OnRowDataBound="grdItems_RowDataBound"
                 AllowPaging="True" PageSize="50"><%--checks are kept when the page changes (ViewState ItemChecks)--%>
                 <PagerStyle CssClass="pgtr" HorizontalAlign="left" ForeColor="#4169E1" />
                 <PagerSettings Mode="NumericFirstLast" Position="Bottom" FirstPageText="<<" LastPageText=">>" />
@@ -358,12 +355,10 @@
             <br />
             <asp:Button ID="btnSaveForm" runat="server" CssClass="midButton_green"
                 Text="Add Form"
-                OnClick="btnSaveForm_Click"
                 />
             &nbsp;
             <asp:Button ID="btnDeleteForm" runat="server" CssClass="midButton"
-                Text="Delete Form" Visible="false"
-                OnClick="btnDeleteForm_Click" />
+                Text="Delete Form" Visible="false" />
             &nbsp;
           
 

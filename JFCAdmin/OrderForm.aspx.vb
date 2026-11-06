@@ -581,15 +581,16 @@ Partial Class JFCAdmin_OrderForm
     ' ════════════════════════════════════════════════════════════════
 
     Protected Sub btnSaveForm_Click(sender As Object, e As EventArgs) Handles btnSaveForm.Click
+        lblDetailMsg.Text = ""
         Dim formName As String = txtFormName.Text.Trim()
         If formName = "" Then
-            MessageBox("Please enter an Order Form Name.", "Error")
+            ShowSaveError("Please enter an Order Form Name.")
             Return
         End If
 
         Dim excepGrpID As String = SelectedExcepGrpID()
         If excepGrpID = "" Then
-            MessageBox("Please select an Exception Price Group.", "Error")
+            ShowSaveError("Please select an Exception Price Group.")
             Return
         End If
 
@@ -602,10 +603,10 @@ Partial Class JFCAdmin_OrderForm
         CaptureItemChecks()
 
         Using DB As New DBHelper
-            ' Duplicate check
+            ' Duplicate check: same name in the branch, ignoring upper / lower case and spaces around it
             Dim dupSQL As String = IIf(isNew,
-                "SELECT COUNT(*) FROM orderForm WHERE jfcBranchNr = :1 AND orderFormName = :2",
-                "SELECT COUNT(*) FROM orderForm WHERE jfcBranchNr = :1 AND orderFormName = :2 AND orderForm_id <> :3")
+                "SELECT COUNT(*) FROM orderForm WHERE jfcBranchNr = :1 AND UPPER(TRIM(orderFormName)) = UPPER(:2)",
+                "SELECT COUNT(*) FROM orderForm WHERE jfcBranchNr = :1 AND UPPER(TRIM(orderFormName)) = UPPER(:2) AND orderForm_id <> :3")
             Dim dupCount As Integer
             If isNew Then
                 dupCount = Val(DB.GetScalar(dupSQL, jfcBranchNr, formName))
@@ -613,7 +614,23 @@ Partial Class JFCAdmin_OrderForm
                 dupCount = Val(DB.GetScalar(dupSQL, jfcBranchNr, formName, orderFormID))
             End If
             If dupCount > 0 Then
-                MessageBox("Order form name """ & formName & """ already exists. Please enter a different name.", "Error", DB)
+                ShowSaveError("Order form name """ & formName & """ already exists. Please enter a different name.", DB)
+                Return
+            End If
+
+            ' Checked customers and items of every page (not only the rows shown): saved rows plus check edits.
+            ' Read before the deletes below (isSaved comes from the rows being replaced). A new form has no saved rows.
+            Dim grpChanged As Boolean
+            Dim dtCust As DataTable = GetCustomersTable(DB, IIf(isNew, "", orderFormID), "")
+            Dim dtItem As DataTable = GetItemsTable(DB, IIf(isNew, "", orderFormID), False, grpChanged)
+
+            ' At least one customer and one item
+            If dtCust.Select("isAssigned = 1").Length = 0 Then
+                ShowSaveError("Please select at least one customer.", DB)
+                Return
+            End If
+            If dtItem.Select("isAssigned = 1").Length = 0 Then
+                ShowSaveError("Please select at least one item.", DB)
                 Return
             End If
 
@@ -636,12 +653,6 @@ Partial Class JFCAdmin_OrderForm
                     "WHERE  orderForm_id  = :4",
                     formName, excepGrpID, userEmail, orderFormID)
             End If
-
-            ' Checked customers and items of every page (not only the rows shown): saved rows plus check edits.
-            ' Read before the deletes below (isSaved comes from the rows being replaced). A new form has no saved rows.
-            Dim grpChanged As Boolean
-            Dim dtCust As DataTable = GetCustomersTable(DB, IIf(isNew, "", orderFormID), "")
-            Dim dtItem As DataTable = GetItemsTable(DB, IIf(isNew, "", orderFormID), False, grpChanged)
 
             ' Save checked customers
             DB.ExecuteNonQuery(
@@ -673,6 +684,12 @@ Partial Class JFCAdmin_OrderForm
         ' Back to the order form list with the top message bar (same as CustItem)
         ShowListPanel()
         MessageLine("CONFIRM", "Order form """ & formName & """ " & IIf(isNew, "added", "updated") & " successfully.")
+    End Sub
+
+    ' Save not done: popup message, and the same text in red at the top of the detail panel
+    Private Sub ShowSaveError(message As String, Optional DB As DBHelper = Nothing)
+        lblDetailMsg.Text = HttpUtility.HtmlEncode(message)
+        MessageBox(message, "Error", DB)
     End Sub
 
     Protected Sub btnDeleteForm_Click(sender As Object, e As EventArgs) Handles btnDeleteForm.Click
