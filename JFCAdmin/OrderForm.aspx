@@ -187,7 +187,7 @@
 
             <br style="clear:both;" />
 
-            <%-- All customers of the selected exception price group, by customer #; checked = saved to the form.
+            <%-- All customers of the selected exception price group: selected first, then by customer #; checked = saved to the form.
                  25 per page; checks are kept when the page or search changes (ViewState CustChecks) --%>
             <asp:GridView ID="grdCustomers" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
