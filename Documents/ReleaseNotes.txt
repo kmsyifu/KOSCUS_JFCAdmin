@@ -27,6 +27,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderForm>: Sort by "Selected" - selected items first, then by item # (was by description).
 *<OrderForm>: Items priced only by weight (lb price by weight) are listed and can be selected (before, they were treated as having no price and hidden). The Lb Price column shows the by-weight price when there is no lb-by-quantity price.
 *<Login>: Show-password eye stays inside the right edge of the password box (its styles are in the page, so an old cached Login.css no longer shows it below the box). Edge's own reveal icon is hidden.
+*<OrderForm>: Exception Price Group can only be picked when adding a form. When updating a form the dropdown is locked to the saved group.
 *<OrderForm>: Customer list sorted by selected customers first (including checks not saved yet), then by customer #.
 *<OrderForm>: Add / Update requires at least one selected customer and one selected item (checks on every page count).
 *<OrderForm>: Fixed: duplicate Order Form Name check now ignores upper / lower case and spaces around the name. Save errors also show in red at the top of the detail panel.
