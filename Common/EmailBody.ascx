@@ -2,110 +2,113 @@
 <%@ Import Namespace="Common" %>
 
 <%--
-1) Use http://premailer.dialect.ca/ to convert Css to inline with <style type="text/css"></style>
-2) Embedded it to code
+Email HTML: every style is inline (no <style> block), layout is tables, so it looks the same in Outlook, Gmail and phone mail apps.
+Look: gray page, one white card (max 680px), orange header bar with the company name, info boxes with an orange title,
+grids with an orange-tinted header row and light row lines.
+Info box label cell:  padding:7px 12px; border-bottom:1px solid #F0F0F0; color:#777777; font-size:13px; vertical-align:top; width:36%;
+Info box value cell:  padding:7px 12px; border-bottom:1px solid #F0F0F0; color:#222222; font-size:13px; vertical-align:top;
+Only one panel below is shown per email (Page_Init in the code-behind).
 --%>
+<div style="margin: 0; padding: 20px 0; background-color: #F4F4F4; font-family: Arial, Helvetica, sans-serif; color: #333333;">
+<table role="presentation" align="center" width="680" cellpadding="0" cellspacing="0" border="0"
+    style="width: 100%; max-width: 680px; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
+<tr><td style="padding: 0;">
+
 <asp:Panel runat="server" ID="pnlOrder">
     <%--Header--%>
     <asp:Panel ID="pnlJfcLogo_order" runat="server">
-        <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label><%--&nbsp;&nbsp;<a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a>--%><br /><br /></asp:Panel>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+            <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+        </tr></table>
+    </asp:Panel>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
     <%--Message--%>
-    <asp:Label ID="lblMsg_order" runat="server" /><br /><br />    
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="lblMsg_order" runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
     <asp:Label ID="lblLink_order" runat="server" />
-    
+
     <%--Order info--%>
-    <asp:Panel ID="pnlOrderHdr" CssClass="visiblePnl leftContent" runat="server" Width="320px"
-        style="width: 320px; margin-right: 10px; background-color: #FFFFFF; padding: 5px 10px; border: thin solid #c0c0c0;"><%--style="width: 350px;  ..."--%> 
-        <h1 style="font-size: 11pt; font-weight: normal; color: #FF6600; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #ddd; margin: 0px; padding: 2px;">Order Info</h1>
+    <asp:Panel ID="pnlOrderHdr" runat="server">
         <asp:Label ID="lblCustomerID" runat="server" Visible="false" />
         <asp:Label ID="lblCustGrpVendorID" runat="server" Visible="false" />
-        <table style="font-size: 9pt">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;">
             <tbody>
+                <tr><td colspan="2" style="padding: 10px 12px; background-color: #FFF4EC; border-bottom: 2px solid #FF6600; color: #FF6600; font-size: 15px; font-weight: bold;">Order Info</td></tr>
                 <tr>
-                    <td><%=Resources.Strings.WebOrderID%></td>
-                    <td><asp:Label ID="lblWebOrderID" CssClass="cellLbl" runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.WebOrderID%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblWebOrderID" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Status%></td>
-                    <td><asp:Label ID="lblOrderState" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Status%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblOrderState" runat="server" style="font-weight: bold;" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Delivery%></td>
-                    <td><asp:Label ID="lblDeliveryDate" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Delivery%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblDeliveryDate" runat="server" style="font-weight: bold;" /></td>
                 </tr>
-                <asp:Panel ID="pnlVendorName" runat="server">
+                <%--PlaceHolder (not Panel): a Panel puts a <div> around the row, which is not allowed inside a table--%>
+                <asp:PlaceHolder ID="pnlVendorName" runat="server">
                     <tr>
-                        <td><%=Resources.Strings.Vendor%></td>
-                        <td><asp:Label ID="lblVendorName" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Vendor%></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblVendorName" runat="server" style="font-weight: bold;" /></td>
                     </tr>
-                </asp:Panel>
+                </asp:PlaceHolder>
                 <tr>
-                    <td><asp:Label ID="lblTitleItemGrp" runat="server" Text="Order Form"/></td>
-                    <td><asp:Label ID="lblItemGrpName" CssClass="cellLbl" runat="server" /></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><asp:Label ID="lblTitleItemGrp" runat="server" Text="Order Form"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemGrpName" runat="server" /></td>
                 </tr>
-                <asp:Panel ID="pnlShowPrice" runat="server">
+                <asp:PlaceHolder ID="pnlShowPrice" runat="server">
                     <tr>
-                        <td><%=Resources.Strings.TotalAmount%></td>
-                        <td><asp:Label ID="lblTotalAmt" CssClass="cellLbl bold red" runat="server" style="font-weight: bold; color: #FF0000; margin: 3px;"/></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.TotalAmount%></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblTotalAmt" runat="server" style="font-weight: bold; font-size: 15px; color: #CC0000;" /></td>
                     </tr>
-                </asp:Panel>
+                </asp:PlaceHolder>
                 <tr>
-                    <td><%=Resources.Strings.Message%></td>
-                    <td><asp:Label ID="lblMessage" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Message%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMessage" runat="server" style="font-weight: bold;" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.CustPO%></td>
-                    <td><asp:Label ID="lblCustOrderNr" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.CustPO%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblCustOrderNr" runat="server" style="font-weight: bold;" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Name%></td>
-                    <td><asp:Label ID="lblCustomerName" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/><asp:Panel ID="pnlCustGrpName" style="display:inline;" runat="server"><br />(<asp:Label ID="lblCustGrpName" CssClass="cellLbl" runat="server" style="margin: 3px;"/>)</asp:Panel></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Name%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblCustomerName" runat="server" style="font-weight: bold;" /><asp:PlaceHolder ID="pnlCustGrpName" runat="server"><br /><span style="color: #777777;">(<asp:Label ID="lblCustGrpName" runat="server" />)</span></asp:PlaceHolder></td>
                 </tr>
                 <tr>
-                    <td class="gray"><%=Resources.Strings.Account%> #</td><%--<%# GetCustCompanyType() & " #"%>--%>
-                    <td><asp:Label ID="lblJfcBranchNr" CssClass="cellLbl" runat="server" style="margin: 3px;"/>-<asp:Label ID="lblJfcCustomerNr" CssClass="cellLbl" runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Account%> #</td><%--<%# GetCustCompanyType() & " #"%>--%>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblJfcBranchNr" runat="server" />-<asp:Label ID="lblJfcCustomerNr" runat="server" /></td>
                 </tr>
-                <asp:Panel ID="pnlCustShipPoint" runat="server">
+                <asp:PlaceHolder ID="pnlCustShipPoint" runat="server">
                     <tr>
-                        <td><%=Resources.Strings.Shipto%></td>
-                        <td><asp:Label ID="lblShipName" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/><asp:Label ID="lblShipPointID" Visible="false" runat="server" /></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Shipto%></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblShipName" runat="server" style="font-weight: bold;" /><asp:Label ID="lblShipPointID" Visible="false" runat="server" />
+                            <br /><span style="color: #666666;"><asp:Label ID="lblAddress1" runat="server" /> <asp:Label ID="lblAddress2" runat="server" /></span>
+                            <br /><span style="color: #666666;"><asp:Label ID="lblCity" runat="server" />, <asp:Label ID="lblState" runat="server" /> <asp:Label ID="lblZip" runat="server" /></span>
+                        </td>
                     </tr>
-                    <tr></tr>
-                    <tr>
-                        <td class="gray right" style="text-align: right; color: #666666;" align="right"><%=Resources.Strings.Address%>:</td>
-                        <td class="gray"><asp:Label ID="lblAddress1" CssClass="cellLbl" runat="server" style="color: #666666; margin: 3px;"/><asp:Label ID="lblAddress2" runat="server" CssClass="cellLbl" style="color: #666666; margin: 3px;"/></td>
-                    </tr>
-                    <tr>
-                        <td class="gray right" style="text-align: right; color: #666666;" align="right"><%=Resources.Strings.City%>:</td>
-                        <td class="gray"><asp:Label ID="lblCity" CssClass="cellLbl" runat="server" style="color: #666666; margin: 3px;"/></td>
-                    </tr>
-                    <tr>
-                        <td class="gray right" style="text-align: right; color: #666666;" align="right"><%=Resources.Strings.StateZip%>:</td>
-                        <td class="gray"><asp:Label ID="lblState" CssClass="cellLbl" runat="server" style="color: #666666; margin: 3px;"/><asp:Label ID="lblZip" runat="server" CssClass="cellLbl" style="color: #666666; margin: 3px;"/></td>
-                    </tr>
-                    <%--<tr>
-                        <td class="gray right" style="text-align: right; color: #666666;" align="right">Country:</td>
-                        <td class="gray"><asp:Label ID="lblCountry" CssClass="cellLbl" runat="server" style="color: #666666; margin: 3px;"/></td>
-                    </tr>--%>
-                </asp:Panel>
+                    <%--<asp:Label ID="lblCountry" runat="server" />--%>
+                </asp:PlaceHolder>
                 <tr>
-                    <td><%=Resources.Strings.Orderedon%></td>
-                    <td><asp:Label ID="lblCreateDateTimeUser" CssClass="cellLbl" runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Orderedon%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblCreateDateTimeUser" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.LastUpdated%></td>
-                    <td><asp:Label ID="lblModDateUser" CssClass="cellLbl" runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.LastUpdated%></td>
+                    <td style="padding: 7px 12px; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblModDateUser" runat="server" /></td>
                 </tr>
-                <tr><td colspan="2"></td></tr>
             </tbody>
         </table>
     </asp:Panel>
-    <br />
+    <div style="height: 20px; line-height: 20px; font-size: 1px;">&nbsp;</div>
 
     <asp:Panel ID="pnlOrderDtl" runat="server">
         <%--Order detail--%>
-        <asp:GridView ID="grdItem" runat="server" DataSourceID="dsItem" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
-                cellspacing="0" rules="rows" style="width: 343px; font-size: 9pt; border: thin solid #c0c0c0; border-collapse: collapse;">
+        <asp:GridView ID="grdItem" runat="server" DataSourceID="dsItem" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
+                CellPadding="8" BorderColor="#E5E5E5"
+                style="width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; border: 1px solid #E5E5E5; border-collapse: collapse;">
+            <HeaderStyle BackColor="#FFF4EC" ForeColor="#FF6600" Font-Bold="true" />
+            <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField HeaderText="<%$ Resources:Strings, ItemNum %>" DataField="itemIdNr_view" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24 cellLbl gray" 
                         HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
@@ -215,24 +218,34 @@
             </EmptyDataTemplate>
         </asp:GridView>
         <asp:SqlDataSource ID="dsItem" runat="server"></asp:SqlDataSource>
-         
-        <asp:Label ID="lblOrderMsg" style="font-size: 10pt;" runat="server" />
+        <%--Total line under the grid--%>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse;"><tr>
+            <td align="right" style="padding: 10px 12px; background-color: #FAFAFA; border: 1px solid #E5E5E5; border-top: none; text-align: right; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333333;"><asp:Label ID="lblOrderMsg" runat="server" /></td>
+        </tr></table>
     </asp:Panel>
-    <br />
+    <div style="height: 20px; line-height: 20px; font-size: 1px;">&nbsp;</div>
     <%--<asp:Button ID="btnConfirm" CssClass="midButton largeBtn" runat="server" Text="Confirm Order" />--%>
 
     <asp:Label ID="lblLink2_order" runat="server" />
+    </td></tr></table>
 </asp:Panel>
 
 <asp:Panel runat="server" ID="pnlPriceInquiry" >
     <%--Header--%>
-    <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label><%--&nbsp;&nbsp;<a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a>--%><br /><br /><%--Message--%><asp:Label ID="lblMsg_priceInquiry" runat="server" /> 
-    <br />
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+    </tr></table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
+    <%--Message--%>
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="lblMsg_priceInquiry" runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
     <asp:Label ID="lbllink_priceInquiry" runat="server" />
-    <br />
     <%--Price Inquiry--%>
-    <asp:GridView ID="grdPriceInquiry" runat="server" DataSourceID="dsPriceInquiry" CssClass="STDTABLE" AutoGenerateColumns="false"  GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
-            cellspacing="0" rules="rows" style="width: 343px; font-size: 9pt; border: thin solid #c0c0c0; border-collapse: collapse;">
+    <asp:GridView ID="grdPriceInquiry" runat="server" DataSourceID="dsPriceInquiry" AutoGenerateColumns="false"  GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
+            CellPadding="8" BorderColor="#E5E5E5"
+            style="width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; border: 1px solid #E5E5E5; border-collapse: collapse;">
+        <HeaderStyle BackColor="#FFF4EC" ForeColor="#FF6600" Font-Bold="true" />
+        <AlternatingRowStyle BackColor="#FAFAFA" />
         <Columns>
             <asp:BoundField HeaderText="JFC Item #" DataField="item_id" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20 cellLbl gray" 
                     HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
@@ -297,73 +310,80 @@
         </EmptyDataTemplate>
     </asp:GridView>
     <asp:SqlDataSource ID="dsPriceInquiry" runat="server"></asp:SqlDataSource>
-    <br /><br />
+    </td></tr></table>
 </asp:Panel>
 
 <asp:Panel runat="server" ID="pnlPay">
     <%--Header--%>
-    <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label><%--&nbsp;&nbsp;<a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a>--%><br /><br /><%--Message--%><asp:Label ID="lblMsg_pay" runat="server" />    
-    <br /><br />
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+    </tr></table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
+    <%--Message--%>
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="lblMsg_pay" runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
     <%--Payment info--%>
-    <asp:Panel ID="pnlPayHdr" CssClass="visiblePnl leftContent" Width="500px" runat="server"
-        style="width: 320px; margin-right: 10px; background-color: #FFFFFF; padding: 5px 10px; border: thin solid #c0c0c0;"><%--width: 500px;--%> 
-        <h1 style="font-size: 11pt; font-weight: normal; color: #FF6600; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #ddd; margin: 0px; padding: 2px;">Payment Info</h1>
+    <asp:Panel ID="pnlPayHdr" runat="server">
         <asp:Label ID="lblPaymentID" runat="server" Visible="false" />
-        <asp:FormView ID="frmPayHdr" runat="server">
+        <asp:FormView ID="frmPayHdr" runat="server" Width="100%">
             <ItemTemplate>
-                <table style="font-size: 9pt">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;">
                     <tbody>
+                        <tr><td colspan="2" style="padding: 10px 12px; background-color: #FFF4EC; border-bottom: 2px solid #FF6600; color: #FF6600; font-size: 15px; font-weight: bold;">Payment Info</td></tr>
                         <tr>
-                            <td>Payment ID</td>
-                            <td><%# Eval("payment_id")%></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Payment ID</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><%# Eval("payment_id")%></td>
                         </tr>
                         <tr>
-                            <td>Account Name</td>
-                            <td><%# Eval("customerName")%></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Account Name</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><%# Eval("customerName")%></td>
                         </tr>
                         <tr>
-                            <td>JFC Account #</td>
-                            <td><%# Eval("jfcBranchNr")%>-<%# Eval("jfcCustomerNr")%></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">JFC Account #</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><%# Eval("jfcBranchNr")%>-<%# Eval("jfcCustomerNr")%></td>
                         </tr>
                         <tr>
-                            <td>Total Paid Amount</td>
-                            <td><span class='bold red' style="font-weight: bold; color: #FF0000;"><%# Eval("paymentAmt", "{0:$#,#.00}")%>&nbsp;<%# Eval("approvedAmtDesc")%></span></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Total Paid Amount</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><span style="font-weight: bold; font-size: 15px; color: #CC0000;"><%# Eval("paymentAmt", "{0:$#,#.00}")%>&nbsp;<%# Eval("approvedAmtDesc")%></span></td>
                         </tr>
                         <tr>
-                            <td>Advance Payment</td>
-                            <td><span class='bold' style="font-weight: bold;"><%# Eval("advancePayAmt", "{0:$#,#.00}")%></span></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Advance Payment</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><span style="font-weight: bold;"><%# Eval("advancePayAmt", "{0:$#,#.00}")%></span></td>
                         </tr>
                         <tr>
-                            <td>Status</td>
-                            <td><span class='bold' style="font-weight: bold;"><%# Eval("status")%></span></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Status</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><span style="font-weight: bold;"><%# Eval("status")%></span></td>
                         </tr>
                         <%--<tr>
                             <td >Result</td>
                             <td><%# Eval("result")%></td>
                         </tr>--%>
                         <tr>
-                            <td>Message to JFC</td>
-                            <td><%# Eval("message")%></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Message to JFC</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><%# Eval("message")%></td>
                         </tr>
                         <tr>
-                            <td>Account</td>
-                            <td><%# Eval("accNickName")%></td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Account</td>
+                            <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><%# Eval("accNickName")%></td>
                         </tr>
                         <tr>
-                            <td>Paid on</td>
-                            <td><%# Eval("createDateTimeUser")%></td>
+                            <td style="padding: 7px 12px; color: #777777; font-size: 13px; vertical-align: top; width: 36%;">Paid on</td>
+                            <td style="padding: 7px 12px; color: #222222; font-size: 13px; vertical-align: top;"><%# Eval("createDateTimeUser")%></td>
                         </tr>
                     </tbody>
                 </table>
             </ItemTemplate>
         </asp:FormView>
     </asp:Panel>
-    <br />
+    <div style="height: 20px; line-height: 20px; font-size: 1px;">&nbsp;</div>
 
     <asp:Panel ID="pnlPayDtl" runat="server">
         <%--Payment detail--%>
-        <asp:GridView ID="grdPayDtl" runat="server" DataSourceID="dsPayDtl" CssClass="STDTABLE" AutoGenerateColumns="false"  GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
-                cellspacing="0" rules="rows" style="width: 343px; font-size: 9pt; border: thin solid #c0c0c0; border-collapse: collapse;">
+        <asp:GridView ID="grdPayDtl" runat="server" DataSourceID="dsPayDtl" AutoGenerateColumns="false"  GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
+                CellPadding="8" BorderColor="#E5E5E5"
+                style="width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; border: 1px solid #E5E5E5; border-collapse: collapse;">
+            <HeaderStyle BackColor="#FFF4EC" ForeColor="#FF6600" Font-Bold="true" />
+            <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField DataField="arDate" DataFormatString="{0:MM/dd/yyyy}" HeaderText="Date" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
                     HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
@@ -399,16 +419,18 @@
             </EmptyDataTemplate>
         </asp:GridView>
         <asp:SqlDataSource ID="dsPayDtl" runat="server"></asp:SqlDataSource>
-        <br />
+        <div style="height: 20px; line-height: 20px; font-size: 1px;">&nbsp;</div>
     </asp:Panel>
 
     <asp:Panel ID="pnlBalanceDtl" runat="server">
         <%--Message--%>
-        <asp:Label ID="Label9" Text="Here is the remaining balance." runat="server" />    
-        <br /><br />
+        <div style="padding: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #FF6600;"><asp:Label ID="Label9" Text="Here is the remaining balance." runat="server" /></div>
         <%--Payment detail--%>
-        <asp:GridView ID="grdBalanceDtl" runat="server" DataSourceID="dsBalanceDtl" CssClass="STDTABLE" AutoGenerateColumns="false"  GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
-                cellspacing="0" rules="rows" style="width: 343px; font-size: 9pt; border: thin solid #c0c0c0; border-collapse: collapse;">
+        <asp:GridView ID="grdBalanceDtl" runat="server" DataSourceID="dsBalanceDtl" AutoGenerateColumns="false"  GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
+                CellPadding="8" BorderColor="#E5E5E5"
+                style="width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; border: 1px solid #E5E5E5; border-collapse: collapse;">
+            <HeaderStyle BackColor="#FFF4EC" ForeColor="#FF6600" Font-Bold="true" />
+            <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField DataField="arDate" DataFormatString="{0:MM/dd/yyyy}" HeaderText="Date" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
                     HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
@@ -434,54 +456,58 @@
             </EmptyDataTemplate>
         </asp:GridView>
         <asp:SqlDataSource ID="dsBalanceDtl" runat="server"></asp:SqlDataSource>
-        <br />
     </asp:Panel>
+    </td></tr></table>
 </asp:Panel>
 
 <asp:Panel ID="pnlNewItem" runat="server">
     <%--Header--%>
-    <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+    </tr></table>
     <%--<asp:Image ID="Image1" runat="server" ImageUrl="https://shop.jfc.com/Login/Images/jfcLogo.gif" />--%><%--<br /><br />
     <a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a>--%>
-    <br /><br />
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
     <%--New JFC Items--%>
-    <asp:Label ID="Label3" Text="Here are our new items! For details, please go to " runat="server" /><a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a><asp:Label ID="Label4" Text=" or reply to contact your sales rep." runat="server" />    
-    <br /><br />
-    <asp:GridView ID="grdNewItem" runat="server" DataSourceID="dsNewItem" AutoGenerateColumns="false" GridLines="None" ShowHeader="false" AllowSorting="false" AllowPaging="false"
-            cellspacing="0" rules="rows" style="font-size: 11pt; border: none; border-color: Gray;">
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="Label3" Text="Here are our new items! For details, please go to " runat="server" /><a target="_blank" href='http://shop.jfc.com' style="color: #FF6600; font-weight: bold;">https://shop.jfc.com</a><asp:Label ID="Label4" Text=" or reply to contact your sales rep." runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
+    <asp:GridView ID="grdNewItem" runat="server" DataSourceID="dsNewItem" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeader="false" AllowSorting="false" AllowPaging="false"
+            CellPadding="12" BorderColor="#EEEEEE"
+            style="width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333; border: 1px solid #EEEEEE; border-collapse: collapse;">
+        <RowStyle VerticalAlign="Top" />
         <Columns>
-            <asp:TemplateField>
+            <asp:TemplateField ItemStyle-Width="172px">
                 <ItemTemplate>
-                    <asp:Image ID="imgItem" CssClass="midGrdImg" Width="160px" Height="160px" runat="server" ImageUrl='<%# GetNewItemImgUrl(CString(Eval("item_id"))) %>' />
+                    <asp:Image ID="imgItem" Width="160px" Height="160px" style="display: block; border: 1px solid #EEEEEE;" runat="server" ImageUrl='<%# GetNewItemImgUrl(CString(Eval("item_id"))) %>' />
                     <%--<asp:Image ID="imgItem" CssClass="midGrdImg" runat="server" ImageUrl="https://shop.jfc.com/Images/Web/noImg.jpg" />Doesn't work here--%>
                     <%--<asp:Image ID="imgItem" CssClass="midGrdImg" runat="server" ImageUrl="https://shop.jfc.com/Login/Images/NewItems/noImg.jpg" />Works--%>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField>
                 <ItemTemplate>
-                    <asp:Label runat="server" ID="lblItemDesc" style="margin: 3px;" Text='<%# Eval("itemDesc_view") %>' />
-                    <asp:Label runat="server" ID="lblItemIdNr" style="margin: 3px;" Text='<%# Eval("itemIdNr_view") %>' /><br />
+                    <asp:Label runat="server" ID="lblItemDesc" style="font-size: 15px; font-weight: bold; color: #222222;" Text='<%# Eval("itemDesc_view") %>' />
+                    <asp:Label runat="server" ID="lblItemIdNr" style="color: #777777; font-size: 13px;" Text='<%# Eval("itemIdNr_view") %>' /><br />
                     <%--<asp:Label runat="server" ID="lblItemGrpName" CssClass="cellLbl gray" Text='<%# CString(Eval("itemGrpName")) & "<br />" %>' />
                     <asp:Label runat="server" ID="lblVendorName" CssClass="cellLbl" Text='<%# CString(Eval("vendorName")) & "<br />" %>' />--%>
-                    <asp:Label runat="server" ID="lblCtgName" CssClass="cellLbl gray" style="margin: 3px; color: Gray;" Text='<%# Eval("ctgName_view") %>' />
+                    <asp:Label runat="server" ID="lblCtgName" style="color: #999999; font-size: 12px;" Text='<%# Eval("ctgName_view") %>' />
                     <%--<asp:ImageButton ID="btnFavorite" ToolTip="Add or remove from my favorite" CommandName="FAVORITE" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl_OnOff("FAVORITE", CString(Eval("favorite"))) %>' CommandArgument='<%# Eval("custGrpItem_id")%>' runat="server" />
                     <asp:Image ID="imgOrdered" ToolTip="Previously ordered item" CssClass="xxxsImgBtn" ImageUrl='<%# GetWebImgUrl("greenCheck.png") %>' Visible='<%# CString(Eval("ordered")) = "ON" %>' runat="server" />--%><br />
                     <asp:Label ID="Label1" runat="server" Text='(' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblCsPrice" CssClass="cellLbl red bold" style="margin: 3px; color: Red; font-weight: bold;" Text='<%# Eval("csprice", "{0:C}") %>' Visible='<%# CString(Eval("csprice")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblCsPrice" style="color: #CC0000; font-weight: bold; font-size: 15px;" Text='<%# Eval("csprice", "{0:C}") %>' Visible='<%# CString(Eval("csprice")) <> "0"%>' />
                     <asp:Label runat="server" ID="lblCs" CssClass="cellLbl" Text='/ cs' style="margin: 3px;" Visible='<%# CString(Eval("csprice")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblEaPrice" CssClass="cellLbl red bold" style="margin: 3px; color: Red; font-weight: bold;" Text='<%# Eval("eaprice", "{0:C}") %>' Visible='<%# CString(Eval("eaprice")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblEaPrice" style="color: #CC0000; font-weight: bold; font-size: 15px;" Text='<%# Eval("eaprice", "{0:C}") %>' Visible='<%# CString(Eval("eaprice")) <> "0"%>' />
                     <asp:Label runat="server" ID="lblEa" Text='<%# IIf(CString(Eval("lbPrice_OrderByQty")) <> "0", "/ pc", "/ ea") %>' Visible='<%# CString(Eval("eaprice")) <> "0"%>' />
                     <asp:Label ID="Label2" runat="server" Text=')' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblLbPrice_OrderByWgt" CssClass="cellLbl red bold" style="margin: 3px; color: Red; font-weight: bold;" Text='<%# Eval("LbPrice_OrderByWgt", "{0:C}") %>' Visible='<%# CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblLbPrice_OrderByWgt" style="color: #CC0000; font-weight: bold; font-size: 15px;" Text='<%# Eval("LbPrice_OrderByWgt", "{0:C}") %>' Visible='<%# CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
                     <asp:Label runat="server" ID="lblLb_orderByWgt" CssClass="cellLbl" style="margin: 3px;" Text='/ lb' Visible='<%# CString(Eval("lbPrice_OrderByWgt")) <> "0"%>' />
-                    <asp:Label runat="server" ID="lblLbPrice_orderByQty" CssClass="cellLbl red bold" style="margin: 3px; color: Red; font-weight: bold;" Text='<%# Eval("LbPrice_OrderByQty", "{0:C}") %>' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0"%>' />
+                    <asp:Label runat="server" ID="lblLbPrice_orderByQty" style="color: #CC0000; font-weight: bold; font-size: 15px;" Text='<%# Eval("LbPrice_OrderByQty", "{0:C}") %>' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0"%>' />
                     <asp:Label runat="server" ID="lblLb_orderByQty" CssClass="cellLbl" style="margin: 3px;" Text='/ lb' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0"%>' />
-                    <%--<asp:Label runat="server" ID="lblAskPrice" CssClass="cellLbl red bold" style="margin: 3px; color: Red; font-weight: bold;" Text='Price: Ask' Visible='<%# CString(Eval("askPrice")) = "Y"%>' /><br />--%>
+                    <%--<asp:Label runat="server" ID="lblAskPrice" style="color: #CC0000; font-weight: bold; font-size: 15px;" Text='Price: Ask' Visible='<%# CString(Eval("askPrice")) = "Y"%>' /><br />--%>
                     <%--<asp:Image ID="imgCart" ToolTip="Exists in cart" CssClass="xsImgBtn" ImageUrl='<%# GetWebImgUrl("cart.png") %>' Visible='<%# CString(Eval("cart_id")) <> "" %>' runat="server" />--%>
                     <%--Don't show out of stock for new items--%>
                     <%--<asp:Label runat="server" ID="lblOutOfStock" CssClass="cellLbl green bold" Text='Out of Stock' Visible='<%# CString(Eval("outOfStock")) = "Y"%>' />--%>
-                    <asp:Label runat="server" ID="lblArrivDate" CssClass="cellLbl green" style="margin: 3px; color: Green;" Text='<%# "Est. arrival: " & Eval("arrivDate_fmt") %>' Visible='<%# CString(Eval("arrivDate_fmt")) <> "" %>' />
-                    <asp:Label runat="server" ID="lblJfcRemark" CssClass="cellLbl green" style="margin: 3px; color: Green;" Text='<%# Eval("jfcRemark") %>' />
+                    <asp:Label runat="server" ID="lblArrivDate" style="color: #2E7D32; font-size: 13px;" Text='<%# "Est. arrival: " & Eval("arrivDate_fmt") %>' Visible='<%# CString(Eval("arrivDate_fmt")) <> "" %>' />
+                    <asp:Label runat="server" ID="lblJfcRemark" style="color: #2E7D32; font-size: 13px;" Text='<%# Eval("jfcRemark") %>' />
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>
@@ -490,181 +516,160 @@
         </EmptyDataTemplate>
     </asp:GridView>
     <asp:SqlDataSource ID="dsNewItem" runat="server"></asp:SqlDataSource>
-    <br /><br />
+    </td></tr></table>
 </asp:Panel>
 
 
 <asp:Panel ID="PnlUpdate" runat="server">
     <%--Header--%>
-    <%--<label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label>&nbsp;&nbsp;--%>
-    <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label><%--&nbsp;&nbsp;<a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a>--%>
-    <%--<br /><br /><asp:Image ID="Image2" runat="server" ImageUrl="https://shop.jfc.com/Login/Images/jfcLogo.gif" />--%>
-    <br /><br />
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+    </tr></table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
     <%--Message--%>
-    <asp:Label ID="lblMsg_Item" runat="server" />    
-    <br /><br />
-    <%--Payment info--%>
-    <asp:Panel ID="pnlItemHdr" CssClass="visiblePnl leftContent" Width="500px" runat="server"
-        style="width: 320px; margin-right: 10px; background-color: #FFFFFF; padding: 5px 10px; border: thin solid #c0c0c0;"><%--width: 500px;--%> 
-        <h1 style="font-size: 11pt; font-weight: normal; color: #FF6600; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #ddd; margin: 0px; padding: 2px;"><%=Resources.Strings.ItemInfo%></h1>
-        <asp:Label ID="lblItemID" runat="server"  />
-        <table style="font-size: 9pt">
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="lblMsg_Item" runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
+    <%--Item info--%>
+    <asp:Panel ID="pnlItemHdr" runat="server">
+        <asp:Label ID="lblItemID" runat="server" />
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;">
             <tbody>
+                <tr><td colspan="2" style="padding: 10px 12px; background-color: #FFF4EC; border-bottom: 2px solid #FF6600; color: #FF6600; font-size: 15px; font-weight: bold;"><%=Resources.Strings.ItemInfo%></td></tr>
                 <tr>
-                    <td><%=Resources.Strings.ItemNum%></td>
-                    <td><asp:Label ID="lblItemCode" CssClass="cellLbl" runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.ItemNum%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemCode" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.ItemNewNum%></td>
-                    <td><asp:Label ID="lblItemCodeNew" CssClass="cellLbl bold" runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.ItemNewNum%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemCodeNew" runat="server" style="font-weight: bold;" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Description%></td>
-                    <td><asp:Label ID="lblItemDesc" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Description%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemDesc" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.DescNew%></td>
-                    <td><asp:Label ID="lblItemDescNew" CssClass="cellLbl bold " runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.DescNew%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemDescNew" runat="server" style="font-weight: bold;" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Remark%></td>
-                    <td><asp:Label ID="lblItemRemark" CssClass="cellLbl bold " runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Remark%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemRemark" runat="server" style="font-weight: bold;" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.EachCase%></td>
-                    <td><asp:Label ID="lblItemEachCase" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.EachCase%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemEachCase" runat="server" /></td>
                 </tr>
-             
-                <asp:Panel ID="pnlItemPriceNew" runat="server">
+                <%--PlaceHolder (not Panel): a Panel puts a <div> around the row, which is not allowed inside a table--%>
+                <asp:PlaceHolder ID="pnlItemPriceNew" runat="server">
                     <tr>
-                    <%--Price--%>
-                        <td><%=Resources.Strings.Price%></td>
-                        <td><asp:Label ID="lblItemPriceNew" CssClass="cellLbl bold " runat="server" style="font-weight: bold; margin: 3px;"/></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Price%></td>
+                        <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblItemPriceNew" runat="server" style="font-weight: bold; font-size: 15px; color: #CC0000;" /></td>
                     </tr>
-                </asp:Panel>
-                 <%-- asp:Panel ID="pnlItemPriceNew" runat="server">
-                    <tr>
-                        <td>Price New</td>
-                        <td><asp:Label ID="lblItemPriceNew" CssClass="cellLbl bold red" runat="server" style="font-weight: bold; margin: 3px;"/></td>
-                    </tr>
-                </asp:Panel>--%>
-              
-                <tr><td colspan="2"></td></tr>
+                </asp:PlaceHolder>
             </tbody>
         </table>
     </asp:Panel>
-    <br />
+    </td></tr></table>
 </asp:Panel>
 
 
 <asp:Panel ID="PnlMaster" runat="server">
     <%--Header--%>
-    <%--<label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label>&nbsp;&nbsp;--%>
-    <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label>
-    <br /><br />
-    <%--<asp:Image ID="Image3" runat="server" ImageUrl="https://shop.jfc.com/Login/Images/jfcLogo.gif" />
-    <br /><br />--%>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+    </tr></table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
     <%--Message--%>
-    <asp:Label ID="lblMsg_Master" runat="server" />    
-    <br /><br />
-    <%--Payment info--%>
-    <asp:Panel ID="PnlMasterContant" CssClass="visiblePnl leftContent" Width="500px" runat="server"
-        style="width: 320px; margin-right: 10px; background-color: #FFFFFF; padding: 5px 10px; border: thin solid #c0c0c0;"><%--width: 500px;--%> 
-        <h1 style="font-size: 11pt; font-weight: normal; color: #FF6600; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #ddd; margin: 0px; padding: 2px;"><%=Resources.Strings.DeliverySchedule%></h1>
-        <asp:Label ID="Label6" runat="server"  />
-        <table style="font-size: 9pt">
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="lblMsg_Master" runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
+    <%--Delivery schedule--%>
+    <asp:Panel ID="PnlMasterContant" runat="server">
+        <asp:Label ID="Label6" runat="server" />
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;">
             <tbody>
+                <tr><td colspan="2" style="padding: 10px 12px; background-color: #FFF4EC; border-bottom: 2px solid #FF6600; color: #FF6600; font-size: 15px; font-weight: bold;"><%=Resources.Strings.DeliverySchedule%></td></tr>
                 <tr>
-                    <td><%=Resources.Strings.Customer %></td>
-                    <td><asp:Label ID="lblMasterCustomer" CssClass="cellLbl" runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Customer%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterCustomer" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.JFCAccountNum%></td>
-                    <td><asp:Label ID="lblMasterJFCAcc" CssClass="cellLbl " runat="server" style=" margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.JFCAccountNum%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterJFCAcc" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.ShippingDestination%></td>
-                    <td><asp:Label ID="lblMasterShipDest" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.ShippingDestination%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterShipDest" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Address1%></td>
-                    <td><asp:Label ID="lblMasterAddr1" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Address1%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterAddr1" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Address2%></td>
-                    <td><asp:Label ID="lblMasterAddr2" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Address2%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterAddr2" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.City%></td>
-                    <td><asp:Label ID="lblMasterCity" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.City%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterCity" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.State%></td>
-                    <td><asp:Label ID="lblMasterState" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
-                </tr>
-                    <tr>
-                    <td><%=Resources.Strings.Zip%></td>
-                    <td><asp:Label ID="lblMasterZip" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.State%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterState" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Country%></td>
-                    <td><asp:Label ID="lblMasterCountry" CssClass="cellLbl " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Zip%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterZip" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Vendor%></td>
-                    <td><asp:Label ID="lblMasterVendor" CssClass="cellLbl  " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Country%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterCountry" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.SendReminder%></td>
-                    <td><asp:Label ID="lblMasterSendReminder" CssClass="cellLbl  " runat="server" style="margin: 3px;"/></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Vendor%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterVendor" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td><%=Resources.Strings.Frequency%></td>
-                    <td><asp:Label ID="lblMasterFrequency" CssClass="cellLbl bold " runat="server" style="font-weight: bold; margin: 3px;"/></td>
-                 </tr>
-                     <tr>
-                        <td><%=Resources.Strings.DeliveryOn%></td>
-                        <td><asp:Label ID="lblMasterDeliveryOn" CssClass="cellLbl bold " runat="server" style="font-weight: bold; margin: 3px;"/></td>
-                    </tr>
-                    <tr>
-                        <td><%=Resources.Strings.OrderBy1%></td>
-                        <td><asp:Label ID="lblMasterOrderby" CssClass="cellLbl bold " runat="server" style="font-weight: bold; margin: 3px;"/></td>
-                    </tr>
-               
-                 <%-- asp:Panel ID="pnlItemPriceNew" runat="server">
-                    <tr>
-                        <td>Price New</td>
-                        <td><asp:Label ID="lblItemPriceNew" CssClass="cellLbl bold red" runat="server" style="font-weight: bold; margin: 3px;"/></td>
-                    </tr>
-                </asp:Panel>--%>
-              
-                <tr><td colspan="2"></td></tr>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.SendReminder%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterSendReminder" runat="server" /></td>
+                </tr>
+                <tr>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.Frequency%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterFrequency" runat="server" style="font-weight: bold;" /></td>
+                </tr>
+                <tr>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.DeliveryOn%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterDeliveryOn" runat="server" style="font-weight: bold;" /></td>
+                </tr>
+                <tr>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #777777; font-size: 13px; vertical-align: top; width: 36%;"><%=Resources.Strings.OrderBy1%></td>
+                    <td style="padding: 7px 12px; border-bottom: 1px solid #F0F0F0; color: #222222; font-size: 13px; vertical-align: top;"><asp:Label ID="lblMasterOrderby" runat="server" style="font-weight: bold;" /></td>
+                </tr>
             </tbody>
         </table>
     </asp:Panel>
-    <br />
+    </td></tr></table>
 </asp:Panel>
 
 
 
 <asp:Panel ID="PnlPriceInquireList" runat="server">
     <%--Header--%>
-    <%--<label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label>&nbsp;&nbsp;--%>
-    <label style="font-style: italic; color: #FF0000;" class="red italic"><%= Common.JFC_COMPANY_NAME%></label><%--&nbsp;&nbsp;<a target="_blank" href='http://shop.jfc.com'>https://shop.jfc.com</a>--%>
-    <%--<br /><br /><asp:Image ID="Image4" runat="server" ImageUrl="https://shop.jfc.com/Login/Images/jfcLogo.gif" />--%>
-    <br /><br />
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"><%= Common.JFC_COMPANY_NAME%></td>
+    </tr></table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;">
     <%--Message--%>
-    <asp:Label ID="lblMsg_PriceInquireListAdd" runat="server" />    
-    <br /><br />
-    <%--Payment info--%>
-    <asp:Panel ID="pnlPriceInquireItems" CssClass="visiblePnl leftContent"  runat="server"><%--width: 500px;--%> 
-        <h1 style="font-size: 11pt; font-weight: normal; color: #FF6600; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #ddd; margin: 0px; padding: 2px;"><%=Resources.Strings.ItemInfo%></h1>
-        <asp:Label ID="lblPriceInquireItemTitle" runat="server"  />
-      
-
-           <%--Order detail--%>
-        <asp:GridView ID="grdPriceInquirelist" runat="server" DataSourceID="dsItem" CssClass="STDTABLE" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
-                cellspacing="0" rules="rows" style="width: 343px; font-size: 9pt; border: thin solid #c0c0c0; border-collapse: collapse;">
+    <div style="font-size: 15px; line-height: 1.6; color: #333333;"><asp:Label ID="lblMsg_PriceInquireListAdd" runat="server" /></div>
+    <div style="height: 16px; line-height: 16px; font-size: 1px;">&nbsp;</div>
+    <%--Items--%>
+    <asp:Panel ID="pnlPriceInquireItems" runat="server">
+        <div style="padding: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #FF6600;"><%=Resources.Strings.ItemInfo%></div>
+        <asp:Label ID="lblPriceInquireItemTitle" runat="server" />
+        <asp:GridView ID="grdPriceInquirelist" runat="server" DataSourceID="dsItem" AutoGenerateColumns="false" GridLines="Horizontal" ShowHeaderWhenEmpty="false" AllowSorting="false" AllowPaging="false"
+                CellPadding="8" BorderColor="#E5E5E5"
+                style="width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; border: 1px solid #E5E5E5; border-collapse: collapse;">
+            <HeaderStyle BackColor="#FFF4EC" ForeColor="#FF6600" Font-Bold="true" />
+            <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField HeaderText="<%$Resources:Strings, ItemNum %>" DataField="item_id_o" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24 cellLbl gray" 
                         HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
@@ -691,15 +696,16 @@
             
             </Columns>
             <EmptyDataTemplate>
-                <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="<%$Resources:Strings, Notfound %>"/>&nbsp;&nbsp;        
+                <asp:Label ID="lblNotFound" CssClass="gray" runat="server" Text="<%$Resources:Strings, Notfound %>"/>&nbsp;&nbsp;
             </EmptyDataTemplate>
         </asp:GridView>
         <asp:SqlDataSource ID="SqlPriceInquirelist" runat="server"></asp:SqlDataSource>
-         
-        <asp:Label ID="lblMsg_PriceInquirelist" style="font-size: 10pt;" runat="server" />
+        <div style="padding-top: 12px; font-size: 14px;"><asp:Label ID="lblMsg_PriceInquirelist" runat="server" /></div>
     </asp:Panel>
-    <br />
     <asp:Label ID="Label8" runat="server" />
-    <br />
+    </td></tr></table>
+</asp:Panel>
 
-    </asp:Panel>
+</td></tr>
+</table>
+</div>

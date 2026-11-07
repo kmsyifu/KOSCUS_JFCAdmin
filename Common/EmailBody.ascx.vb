@@ -242,7 +242,7 @@ Partial Class Common_EmailBody
                             lblMsg_order.Text &= IIf(emailMsg <> String.Empty, "<br /><br />", "") & "Please click the following link to confirm that you have approved this " & tmp & "."
                             link = "http://" & Request.Url.Host & IIf(Request.Url.Port = 80 OrElse Request.Url.Port = 443, "", ":" & Request.Url.Port) & _
                                       Request.ApplicationPath & "/Login/Login.aspx?cmd=confirm_order&id=" & HttpUtility.UrlEncode(CString(r("weborder_id"))) & "&password=" & HttpUtility.UrlEncode(CString(r("onetimePassword")))
-                            lblLink_order.Text = "<a href='" & link & "'>" & link & "</a><br /><br />"
+                            lblLink_order.Text = "<div style='padding: 0 0 20px 0; word-break: break-all;'><a href='" & link & "' style='color: #FF6600; font-weight: bold;'>" & link & "</a></div>"
                             lblLink2_order.Text = lblLink_order.Text
                         Else
                             'JFC vendor
@@ -255,7 +255,7 @@ Partial Class Common_EmailBody
                                 link = "http://" & Request.Url.Host & IIf(Request.Url.Port = 80 OrElse Request.Url.Port = 443, "", ":" & Request.Url.Port) & _
                                    Request.ApplicationPath & "/Login/Login.aspx?auto_login=Y&type=JFCADMIN&page=OrderHistory.aspx?webOrderID=" & webOrderID
                                 'Request.ApplicationPath & "/Login/Login.aspx?hashed=Y&type=JFCADMIN&page=OrderHistory.aspx&username=" & vendorEmail & "&password=" & GetUserPasswd(DB, vendorEmail)
-                                lblLink_order.Text = "<a href='" & link & "' style='font-size: 1.1em; font-weight: bold'>Click here to view details and approve this order</a><br /><br />"
+                                lblLink_order.Text = EmailButton(link, "Click here to view details and approve this order")
                                 lblLink2_order.Text = lblLink_order.Text
                                 'End If
                             End If
@@ -415,7 +415,7 @@ Partial Class Common_EmailBody
             Dim link = "http://" & Request.Url.Host & IIf(Request.Url.Port = 80 OrElse Request.Url.Port = 443, "", ":" & Request.Url.Port) & _
               Request.ApplicationPath & "/Login/Login.aspx?auto_login=Y&type=JFCADMIN&page=CustItem.aspx?cust_company=" & jfcBranchNr & jfcCustomerNr & "&tab=0"
 
-            lbllink_priceInquiry.Text = "<a href='" & link & "' style='font-size: 1.1em; font-weight: bold'>Click here to view details of the price inquiry</a><br /><br />"
+            lbllink_priceInquiry.Text = EmailButton(link, "Click here to view details of the price inquiry")
             'lblLink2_order.Text = lblLink_order.Text
         End Using
     End Sub
@@ -875,6 +875,11 @@ Partial Class Common_EmailBody
             'lblItemCost.text = "as"
         End Using
     End Sub
+    ' Link shown as an orange button in the email (padding / background on the link itself, so it also works without CSS support)
+    Private Function EmailButton(url As String, text As String) As String
+        Return "<div style='padding: 0 0 20px 0;'><a href='" & url & "' style='display: inline-block; padding: 10px 22px; background-color: #FF6600; border: 1px solid #FF6600; border-radius: 4px; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 15px; font-weight: bold; text-decoration: none;'>" & HttpUtility.HtmlEncode(text) & "</a></div>"
+    End Function
+
     Private Function getMasterdetel(db As DBHelper, MasterID As String) As String()
         Dim Sql = "SELECT jd.deliveryMaster_id,jd.DELIVERYMASTERNAME, jd.frequency, jd.deliveryDay, jd.orderByDay, jd.orderByTime, " & _
                    " c.deliverySched_id, c.customer_id, c.shipPoint_id, c.sendReminder, to_char(NVL(c.startDate, SYSDATE), " & db.SqlEsc(DATE_FMT) & ") startDate, to_char(c.endDate, " & db.SqlEsc(DATE_FMT) & ") endDate " & _
