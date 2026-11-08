@@ -170,6 +170,78 @@
             return false;
         }
 
+        // Mobile: touch and hold a Buy Again row for 1 second, then drag it up / down; the order is saved when the finger lifts.
+        // A quick swipe still scrolls the page (the hold is canceled if the finger moves first).
+        function initBuyAgainTouchDrag() {
+            var HOLD_MS = 1000, MOVE_CANCEL_PX = 10, EDGE_PX = 60;
+            var grid = $(".drag_drop_grid").get(0);
+            if (!grid || !("ontouchstart" in window)) return;
+            $(grid).addClass("touchDragGrid"); // no text selection / copy menu on a long press
+            var holdTimer = null, dragRow = null, startX = 0, startY = 0, lastY = 0, scrollTimer = null;
+
+            function dataRow(el) {
+                var row = $(el).closest("tr");
+                return row.find('input[name="item_id"]').length ? row : null;
+            }
+            function cancelHold() { clearTimeout(holdTimer); holdTimer = null; }
+            function moveTo(y) {
+                // Put the dragged row before / after the row under the finger
+                var el = document.elementFromPoint(startX, y);
+                var target = el ? dataRow(el) : null;
+                if (!target || target[0] === dragRow[0]) return;
+                if (dragRow.index() < target.index()) dragRow.insertAfter(target); else dragRow.insertBefore(target);
+            }
+            function stopDrag() {
+                clearInterval(scrollTimer); scrollTimer = null;
+                dragRow.removeClass("buyAgainDragging");
+                dragRow = null;
+                clearTimeout(buyAgainSaveTimer);
+                saveBuyAgainOrder();
+            }
+
+            grid.addEventListener("touchstart", function (e) {
+                if (e.touches.length !== 1 || $(e.target).closest("button, input, select").length) return;
+                var row = dataRow(e.target);
+                if (!row) return;
+                startX = e.touches[0].clientX; startY = lastY = e.touches[0].clientY;
+                cancelHold();
+                holdTimer = setTimeout(function () {
+                    holdTimer = null;
+                    dragRow = row.addClass("buyAgainDragging");
+                    $("#buyAgainOrderMsg").text("");
+                    if (navigator.vibrate) navigator.vibrate(40);
+                    // Scroll the page while the finger is near the top / bottom of the screen
+                    scrollTimer = setInterval(function () {
+                        var step = lastY < EDGE_PX ? -12 : (lastY > window.innerHeight - EDGE_PX ? 12 : 0);
+                        if (step !== 0) { window.scrollBy(0, step); moveTo(lastY); }
+                    }, 30);
+                }, HOLD_MS);
+            }, { passive: true });
+
+            grid.addEventListener("touchmove", function (e) {
+                var t = e.touches[0];
+                if (dragRow) {
+                    e.preventDefault(); // drag the row, not the page
+                    lastY = t.clientY;
+                    moveTo(lastY);
+                } else if (holdTimer && (Math.abs(t.clientX - startX) > MOVE_CANCEL_PX || Math.abs(t.clientY - startY) > MOVE_CANCEL_PX)) {
+                    cancelHold(); // the user is scrolling
+                }
+            }, { passive: false });
+
+            function touchEnd(e) {
+                cancelHold();
+                if (dragRow) {
+                    if (e.cancelable) e.preventDefault(); // no click on the item link after a drag
+                    stopDrag();
+                }
+            }
+            grid.addEventListener("touchend", touchEnd, { passive: false });
+            grid.addEventListener("touchcancel", touchEnd, { passive: false });
+            // No copy / link menu from the long press
+            grid.addEventListener("contextmenu", function (e) { if (dragRow || holdTimer) e.preventDefault(); });
+        }
+
         function applySortable() {
             var timer; // Variable to store timer ID
             // Function to initialize sortable with delay
@@ -220,6 +292,7 @@
             $.mask.definitions['h'] = "[A-Za-z0-9]";
            $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
            applySortable();
+           if (<%= IIf(IsMobile(), "true", "false") %>) initBuyAgainTouchDrag();
 //           $(".drag_drop_grid").sortable({
 //                items: 'tr:not(tr:first-child)',
 //                cursor: 'pointer',
@@ -415,10 +488,12 @@
                         background: #FFFFFF; color: #E78F08; font-size: 14px; line-height: 28px; text-align: center; cursor: pointer; }
                     .buyAgainMove:active { background: #FDE9C6; }
                     tr.buyAgainMoved td { background: #FDE9C6 !important; }
+                    tr.buyAgainDragging td { background: #F9B84A !important; color: #FFFFFF; }
+                    .touchDragGrid tr { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
                     #buyAgainOrderMsg { margin-left: 8px; color: #2E7D32; font-weight: bold; }
                 </style>
                 <asp:PlaceHolder runat="server" Visible='<%# IsMobile() %>'>
-                    <span class="gray">Change display order: tap &#9650; / &#9660; on a row.</span><span id="buyAgainOrderMsg"></span>
+                    <span class="gray">Change display order: touch and hold a row for 1 second, then drag it; or tap &#9650; / &#9660;.</span><span id="buyAgainOrderMsg"></span>
                     <br />
                 </asp:PlaceHolder>
                 
