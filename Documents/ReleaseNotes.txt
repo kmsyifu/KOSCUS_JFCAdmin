@@ -55,6 +55,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<CustItem>: Mobile site: Buy Again rows have up / down buttons to change the display order (drag & drop does not work on a touch screen). The order is saved 1 second after the last tap ("Order saved" shows above the list). Full site drag & drop saves the same way as before.
 *<CustItem>: Price Inquiry "All regular customers" / "All exception price customers" faster: the customer info (customer group, small customer, exception price, price group) is read with one query for all customers instead of a new connection and 9 queries per customer; changing page uses the list already loaded instead of running every query again.
 *<CustItem>: Mobile site: Buy Again rows can be dragged: touch and hold a row for 1 second (the row turns orange), drag it up / down and lift the finger to save. Near the top / bottom of the screen the page scrolls. A quick swipe still scrolls the page; the up / down buttons still work.
+*<Common>: Version changed to 018.2 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN017 (11/04/2026)
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
