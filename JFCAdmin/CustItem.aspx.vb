@@ -1809,6 +1809,31 @@ Partial Class JFCAdmin_CustItem
 #Region "Price Inquiry"
     'Price Inquiry 11/19/2020
 
+    Private Const PRICE_INQUIRY_LIST As String = "CUSTITEM_PRICEINQUIRY_LIST"
+    Private Const PRICE_INQUIRY_LIST_KEY As String = "CUSTITEM_PRICEINQUIRY_LIST_KEY"
+
+    'Which list is shown: current customer, all regular or all exception price customers
+    Private Function PriceInquiryListKey() As String
+        If rdbAllRegCust.Checked Then Return "ALLREG"
+        If rdbAllExpCust.Checked Then Return "ALLEXP"
+        Return "CUST:" & lblCustomerID.Text
+    End Function
+
+    'Customer info for the price inquiry list of all customers, from one row of the customer query in showPirceInquiry.
+    'Same values as New CustomerInfo(customerID) for the fields the item query uses, without a query per customer.
+    Private Function GetPriceInquiryCustomerInfo(ByVal r As DataRow) As CustomerInfo
+        Dim info As New CustomerInfo
+        Dim typeID As String = CString(r("custCompanyType_id"))
+        info.customerID = CString(r("customer_id"))
+        info.jfcBranchNr = CString(r("jfcBranchNr"))
+        info.jfcCustomerNr = CString(r("jfcCustomerNr"))
+        info.custGrpID = CString(r("custGrp_id"))
+        info.isSmallCust = (typeID = "R" OrElse typeID = "S")                       'Common.IsSmallCustomer
+        info.IsExcepPriceCustomer = Right(CString(r("jfcPriceGrpID_orig")), 4) <> "-REG" 'Common.IsExcepPriceCustomer
+        info.PriceGrpID = CString(r("priceGpID"))                                   'Common.GetPriceGrpID
+        Return info
+    End Function
+
     Private Sub showPirceInquiry(ByVal allcustomer As Boolean)
         'If ViewState("CustItem_Tab") = CustItem_Tab.CUSTITEM Then
         Dim SQL As String = ""
@@ -1855,9 +1880,14 @@ Partial Class JFCAdmin_CustItem
                     " GROUP BY c.customer_id"   'and substr(c.JFCPRICEGRPID_ORIG,-4)= '-REG' 
                 End If
 
+                'One query for what the item query needs of every customer (was New CustomerInfo per customer: a new connection and 9 queries each)
+                SQL = "SELECT c.customer_id, c.jfcBranchNr, c.jfcCustomerNr, c.custGrp_id, c.jfcPriceGrpID_orig, " &
+                      " (SELECT cc.type_id FROM custGrp g, custCompany cc WHERE g.custGrp_id = c.custGrp_id AND g.custCompany_id = cc.custCompany_id AND ROWNUM = 1) AS custCompanyType_id, " &
+                      " (SELECT jc.priceGpID FROM jets_customer jc WHERE jc.bid = c.jfcBranchNr AND jc.customerid = c.jfcCustomerNr AND ROWNUM = 1) AS priceGpID " &
+                      "FROM customer c WHERE c.customer_id IN (" & SQL & ") ORDER BY c.customer_id"
                 Dim customerslist = DB.GetDataTable(SQL)
                 For Each item As DataRow In customerslist.Rows
-                    custInfo = New CustomerInfo(item(0))
+                    custInfo = GetPriceInquiryCustomerInfo(item)
                     SQL = "SELECT wp.customer_id,cust.customername, wp.custGrpItem_id, i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc, i.custItemDesc, p.csAvail, p.eaAvail, " & _
                    " CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END AS itemIdNr_view,  TO_CHAR(wp.createdate, " & DB.SqlEsc(DATE_FMT) & ") AS createdate_FMT, " & _
                    "p.csCost, i.minSalCnt,p.lbsPerEa, ci.eaPerCs," & _
@@ -1927,6 +1957,9 @@ Partial Class JFCAdmin_CustItem
             'grdPriceInquire.DataSourceID = "dsPriceInquire"
             grdPriceInquire.DataSourceID = ""
             grdPriceInquire.DataSource = TotalDt 'DB.GetDataTable(SQL)
+            'Keep the list for paging (paging used to run all the queries again)
+            Session(PRICE_INQUIRY_LIST) = TotalDt
+            Session(PRICE_INQUIRY_LIST_KEY) = PriceInquiryListKey()
             grdPriceInquire.Columns(4).Visible = Not IsMobile()
             grdPriceInquire.Columns(5).Visible = Not IsMobile()
             grdPriceInquire.Columns(2).Visible = Not IsMobile()
@@ -1954,8 +1987,14 @@ Partial Class JFCAdmin_CustItem
 
             setJavaScript(CustItem_Tab.CUSTITEM)
             If e.CommandName = "Page" Then
-                'Page is changed
-                showPirceInquiry(ViewState("SHOW_ALL_INQUIRE"))
+                'Page is changed: use the list loaded last time if it is for the same customer / option
+                Dim cached As DataTable = TryCast(Session(PRICE_INQUIRY_LIST), DataTable)
+                If cached IsNot Nothing AndAlso CString(Session(PRICE_INQUIRY_LIST_KEY)) = PriceInquiryListKey() Then
+                    grdPriceInquire.DataSourceID = ""
+                    grdPriceInquire.DataSource = cached
+                Else
+                    showPirceInquiry(ViewState("SHOW_ALL_INQUIRE"))
+                End If
                 'Don't remember scroll position
                 'Page.MaintainScrollPositionOnPostBack = False
             ElseIf e.CommandName = "DELETE_ROW" Then
