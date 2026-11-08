@@ -3,6 +3,13 @@
 Partial Class Errors_Error
     Inherits System.Web.UI.Page
 
+    'reason=busy: a database query was canceled for running too long (set by Global.asax)
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        Dim busy As Boolean = (Request.QueryString("reason") = "busy")
+        phBusy.Visible = busy
+        phError.Visible = Not busy
+    End Sub
+
     'Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     '    Dim URL As String = Request.Url.ToString.ToLower
     '    If URL.IndexOf("localhost") > -1 Then Exit Sub

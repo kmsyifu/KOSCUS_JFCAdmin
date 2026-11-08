@@ -8,6 +8,8 @@ KOSCUS_JFCADMIN019 (11/06/2026)
 *<Common>: Version changed to 019 (Common.VERSION), so browsers load the new CSS / JS files.
 *<Global>: Every unhandled error is saved to App_Data\ErrorLog\ErrorLog_yyyyMMdd.txt (time, URL, user, full error), even when the error email cannot be sent. A failed error email is logged with its reason (before: lost with no trace).
 *<Global>: Error email also goes to yfu@kmsnet.com on production / beta.
+*<DBHelper>: A database query that runs longer than 60 seconds is canceled (QUERY_TIMEOUT_SECONDS). It frees its connection and the user's session, so one slow query no longer makes the user's next pages wait and then fail. The Oracle driver ignores CommandTimeout, so a timer cancels the query.
+*<Global, Error page>: A canceled slow query shows The database is busy - please try again instead of the general error page. The error email / log say it was canceled and include the SQL (first 1000 characters).
 
 KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Price is edited right in the order item list: click Edit, type the price and pick the unit (/cs, /ea, /lb), then the check mark (or Enter) to keep it or the X to cancel. The new price is shown in the old price's place, labelled "Updated" (the old price is hidden). No popup, no page reload, and the item is no longer loaded into the Add Item panel.

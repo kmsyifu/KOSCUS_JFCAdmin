@@ -42,7 +42,24 @@
         Catch ex As Exception
             WriteErrorLog("ERROR EMAIL NOT SENT: " & ex.ToString())
         End Try
+
+        'A query canceled for running too long (DBHelper.QUERY_TIMEOUT_SECONDS): show "the database is busy, please try again"
+        'instead of the general error message
+        If IsDBQueryTimeout(lastError) Then
+            Server.ClearError()
+            Response.Redirect("~/Errors/Error.aspx?reason=busy", False)
+            Context.ApplicationInstance.CompleteRequest()
+        End If
     End Sub
+
+    'True if the error (or any error inside it) is a canceled slow query
+    Private Function IsDBQueryTimeout(ByVal ex As Exception) As Boolean
+        While ex IsNot Nothing
+            If TypeOf ex Is DBQueryTimeoutException Then Return True
+            ex = ex.InnerException
+        End While
+        Return False
+    End Function
 
     'Appends a line to App_Data\ErrorLog\ErrorLog_yyyyMMdd.txt (one file per day; App_Data is never served to browsers).
     'Never throws - a logging failure must not hide the original error.
