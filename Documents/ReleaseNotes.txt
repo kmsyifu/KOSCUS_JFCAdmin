@@ -63,6 +63,7 @@ KOSCUS_JFCADMIN017 (11/04/2026)
 *<Tool>: Download button uses the shared loading screen (before: a timer added a new gray layer every 0.2 s until the ExcelDownloadFlag cookie was seen).
 *<OrderDtl>: Mobile site: Add Item to Order search works again. It uses $.ajaxPrefilter (jQuery 1.5+), which failed on the old mobile jQuery 1.4.1; fixed by the mobile site now loading jQuery 1.8.3.
 *<Common>: Version changed to 017.1 (Common.VERSION), so browsers load the new CSS / JS files (Common.js loading screen / file download changes).
+*<Common, Master, Mobile master>: Fixed: the loading screen stayed open after a file download because browsers kept an old cached Common.js (the URL had not changed). Common.js and jquery.autocomplete.js are now loaded with Common.ScriptUrl, which adds the file's last change time to the URL (?v=VERSION.yyyyMMddHHmmss), so a changed script is always loaded fresh even if VERSION is not changed.
 
 KOSCUS_JFCADMIN016 (11/02/2026)
 *<Common>: Fixed stylesheet links so browsers load the new CSS after a version change. The ?v=<%= Common.VERSION %> in the <head> links was never filled in, so old CSS stayed cached. Links now use Common.CssLink in all master pages and Print.aspx.

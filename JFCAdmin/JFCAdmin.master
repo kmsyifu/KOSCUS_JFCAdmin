@@ -19,8 +19,8 @@
         <script src="<%= ResolveClientUrl("~/Scripts/jquery-1.8.3.min.js") %>" type="text/javascript"></script>
         <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
       <%--  <script src="<%= ResolveClientUrl("~/Scripts/jquery-ui-1.8.16.custom.min.js") %>" type="text/javascript"></script>--%>
-        <script src="<%= ResolveClientUrl("~/Scripts/Common.js?v=" & Common.VERSION) %>" type="text/javascript"></script>
-        <script src="<%= ResolveClientUrl("~/Scripts/jquery.autocomplete.js?v=" & Common.VERSION) %>" type="text/javascript"></script>
+        <script src="<%= Common.ScriptUrl("~/Scripts/Common.js") %>" type="text/javascript"></script>
+        <script src="<%= Common.ScriptUrl("~/Scripts/jquery.autocomplete.js") %>" type="text/javascript"></script>
         <%--<link rel="stylesheet" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">--%>
         <script type="text/javascript">
             var SystemDialogMessage = '';
