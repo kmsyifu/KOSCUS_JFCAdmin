@@ -1034,120 +1034,129 @@
                                 <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
                             </Animations>
                         </ajaxToolKit:ModalPopupExtender>
-                    <asp:Panel ID="pnlPopItemDtl"  style="display:none;" runat="server" CssClass="popup_dialog">
-                            <div class="inner">
-                                <asp:ImageButton ID="btnPopClose_Item" CssClass="popClose" CausesValidation="False" runat="server" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' />
+                    <%--Item Info popup. Same controls as before (IDs, server code unchanged); new layout.--%>
+                    <style type="text/css">
+                        .iip.popup_dialog { width: 560px; max-width: 94vw; padding: 0; border: 1px solid #E0E0E0; border-radius: 8px; overflow: hidden;
+                            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28); font-family: Arial, Helvetica, sans-serif; background: #FFFFFF; text-align: left; }
+                        .iip .iip-header { position: relative; padding: 14px 48px 14px 20px; background: #F6A828; background-image: linear-gradient(to bottom, #F9B84A, #F09618);
+                            border-bottom: 1px solid #E78F08; }
+                        .iip .iip-header h1 { margin: 0; padding: 0; border: none; font-size: 1.25em; font-weight: bold; color: #FFFFFF; text-align: left; }
+                        .iip .iip-close { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); width: 30px; height: 30px; padding: 0;
+                            border: none; border-radius: 15px; background: transparent; color: #FFFFFF; font-size: 22px; line-height: 30px; cursor: pointer; }
+                        .iip .iip-close:hover { background: rgba(255, 255, 255, 0.25); }
+                        .iip .iip-body { max-height: calc(100vh - 170px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 20px 4px 20px; }
+                        .iip .iip-alert { margin: 0 0 14px 0; padding: 10px 12px; border: 1px solid #E0E0E0; border-left: 4px solid #F09618; border-radius: 4px;
+                            background: #FAFAFA; font-weight: bold; line-height: 1.4; }
+                        .iip .iip-summary { margin: 0 0 16px 0; padding: 12px 14px; border: 1px solid #EEEEEE; border-radius: 6px; background: #FAFAFA; }
+                        .iip .iip-itemno { display: inline-block; margin: 0 0 6px 0; padding: 2px 8px; border-radius: 4px; background: #FDE9C6; color: #9A5A00;
+                            font-size: 0.9em; font-weight: bold; }
+                        .iip .iip-desc { display: block; color: #222222; font-size: 1.05em; font-weight: bold; line-height: 1.35; overflow-wrap: break-word; }
+                        .iip .iip-stats { margin: 10px 0 0 0; }
+                        .iip .iip-stat { display: inline-block; margin: 0 16px 4px 0; color: #777777; font-size: 0.85em; vertical-align: top; }
+                        .iip .iip-stat b { color: #333333; font-size: 1.1em; }
+                        .iip .iip-section { margin: 0 0 8px 0; padding: 0 0 4px 0; border-bottom: 1px solid #EEEEEE; color: #E78F08; font-size: 0.8em;
+                            font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; }
+                        .iip .iip-prices { display: table; width: 100%; margin: 0 0 8px 0; border-collapse: separate; border-spacing: 0 6px; }
+                        .iip .iip-price { display: table-row; }
+                        .iip .iip-price .iip-k { display: table-cell; width: 120px; padding: 0 10px 0 0; color: #777777; font-size: 0.9em; vertical-align: top; }
+                        .iip .iip-price .iip-v { display: table-cell; color: #222222; font-weight: bold; vertical-align: top; overflow-wrap: break-word; }
+                        .iip .iip-field { margin: 0 0 14px 0; }
+                        .iip .iip-label { display: block; margin: 0 0 5px 0; color: #555555; font-size: 0.85em; font-weight: bold; }
+                        .iip .iip-input { box-sizing: border-box; height: 38px; margin: 0; padding: 6px 10px; border: 1px solid #C8C8C8; border-radius: 4px;
+                            font-size: 16px; color: #222222; background: #FFFFFF; vertical-align: middle; }
+                        .iip .iip-input:focus { outline: none; border-color: #F09618; box-shadow: 0 0 0 3px rgba(240, 150, 24, 0.2); }
+                        .iip .iip-wide { width: 100%; }
+                        .iip .iip-short { width: 160px; }
+                        .iip .iip-price-input { width: 120px; }
+                        .iip select.iip-input { width: auto; min-width: 80px; padding: 6px; }
+                        .iip .iip-gp { display: inline-block; margin-left: 8px; font-weight: bold; vertical-align: middle; }
+                        .iip .iip-check { display: inline-block; padding: 4px 0; color: #333333; cursor: pointer; }
+                        .iip .iip-check input { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; }
+                        .iip .iip-footer { padding: 12px 20px; border-top: 1px solid #EEEEEE; background: #FAFAFA; text-align: right; }
+                        .iip .iip-btn { box-sizing: border-box; min-width: 90px; height: 36px; margin: 0 0 0 8px; padding: 0 16px; border-radius: 4px;
+                            font-family: Arial, Helvetica, sans-serif; font-size: 0.95em; font-weight: bold; cursor: pointer; text-shadow: none; }
+                        .iip .iip-btn-cancel { border: 1px solid #C8C8C8; background: #FFFFFF; color: #444444; }
+                        .iip .iip-btn-cancel:hover { background: #F0F0F0; }
+                        .iip .iip-btn-delete { float: left; margin: 0; border: 1px solid #E8B4B0; background: #FFFFFF; color: #C62828; }
+                        .iip .iip-btn-delete:hover { background: #FDECEA; }
+                        .iip .iip-btn-primary { border: 1px solid #2E7D32; background: #43A047; background-image: linear-gradient(to bottom, #4CAF50, #388E3C); color: #FFFFFF; }
+                        .iip .iip-btn-primary:hover { background: #2E7D32; }
+                    </style>
+                    <asp:Panel ID="pnlPopItemDtl"  style="display:none;" runat="server" CssClass="popup_dialog iip">
+                            <div class="iip-header">
                                 <h1><asp:Label ID="lblPopHeader_Item" runat="server" Text="View/Add/Edit"/> Item Info</h1>
-                                <br />
-                                 <asp:Panel runat="server" ID ="pnlPopWarningItem">
-                                 
-                                 <asp:Label ID="lblPopWarningItem" CssClass=" green bold" runat="server" />
-                                 <br />
-                                 <br />
+                                <%--Same as the Close button (refreshes the list)--%>
+                                <button type="button" class="iip-close" title="Close" onclick="$('#<%= btnPopCloseItem.ClientID %>').click(); return false;">&times;</button>
+                            </div>
+                            <div class="iip-body">
+                                <asp:Panel runat="server" ID ="pnlPopWarningItem" CssClass="iip-alert">
+                                    <asp:Label ID="lblPopWarningItem" runat="server" />
                                 </asp:Panel>
-                                <asp:Panel runat="server" ID="pnlPopDtlEdit_Item">              
-                                    <table>
-                                        <tr>
-                                            <td class="rowHdr">Item#</td>
-                                            <td><asp:Label ID="lblPopEditItem"  runat="server" />
-                                            </td>
-                                               
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr"></td>
-                                            <td><asp:TextBox ID="txtPopEditItem" CssClass="stdTxt size12 disableEnter" runat="server"  autocomplete="off" />
-                                                
-                                                <asp:Label ID="lblPopItem" CssClass="rowLblVal" runat="server" /></td>
-                                        </tr>
-                                         <tr>
-                                            <td class="rowHdr">Desc</td>
-                                            <td><asp:Label ID="lblPopEditDesc"  runat="server" />
-                                            </td>
-                                               
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr"></td>
-                                            <td><asp:TextBox ID="txtPopEditDesc" CssClass='<%# "stdTxt disableEnter " & IIf(IsMobile(), "size32", "size48") %>' Text="" runat="server"  autocomplete="off" /><%--Text required so that validator wouldn't work by default--%>
-                                                
-                                                <asp:Label ID="lblPopDesc" Visible="false" runat="server" /></td>
-                                        </tr>
-                                       
-                                        <tr>
-                                            <td class="rowHdr">Remark</td>
-                                            <td>
-                                                <asp:TextBox ID="txtPopEditRemark" CssClass='<%# "stdTxt  disableEnter " & IIf(IsMobile(), "size32", "size48") %> ' autocomplete="off"  Text="" runat="server" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Each / Case</td>
-                                            <td><asp:Label ID="lblPopEditEachCase" CssClass="rowLblVal" runat="server" />
-                                            </td>
-                                        </tr>
-                                        <asp:Panel runat ="server" ID="pnlPoppcpercs" >
-                                         <tr>
-                                            <td class="rowHdr">Piece / Case</td>
-                                            <td><asp:Label ID="lblPopEditPcperCs" CssClass="rowLblVal"  runat="server" /></td>
-                                        </tr>
-                                        </asp:Panel>
-                                         <tr>
-                                            <td class="rowHdr">Cost</td>
-                                            <td><asp:Label ID="lblPopEditCost" CssClass="rowLblVal"  runat="server" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Bottom Price</td>
-                                            <td><asp:Label ID="lblPopEditBtm" CssClass="rowLblVal"  runat="server" /></td>
-                                        </tr>
-                                         <tr>
-                                            <td class="rowHdr">Regular Price</td>
-                                            <td><asp:Label ID="lblPopEditReg" CssClass="rowLblVal"  runat="server" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Current Price</td>
-                                           
-                                            <td>
-                                                <asp:Label ID="lblPopEditPriceOriginal" CssClass="rowLblVal" runat="server" />
-                                                 <asp:Label runat="server" ID="lblPopEditNewLbCost" Visible="false" />
-                                                 <asp:Label runat="server" ID="lblPopEditNewCsCost" Visible="false" />
-                                                 <asp:Label runat="server" ID="lblPopEditNewEaCost" Visible="false" />
-                                               
-                                            </td>                                           
-                                        </tr>
-                                         <tr>
-                                            <td class="rowHdr" ><asp:Label ID="lblPopTitlePriceNew" CssClass="rowLblVal" runat="server" Text="New Price" /></td>
-                                           
-                                            <td>
-                                                <asp:TextBox runat="server" ID="txtPopPrice"  onchange="javascript:GetGP(); "    CssClass="stdTxt disableEnter size12"  autocomplete="off" /><%--&nbsp;/ cs--%>
-                                                <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender11" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtPopPrice" /> 
-                                                <asp:DropDownList ID="lstPopPriceUnit" onchange="javascript:GetGP();"  CssClass="drpList" runat="server" />
-                                                <asp:Label runat="server" ID="lblPopGP" CssClass="rowLblVal red"/>
-                                            </td>                                           
-                                        </tr>
-                                        
-                                        <tr>
-                                            <td class="rowHdr">Inventory</td>
-                                            <td><asp:Label ID="lblPopEditInventory" CssClass="rowLblVal" runat="server" /></td>
-                                        </tr>
-                                        <tr><td class="rowHdr">Email</td>
-                                            <td><asp:CheckBox  ID="ckbPopEmail" ClientIDMode="Static" runat ="server" CssClass= "checkbox"  class="fontsize-1"/>Send email to customer</td>
-                                        </tr>
-                                       
-                                        <tr id="emailNoteRow">
-                                            <td class="rowHdr">Email Message</td>
-                                            <td><asp:TextBox runat="server" ID="txtNote"  CssClass='<%# "stdTxt  disableEnter " & IIf(IsMobile(), "size32", "size48") %> '   autocomplete="off"  /></td>
-                                           
-                                        </tr>
-                                        
-                                        <tr>
-                                            <td colspan="2" class="center">
-                                                <asp:Button ID="btnPopSaveItem" CssClass="midButton_green" runat="server" Text="Update" OnClientClick="javascript:showProgress();"  />
-                                                <asp:Button ID="btnPopDeleteItem" CssClass="midButton" runat="server" Text="Delete" OnClientClick="javascript:showProgress();"/>
-                                                <asp:Button ID="btnPopCloseItem" CssClass="midButton" runat="server" Text="Close" OnClientClick="javascript:showProgress();"/>
-                                            </td>
-                                        </tr>
-                                    
-                                    </table>
+                                <asp:Panel runat="server" ID="pnlPopDtlEdit_Item">
+                                    <%--Item--%>
+                                    <div class="iip-summary">
+                                        <span class="iip-itemno">Item # <asp:Label ID="lblPopEditItem" runat="server" /></span>
+                                        <asp:Label ID="lblPopEditDesc" CssClass="iip-desc" runat="server" />
+                                        <div class="iip-stats">
+                                            <span class="iip-stat">Each / Case<br /><b><asp:Label ID="lblPopEditEachCase" runat="server" /></b></span>
+                                            <asp:Panel runat ="server" ID="pnlPoppcpercs" CssClass="iip-stat">Piece / Case<br /><b><asp:Label ID="lblPopEditPcperCs" runat="server" /></b></asp:Panel>
+                                            <span class="iip-stat">Inventory<br /><b><asp:Label ID="lblPopEditInventory" runat="server" /></b></span>
+                                        </div>
+                                    </div>
+
+                                    <%--Prices--%>
+                                    <div class="iip-section">Price</div>
+                                    <div class="iip-prices">
+                                        <div class="iip-price"><span class="iip-k">Cost</span><span class="iip-v"><asp:Label ID="lblPopEditCost" runat="server" /></span></div>
+                                        <div class="iip-price"><span class="iip-k">Bottom Price</span><span class="iip-v"><asp:Label ID="lblPopEditBtm" runat="server" /></span></div>
+                                        <div class="iip-price"><span class="iip-k">Regular Price</span><span class="iip-v"><asp:Label ID="lblPopEditReg" runat="server" /></span></div>
+                                        <div class="iip-price"><span class="iip-k">Current Price</span><span class="iip-v">
+                                            <asp:Label ID="lblPopEditPriceOriginal" runat="server" />
+                                            <asp:Label runat="server" ID="lblPopEditNewLbCost" Visible="false" />
+                                            <asp:Label runat="server" ID="lblPopEditNewCsCost" Visible="false" />
+                                            <asp:Label runat="server" ID="lblPopEditNewEaCost" Visible="false" />
+                                        </span></div>
+                                    </div>
+                                    <div class="iip-field">
+                                        <asp:Label ID="lblPopTitlePriceNew" CssClass="iip-label" runat="server" Text="New Price" />
+                                        <asp:TextBox runat="server" ID="txtPopPrice" onchange="javascript:GetGP(); " CssClass="iip-input iip-price-input disableEnter" autocomplete="off" placeholder="0.00" inputmode="decimal" />
+                                        <ajaxToolkit:FilteredTextBoxExtender ID="FilteredTextBoxExtender11" runat="server" FilterType="Numbers, Custom" ValidChars="." TargetControlID="txtPopPrice" />
+                                        <asp:DropDownList ID="lstPopPriceUnit" onchange="javascript:GetGP();" CssClass="iip-input" runat="server" />
+                                        <asp:Label runat="server" ID="lblPopGP" CssClass="iip-gp red"/>
+                                    </div>
+
+                                    <%--Customer's own item # / description--%>
+                                    <div class="iip-section">Customer Item</div>
+                                    <div class="iip-field">
+                                        <label class="iip-label" for="<%= txtPopEditItem.ClientID %>">Customer Item #</label>
+                                        <asp:TextBox ID="txtPopEditItem" CssClass="iip-input iip-short disableEnter" runat="server" autocomplete="off" placeholder="Optional" />
+                                        <asp:Label ID="lblPopItem" runat="server" />
+                                    </div>
+                                    <div class="iip-field">
+                                        <label class="iip-label" for="<%= txtPopEditDesc.ClientID %>">Customer Description</label>
+                                        <asp:TextBox ID="txtPopEditDesc" CssClass="iip-input iip-wide disableEnter" Text="" runat="server" autocomplete="off" placeholder="Optional" /><%--Text required so that validator wouldn't work by default--%>
+                                        <asp:Label ID="lblPopDesc" Visible="false" runat="server" />
+                                    </div>
+                                    <div class="iip-field">
+                                        <label class="iip-label" for="<%= txtPopEditRemark.ClientID %>">Remark</label>
+                                        <asp:TextBox ID="txtPopEditRemark" CssClass="iip-input iip-wide disableEnter" autocomplete="off" Text="" runat="server" />
+                                    </div>
+
+                                    <%--Email--%>
+                                    <div class="iip-section">Email</div>
+                                    <div class="iip-field">
+                                        <label class="iip-check"><asp:CheckBox ID="ckbPopEmail" ClientIDMode="Static" runat ="server" />Send email to customer</label>
+                                    </div>
+                                    <div class="iip-field" id="emailNoteRow">
+                                        <label class="iip-label" for="<%= txtNote.ClientID %>">Email Message</label>
+                                        <asp:TextBox runat="server" ID="txtNote" CssClass="iip-input iip-wide disableEnter" autocomplete="off" />
+                                    </div>
                                 </asp:Panel>
-                                <br />
+                            </div>
+                            <div class="iip-footer">
+                                <asp:Button ID="btnPopDeleteItem" CssClass="iip-btn iip-btn-delete" runat="server" Text="Delete" OnClientClick="javascript:showProgress();"/>
+                                <asp:Button ID="btnPopCloseItem" CssClass="iip-btn iip-btn-cancel" runat="server" Text="Close" OnClientClick="javascript:showProgress();"/>
+                                <asp:Button ID="btnPopSaveItem" CssClass="iip-btn iip-btn-primary" runat="server" Text="Update" OnClientClick="javascript:showProgress();"  />
                             </div>
                         </asp:Panel>
                     <br />

@@ -659,7 +659,7 @@ Partial Class JFCAdmin_CustItem
                 eaUnit = IIf(scaledItem = True, "pc", "ea")
                 lblPopEditItem.Text = CString(r("item_id_o"))
                 txtPopEditItem.Text = CString(r("item_id"))
-                lblPopEditDesc.Text = Common.WrapText(CString(r("itemDesc_view")), IIf(IsMobile(), 20, 40))
+                lblPopEditDesc.Text = Common.WrapText(CString(r("itemDesc_view")), IIf(IsMobile(), 32, 40))
                 txtPopEditDesc.Text = CString(r("custItem_Desc"))
                 txtPopEditRemark.Text = CString(r("jfcRemark"))
                 lblPopEditEachCase.Text = IIf(Val(r("eaPerCs")) <> 0 And Val(r("eaPerCs")) <> 1 And Val(r("lbPrice_OrderByQty")) = 0, CString(r("eaPerCs")), "")
@@ -720,7 +720,7 @@ Partial Class JFCAdmin_CustItem
                     eaUnit = IIf(scaledItem = True, "pc", "ea")
                     lblPopEditItem.Text = CString(r("item_id"))
                     pnlPoppcpercs.Visible = scaledItem
-                    lblPopEditDesc.Text = Common.WrapText(CString(r("itemDtl")), IIf(IsMobile(), 20, 40))
+                    lblPopEditDesc.Text = Common.WrapText(CString(r("itemDtl")), IIf(IsMobile(), 32, 40))
 
                     lblPopEditInventory.Text = CString(r("csAvail_view")) & " cs,  " & CString(r("eaAvail_view")) & " ea"
                     txtPopEditDesc.Text = ""
