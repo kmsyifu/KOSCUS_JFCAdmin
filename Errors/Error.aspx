@@ -9,8 +9,15 @@
 <body>
     <form id="form1" runat="server">
     <div>
+        <asp:PlaceHolder ID="phError" runat="server">
         <h1>An error has occurred</h1>
         <p>An unexpected error occurred on this website. The website administrator has been notified.</p>
+        </asp:PlaceHolder>
+        <asp:PlaceHolder ID="phBusy" runat="server" Visible="false">
+        <h1>The database is busy</h1>
+        <p>Your request took too long and was stopped. Please wait a moment and try again.</p>
+        <p><a href="javascript:history.back()">Go back</a></p>
+        </asp:PlaceHolder>
     </div>
     </form>
 </body>
