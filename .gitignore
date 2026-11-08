@@ -366,3 +366,6 @@ Secrets.config
 
 # ASP.NET compiled temp files (Temporary ASP.NET Files output)
 _program files_git/
+
+# Error log written by Global.asax (Application_Error)
+App_Data/ErrorLog/
