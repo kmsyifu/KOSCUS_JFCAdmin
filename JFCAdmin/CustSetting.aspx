@@ -220,94 +220,81 @@
                                 <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
                             </Animations>
                         </ajaxToolKit:ModalPopupExtender>
-                        <asp:Panel ID="pnlPopUserDtl" DefaultButton="btnPopSaveUser" style="display:none;" runat="server" CssClass="popup_dialog">
-                            <div class="inner">
-                                <asp:ImageButton ID="btnPopClose_User" CssClass="popClose"  CausesValidation="False" runat="server" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' />
-                                <h1><asp:Label ID="lblPopTitleUser" runat="server" Text="Add New Customer"/> </h1>
-                                <asp:Panel runat="server" ID ="pnlPopWarningUser">
-                                <br />
-                                 <asp:Label ID="lblPopWarningUser" CssClass=" red" runat="server" />
-                                 <%-- asp:RequiredFieldValidator ID="RFValidatorJFCAccount"  runat="server" CssClass="red" ValidationGroup="validgroup"  
-                                             controltovalidate="txtPopJFCNum" errormessage="Please enter a JFC account number!" />--%>
-                                <br />
-                                <asp:CustomValidator id="CVPopJFCNum" ControlToValidate="txtPopJFCNum" ClientValidationFunction="ClientValidate" 
-                                           
-                                            Display="Static"
-                                            ErrorMessage="Invalid. Please enter a correct 4 digit account number."
-                                            ForeColor="red"
-                                            ont-Name="verdana" ValidationGroup="validgroupUser"   
-                                            Font-Size="10pt"
-                                            runat="server"/>
-                                  <br />
-                                  <asp:CustomValidator id="CVPopEmail" ControlToValidate="txtPopEmail" ClientValidationFunction="ClientValidateEmail" 
-                                            Display="Static"
-                                            ErrorMessage="Invalid. Please enter a correct email"
-                                            ForeColor="red"
-                                            ont-Name="verdana" 
-                                            Font-Size="10pt"
-                                            ValidationGroup="validgroupUser"   
-                                            runat="server"/>
+                        <%--Add New Customer / Add New User popup. Same controls as before (IDs, validators, server code unchanged); new layout.--%>
+                        <style type="text/css">
+                            .ncp.popup_dialog { width: 460px; max-width: 92vw; padding: 0; border: 1px solid #E0E0E0; border-radius: 8px; overflow: hidden;
+                                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28); font-family: Arial, Helvetica, sans-serif; background: #FFFFFF; }
+                            .ncp .ncp-header { position: relative; padding: 14px 48px 14px 20px; background: #F6A828; background-image: linear-gradient(to bottom, #F9B84A, #F09618);
+                                border-bottom: 1px solid #E78F08; }
+                            .ncp .ncp-header h1 { margin: 0; padding: 0; border: none; font-size: 1.25em; font-weight: bold; color: #FFFFFF; text-align: left; }
+                            .ncp .ncp-close { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); width: 30px; height: 30px; padding: 0;
+                                border: none; border-radius: 15px; background: transparent; color: #FFFFFF; font-size: 22px; line-height: 30px; cursor: pointer; }
+                            .ncp .ncp-close:hover { background: rgba(255, 255, 255, 0.25); }
+                            .ncp .ncp-body { padding: 18px 20px 6px 20px; }
+                            .ncp .ncp-alert { margin: 0 0 14px 0; padding: 10px 12px; border: 1px solid #F5C2C0; border-left: 4px solid #D93025; border-radius: 4px;
+                                background: #FDECEA; color: #B3261E; font-size: 0.95em; line-height: 1.4; }
+                            .ncp .ncp-alert span { display: block; }
+                            .ncp .ncp-field { margin: 0 0 16px 0; }
+                            .ncp .ncp-label { display: block; margin: 0 0 6px 0; color: #555555; font-size: 0.85em; font-weight: bold; letter-spacing: 0.02em; text-transform: uppercase; }
+                            .ncp .ncp-input { box-sizing: border-box; height: 38px; margin: 0; padding: 6px 10px; border: 1px solid #C8C8C8; border-radius: 4px;
+                                font-size: 1.05em; color: #222222; background: #FFFFFF; vertical-align: middle; }
+                            .ncp .ncp-input:focus { outline: none; border-color: #F09618; box-shadow: 0 0 0 3px rgba(240, 150, 24, 0.2); }
+                            .ncp .ncp-input[disabled] { background: #F3F3F3; color: #666666; }
+                            .ncp .ncp-branch { width: 64px; text-align: center; }
+                            .ncp .ncp-number { width: 120px; }
+                            .ncp .ncp-email { width: 100%; }
+                            .ncp .ncp-dash { display: inline-block; margin: 0 6px; color: #888888; font-weight: bold; vertical-align: middle; }
+                            .ncp .ncp-hint { display: block; margin: 5px 0 0 0; color: #888888; font-size: 0.8em; }
+                            .ncp .ncp-name { display: block; min-height: 20px; padding: 9px 12px; border: 1px solid #EEEEEE; border-radius: 4px; background: #FAFAFA;
+                                color: #222222; font-weight: bold; }
+                            .ncp .ncp-name:empty:before { content: "Enter the account # to look up the name"; color: #AAAAAA; font-weight: normal; font-style: italic; }
+                            .ncp .ncp-footer { padding: 12px 20px; border-top: 1px solid #EEEEEE; background: #FAFAFA; text-align: right; }
+                            .ncp .ncp-btn { box-sizing: border-box; min-width: 96px; height: 36px; margin: 0 0 0 8px; padding: 0 18px; border-radius: 4px;
+                                font-family: Arial, Helvetica, sans-serif; font-size: 0.95em; font-weight: bold; cursor: pointer; text-shadow: none; }
+                            .ncp .ncp-btn-cancel { border: 1px solid #C8C8C8; background: #FFFFFF; color: #444444; }
+                            .ncp .ncp-btn-cancel:hover { background: #F0F0F0; }
+                            .ncp .ncp-btn-primary { border: 1px solid #E07E00; background: #F09618; background-image: linear-gradient(to bottom, #F9A93A, #EE8A00); color: #FFFFFF; }
+                            .ncp .ncp-btn-primary:hover { background: #E07E00; }
+                        </style>
+                        <asp:Panel ID="pnlPopUserDtl" DefaultButton="btnPopSaveUser" style="display:none;" runat="server" CssClass="popup_dialog ncp">
+                            <div class="ncp-header">
+                                <h1><asp:Label ID="lblPopTitleUser" runat="server" Text="Add New Customer"/></h1>
+                                <%--Closes on the page, no postback (was an image button that posted back)--%>
+                                <button type="button" class="ncp-close" title="Close" onclick="$find('popDialog_User').hide(); return false;">&times;</button>
+                            </div>
+                            <div class="ncp-body">
+                                <asp:Panel runat="server" ID="pnlPopWarningUser" CssClass="ncp-alert">
+                                    <asp:Label ID="lblPopWarningUser" runat="server" />
+                                    <asp:CustomValidator id="CVPopJFCNum" ControlToValidate="txtPopJFCNum" ClientValidationFunction="ClientValidate"
+                                                Display="Dynamic"
+                                                ErrorMessage="Invalid. Please enter a correct 4 digit account number."
+                                                ValidationGroup="validgroupUser"
+                                                runat="server"/>
+                                    <asp:CustomValidator id="CVPopEmail" ControlToValidate="txtPopEmail" ClientValidationFunction="ClientValidateEmail"
+                                                Display="Dynamic"
+                                                ErrorMessage="Invalid. Please enter a correct email"
+                                                ValidationGroup="validgroupUser"
+                                                runat="server"/>
                                 </asp:Panel>
-                                <br />
-                                <asp:Panel runat="server" ID="pnlPopDtlEdit_User">              
-                                    <table>
-                                        <tr>
-                                            <td class="rowHdr">JFC Account #</td>
-                                            <td> 
-                                            <asp:TextBox ID="txtPopJFCAccount" CssClass='stdTxt size4' runat="server" ValidationGroup ="validgroupUser" onchange="javascript:getCustomerName(); "  autocomplete="off" /> -
-					                        <asp:TextBox ID="txtPopJFCNum" autocomplete="off" CssClass = '<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>'  ValidationGroup ="validgroupUser" runat="server" onchange="javascript:getCustomerName(); "  />
-                                            
-                                              <%--<asp:RegularExpressionValidator ID="REValidatorJFCAccount"  OnServerValidate="ClientValidate_PopJFCNum" 
-                                             runat="server"  ControlToValidate="txtPopJFCNum" Display="None" 
-                                             ErrorMessage="Invalid format <br /> Please enter a valid 4 digit account number."
-                                             ValidationExpression="^\d{4}$" 
-                                             OnServerValidate="validateData"  ValidationGroup ="validgroup" />
-                                            <ajaxToolkit:ValidatorCalloutExtender ID="ValidatorCalloutExtender2" PopupPosition="BottomLeft"                                       
-                                                TargetControlID="REValidatorJFCAccount"  runat="server"    /--%>
-                                            </td>
-                                               
-                                        </tr>
-                                        <tr>
-                                        <td></td>
-                                        <td></td>
-                                        </tr>
-                       
-                                        <tr>
-                                            <td class="rowHdr">Customer Name</td>
-                                             <td >
-                                                <asp:Label ID="lblPopCustomerName" CssClass=" cellLbl bold" runat="server" />
-                                 
-                                            </td>
-                                        </tr>
-                                       
-                                        <tr>
-                                            <td class="rowHdr">Email</td>
-                                            <td><asp:TextBox ID="txtPopEmail" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size48") %>'  runat="server" autocomplete="off"  ValidationGroup="validgroupUser"/>
-                                          
-                                            <%-- asp:RegularExpressionValidator ID="RegularExpressionValidator2"  OnServerValidate="ServerValidation"
-                                             runat="server" ValidationGroup="txtEmail" ControlToValidate="txtPopEmail" Display="None" 
-                                             ErrorMessage="Invalid format <br /> Please enter a valid email."
-                                             ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"
-                                             OnServerValidate="validateData" />
-                                            <ajaxToolkit:ValidatorCalloutExtender ID="ValidatorCalloutExtender1" PopupPosition="BottomLeft"                                       
-                                                TargetControlID="RegularExpressionValidator2"   runat="server"     />--%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr"></td>
-                                            <td>
-                                              
-                                            </td>
-                                        </tr>
-                                      
-                                        <tr>
-                                            <td colspan="2" class="center">
-                                                <asp:Button ID="btnPopSaveUser" CssClass="midButton_green" runat="server" Text="Add"   ValidationGroup="validgroupUser" />
-                                            </td>
-                                        </tr>
-                                    </table>
+                                <asp:Panel runat="server" ID="pnlPopDtlEdit_User">
+                                    <div class="ncp-field">
+                                        <label class="ncp-label" for="<%= txtPopJFCAccount.ClientID %>">JFC Account #</label>
+                                        <asp:TextBox ID="txtPopJFCAccount" CssClass="ncp-input ncp-branch" runat="server" ValidationGroup="validgroupUser" onchange="javascript:getCustomerName();" autocomplete="off" MaxLength="2" placeholder="00" /><span class="ncp-dash">-</span><asp:TextBox ID="txtPopJFCNum" CssClass="ncp-input ncp-number" runat="server" ValidationGroup="validgroupUser" onchange="javascript:getCustomerName();" autocomplete="off" MaxLength="4" placeholder="0000" />
+                                        <span class="ncp-hint">Branch # (2 digits) - Customer # (4 digits)</span>
+                                    </div>
+                                    <div class="ncp-field">
+                                        <span class="ncp-label">Customer Name</span>
+                                        <asp:Label ID="lblPopCustomerName" CssClass="ncp-name" runat="server" />
+                                    </div>
+                                    <div class="ncp-field">
+                                        <label class="ncp-label" for="<%= txtPopEmail.ClientID %>">Email</label>
+                                        <asp:TextBox ID="txtPopEmail" CssClass="ncp-input ncp-email" runat="server" autocomplete="off" ValidationGroup="validgroupUser" placeholder="name@company.com" />
+                                    </div>
                                 </asp:Panel>
-                                <br />
+                            </div>
+                            <div class="ncp-footer">
+                                <button type="button" class="ncp-btn ncp-btn-cancel" onclick="$find('popDialog_User').hide(); return false;">Cancel</button>
+                                <asp:Button ID="btnPopSaveUser" CssClass="ncp-btn ncp-btn-primary" runat="server" Text="Add" ValidationGroup="validgroupUser" />
                             </div>
                         </asp:Panel>
     </asp:Panel>

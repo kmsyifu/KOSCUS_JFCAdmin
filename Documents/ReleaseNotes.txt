@@ -18,6 +18,7 @@ KOSCUS_JFCADMIN019 (11/06/2026)
 *<Tool>: Download button uses the shared loading screen (before: a timer added a new gray layer every 0.2 s until the ExcelDownloadFlag cookie was seen).
 *<OrderDtl>: Mobile site: Add Item to Order search works again. It uses $.ajaxPrefilter (jQuery 1.5+), which failed on the old mobile jQuery 1.4.1; fixed by the mobile site now loading jQuery 1.8.3.
 *<Common, Master, Mobile master>: Fixed: the loading screen stayed open after a file download because browsers kept an old cached Common.js (the URL had not changed). Common.js and jquery.autocomplete.js are now loaded with Common.ScriptUrl, which adds the file's last change time to the URL (?v=VERSION.yyyyMMddHHmmss), so a changed script is always loaded fresh even if VERSION is not changed.
+*<CustSetting>: Add New Customer / Add New User popup redesigned: orange header bar with a close button, labels above larger input boxes with sample text and a hint (Branch # 2 digits - Customer # 4 digits), customer name in a read-only box, errors in a red alert box, Cancel and Add buttons in a footer. Close / Cancel no longer post back. Same controls, validation and save code.
 
 KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Price is edited right in the order item list: click Edit, type the price and pick the unit (/cs, /ea, /lb), then the check mark (or Enter) to keep it or the X to cancel. The new price is shown in the old price's place, labelled "Updated" (the old price is hidden). No popup, no page reload, and the item is no longer loaded into the Add Item panel.
