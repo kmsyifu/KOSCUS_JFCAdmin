@@ -275,9 +275,48 @@ Public Class DBHelper
     End Function
 
 
+    'Longest time (seconds) one query may run. A stuck query is canceled so it frees its connection and the
+    'user's session, instead of blocking the user's next pages and using up the connection pool.
+    Public Const QUERY_TIMEOUT_SECONDS As Integer = 60
+
+    'Runs one database call with the QUERY_TIMEOUT_SECONDS limit.
+    'System.Data.OracleClient ignores CommandTimeout (always 0), so a timer calls cmd.Cancel() instead.
+    'A canceled query throws DBQueryTimeoutException (the original Oracle error is its InnerException).
+    Private Function RunWithTimeout(Of T)(ByVal cmd As IDbCommand, ByVal work As Func(Of T)) As T
+        Dim lockObj As New Object
+        Dim done As Boolean = False
+        Dim timedOut As Boolean = False
+        Dim onTimeout As System.Threading.TimerCallback =
+            Sub(state As Object)
+                SyncLock lockObj
+                    If done Then Return
+                    timedOut = True
+                    Try
+                        cmd.Cancel()
+                    Catch
+                    End Try
+                End SyncLock
+            End Sub
+
+        Using tmr As New System.Threading.Timer(onTimeout, Nothing, QUERY_TIMEOUT_SECONDS * 1000, System.Threading.Timeout.Infinite)
+            Try
+                Return work()
+            Catch ex As Exception When timedOut
+                Dim sqlText As String = If(cmd.CommandText, "")
+                If sqlText.Length > 1000 Then sqlText = sqlText.Substring(0, 1000) & "..."
+                Throw New DBQueryTimeoutException("The database query was canceled after " & QUERY_TIMEOUT_SECONDS & " seconds. SQL: " & sqlText, ex)
+            Finally
+                SyncLock lockObj
+                    done = True
+                End SyncLock
+            End Try
+        End Using
+    End Function
+
+
     Public Function ExecuteNonQuery(ByVal SQL As String, ByVal ParamArray Args() As Object) As Integer
         Dim cmd As IDbCommand = GetCommand(SQL, Args)
-        Return cmd.ExecuteNonQuery()
+        Return RunWithTimeout(cmd, Function() cmd.ExecuteNonQuery())
     End Function
 
 
@@ -285,7 +324,7 @@ Public Class DBHelper
         Select Case dbtype
             Case DataBaseType.ORACLE
                 Dim cmd As IDbCommand = GetCommand(SQL, Args)
-                Return New DataReader(cmd.ExecuteReader)
+                Return New DataReader(RunWithTimeout(cmd, Function() cmd.ExecuteReader()))
             Case DataBaseType.SQLSERVER
                 Return New DataReader(GetDataTable(SQL, Args))
         End Select
@@ -297,11 +336,13 @@ Public Class DBHelper
         Dim dt As New DataTable
         Select Case dbtype
             Case DataBaseType.ORACLE
-                Dim da As OracleDataAdapter = New OracleDataAdapter(GetCommand(SQL, Args))
-                da.Fill(dt)
+                Dim cmd As IDbCommand = GetCommand(SQL, Args)
+                Dim da As OracleDataAdapter = New OracleDataAdapter(DirectCast(cmd, OracleCommand))
+                RunWithTimeout(cmd, Function() da.Fill(dt))
             Case DataBaseType.SQLSERVER
-                Dim da As SqlDataAdapter = New SqlDataAdapter(GetCommand(SQL, Args))
-                da.Fill(dt)
+                Dim cmd As IDbCommand = GetCommand(SQL, Args)
+                Dim da As SqlDataAdapter = New SqlDataAdapter(DirectCast(cmd, SqlCommand))
+                RunWithTimeout(cmd, Function() da.Fill(dt))
         End Select
         Return dt
     End Function
@@ -322,7 +363,7 @@ Public Class DBHelper
         Dim ret As Object = Nothing
         Dim cmd As IDbCommand = GetCommand(SQL, Args)
 
-        ret = cmd.ExecuteScalar()
+        ret = RunWithTimeout(cmd, Function() cmd.ExecuteScalar())
         If ret Is Nothing Then ret = NoRecordVal
         If IsDBNull(ret) Then ret = NVL
         If ret IsNot Nothing AndAlso ret.GetType Is GetType(String) Then ret = RTrim(ret)
@@ -567,6 +608,16 @@ Public Class DBHelper
         End If
     End Function
 
+End Class
+
+
+'Thrown when a query runs longer than DBHelper.QUERY_TIMEOUT_SECONDS and is canceled.
+'Global.asax shows the "database is busy" message for it.
+Public Class DBQueryTimeoutException
+    Inherits Exception
+    Public Sub New(ByVal message As String, ByVal inner As Exception)
+        MyBase.New(message, inner)
+    End Sub
 End Class
 
 

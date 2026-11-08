@@ -53,6 +53,8 @@ KOSCUS_JFCADMIN017 (11/04/2026)
 *<OrderDtl>: Faster: opening an order no longer opens an unused DB connection or runs two item counts that were never used; Get Item / Set Price look up "scaled item" once instead of twice.
 *<Global>: Every unhandled error is saved to App_Data\ErrorLog\ErrorLog_yyyyMMdd.txt (time, URL, user, full error), even when the error email cannot be sent. A failed error email is logged with its reason (before: lost with no trace).
 *<Global>: Error email also goes to yfu@kmsnet.com on production / beta.
+*<DBHelper>: A database query that runs longer than 60 seconds is canceled (QUERY_TIMEOUT_SECONDS). It frees its connection and the user's session, so one slow query no longer makes the user's next pages wait and then fail. The Oracle driver ignores CommandTimeout, so a timer cancels the query.
+*<Global, Error page>: A canceled slow query shows "The database is busy - please try again" instead of the general error page. The error email / log say it was canceled and include the SQL (first 1000 characters).
 
 KOSCUS_JFCADMIN016 (11/02/2026)
 *<Common>: Fixed stylesheet links so browsers load the new CSS after a version change. The ?v=<%= Common.VERSION %> in the <head> links was never filled in, so old CSS stayed cached. Links now use Common.CssLink in all master pages and Print.aspx.
