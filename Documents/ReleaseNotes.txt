@@ -51,6 +51,8 @@ KOSCUS_JFCADMIN017 (11/04/2026)
 *<Balance>: Fixed: the document reader was left open when opening an invoice / document.
 *<OrderForm>: Faster: opening a form or changing the Exception Price Group binds both grids on one DB connection (was 3), the role check runs once, and the hidden Japanese / long / web / sales point text is only loaded during an item search.
 *<OrderDtl>: Faster: opening an order no longer opens an unused DB connection or runs two item counts that were never used; Get Item / Set Price look up "scaled item" once instead of twice.
+*<Global>: Every unhandled error is saved to App_Data\ErrorLog\ErrorLog_yyyyMMdd.txt (time, URL, user, full error), even when the error email cannot be sent. A failed error email is logged with its reason (before: lost with no trace).
+*<Global>: Error email also goes to yfu@kmsnet.com on production / beta.
 
 KOSCUS_JFCADMIN016 (11/02/2026)
 *<Common>: Fixed stylesheet links so browsers load the new CSS after a version change. The ?v=<%= Common.VERSION %> in the <head> links was never filled in, so old CSS stayed cached. Links now use Common.CssLink in all master pages and Print.aspx.
