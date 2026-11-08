@@ -199,6 +199,7 @@ function showPopupWindow(url) {
 // - top/left are set here (used if an older cached Koscus.css without the centering rules is loaded);
 //   the current Koscus.css centers it with top/left 50% !important + translate(-50%, -50%)
 function showProgress() {
+    watchFileDownload();
     if ($('.modal:visible').length > 0) return;
     $('body').append($('<div />').addClass("modal"));
     var loading = $(".loading").first();
@@ -217,8 +218,31 @@ function centerProgress() {
 $(window).on("resize", centerProgress);
 
 function hideProgress() {
+    stopWatchFileDownload();
     $('.modal').remove();
     $(".loading").hide();
+}
+
+// File downloads: a postback that answers with a file (invoice, Excel export, ...) does not reload the page,
+// so the loading screen would stay on forever. The server sends the cookie fileDownloadDone with the file
+// (Common.MarkFileDownload); while the loading screen is on, this checks for it every 0.5 s and closes it.
+var fileDownloadTimer = null;
+function watchFileDownload() {
+    if (fileDownloadTimer) return;
+    clearFileDownloadCookie(); // left over from an earlier download
+    fileDownloadTimer = setInterval(function () {
+        if (/(^|;\s*)fileDownloadDone=1/.test(document.cookie)) hideProgress();
+    }, 500);
+}
+
+function stopWatchFileDownload() {
+    if (fileDownloadTimer) clearInterval(fileDownloadTimer);
+    fileDownloadTimer = null;
+    clearFileDownloadCookie();
+}
+
+function clearFileDownloadCookie() {
+    document.cookie = "fileDownloadDone=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
 
 // Coming back with the browser Back button restores the page from cache with the loading screen still on
