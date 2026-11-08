@@ -51,6 +51,7 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Mobile site: Add Item to Order search works again. It uses $.ajaxPrefilter (jQuery 1.5+), which failed on the old mobile jQuery 1.4.1; fixed by the mobile site now loading jQuery 1.8.3.
 *<Common>: Version changed to 018.1 (Common.VERSION), so browsers load the new CSS / JS files (Common.js loading screen / file download changes).
 *<Common, Master, Mobile master>: Fixed: the loading screen stayed open after a file download because browsers kept an old cached Common.js (the URL had not changed). Common.js and jquery.autocomplete.js are now loaded with Common.ScriptUrl, which adds the file's last change time to the URL (?v=VERSION.yyyyMMddHHmmss), so a changed script is always loaded fresh even if VERSION is not changed.
+*<CustSetting>: Add New Customer / Add New User popup redesigned: orange header bar with a close button, labels above larger input boxes with sample text and a hint (Branch # 2 digits - Customer # 4 digits), customer name in a read-only box, errors in a red alert box, Cancel and Add buttons in a footer. Close / Cancel no longer post back. Same controls, validation and save code.
 
 KOSCUS_JFCADMIN017 (11/04/2026)
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
