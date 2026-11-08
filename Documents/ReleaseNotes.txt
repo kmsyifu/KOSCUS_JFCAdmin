@@ -1,6 +1,13 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN018.2 (11/08/2026)
+*<Common>: Version changed to 018.2 (Common.VERSION), so browsers load the new CSS / JS files.
+*<CustSetting>: Add New Customer / Add New User popup redesigned: orange header bar with a close button, labels above larger input boxes with sample text and a hint (Branch # 2 digits - Customer # 4 digits), customer name in a read-only box, errors in a red alert box, Cancel and Add buttons in a footer. Close / Cancel no longer post back. Same controls, validation and save code.
+*<CustItem>: Mobile site: Buy Again rows have up / down buttons to change the display order (drag & drop does not work on a touch screen). The order is saved 1 second after the last tap ("Order saved" shows above the list). Full site drag & drop saves the same way as before.
+*<CustItem>: Price Inquiry "All regular customers" / "All exception price customers" faster: the customer info (customer group, small customer, exception price, price group) is read with one query for all customers instead of a new connection and 9 queries per customer; changing page uses the list already loaded instead of running every query again.
+*<CustItem>: Mobile site: Buy Again rows can be dragged: touch and hold a row for 1 second (the row turns orange), drag it up / down and lift the finger to save. Near the top / bottom of the screen the page scrolls. A quick swipe still scrolls the page; the up / down buttons still work.
+
 KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Price is edited right in the order item list: click Edit, type the price and pick the unit (/cs, /ea, /lb), then the check mark (or Enter) to keep it or the X to cancel. The new price is shown in the old price's place, labelled "Updated" (the old price is hidden). No popup, no page reload, and the item is no longer loaded into the Add Item panel.
 *<OrderDtl>: While typing a price or qty in the list, the row's GP %, line amount and the order's Total amount / Total GP update right away. A price below bottom turns the row yellow and shows the bottom price.
@@ -51,11 +58,6 @@ KOSCUS_JFCADMIN018 (11/04/2026)
 *<OrderDtl>: Mobile site: Add Item to Order search works again. It uses $.ajaxPrefilter (jQuery 1.5+), which failed on the old mobile jQuery 1.4.1; fixed by the mobile site now loading jQuery 1.8.3.
 *<Common>: Version changed to 018.1 (Common.VERSION), so browsers load the new CSS / JS files (Common.js loading screen / file download changes).
 *<Common, Master, Mobile master>: Fixed: the loading screen stayed open after a file download because browsers kept an old cached Common.js (the URL had not changed). Common.js and jquery.autocomplete.js are now loaded with Common.ScriptUrl, which adds the file's last change time to the URL (?v=VERSION.yyyyMMddHHmmss), so a changed script is always loaded fresh even if VERSION is not changed.
-*<CustSetting>: Add New Customer / Add New User popup redesigned: orange header bar with a close button, labels above larger input boxes with sample text and a hint (Branch # 2 digits - Customer # 4 digits), customer name in a read-only box, errors in a red alert box, Cancel and Add buttons in a footer. Close / Cancel no longer post back. Same controls, validation and save code.
-*<CustItem>: Mobile site: Buy Again rows have up / down buttons to change the display order (drag & drop does not work on a touch screen). The order is saved 1 second after the last tap ("Order saved" shows above the list). Full site drag & drop saves the same way as before.
-*<CustItem>: Price Inquiry "All regular customers" / "All exception price customers" faster: the customer info (customer group, small customer, exception price, price group) is read with one query for all customers instead of a new connection and 9 queries per customer; changing page uses the list already loaded instead of running every query again.
-*<CustItem>: Mobile site: Buy Again rows can be dragged: touch and hold a row for 1 second (the row turns orange), drag it up / down and lift the finger to save. Near the top / bottom of the screen the page scrolls. A quick swipe still scrolls the page; the up / down buttons still work.
-*<Common>: Version changed to 018.2 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN017 (11/04/2026)
 *<CustItem>: Edit Item Info popup shows inventory as "xx cs, xx ea" instead of "xx /cs, xx /ea", so it reads as a quantity, not a price.
