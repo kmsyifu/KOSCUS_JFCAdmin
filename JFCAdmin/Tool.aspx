@@ -12,56 +12,12 @@
          {  
                 alert("successfully uploaded!");  
           }
+         // Download button: loading screen. It closes when the file arrives (cookie fileDownloadDone set by
+         // Common.MarkFileDownload, checked in Common.js). Before: a timer added a new gray layer every 0.2 s
+         // until the ExcelDownloadFlag cookie was seen.
          function jsShowHideProgress() {
-          var myVar = setInterval(function () {
-                    var modal = $('<div />');
-                    modal.addClass("modal");
-                    $('body').append(modal);
-                    var loading = $(".loading");
-                    loading.show();
-                    var top = Math.max($(window).height() / 2 - loading[0].offsetHeight / 2, 0);
-                    var left = Math.max($(window).width() / 2 - loading[0].offsetWidth / 2, 0);
-                    loading.css({ top: top, left: left });
-                    if (IsCookieValid())
-                      { loading.hide();
-                        $('.modal').hide();
-                      clearInterval(myVar);}
-              }, 200);
-              //stopShowProgress();
-            deleteCookie();
-        }
-        function stopShowProgress(){
-           clearTimeout(myVar);
-        }
-           
-        // cookies
-        function deleteCookie() {
-            var cook = getCookie('ExcelDownloadFlag');
-            if (cook != "") {
-                document.cookie = "ExcelDownloadFlag=;Path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-            }
-        }
-
-        function IsCookieValid() {
-            var cook = getCookie('ExcelDownloadFlag');
-            return cook != '';
-        }
-
-        function getCookie(cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                console.log(c);
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }                      
+             showProgress();
+         }
         $(document).ready(function () {
            
             //$("#tabs").tabs();

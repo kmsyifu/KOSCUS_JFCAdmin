@@ -104,7 +104,22 @@
                 
 
                 });
+                //Links, AutoPostBack dropdowns and grid commands post back with __doPostBack (form.submit()),
+                //which skips the submit handler above - show the loading screen for them too.
+                //A file download closes it again (Common.MarkFileDownload / watchFileDownload in Common.js).
+                $(document).ready(function () {
+                    if (typeof __doPostBack === "function") {
+                        var origDoPostBack = __doPostBack;
+                        __doPostBack = function (eventTarget, eventArgument) {
+                            showProgress();
+                            origDoPostBack(eventTarget, eventArgument);
+                        };
+                    }
+                });
+
                 function DoPageClientValidate(validationGroupName) {
+                    //Page_ClientValidate only exists on pages with validators (not on Home, Order History, Balance)
+                    if (typeof Page_ClientValidate !== "function") return true;
                     var result = Page_ClientValidate(validationGroupName);
                     Page_BlockSubmit = false;
                     return result;

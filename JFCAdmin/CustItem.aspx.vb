@@ -1377,6 +1377,7 @@ Partial Class JFCAdmin_CustItem
         Response.Clear()
         Response.ContentType = "Application/x-msexcel"
         Response.AddHeader("Content-Disposition", "attachment; filename=" + vFileName)
+        MarkFileDownload() 'closes the loading screen (the page does not reload for a download)
         book.Save(Response.OutputStream)
 
         book.Close()

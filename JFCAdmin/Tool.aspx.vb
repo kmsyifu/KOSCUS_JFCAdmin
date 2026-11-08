@@ -314,12 +314,7 @@ Partial Class Tool
         Response.AddHeader("Content-Disposition", "attachment; filename=" + vFileName)
         'Response.ContentEncoding = System.Text.Encoding.UTF8
 
-        Dim cookie As HttpCookie = New HttpCookie("ExcelDownloadFlag", "Flag")
-
-        cookie.Expires = DateTime.Now.AddDays(1)
-        cookie.HttpOnly = False
-
-        Response.AppendCookie(cookie)
+        MarkFileDownload() 'closes the loading screen (the page does not reload for a download)
         book.Save(Response.OutputStream)
         book.Close()
         'MessageBox("Item # can not be empty.", "Error")
