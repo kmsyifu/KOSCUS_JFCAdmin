@@ -128,6 +128,48 @@
                 return false;
             }
         }
+        // Buy Again display order: saves the rows in the order they are shown now (used by drag & drop and by the mobile up / down buttons)
+        function saveBuyAgainOrder() {
+            var items = [];
+            $(".drag_drop_grid tr").each(function () {
+                var itemId = $(this).find('input[name="item_id"]').val();
+                if (itemId) items.push({ item_id: itemId });
+            });
+            var dataToSend = JSON.stringify({ items: items });
+            var id = '<%=lblCustomerID.text%>';
+            $("#buyAgainOrderMsg").text("Saving...");
+
+            $.ajax({
+                type: 'POST',
+                dataType: "text",
+                url: '../Common/Suggestion.ashx?id=' + id + '&id2=&id3=&id4=&code=ITEMLIST',
+                data: dataToSend,
+                success: function (data) {
+                    $("#buyAgainOrderMsg").text("Order saved");
+                },
+                error: function () {
+                    $("#buyAgainOrderMsg").text("");
+                    alert('Error occurred');
+                }
+            });
+        }
+
+        // Mobile: drag & drop does not work on a touch screen, so each row has up / down buttons.
+        // Taps are saved together 1 second after the last one.
+        var buyAgainSaveTimer;
+        function moveBuyAgainRow(btn, dir) {
+            var row = $(btn).closest("tr");
+            var other = dir < 0 ? row.prev("tr") : row.next("tr");
+            if (other.length === 0 || other.find('input[name="item_id"]').length === 0) return false; // already first / last
+            if (dir < 0) row.insertBefore(other); else row.insertAfter(other);
+            row.addClass("buyAgainMoved");
+            setTimeout(function () { row.removeClass("buyAgainMoved"); }, 600);
+            $("#buyAgainOrderMsg").text("");
+            clearTimeout(buyAgainSaveTimer);
+            buyAgainSaveTimer = setTimeout(saveBuyAgainOrder, 1000);
+            return false;
+        }
+
         function applySortable() {
             var timer; // Variable to store timer ID
             // Function to initialize sortable with delay
@@ -145,44 +187,9 @@
                         ui.item.removeClass("selected");
                         // Clear the timer when dragging stops
                         clearTimeout(timer);
-                        // Collecting data from all items except the first child
-                        var items = [];
-                        $(".drag_drop_grid tr:not(tr:first-child)").each(function () {
-                            var itemData = {
-                                item_id: $(this).find('td:eq(1) [name="item_id"]').val() // Assuming 'id' is the identifier of each item
-                                // Add other data you want to send here, e.g., additional attributes or text within these rows
-                            };
-                            items.push(itemData);
-                        });
-                        var dataToSend = JSON.stringify({ items: items });
-
-                        // Fetching other values like id2 from lblCustomerID and id3 from dropbox
-                        //var id = $('#<%= lblCustomerID.ClientID %>').val();
-                        var id = '<%=lblCustomerID.text%>';
-
-                        $.ajax({
-                            type: 'POST',
-                            dataType: "text",
-                            url: '../Common/Suggestion.ashx?id=' + id + '&id2=&id3=&id4=&code=ITEMLIST',
-                            data: dataToSend,
-                            success: function (data) {
-                                // Handle success response
-                                callback(data);
-                            },
-                            error: function () {
-                                // Handle error
-                                alert('Error occurred');
-                            }
-                        });
-                       
+                        saveBuyAgainOrder();
                     }
                 });
-            }
-            // Callback function to handle AJAX success response
-            function callback(data) {
-                // Implement your logic here, e.g., update the UI based on the response
-                console.log('Success:', data);
-                // Additional success handling logic can be added here
             }
             initSortableWithDelay();
 
@@ -402,7 +409,18 @@
                 <br />
                 <br />
                 <asp:HiddenField ID="lblTextChanged_custItem" runat="server" /> <%--Can be access from both server and client side--%>
-                <h2>Buy Again &nbsp;&nbsp; </h2> 
+                <h2>Buy Again &nbsp;&nbsp; </h2>
+                <style type="text/css">
+                    .buyAgainMove { display: inline-block; width: 34px; height: 30px; margin: 1px 0; padding: 0; border: 1px solid #C8C8C8; border-radius: 4px;
+                        background: #FFFFFF; color: #E78F08; font-size: 14px; line-height: 28px; text-align: center; cursor: pointer; }
+                    .buyAgainMove:active { background: #FDE9C6; }
+                    tr.buyAgainMoved td { background: #FDE9C6 !important; }
+                    #buyAgainOrderMsg { margin-left: 8px; color: #2E7D32; font-weight: bold; }
+                </style>
+                <asp:PlaceHolder runat="server" Visible='<%# IsMobile() %>'>
+                    <span class="gray">Change display order: tap &#9650; / &#9660; on a row.</span><span id="buyAgainOrderMsg"></span>
+                    <br />
+                </asp:PlaceHolder>
                 
                    
                     <asp:Panel  runat="server" Visible='<%# Not IsMobile() %>'>
@@ -826,6 +844,10 @@
                         <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size1"  ItemStyle-CssClass="size1" >
                         <ItemTemplate>
                             <input type="hidden" name="item_id"  value='<%# Eval("custGrpItem_id") %>'  />
+                            <asp:PlaceHolder runat="server" Visible='<%# IsMobile() %>'><%--Mobile: move the row up / down (drag & drop needs a mouse)--%>
+                                <button type="button" class="buyAgainMove" title="Move up" onclick="return moveBuyAgainRow(this, -1);">&#9650;</button><br />
+                                <button type="button" class="buyAgainMove" title="Move down" onclick="return moveBuyAgainRow(this, 1);">&#9660;</button>
+                            </asp:PlaceHolder>
                         </ItemTemplate>
 
                         </asp:TemplateField>
