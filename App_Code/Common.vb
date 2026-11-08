@@ -102,6 +102,17 @@ Public Class Common
         Dim url As String = System.Web.VirtualPathUtility.ToAbsolute(virtualPath) & "?v=" & VERSION & suffix
         Return "<link href=""" & System.Web.HttpUtility.HtmlAttributeEncode(url) & """ rel=""stylesheet"" type=""text/css"" />"
     End Function
+    ' Script URL with VERSION and the file's last change time, so browsers load a changed .js file right away even
+    ' when VERSION was not changed (an old cached Common.js kept the loading screen open after a file download).
+    ' Use it as <script src="<%= Common.ScriptUrl("~/Scripts/Common.js") %>">.
+    Public Shared Function ScriptUrl(ByVal virtualPath As String) As String
+        Dim stamp As String = ""
+        Try
+            stamp = "." & System.IO.File.GetLastWriteTimeUtc(HttpContext.Current.Server.MapPath(virtualPath)).ToString("yyyyMMddHHmmss")
+        Catch
+        End Try
+        Return System.Web.HttpUtility.HtmlAttributeEncode(System.Web.VirtualPathUtility.ToAbsolute(virtualPath) & "?v=" & VERSION & stamp)
+    End Function
     Public Shared CURRENT_YEAR As String = Now.Year
     Public Const SYSTEM_EMAIL As String = "JFC App <web@jfc.com>" '"JFC Customer Portal <web@jfc.com>"
     Public Const SYSTEM_TEXT As String = "+13238949338"
