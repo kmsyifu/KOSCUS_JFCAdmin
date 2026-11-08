@@ -14,18 +14,49 @@
     Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
         ' Code that runs when an unhandled error occurs
         
-        Dim URL As String = Request.Url.ToString.ToLower
-        If URL.IndexOf("localhost") > -1 Then Exit Sub
-        
-        'Using DB As New DBHelper
-        'Send email when running time error occurs
-        Dim httpUnhandledException As HttpUnhandledException = New HttpUnhandledException(Server.GetLastError().Message, Server.GetLastError())
+        Dim lastError As Exception = Server.GetLastError()
+        If lastError Is Nothing Then Exit Sub
+
+        Dim URL As String = Request.Url.ToString
         'Session is Nothing for errors raised before session state loads (e.g. 404s) - GetUserEmail would then throw
         'and the error email would never be sent
-        Dim userEmail As String = If(HttpContext.Current IsNot Nothing AndAlso HttpContext.Current.Session IsNot Nothing, CStr(GetUserEmail(Nothing)), "(no session)")
-        Dim emailBody As String = "User: " & userEmail & "<br />" & httpUnhandledException.GetHtmlErrorMessage()
-        SendMail(SYSTEM_EMAIL, Common.GetSupportEmail(), Nothing, "KOSCUS_JFCAdmin Error", emailBody, Nothing, True, Nothing)
-        'End Using
+        Dim userEmail As String = "(no session)"
+        Try
+            If HttpContext.Current IsNot Nothing AndAlso HttpContext.Current.Session IsNot Nothing Then userEmail = CStr(GetUserEmail(Nothing))
+        Catch
+        End Try
+
+        'Always save the error to App_Data\ErrorLog first, so the details are kept even if the email cannot be sent
+        WriteErrorLog("ERROR" & vbCrLf & "URL: " & URL & vbCrLf & "User: " & userEmail & vbCrLf & lastError.ToString())
+
+        If URL.ToLower.IndexOf("localhost") > -1 Then Exit Sub
+
+        'Send email when running time error occurs
+        Try
+            Dim httpUnhandledException As HttpUnhandledException = New HttpUnhandledException(lastError.Message, lastError)
+            Dim emailBody As String = "User: " & userEmail & "<br />" & httpUnhandledException.GetHtmlErrorMessage()
+            Dim errMsg As String = ""
+            'yfu@kmsnet.com also gets the error email on production / beta (on other servers SendMail already sends to yfu)
+            Dim result As Integer = SendMail(SYSTEM_EMAIL, Common.GetSupportEmail() & ",yfu@kmsnet.com", Nothing, "KOSCUS_JFCAdmin Error", emailBody, Nothing, True, errMsg)
+            If result <> 0 Then WriteErrorLog("ERROR EMAIL NOT SENT (code " & result & "): " & errMsg)
+        Catch ex As Exception
+            WriteErrorLog("ERROR EMAIL NOT SENT: " & ex.ToString())
+        End Try
+    End Sub
+
+    'Appends a line to App_Data\ErrorLog\ErrorLog_yyyyMMdd.txt (one file per day; App_Data is never served to browsers).
+    'Never throws - a logging failure must not hide the original error.
+    Private Sub WriteErrorLog(ByVal text As String)
+        Try
+            Dim folder As String = Server.MapPath("~/App_Data/ErrorLog")
+            System.IO.Directory.CreateDirectory(folder)
+            Dim file As String = System.IO.Path.Combine(folder, "ErrorLog_" & DateTime.Now.ToString("yyyyMMdd") & ".txt")
+            Dim entry As String = "==== " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & " ====" & vbCrLf & text & vbCrLf & vbCrLf
+            SyncLock GetType(HttpApplication)
+                System.IO.File.AppendAllText(file, entry)
+            End SyncLock
+        Catch
+        End Try
     End Sub
 
     Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
