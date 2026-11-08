@@ -96,7 +96,7 @@
         <div class="main turnOffFloat">
             <%--Show progress popup during postback--%>
             <script type="text/javascript">
-                $('form').live("submit", function () {
+                $(document).on("submit", "form", function () { //was $('form').live(...) - .live is removed in jQuery 1.9+
 
                     if (DoPageClientValidate("validgroup") && DoPageClientValidate("validgroupUser") && DoPageClientValidate("validgroupCompany") && DoPageClientValidate("Homepageupload")) {
                         showProgress();
