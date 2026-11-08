@@ -672,6 +672,7 @@ Public Class Common
             HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName.ToUpper & """")
             'HttpContext.Current.Response.AddHeader("Content-Disposition", "inline; filename=""" & fileName.ToUpper & """") 'Open file on browser
             HttpContext.Current.Response.AddHeader("Content-Length", bytes.Length.ToString())
+            MarkFileDownload() 'after ClearHeaders, so the cookie is sent
             HttpContext.Current.Response.BinaryWrite(bytes)
             HttpContext.Current.Response.Flush()
             HttpContext.Current.Response.End()
@@ -681,6 +682,16 @@ Public Class Common
             Return False
         End If
     End Function
+
+    'Call when a postback answers with a file download instead of a page. The page does not reload for a download,
+    'so the loading screen would stay on; this cookie tells Scripts/Common.js (watchFileDownload) to close it.
+    'HttpOnly = False so JavaScript can read it (Web.config httpOnlyCookies="true" is only the default).
+    Public Shared Sub MarkFileDownload()
+        Dim cookie As New HttpCookie("fileDownloadDone", "1")
+        cookie.Path = "/"
+        cookie.HttpOnly = False
+        HttpContext.Current.Response.AppendCookie(cookie)
+    End Sub
 
     Public Shared Function IsToday(ByVal DB As DBHelper, ByVal jfcBranchNr As String, ByVal dateStr As String, ByVal dateFmt As String) As Boolean
         Dim SQL As String
