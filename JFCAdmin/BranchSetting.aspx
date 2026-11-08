@@ -99,9 +99,21 @@
             //$("#tabs").tabs();
             var activeTabIndex = parseInt($('#<%= hfActiveTab.ClientID %>').val()) || 0;
            applySortable();
+            // The mobile master loads jQuery UI 1.8, which has no "active" / "activate" tab options
+            // (it uses "selected" / "select"), so the mobile page always opened the first tab.
+            if (/^1\.8\./.test($.ui.version)) {
+                $("#tabs").tabs({
+                    selected: activeTabIndex,
+                    select: function (event, ui) {
+                        $('#<%= hfActiveTab.ClientID %>').val(ui.index);
+                        showProgress();
+                        __doPostBack('TabChanged', ui.index);
+                    }
+                });
+            } else
             $("#tabs").tabs({
                  active: activeTabIndex,
-                 activate: function (event, ui) {                 
+                 activate: function (event, ui) {
                     var activeTab = ui.newTab.index();
                    // var url = "BranchSetting.aspx/UpdateViewState";
                      $('#<%= hfActiveTab.ClientID %>').val(activeTab);
