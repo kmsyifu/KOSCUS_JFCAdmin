@@ -7,6 +7,7 @@ KOSCUS_JFCADMIN018.4 (11/09/2026)
 *<CustSetting, Suggestion.ashx, Global.asax>: Fixed: Add / Register Customer popup showed the whole error page in the customer name when the name lookup failed on the server, and the popup could still be saved. The JFC # name lookup and the sales rep lookup (JHO database link, sometimes cut while idle) now try once more; the email check read the sales rep without Read() (always failed on production / beta) and now reads it properly (no sales rep found: "not assigned"). An error in an AJAX handler (.ashx) now returns a plain HTTP 500 instead of the HTML error page, so pages run their error handling; the popup shows "Could not look up the customer / check the email (server error). Please try again." and cannot be saved.
 *<Common>: Version changed to 018.5 (Common.VERSION), so browsers load the new CSS / JS files.
 *<CustItem, Suggestion.ashx>: Fixed: Edit item info - typing a New price showed "Error occured" (ORA-01722: invalid number), and Update with a new price / adding a price inquiry item could fail the same way. SetPrice puts the item # and customer ID into the SQL as they are; these callers passed them unquoted, so Oracle compared the text columns as numbers (fails on non-numeric values such as customer ADMIN). They are now quoted with DB.SqlEsc (Order Detail already did this).
+*<Common>: Version changed to 018.6 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN018.3 (11/08/2026)
 *<Common>: Version changed to 018.3 (Common.VERSION), so browsers load the new CSS / JS files.
