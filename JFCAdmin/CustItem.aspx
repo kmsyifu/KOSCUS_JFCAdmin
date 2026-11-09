@@ -156,8 +156,8 @@
             });
         }
 
-        // Mobile: drag & drop does not work on a touch screen, so each row has up / down buttons.
-        // Taps are saved together 1 second after the last one.
+        // Buy Again display order (full and mobile site): each row has up / down buttons.
+        // Clicks / taps are saved together 1 second after the last one.
         var buyAgainSaveTimer;
         function moveBuyAgainRow(btn, dir) {
             var row = $(btn).closest("tr");
@@ -172,102 +172,107 @@
             return false;
         }
 
-        // Mobile: touch and hold a Buy Again row for 1 second, then drag it up / down; the order is saved when the finger lifts.
-        // A quick swipe still scrolls the page (the hold is canceled if the finger moves first).
-        function initBuyAgainTouchDrag() {
+        // Buy Again display order (full and mobile site): press and hold a row for 1 second (finger or mouse), then drag it
+        // up / down; the order is saved when the finger / mouse button is released.
+        // A quick swipe still scrolls the page and a quick mouse drag still selects text (the hold is canceled if it moves first).
+        function initBuyAgainDrag() {
             var HOLD_MS = 1000, MOVE_CANCEL_PX = 10, EDGE_PX = 60;
             var grid = $(".drag_drop_grid").get(0);
-            if (!grid || !("ontouchstart" in window)) return;
-            $(grid).addClass("touchDragGrid"); // no text selection / copy menu on a long press
-            var holdTimer = null, dragRow = null, startX = 0, startY = 0, lastY = 0, scrollTimer = null;
+            if (!grid) return;
+            var holdTimer = null, dragRow = null, startX = 0, startY = 0, lastY = 0, scrollTimer = null, blockClick = false;
 
             function dataRow(el) {
                 var row = $(el).closest("tr");
                 return row.find('input[name="item_id"]').length ? row : null;
             }
+            function ignore(el) { return $(el).closest("button, input, select, textarea").length > 0; }
             function cancelHold() { clearTimeout(holdTimer); holdTimer = null; }
             function moveTo(y) {
-                // Put the dragged row before / after the row under the finger
+                // Put the dragged row before / after the row under the finger / mouse
                 var el = document.elementFromPoint(startX, y);
                 var target = el ? dataRow(el) : null;
                 if (!target || target[0] === dragRow[0]) return;
                 if (dragRow.index() < target.index()) dragRow.insertAfter(target); else dragRow.insertBefore(target);
             }
-            function stopDrag() {
-                clearInterval(scrollTimer); scrollTimer = null;
-                dragRow.removeClass("buyAgainDragging");
-                dragRow = null;
-                clearTimeout(buyAgainSaveTimer);
-                saveBuyAgainOrder();
-            }
-
-            grid.addEventListener("touchstart", function (e) {
-                if (e.touches.length !== 1 || $(e.target).closest("button, input, select").length) return;
-                var row = dataRow(e.target);
+            function startHold(el, x, y) {
+                var row = dataRow(el);
                 if (!row) return;
-                startX = e.touches[0].clientX; startY = lastY = e.touches[0].clientY;
+                startX = x; startY = lastY = y;
                 cancelHold();
                 holdTimer = setTimeout(function () {
                     holdTimer = null;
                     dragRow = row.addClass("buyAgainDragging");
+                    $(grid).addClass("buyAgainDragActive");
+                    if (window.getSelection) window.getSelection().removeAllRanges();
                     $("#buyAgainOrderMsg").text("");
                     if (navigator.vibrate) navigator.vibrate(40);
-                    // Scroll the page while the finger is near the top / bottom of the screen
+                    // Scroll the page while the finger / mouse is near the top / bottom of the window
                     scrollTimer = setInterval(function () {
                         var step = lastY < EDGE_PX ? -12 : (lastY > window.innerHeight - EDGE_PX ? 12 : 0);
                         if (step !== 0) { window.scrollBy(0, step); moveTo(lastY); }
                     }, 30);
                 }, HOLD_MS);
-            }, { passive: true });
-
-            grid.addEventListener("touchmove", function (e) {
-                var t = e.touches[0];
-                if (dragRow) {
-                    e.preventDefault(); // drag the row, not the page
-                    lastY = t.clientY;
-                    moveTo(lastY);
-                } else if (holdTimer && (Math.abs(t.clientX - startX) > MOVE_CANCEL_PX || Math.abs(t.clientY - startY) > MOVE_CANCEL_PX)) {
-                    cancelHold(); // the user is scrolling
-                }
-            }, { passive: false });
-
-            function touchEnd(e) {
-                cancelHold();
-                if (dragRow) {
-                    if (e.cancelable) e.preventDefault(); // no click on the item link after a drag
-                    stopDrag();
-                }
             }
-            grid.addEventListener("touchend", touchEnd, { passive: false });
-            grid.addEventListener("touchcancel", touchEnd, { passive: false });
+            // Returns true while a row is dragged
+            function movePointer(x, y) {
+                if (dragRow) { lastY = y; moveTo(y); return true; }
+                if (holdTimer && (Math.abs(x - startX) > MOVE_CANCEL_PX || Math.abs(y - startY) > MOVE_CANCEL_PX)) cancelHold();
+                return false;
+            }
+            // Returns true if a drag ended (the order is saved)
+            function endPointer() {
+                cancelHold();
+                if (!dragRow) return false;
+                clearInterval(scrollTimer); scrollTimer = null;
+                dragRow.removeClass("buyAgainDragging");
+                $(grid).removeClass("buyAgainDragActive");
+                dragRow = null;
+                clearTimeout(buyAgainSaveTimer);
+                saveBuyAgainOrder();
+                return true;
+            }
+
+            // Touch screen
+            if ("ontouchstart" in window) {
+                $(grid).addClass("touchDragGrid"); // no text selection / copy menu on a long press
+                grid.addEventListener("touchstart", function (e) {
+                    if (e.touches.length !== 1 || ignore(e.target)) return;
+                    startHold(e.target, e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+                grid.addEventListener("touchmove", function (e) {
+                    if (movePointer(e.touches[0].clientX, e.touches[0].clientY)) e.preventDefault(); // drag the row, not the page
+                }, { passive: false });
+                var touchEnd = function (e) {
+                    if (endPointer() && e.cancelable) e.preventDefault(); // no click on the item link after a drag
+                };
+                grid.addEventListener("touchend", touchEnd, { passive: false });
+                grid.addEventListener("touchcancel", touchEnd, { passive: false });
+            }
+
+            // Mouse
+            grid.addEventListener("mousedown", function (e) {
+                if (e.button !== 0 || ignore(e.target)) return;
+                startHold(e.target, e.clientX, e.clientY);
+            });
+            document.addEventListener("mousemove", function (e) {
+                if (movePointer(e.clientX, e.clientY)) e.preventDefault(); // no text selection while dragging
+            });
+            document.addEventListener("mouseup", function () {
+                if (endPointer()) {
+                    blockClick = true; // the click that follows the mouse up must not open a link / tick a box
+                    setTimeout(function () { blockClick = false; }, 100);
+                }
+            });
+            window.addEventListener("blur", endPointer); // mouse released outside the window
+            // Pressing on the item link / text and moving starts the browser's own link / text drag, which stops the mouse events
+            grid.addEventListener("dragstart", function (e) { if (dragRow || holdTimer) e.preventDefault(); });
+            grid.addEventListener("click", function (e) {
+                if (blockClick) { e.preventDefault(); e.stopPropagation(); blockClick = false; }
+            }, true);
             // No copy / link menu from the long press
             grid.addEventListener("contextmenu", function (e) { if (dragRow || holdTimer) e.preventDefault(); });
         }
 
-        function applySortable() {
-            var timer; // Variable to store timer ID
-            // Function to initialize sortable with delay
-            function initSortableWithDelay() {
-                $(".drag_drop_grid").sortable({
-                    items: 'tr:not(tr:first-child)',
-                    cursor: 'pointer',
-                    axis: 'y',
-                    dropOnEmpty: false,
-                    delay: 1000,
-                    start: function (e, ui) {
-                        ui.item.addClass("selected");
-                    },
-                    stop: function (e, ui) {
-                        ui.item.removeClass("selected");
-                        // Clear the timer when dragging stops
-                        clearTimeout(timer);
-                        saveBuyAgainOrder();
-                    }
-                });
-            }
-            initSortableWithDelay();
-
-        }  
         $(document).ready(function () {
             //$("#tabs").tabs();
             $("#emailNoteRow").toggle($("#ckbPopEmail").is(":checked"))
@@ -300,8 +305,7 @@
                    this.setSelectionRange(0,0);
                });
            }
-           applySortable();
-           if (<%= IIf(IsMobile(), "true", "false") %>) initBuyAgainTouchDrag();
+           initBuyAgainDrag(); //Buy Again display order: hold a row 1 second, then drag (touch and mouse)
 //           $(".drag_drop_grid").sortable({
 //                items: 'tr:not(tr:first-child)',
 //                cursor: 'pointer',
@@ -499,12 +503,11 @@
                     tr.buyAgainMoved td { background: #FDE9C6 !important; }
                     tr.buyAgainDragging td { background: #F9B84A !important; color: #FFFFFF; }
                     .touchDragGrid tr { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+                    .buyAgainDragActive, .buyAgainDragActive tr { cursor: grabbing; -webkit-user-select: none; user-select: none; }
                     #buyAgainOrderMsg { margin-left: 8px; color: #2E7D32; font-weight: bold; }
                 </style>
-                <asp:PlaceHolder runat="server" Visible='<%# IsMobile() %>'>
-                    <span class="gray">Change display order: touch and hold a row for 1 second, then drag it; or tap &#9650; / &#9660;.</span><span id="buyAgainOrderMsg"></span>
-                    <br />
-                </asp:PlaceHolder>
+                <span class="gray"><%= IIf(IsMobile(), "Change display order: touch and hold a row for 1 second, then drag it; or tap &#9650; / &#9660;.", "Change display order: click and hold a row for 1 second, then drag it; or click &#9650; / &#9660;.") %></span><span id="buyAgainOrderMsg"></span>
+                <br />
                 
                    
                     <asp:Panel  runat="server" Visible='<%# Not IsMobile() %>'>
@@ -859,55 +862,35 @@
                                 <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
                             </Animations>
                         </ajaxToolKit:ModalPopupExtender>
-                        <asp:Panel ID="pnlPopUserDtl" DefaultButton="btnPopSaveUser" style="display:none;" runat="server" CssClass="popup_dialog">
-                            <div class="inner">
-                                <asp:ImageButton ID="btnPopClose_User" CssClass="popClose"  CausesValidation="False" runat="server" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' />
-                                <h1><asp:Label ID="lblPopTitleUser" runat="server" Text="Copy all info to New Customer"/> </h1>
-                                <asp:Panel runat="server" ID ="pnlPopWarningUser" Visible ="false">
-                                <br />
-                                 <asp:Label ID="lblPopWarningUser" CssClass=" red" runat="server" />
-                                 <%-- asp:RequiredFieldValidator ID="RFValidatorJFCAccount"  runat="server" CssClass="red" ValidationGroup="validgroup"  
-                                             controltovalidate="txtPopJFCNum" errormessage="Please enter a JFC account number!" />--%>
-                                <br />
-                                <asp:CustomValidator id="CVPopJFCNum" ControlToValidate="txtPopJFCNum" ClientValidationFunction="ClientValidate"
-                                            Display="Static"
-                                            ErrorMessage="Invalid. Please enter a correct 4 digit account number."
-                                            ForeColor="red"
-                                            ont-Name="verdana" ValidationGroup="validgroupUser"   
-                                            Font-Size="10pt"
-                                            runat="server"/>
-                                 
+                        <asp:Panel ID="pnlPopUserDtl" DefaultButton="btnPopSaveUser" style="display:none;" runat="server" CssClass="popup_dialog kp kp-narrow">
+                            <div class="kp-header">
+                                <h1><asp:Label ID="lblPopTitleUser" runat="server" Text="Copy all info to New Customer"/></h1>
+                                <asp:Button ID="btnPopClose_User" CssClass="kp-close" CausesValidation="False" runat="server" Text="×" ToolTip="Close" />
+                            </div>
+                            <div class="kp-body">
+                                <asp:Panel runat="server" ID ="pnlPopWarningUser" Visible ="false" CssClass="kp-alert">
+                                    <asp:Label ID="lblPopWarningUser" runat="server" />
+                                    <asp:CustomValidator id="CVPopJFCNum" ControlToValidate="txtPopJFCNum" ClientValidationFunction="ClientValidate"
+                                                Display="Dynamic"
+                                                ErrorMessage="Invalid. Please enter a correct 4 digit account number."
+                                                ValidationGroup="validgroupUser"
+                                                runat="server"/>
                                 </asp:Panel>
-                                <br />
-                                <asp:Panel runat="server" ID="pnlPopDtlEdit_User">              
-                                    <table>
-                                        <tr>
-                                            <td class="rowHdr">JFC Account #</td>
-                                            <td> 
-                                                <asp:TextBox ID="txtPopJFCAccount" CssClass='stdTxt size4' runat="server" ValidationGroup ="validgroupUser" onchange="javascript:getCustomerName(); "  autocomplete="off" /> -
-					                            <asp:TextBox ID="txtPopJFCNum" autocomplete="off" CssClass = '<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>'  ValidationGroup ="validgroupUser" runat="server" onchange="javascript:getCustomerName(); "  />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                        <td></td>
-                                        <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Customer Name</td>
-                                             <td >
-                                                <asp:Label ID="lblPopCustomerName" CssClass=" cellLbl bold" runat="server" />
-                                 
-                                            </td>
-                                        </tr>
-                                                      
-                                        <tr>
-                                            <td colspan="2" class="center">
-                                                <asp:Button ID="btnPopSaveUser" CssClass="midButton_green" runat="server" Text="Copy"   ValidationGroup="validgroupUser" />
-                                            </td>
-                                        </tr>
-                                    </table>
+                                <asp:Panel runat="server" ID="pnlPopDtlEdit_User">
+                                    <div class="kp-field">
+                                        <label class="kp-label" for="<%= txtPopJFCAccount.ClientID %>">JFC Account #</label>
+                                        <asp:TextBox ID="txtPopJFCAccount" CssClass="kp-input kp-branch" runat="server" ValidationGroup ="validgroupUser" onchange="javascript:getCustomerName(); " autocomplete="off" MaxLength="2" placeholder="00" /><span class="kp-dash">-</span><asp:TextBox ID="txtPopJFCNum" CssClass="kp-input kp-number" autocomplete="off" ValidationGroup ="validgroupUser" runat="server" onchange="javascript:getCustomerName(); " MaxLength="4" placeholder="0000" />
+                                        <span class="kp-hint-block">Branch # (2 digits) - Customer # (4 digits)</span>
+                                    </div>
+                                    <div class="kp-field">
+                                        <span class="kp-label">Customer Name</span>
+                                        <asp:Label ID="lblPopCustomerName" CssClass="kp-value kp-name" runat="server" />
+                                    </div>
                                 </asp:Panel>
-                                <br />
+                            </div>
+                            <div class="kp-footer">
+                                <button type="button" class="kp-btn kp-btn-cancel" onclick="$find('popDialog_User').hide(); return false;">Cancel</button>
+                                <asp:Button ID="btnPopSaveUser" CssClass="kp-btn kp-btn-primary" runat="server" Text="Copy" ValidationGroup="validgroupUser" />
                             </div>
                         </asp:Panel>
                    
@@ -928,10 +911,9 @@
                         <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size1"  ItemStyle-CssClass="size1" >
                         <ItemTemplate>
                             <input type="hidden" name="item_id"  value='<%# Eval("custGrpItem_id") %>'  />
-                            <asp:PlaceHolder runat="server" Visible='<%# IsMobile() %>'><%--Mobile: move the row up / down (drag & drop needs a mouse)--%>
-                                <button type="button" class="buyAgainMove" title="Move up" onclick="return moveBuyAgainRow(this, -1);">&#9650;</button><br />
-                                <button type="button" class="buyAgainMove" title="Move down" onclick="return moveBuyAgainRow(this, 1);">&#9660;</button>
-                            </asp:PlaceHolder>
+                            <%--Move the row up / down (full and mobile site)--%>
+                            <button type="button" class="buyAgainMove" title="Move up" onclick="return moveBuyAgainRow(this, -1);">&#9650;</button><br />
+                            <button type="button" class="buyAgainMove" title="Move down" onclick="return moveBuyAgainRow(this, 1);">&#9660;</button>
                         </ItemTemplate>
 
                         </asp:TemplateField>
@@ -1235,39 +1217,28 @@
                                 <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
                             </Animations>
                         </ajaxToolKit:ModalPopupExtender>
-                        <asp:Panel ID="pnlPopPromotionDtl" DefaultButton="btnPopSavePromotion" style="display:none;" runat="server" CssClass="popup_dialog">
-                            <div class="inner">
-                                <asp:ImageButton ID="popClosePromotion" CssClass="popClose" CausesValidation="False" runat="server" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' />
+                        <asp:Panel ID="pnlPopPromotionDtl" DefaultButton="btnPopSavePromotion" style="display:none;" runat="server" CssClass="popup_dialog kp kp-narrow">
+                            <div class="kp-header">
                                 <h1><asp:Label ID="lblPopTitle" runat="server" Text="Add"/> Promo Item</h1>
-                                <br />
-                                 <asp:Panel runat="server" ID ="pnlDelPromotionwarning">
-                               
-                                 <asp:Label ID="lblPromotionwarning" CssClass=" red bold  " runat="server" />
-                                 <br />
-                                 <br />
+                                <asp:Button ID="popClosePromotion" CssClass="kp-close" CausesValidation="False" runat="server" Text="×" ToolTip="Close" />
+                            </div>
+                            <div class="kp-body">
+                                <asp:Panel runat="server" ID ="pnlDelPromotionwarning">
+                                    <asp:Label ID="lblPromotionwarning" CssClass="kp-alert" runat="server" />
                                 </asp:Panel>
-                                <asp:Panel runat="server" ID="pnlDelProTable">              
-                                    <table>
-                                        <tr>
-                                            <td class="rowHdr"> Items #</td>
-                                            <td><asp:Textbox ID="txtPromoItems" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size12", "size16") %>' Text=""  runat="server"  autocomplete="off"/>
-                                            </td>
-                                          </tr>
-                                        <tr>
-                                            <td colspan="2" class="red">
-                                               <asp:Label ID="lblDescription" CssClass="rowLblVal " Text=""  runat="server" ></asp:Label>
-                                               <asp:Label ID="lblPreItemId" Visible ="false" runat="server"></asp:Label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" class="center">
-                                                <asp:Button ID="btnPopSavePromotion" CssClass="midButton_green" runat="server" Text="Update" />
-                                                <asp:Button ID="btnPopDeletePromotion" CssClass="midButton" runat="server" Text="Delete" />
-                                             </td>
-                                        </tr>
-                                    </table>
+                                <asp:Panel runat="server" ID="pnlDelProTable">
+                                    <div class="kp-field">
+                                        <label class="kp-label" for="<%= txtPromoItems.ClientID %>">Item #</label>
+                                        <asp:Textbox ID="txtPromoItems" CssClass="kp-input kp-short" Text="" runat="server" autocomplete="off" placeholder="Item #"/>
+                                        <asp:Label ID="lblDescription" CssClass="kp-hint-block" Text="" runat="server" />
+                                        <asp:Label ID="lblPreItemId" Visible ="false" runat="server" />
+                                    </div>
                                 </asp:Panel>
-                                <br />
+                            </div>
+                            <div class="kp-footer">
+                                <asp:Button ID="btnPopDeletePromotion" CssClass="kp-btn kp-btn-delete" runat="server" Text="Delete" />
+                                <button type="button" class="kp-btn kp-btn-cancel" onclick="$('#<%= popClosePromotion.ClientID %>').click(); return false;">Close</button>
+                                <asp:Button ID="btnPopSavePromotion" CssClass="kp-btn kp-btn-primary" runat="server" Text="Update" />
                             </div>
                         </asp:Panel>
         </div>

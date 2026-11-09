@@ -13,6 +13,7 @@
         <%--Stylesheets with ?v=VERSION (see Common.CssLink) --%>
         <%= Common.CssLink("~/Styles/Site.css") %>
         <%= Common.CssLink("~/Styles/Koscus.css") %>
+        <%= Common.CssLink("~/Styles/Popup.css") %>
         <%= Common.CssLink("~/Styles/jquery-ui-1.8.16.custom.css") %>
         <%= Common.CssLink("~/Styles/jquery.autocomplete.css") %>
         <%= Common.CssLink("~/Styles/dropdown.css") %>
