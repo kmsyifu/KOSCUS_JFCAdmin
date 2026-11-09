@@ -17,6 +17,7 @@ KOSCUS_JFCADMIN017.4 (11/09/2026)
 *<Common>: Version changed to 017.9 (Common.VERSION), so browsers load the new CSS / JS files.
 *<CustItem>: Mobile site: space between the Search Items and Add / Update Item panels; "Category" and its list stay together (on a narrow phone both go to the next line; the list is at most 70% of the screen width).
 *<Common>: Version changed to 017.10 (Common.VERSION), so browsers load the new CSS / JS files.
+*<Common, CustSetting, BranchSetting, Login>: Email bodies built in code have the same look as the other emails (EmailBody.ascx): gray page, white card (max 680px) with the orange header bar (company name), table layout with inline styles for Outlook / Gmail / phone mail apps. New helpers in Common: EmailLayout (the card), EmailInfoBox (orange title and label / value rows, values HTML encoded) and EmailLinkButton (orange button link). Changed: "Your delivery info has been updated" (Customer Settings - Delivery and Branch Settings - Delivery Master: Old / New boxes, new values in bold, customer name HTML encoded); one time verification code (code shown large in an orange box, expiry note); "Set your password" (now an HTML email with a Set your password button, the link also shown as text in case the button does not work).
 
 KOSCUS_JFCADMIN017.3 (11/08/2026)
 *<Common>: Version changed to 017.3 (Common.VERSION), so browsers load the new CSS / JS files.

@@ -940,13 +940,16 @@ Partial Class JFCAdmin_CustSetting
                         Dim ci = New CultureInfo(IIf(CString(dr("language")) <> "", CString(dr("language")), "en-US").ToString)
                         Thread.CurrentThread.CurrentCulture = ci
                         Thread.CurrentThread.CurrentUICulture = ci
-                        emailBody = rm.GetString("Dear", ci) & " " & CString(dr("customerName")) & " (" & CString(dr("jfcBranchNr")) & "-" & CString(dr("jfcCustomerNr")) &
-                                    "), <br />  <br /> " & rm.GetString("Yourdeliveryinfohasbeenupdated", ci) & "  <br /> <br />" &
-                                    rm.GetString("Old", ci) & " <br />" & rm.GetString("Delivery", ci) & ": " & lblPopOldDeliveryDate.Text & "<br />" &
-                                    rm.GetString("Deadline", ci) & ":  " & ViewState("oldDeliveryOrderDate") & " " & ViewState("oldDeliveryOrderTime") & "<br /><br />" &
-                                    rm.GetString("New", ci) & " <br /><span style=""font-weight:bold""> " & rm.GetString("Delivery", ci) & ": " & txtPopDeliveryDate.Text & " <br />" &
-                                    rm.GetString("Deadline", ci) & ": " & txtPopOrderByDate.Text & " " & lstPopOrderByTime.Text & " " & lstPopOrderByAmPm.Text &
-                                    "</span><br /> <br />   " & rm.GetString("Bestregards", ci) & ",<br />" & Common.JFC_COMPANY_NAME
+                        emailBody = Common.EmailLayout(
+                                    rm.GetString("Dear", ci) & " " & HttpUtility.HtmlEncode(CString(dr("customerName")) & " (" & CString(dr("jfcBranchNr")) & "-" & CString(dr("jfcCustomerNr")) & ")") & ",<br /><br />" &
+                                    rm.GetString("Yourdeliveryinfohasbeenupdated", ci) & "<br /><br />" &
+                                    Common.EmailInfoBox(rm.GetString("Old", ci), False,
+                                        rm.GetString("Delivery", ci), lblPopOldDeliveryDate.Text,
+                                        rm.GetString("Deadline", ci), CString(ViewState("oldDeliveryOrderDate")) & " " & CString(ViewState("oldDeliveryOrderTime"))) &
+                                    Common.EmailInfoBox(rm.GetString("New", ci), True,
+                                        rm.GetString("Delivery", ci), txtPopDeliveryDate.Text,
+                                        rm.GetString("Deadline", ci), txtPopOrderByDate.Text & " " & lstPopOrderByTime.Text & " " & lstPopOrderByAmPm.Text) &
+                                    rm.GetString("Bestregards", ci) & ",<br />" & Common.JFC_COMPANY_NAME)
                         Dim errmsg As String = ""
                         If Common.SendMail(SYSTEM_EMAIL, IIf(IsProdBeta() Or IsProduction(), CString(dr("customerEmail")), "yfu@kmsnet.com"), VendorEmail, rm.GetString("Yourdeliveryinfohasbeenupdated", ci), emailBody, Nothing, True, errmsg) > 0 Then
                             'Email sent failed

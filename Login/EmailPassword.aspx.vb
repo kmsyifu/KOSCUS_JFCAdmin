@@ -55,10 +55,16 @@ Partial Class Login_EmailPassword
             'Send email
             newpassword = Common.CreateSalt(16)
             newsalt = Common.CreateSalt(64)
-            message = "Please click this link to set your password." & vbCrLf & vbCrLf & "http://" & Request.Url.Host & IIf(Request.Url.Port = 80 OrElse Request.Url.Port = 443, "", ":" & Request.Url.Port) & _
-                      Request.ApplicationPath & "/Login/Login.aspx?username=" & _
+            Dim setPasswordUrl As String = "http://" & Request.Url.Host & IIf(Request.Url.Port = 80 OrElse Request.Url.Port = 443, "", ":" & Request.Url.Port) &
+                      Request.ApplicationPath & "/Login/Login.aspx?username=" &
                       HttpUtility.UrlEncode(email) & "&password=" & HttpUtility.UrlEncode(newpassword)
-            If Common.SendMail(SYSTEM_EMAIL, email, Nothing, "Set your password", message, Nothing, False, errMSg) > 0 Then
+            'HTML email in the standard layout; the link is also shown as text in case the button does not work
+            message = Common.EmailLayout(
+                      "Please click this link to set your password.<br /><br />" &
+                      Common.EmailLinkButton(setPasswordUrl, "Set your password") &
+                      "<span style=""color: #777777; font-size: 13px;"">If the button does not work, copy this link into your browser:<br />" &
+                      "<a href=""" & HttpUtility.HtmlAttributeEncode(setPasswordUrl) & """ style=""color: #FF6600; word-break: break-all;"">" & HttpUtility.HtmlEncode(setPasswordUrl) & "</a></span>")
+            If Common.SendMail(SYSTEM_EMAIL, email, Nothing, "Set your password", message, Nothing, True, errMSg) > 0 Then
                 lblError.Text = "Email sending error (" & errMSg & ")"
                 Exit Sub
             End If
