@@ -16,6 +16,7 @@ KOSCUS_JFCADMIN018.4 (11/09/2026)
 *<CustItem>: Buy Again display order: the up / down buttons are removed; a new "Order (Hold 1 sec to move)" column before the delete icon shows the same sort icon as Branch Settings - Homepage images (hold a row or the icon 1 second, then drag it). "Change Display Order" is shown only once (full site: hold and drag, or the Excel Export / Import steps; mobile: touch and hold). The "Saving... / Order saved" message is not shown any more (the order is still saved after each drag; only an error is shown).
 *<Common>: Version changed to 018.9 (Common.VERSION), so browsers load the new CSS / JS files.
 *<CustItem>: Mobile site: space between the Search Items and Add / Update Item panels; "Category" and its list stay together (on a narrow phone both go to the next line; the list is at most 70% of the screen width).
+*<Common>: Version changed to 018.10 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN018.3 (11/08/2026)
 *<Common>: Version changed to 018.3 (Common.VERSION), so browsers load the new CSS / JS files.
