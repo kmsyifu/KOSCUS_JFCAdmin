@@ -18,6 +18,11 @@
         <p>Your request took too long and was stopped. Please wait a moment and try again.</p>
         <p><a href="javascript:history.back()">Go back</a></p>
         </asp:PlaceHolder>
+        <asp:PlaceHolder ID="phConnection" runat="server" Visible="false">
+        <h1>The connection to the database was lost</h1>
+        <p>The connection has been reset. Please try again.</p>
+        <p><a href="javascript:history.back()">Go back</a></p>
+        </asp:PlaceHolder>
     </div>
     </form>
 </body>
