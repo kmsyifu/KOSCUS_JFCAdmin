@@ -528,8 +528,9 @@
                         <asp:Label ID="Label47" runat="server" Text="Vendor" CssClass="gray" />
                         <asp:DropDownList ID="lstVendorSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();"/>
                     </asp:Panel>
-                    <asp:Label ID="Label46" runat="server" Text="Category" CssClass="gray" />
-                    <asp:DropDownList ID="lstCtgSearch_custItem" CssClass="largeDrpList" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();" />
+                    <%--Category and its list stay together (on a narrow phone both go to the next line)--%>
+                    <span style="display:inline-block; white-space:nowrap;"><asp:Label ID="Label46" runat="server" Text="Category" CssClass="gray" />
+                    <asp:DropDownList ID="lstCtgSearch_custItem" CssClass="largeDrpList" style="max-width:70vw;" runat="server" AutoPostBack="True"  OnChange="javascript:showProgress();" /></span>
                    <%-- <asp:Label runat="server" Text="Order Form" CssClass="gray" />
                         <asp:DropDownList ID="lstOrderForm" CssClass="largeDrpList"
                                           runat="server" AutoPostBack="True"
@@ -665,7 +666,7 @@
             </asp:Panel>--%>
 
                 <%--Add item--%>
-                <asp:Panel ID="pnlNewItem" CssClass="visiblePnl" style='<%# IIf(IsMobile(), "", "margin-left:533px") %>' runat="server">
+                <asp:Panel ID="pnlNewItem" CssClass="visiblePnl" style='<%# IIf(IsMobile(), "margin-top:16px", "margin-left:533px") %>' runat="server"><%--Mobile: space below Search Items--%>
                     <h1>Add / Update Item</h1>
                         <asp:Panel ID="pnlGetItem" DefaultButton="btnGetItem" runat="server">
                             <asp:TextBox ID="txtItem" CssClass='<%# "stdTxt CODE_ITEM " & IIf(IsMobile(), "size32", "size72") %>'  runat="server"  />
