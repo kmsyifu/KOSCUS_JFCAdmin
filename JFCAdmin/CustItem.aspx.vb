@@ -858,7 +858,7 @@ Partial Class JFCAdmin_CustItem
                 End If
 
 
-                Dim sql = SetPrice(lstPopPriceUnit.Text, Val(txtPopPrice.Text), lblPopEditItem.Text, custInfo.customerID)
+                Dim sql = SetPrice(lstPopPriceUnit.Text, Val(txtPopPrice.Text), DB.SqlEsc(lblPopEditItem.Text), DB.SqlEsc(custInfo.customerID)) 'quoted IDs (unquoted -> ORA-01722)
                 Dim r = DB.GetReader(sql)
                 If r.Read() Then
                     'Mod by jzhou on 1/11/2021
@@ -2137,7 +2137,7 @@ Partial Class JFCAdmin_CustItem
             'Dim custInfo As CustomerInfo = ViewState("CUSTOMER_INFO")
             'setJavaScript(CustItem_Tab.CUSTITEM)
             Dim IsNew = True
-            Dim sql = SetPrice(PriceUnit, Val(Price), ItemID, custInfo.customerID)
+            Dim sql = SetPrice(PriceUnit, Val(Price), DB.SqlEsc(ItemID), DB.SqlEsc(custInfo.customerID)) 'quoted IDs (unquoted -> ORA-01722)
             Dim r = DB.GetReader(sql)
             If r.Read() Then
                 'Mod by jzhou on 1/11/2021

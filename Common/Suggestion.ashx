@@ -164,7 +164,7 @@ Public Class Search_VB : Implements IHttpHandler
                     context.Response.Write(sb.ToString)
                 Case "GETGP"
                     Dim msg As String = ""
-                    SQL = SetPrice(id4, Val(id3), id2, id)
+                    SQL = SetPrice(id4, Val(id3), DB.SqlEsc(id2), DB.SqlEsc(id)) 'SetPrice puts the IDs in the SQL as they are: quote them (unquoted -> ORA-01722)
                     r = DB.GetReader(SQL)
                     If r.Read() Then
                         msg = Get_GP(Val(r("eaPerCs")), Val(r("cscost")), Val(r("lbPrice_OrderByQty")), Val(r("csPrice")))
