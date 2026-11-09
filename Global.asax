@@ -46,6 +46,21 @@
         'Lost database connection (e.g. ORA-03113: a dead connection from the pool, which also happens in the pages'
         'SqlDataSource controls that don't go through DBHelper): drop all pooled connections, then load the page again once
         '(GET only; the dbretry=1 parameter stops a loop). A postback, or a second failure, shows "connection lost, please try again".
+        'AJAX handlers (.ashx, e.g. Common/Suggestion.ashx): answer with a plain error (HTTP 500) so the page's ajax error
+        'handler runs. Before, the redirect to the HTML error page came back as "success" and pages put the whole
+        'error page into a label (e.g. the customer name in Customer Settings - Add / Register Customer).
+        If Request.Path.EndsWith(".ashx", StringComparison.OrdinalIgnoreCase) Then
+            If DBHelper.IsConnectionLost(lastError) Then DBHelper.ClearConnectionPools()
+            Server.ClearError()
+            Response.Clear()
+            Response.TrySkipIisCustomErrors = True
+            Response.StatusCode = 500
+            Response.ContentType = "text/plain"
+            Response.Write("Server error")
+            Context.ApplicationInstance.CompleteRequest()
+            Exit Sub
+        End If
+
         If DBHelper.IsConnectionLost(lastError) Then
             DBHelper.ClearConnectionPools()
             Server.ClearError()
