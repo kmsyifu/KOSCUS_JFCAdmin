@@ -1264,6 +1264,49 @@ Public Class Common
         page.Controls.Remove(ctrl)
     End Sub
 
+    '---------------------------------------------------------------------------------------------------------------------------
+    'Email HTML helpers for emails that are built in code (not from Common/EmailBody.ascx).
+    'Same look as EmailBody.ascx: gray page, white card (max 680px), orange header bar with the company name,
+    'info boxes with an orange title. All styles inline and table layout for Outlook / Gmail / phone mail apps.
+    '---------------------------------------------------------------------------------------------------------------------------
+
+    ''' <summary>Wraps email content (HTML) in the standard email card with the orange header bar.</summary>
+    Public Shared Function EmailLayout(ByVal contentHtml As String) As String
+        Return "<div style=""margin: 0; padding: 20px 0; background-color: #F4F4F4; font-family: Arial, Helvetica, sans-serif; color: #333333;"">" &
+               "<table role=""presentation"" align=""center"" width=""680"" cellpadding=""0"" cellspacing=""0"" border=""0"" " &
+               "style=""width: 100%; max-width: 680px; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333;"">" &
+               "<tr><td style=""padding: 16px 24px; background-color: #FF6600; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: bold; font-style: italic;"">" & JFC_COMPANY_NAME & "</td></tr>" &
+               "<tr><td style=""padding: 20px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; color: #333333;"">" &
+               contentHtml &
+               "</td></tr></table></div>"
+    End Function
+
+    ''' <summary>
+    ''' Info box: orange title row and label / value rows. Values are HTML encoded.
+    ''' rows: label1, value1, label2, value2, ...
+    ''' </summary>
+    Public Shared Function EmailInfoBox(ByVal title As String, ByVal boldValues As Boolean, ByVal ParamArray rows() As String) As String
+        Dim sb As New System.Text.StringBuilder()
+        sb.Append("<table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""width: 100%; margin: 0 0 16px 0; border: 1px solid #E5E5E5; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;"">")
+        sb.Append("<tr><td colspan=""2"" style=""padding: 10px 12px; background-color: #FFF4EC; border-bottom: 2px solid #FF6600; color: #FF6600; font-size: 15px; font-weight: bold;"">")
+        sb.Append(HttpUtility.HtmlEncode(title)).Append("</td></tr>")
+        For i As Integer = 0 To rows.Length - 2 Step 2
+            Dim border As String = If(i < rows.Length - 2, "border-bottom: 1px solid #F0F0F0; ", "")
+            sb.Append("<tr><td style=""padding: 7px 12px; ").Append(border).Append("color: #777777; font-size: 13px; vertical-align: top; width: 36%;"">")
+            sb.Append(HttpUtility.HtmlEncode(rows(i))).Append("</td>")
+            sb.Append("<td style=""padding: 7px 12px; ").Append(border).Append("color: #222222; font-size: 13px; vertical-align: top;").Append(If(boldValues, " font-weight: bold;", "")).Append(""">")
+            sb.Append(HttpUtility.HtmlEncode(rows(i + 1))).Append("</td></tr>")
+        Next
+        sb.Append("</table>")
+        Return sb.ToString()
+    End Function
+
+    ''' <summary>Orange button link, same as the "View details" buttons in EmailBody.ascx.</summary>
+    Public Shared Function EmailLinkButton(ByVal url As String, ByVal text As String) As String
+        Return "<div style=""padding: 0 0 20px 0;""><a href=""" & HttpUtility.HtmlAttributeEncode(url) & """ style=""display: inline-block; padding: 10px 22px; background-color: #FF6600; border: 1px solid #FF6600; border-radius: 4px; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 15px; font-weight: bold; text-decoration: none;"">" &
+               HttpUtility.HtmlEncode(text) & "</a></div>"
+    End Function
+
     Public Shared Function IsSmallCustomer(Optional ByVal DB As DBHelper = Nothing, Optional ByVal customerID As String = "", Optional ByVal custGrpID As String = "") As Boolean
         Dim SQL As String
         Dim custCompanyTypeID As String

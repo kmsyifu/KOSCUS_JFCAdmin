@@ -1241,13 +1241,16 @@ Partial Class BranchSetting
                         Thread.CurrentThread.CurrentCulture = ci
                         Thread.CurrentThread.CurrentUICulture = ci
                         '"Dear " Your delivery info has been updated. Old Delivery Deadline New
-                        emailBody = rm.GetString("Dear", ci) & " " & CString(dr("customerName")) & " (" & CString(dr("jfcBranchNr")) & "-" & CString(dr("jfcCustomerNr")) &
-                                    "), <br />  <br /> " & rm.GetString("Yourdeliveryinfohasbeenupdated", ci) & "  <br /> <br />" &
-                                    rm.GetString("Old", ci) & " <br />" & rm.GetString("Delivery", ci) & ": " & lblOldDelivery.Text & "<br />" &
-                                    rm.GetString("Deadline", ci) & ":  " & lblOldOrderby.Text & " " & lblOldOrderTime.Text & " " & lblOldOrderAMPM.Text & "<br /><br />" &
-                                    rm.GetString("New", ci) & " <br /><span style=""font-weight:bold""> " & rm.GetString("Delivery", ci) & ": " & TxtdeliverOn.Text & " <br />" &
-                                    rm.GetString("Deadline", ci) & ": " & TxtOrderdate.Text & " " & lstOrdertime.Text & " " & lstOrderAMPM.Text &
-                                    "</span> <br /> <br />   " & rm.GetString("Bestregards", ci) & ",<br /> " & Common.JFC_COMPANY_NAME
+                        emailBody = Common.EmailLayout(
+                                    rm.GetString("Dear", ci) & " " & HttpUtility.HtmlEncode(CString(dr("customerName")) & " (" & CString(dr("jfcBranchNr")) & "-" & CString(dr("jfcCustomerNr")) & ")") & ",<br /><br />" &
+                                    rm.GetString("Yourdeliveryinfohasbeenupdated", ci) & "<br /><br />" &
+                                    Common.EmailInfoBox(rm.GetString("Old", ci), False,
+                                        rm.GetString("Delivery", ci), lblOldDelivery.Text,
+                                        rm.GetString("Deadline", ci), lblOldOrderby.Text & " " & lblOldOrderTime.Text & " " & lblOldOrderAMPM.Text) &
+                                    Common.EmailInfoBox(rm.GetString("New", ci), True,
+                                        rm.GetString("Delivery", ci), TxtdeliverOn.Text,
+                                        rm.GetString("Deadline", ci), TxtOrderdate.Text & " " & lstOrdertime.Text & " " & lstOrderAMPM.Text) &
+                                    rm.GetString("Bestregards", ci) & ",<br />" & Common.JFC_COMPANY_NAME)
                         'CreateEmailBody(Page, emailBody, "MASTER", deliverySchedID & deliveryschedlinenr, newSchedule)
                         Dim errmsg As String = ""
                         'CString(dr("customerEmail"))
