@@ -61,7 +61,7 @@ Partial Class BranchSetting
 
             If IsPostBack = False Then
                 'Init
-              
+
 
                 DataBind() 'Fill in customer company type
 
@@ -87,10 +87,10 @@ Partial Class BranchSetting
                 hfActiveTab.Value = ViewState("MASTER_TAB")
 
 
-                Select ViewState("MASTER_TAB")
+                Select Case ViewState("MASTER_TAB")
                     Case Master_Tab.PROMOTIONITEM
                         showPromoItemsList()
-                      
+
                     Case Master_Tab.HOMEPAGEIMG
                         showHomePageIMGList()
                     Case Master_Tab.NOTIFICATION
@@ -331,7 +331,7 @@ Partial Class BranchSetting
             pnlDtl_HomePageImg.Visible = False
             SQL = "SELECT HOMEPAGEIMG_ID, IMGNAME,FOLDERPATH,REDIRECTURL, JFCBRANCHNR,DISPORDER,CREATEUSER, MODUSER,CREATEDATE,item_id," &
                 "CASE WHEN LENGTH(REDIRECTURL) > 20 THEN SUBSTR(REDIRECTURL, 1, 20) || '...' ELSE REDIRECTURL END AS REDIRECTURL FROM " &
-                IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE " & _
+                IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE " &
                    IIf(lstBranch.Text = LST_ALL_STR, "1=1 and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text), " JFCBRANCHNR = '" & lstBranch.SelectedValue & "' and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text))
             dsHomepageImg.ProviderName = "System.Data.OracleClient"
             dsHomepageImg.ConnectionString = DB.GetConnectionString
@@ -465,7 +465,7 @@ Partial Class BranchSetting
 
     Private Function addCheckbox(ByVal BranchList As ListItemCollection) As SortedList(Of String, String)
         Dim addCB_data As SortedList(Of String, String) = New SortedList(Of String, String)()
-      
+
         For index As Integer = 0 To BranchList.Count - 1
 
             addCB_data.Add(BranchList(index).Value, BranchList(index).Text)
@@ -888,7 +888,7 @@ Partial Class BranchSetting
         Using DB As New DBHelper
             'Show schedule list
 
-            SQL = "SELECT * FROM codesetting where settinggrp = 'ORDER_REMINDER' " & _
+            SQL = "SELECT * FROM codesetting where settinggrp = 'ORDER_REMINDER' " &
                    IIf(lstBranch.Text = LST_ALL_STR, "", "AND setting_id = " & DB.SqlEsc(lstBranch.SelectedValue) & "")
             SQL &= " order by TO_NUMBER(Settingvalue1)"
             dsOrderReminder.ProviderName = "System.Data.OracleClient"
@@ -1032,16 +1032,16 @@ Partial Class BranchSetting
         Using DB As New DBHelper
             'Show schedule list
 
-            SQL = "SELECT c.jfcCustomerNr, g.custGrpName, c.customerName, s.shipName,UPPER(s.state) as STATE,TO_CHAR(dd.deliverydate, " & DB.SqlEsc(DATE_FMT) & ") as deliverydate,TO_CHAR(dd.orderByDate, " & DB.SqlEsc(DATE_FMT) & ") orderByDate, " & _
-                "TO_CHAR(dd.orderByDate, " & DB.SqlEsc(TIME_SQLFMT) & ") orderByTime,dd.orderByDate as orderDatetime,dd.sendreminder, d.shipPoint_id,  d.deliverySched_id, d.customer_id," & _
-             "d.custGrpVendor_id, d.deliveryMaster_id, d.frequency, d.sendReminder, c.jfcBranchNr, c.jfcCustomerNr," & _
-             "TO_CHAR(startDate) startDate, TO_CHAR(endDate) endDate,  jm.frequency as frequency, jm.deliveryday as deliveryday, jm.orderbyday as orderbyday," & _
-             "jm.orderbytime as orderbytime,dd.deliverydate as dliveryOrder FROM customer_deliverySched d, custGrp g, customer c, customer_shipPoint s,JFCDeliveryMaster jm, customer_deliverydate dd " & _
-            "WHERE(d.customer_id = c.customer_id And g.custGrp_id = c.custGrp_id) AND d.shipPoint_id = s.shipPoint_id AND d.customer_id = s.customer_id " & _
-           " AND jm.deliverymaster_id  = d.deliverymaster_id AND DD.deliverySched_id = D.deliverySched_id AND dd.deliveryschedlinenr = d.deliveryschedlinenr  AND d.deliverymaster_id = " & DB.SqlEsc(MasterID) & _
-             IIf(txtJfcAccountNum.Text <> "", " and c.jfcCustomerNr = " & DB.SqlEsc(txtJfcAccountNum.Text), "") & _
-             IIf(txtState.Text <> "", " AND UPPER(s.state) = " & DB.SqlEsc(txtState.Text.ToUpper), "") & _
-             IIf(txtDeliveryDateFrom.Text <> "", " AND dd.deliverydate >= TO_DATE(" & DB.SqlEsc(txtDeliveryDateFrom.Text) & ", " & DB.SqlEsc(DATE_FMT) & ")", "") & _
+            SQL = "SELECT c.jfcCustomerNr, g.custGrpName, c.customerName, s.shipName,UPPER(s.state) as STATE,TO_CHAR(dd.deliverydate, " & DB.SqlEsc(DATE_FMT) & ") as deliverydate,TO_CHAR(dd.orderByDate, " & DB.SqlEsc(DATE_FMT) & ") orderByDate, " &
+                "TO_CHAR(dd.orderByDate, " & DB.SqlEsc(TIME_SQLFMT) & ") orderByTime,dd.orderByDate as orderDatetime,dd.sendreminder, d.shipPoint_id,  d.deliverySched_id, d.customer_id," &
+             "d.custGrpVendor_id, d.deliveryMaster_id, d.frequency, d.sendReminder, c.jfcBranchNr, c.jfcCustomerNr," &
+             "TO_CHAR(startDate) startDate, TO_CHAR(endDate) endDate,  jm.frequency as frequency, jm.deliveryday as deliveryday, jm.orderbyday as orderbyday," &
+             "jm.orderbytime as orderbytime,dd.deliverydate as dliveryOrder FROM customer_deliverySched d, custGrp g, customer c, customer_shipPoint s,JFCDeliveryMaster jm, customer_deliverydate dd " &
+            "WHERE(d.customer_id = c.customer_id And g.custGrp_id = c.custGrp_id) AND d.shipPoint_id = s.shipPoint_id AND d.customer_id = s.customer_id " &
+           " AND jm.deliverymaster_id  = d.deliverymaster_id AND DD.deliverySched_id = D.deliverySched_id AND dd.deliveryschedlinenr = d.deliveryschedlinenr  AND d.deliverymaster_id = " & DB.SqlEsc(MasterID) &
+             IIf(txtJfcAccountNum.Text <> "", " and c.jfcCustomerNr = " & DB.SqlEsc(txtJfcAccountNum.Text), "") &
+             IIf(txtState.Text <> "", " AND UPPER(s.state) = " & DB.SqlEsc(txtState.Text.ToUpper), "") &
+             IIf(txtDeliveryDateFrom.Text <> "", " AND dd.deliverydate >= TO_DATE(" & DB.SqlEsc(txtDeliveryDateFrom.Text) & ", " & DB.SqlEsc(DATE_FMT) & ")", "") &
              IIf(txtDeliveryDateTo.Text <> "", " AND dd.deliverydate <= TO_DATE(" & DB.SqlEsc(txtDeliveryDateTo.Text) & ", " & DB.SqlEsc(DATE_FMT) & ")", "")
 
             'SQL = "select * from JFCDeliveryMaster where (1=1)" & IIf(lstBranch.Text = LST_ALL_STR, "", "AND JFCBRANCHNR = " & DB.SqlEsc(lstBranch.SelectedValue) & "")
@@ -1241,12 +1241,12 @@ Partial Class BranchSetting
                         Thread.CurrentThread.CurrentCulture = ci
                         Thread.CurrentThread.CurrentUICulture = ci
                         '"Dear " Your delivery info has been updated. Old Delivery Deadline New
-                        emailBody = rm.GetString("Dear", ci) & " " & CString(dr("customerName")) & " (" & CString(dr("jfcBranchNr")) & "-" & CString(dr("jfcCustomerNr")) & _
-                                    "), <br />  <br /> " & rm.GetString("Yourdeliveryinfohasbeenupdated", ci) & "  <br /> <br />" & _
-                                    rm.GetString("Old", ci) & " <br />" & rm.GetString("Delivery", ci) & ": " & lblOldDelivery.Text & "<br />" & _
-                                    rm.GetString("Deadline", ci) & ":  " & lblOldOrderby.Text & " " & lblOldOrderTime.Text & " " & lblOldOrderAMPM.Text & "<br /><br />" & _
-                                    rm.GetString("New", ci) & " <br /><span style=""font-weight:bold""> " & rm.GetString("Delivery", ci) & ": " & TxtdeliverOn.Text & " <br />" & _
-                                    rm.GetString("Deadline", ci) & ": " & TxtOrderdate.Text & " " & lstOrdertime.Text & " " & lstOrderAMPM.Text & _
+                        emailBody = rm.GetString("Dear", ci) & " " & CString(dr("customerName")) & " (" & CString(dr("jfcBranchNr")) & "-" & CString(dr("jfcCustomerNr")) &
+                                    "), <br />  <br /> " & rm.GetString("Yourdeliveryinfohasbeenupdated", ci) & "  <br /> <br />" &
+                                    rm.GetString("Old", ci) & " <br />" & rm.GetString("Delivery", ci) & ": " & lblOldDelivery.Text & "<br />" &
+                                    rm.GetString("Deadline", ci) & ":  " & lblOldOrderby.Text & " " & lblOldOrderTime.Text & " " & lblOldOrderAMPM.Text & "<br /><br />" &
+                                    rm.GetString("New", ci) & " <br /><span style=""font-weight:bold""> " & rm.GetString("Delivery", ci) & ": " & TxtdeliverOn.Text & " <br />" &
+                                    rm.GetString("Deadline", ci) & ": " & TxtOrderdate.Text & " " & lstOrdertime.Text & " " & lstOrderAMPM.Text &
                                     "</span> <br /> <br />   " & rm.GetString("Bestregards", ci) & ",<br /> " & Common.JFC_COMPANY_NAME
                         'CreateEmailBody(Page, emailBody, "MASTER", deliverySchedID & deliveryschedlinenr, newSchedule)
                         Dim errmsg As String = ""

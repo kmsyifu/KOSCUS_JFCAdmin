@@ -2630,9 +2630,9 @@ Public Class Common
 
 
         SQL = "SELECT ' (Order by ' || TO_CHAR(d.orderByDate, :1) ||')' AS Orderbydate, m.DELIVERYMASTERNAME, m.DELIVERYMASTER_ID " &
-             "FROM jfcdeliverymaster_date d, jfcdeliverymaster m " & _
-              "WHERE d.DELIVERYMASTER_ID = m.DELIVERYMASTER_ID AND m.jfcbranchnr = :2 " & _
-              "AND d.deliveryDate = to_date(" & DB.SqlEsc(e.Day.Date) & ", :3) " & _
+             "FROM jfcdeliverymaster_date d, jfcdeliverymaster m " &
+              "WHERE d.DELIVERYMASTER_ID = m.DELIVERYMASTER_ID AND m.jfcbranchnr = :2 " &
+              "AND d.deliveryDate = to_date(" & DB.SqlEsc(e.Day.Date) & ", :3) " &
                "ORDER BY m.DELIVERYMASTERNAME  "
         r = DB.GetReader(SQL, SHORTDATETIME_DELFMT, BranchNr, DATE_FMT)
         While r.Read()
@@ -2989,7 +2989,7 @@ Public Class Common
 
         If UserID > -1 Then
             Using DB As New DBHelper
-                Return DB.GetScalarEx("select value from sys_app_userparam where appid = :1 and userid = :2 and paramid = :3 order by disporder", "", "", _
+                Return DB.GetScalarEx("select value from sys_app_userparam where appid = :1 and userid = :2 and paramid = :3 order by disporder", "", "",
                                        AppID, UserID, ParamID)
             End Using
         End If
@@ -3003,7 +3003,7 @@ Public Class Common
             Return hash(AppID & "|" & ParamID)
         Else
             Using DB As New DBHelper
-                ret = DB.GetScalarEx("select value from sys_app_userparam where appid = :1 and userid = :2 and paramid = :3 order by disporder", "", "", _
+                ret = DB.GetScalarEx("select value from sys_app_userparam where appid = :1 and userid = :2 and paramid = :3 order by disporder", "", "",
                                    AppID, GetUserID, ParamID)
                 hash(AppID & "|" & ParamID) = ret
                 Return ret
@@ -3271,8 +3271,8 @@ Public Class Common
             s = v.ToString
             ret = ""
             For i = 0 To s.Length - 1
-                If IsNumeric(s.Substring(i, 1)) = True Or _
-                   (ret = "" And (s.Substring(i, 1) = "+" Or s.Substring(i, 1) = "-")) Or _
+                If IsNumeric(s.Substring(i, 1)) = True Or
+                   (ret = "" And (s.Substring(i, 1) = "+" Or s.Substring(i, 1) = "-")) Or
                    (ret.IndexOf("."c) = -1 And s.Substring(i, 1) = ".") Then
                     ret &= s.Substring(i, 1)
                 End If
@@ -3460,7 +3460,7 @@ Public Class Common
         f.Attributes("onkeydown") = HttpUtility.HtmlEncode("if(event.keyCode==13){ if(window.event.srcElement.type!='submit' && window.event.srcElement.type!='textarea'){return false;}}")
     End Sub
 
-    Public Shared Function SendMail(ByVal FromAddress As String, ByVal ToAddress As String, ByVal ReplyToAddress As String, ByVal Subject As String, ByVal Body As String, ByVal Attachment() As String, _
+    Public Shared Function SendMail(ByVal FromAddress As String, ByVal ToAddress As String, ByVal ReplyToAddress As String, ByVal Subject As String, ByVal Body As String, ByVal Attachment() As String,
                                     ByVal IsBodyHtml As Boolean, ByRef ErrMsg As String, Optional ByVal CcAddress As String = Nothing) As Integer
         Dim m As New MailMessage
         Dim emailAry As String()
@@ -3633,39 +3633,39 @@ Public Class Common
         If PriceUnit = "CS" Then
 
 
-            sb.AppendFormat(" {0} AS csPrice, CASE WHEN p.eaPerCs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " & _
-                      "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs != 1 THEN ROUND({0} / (p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1))) * nvl(p.avgeawgt, 0.9), 2) " & _
-                      "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN " & _
-                      "ROUND( {0} / nvl(p.avgcswgt, 0) * nvl(p.avgeawgt, 0.9),2) " & _
-                      "ELSE ROUND({0} / p.eaPerCs, 2) END AS eaPrice, CASE WHEN p.scaledItem = 'N' OR p.eapercs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " & _
-                      "WHEN p.scaledItem = 'Y' and DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN ROUND( {0} *(p.eapercs*p.lbsperea)/ nvl(p.avgcswgt, 0),2) " & _
-                      "ELSE ROUND({0} / (p.eaPerCs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1))), 2) END AS lbPrice_orderByQty, " & _
-                      "Case WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs != 1 Then p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) / nvl(p.avgeawgt, 0.9) " & _
+            sb.AppendFormat(" {0} AS csPrice, CASE WHEN p.eaPerCs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " &
+                      "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs != 1 THEN ROUND({0} / (p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1))) * nvl(p.avgeawgt, 0.9), 2) " &
+                      "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN " &
+                      "ROUND( {0} / nvl(p.avgcswgt, 0) * nvl(p.avgeawgt, 0.9),2) " &
+                      "ELSE ROUND({0} / p.eaPerCs, 2) END AS eaPrice, CASE WHEN p.scaledItem = 'N' OR p.eapercs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " &
+                      "WHEN p.scaledItem = 'Y' and DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN ROUND( {0} *(p.eapercs*p.lbsperea)/ nvl(p.avgcswgt, 0),2) " &
+                      "ELSE ROUND({0} / (p.eaPerCs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1))), 2) END AS lbPrice_orderByQty, " &
+                      "Case WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs != 1 Then p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) / nvl(p.avgeawgt, 0.9) " &
                       "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 Then nvl(p.avgcswgt, 0)/nvl(p.avgeawgt, 0.9) ELSE 0 END as psPerCs ", Price)
 
         ElseIf PriceUnit = "EA" Then
-            sb.AppendFormat("CASE WHEN p.scaledItem = 'Y' and DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN 0 " & _
-                    "  ELSE ROUND( {0} * p.eapercs, 2) END AS csPrice, " & _
-                    " {0} AS eaPrice, CASE WHEN p.scaledItem = 'N' OR p.eapercs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " & _
+            sb.AppendFormat("CASE WHEN p.scaledItem = 'Y' and DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN 0 " &
+                    "  ELSE ROUND( {0} * p.eapercs, 2) END AS csPrice, " &
+                    " {0} AS eaPrice, CASE WHEN p.scaledItem = 'N' OR p.eapercs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " &
                     "  ELSE ROUND({0} / DECODE(nvl(p.lbsPerEa, 0.1),0,0.1,nvl(p.lbsPerEa, 0.1)) , 2) END AS lbPrice_orderByQty ", Price)
 
         ElseIf PriceUnit = "LB" Then
-            sb.AppendFormat("CASE WHEN p.scaledItem = 'Y' and DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN {0}/(p.eapercs*p.lbsperea)* nvl(p.avgcswgt, 0) " & _
-                    " ELSE ROUND({0} * p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)), 2) END AS csPrice, " & _
-                    " CASE WHEN p.eaPerCs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " & _
-                    "  WHEN p.scaledItem = 'Y' THEN ROUND({0} * nvl(p.avgeawgt, 0.9), 2) " & _
-                    "  ELSE ROUND({0} * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)), 2) END AS eaPrice, " & _
-                     "{0} AS lbPrice_orderByQty, " & _
-                     "Case WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs != 1 Then " & _
-                     "(p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) / nvl(p.avgeawgt, 0.9)) " & _
-                     "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 Then " & _
+            sb.AppendFormat("CASE WHEN p.scaledItem = 'Y' and DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 THEN {0}/(p.eapercs*p.lbsperea)* nvl(p.avgcswgt, 0) " &
+                    " ELSE ROUND({0} * p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)), 2) END AS csPrice, " &
+                    " CASE WHEN p.eaPerCs / DECODE(p.minsalcnt,0,1,p.minsalcnt) <= 1 THEN 0 " &
+                    "  WHEN p.scaledItem = 'Y' THEN ROUND({0} * nvl(p.avgeawgt, 0.9), 2) " &
+                    "  ELSE ROUND({0} * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)), 2) END AS eaPrice, " &
+                     "{0} AS lbPrice_orderByQty, " &
+                     "Case WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs != 1 Then " &
+                     "(p.eapercs * DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) / nvl(p.avgeawgt, 0.9)) " &
+                     "WHEN p.scaledItem = 'Y' AND DECODE(p.lbsPerEa,0,0.1,nvl(p.lbsPerEa, 0.1)) * p.eaPerCs = 1 Then " &
                      "nvl(p.avgcswgt, 0)/nvl(p.avgeawgt, 0.9) ELSE 0 END as psPerCs ", Price)
         Else
             sb.Append("0 as csPrice, 0 as eaPrice, 0 as lbPrice_orderByQty ")
 
         End If
 
-        sb.AppendFormat(" FROM jets_price p, jets_customer jc, customer c WHERE jc.bid = c.jfcBranchNr And jc.customerid = c.jfcCustomerNr " & _
+        sb.AppendFormat(" FROM jets_price p, jets_customer jc, customer c WHERE jc.bid = c.jfcBranchNr And jc.customerid = c.jfcCustomerNr " &
                         "  AND p.pricegpid = jc.pricegpid " & " AND p.itemcode = {0} AND c.customer_id = {1}", ItemID, customerID)
 
         Return sb.ToString
