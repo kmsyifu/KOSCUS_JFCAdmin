@@ -82,31 +82,35 @@ Public Class DBHelper
                 oracon.Open()
                 Dim a As Integer = GetScalar("SELECT 1 FROM dual")
                 If retryCount > 0 Then
-                    ExecuteNonQuery("INSERT INTO EVENTLOG(LOG_ID, EVENTDESC, eventArg1, CREATEUSER, CREATEDATE) VALUES (log_seq.NEXTVAL, 'ORA-03113 at Connect', 'KOSCUS_JFCAdmin', 'SYSTEM', SYSDATE)")
+                    'Logging only: a failed insert must not fail the (working) connection
+                    Try
+                        ExecuteNonQuery("INSERT INTO EVENTLOG(LOG_ID, EVENTDESC, eventArg1, CREATEUSER, CREATEDATE) VALUES (log_seq.NEXTVAL, 'ORA-03113 at Connect', 'KOSCUS_JFCAdmin', 'SYSTEM', SYSDATE)")
+                    Catch
+                    End Try
                 End If
                 Exit Do
 
-            Catch ex As System.Data.OracleClient.OracleException
-                If IsConnectionLostCode(ex.Code) Then ' e.g. ORA-03113: end-of-file on communication channel
-                    retryCount += 1
-                    If retryCount <= maxRetries Then
-                        'The other idle connections in the pool are most likely dead too (cut by the server / network):
-                        'drop them all, so neither this retry nor the pages' SqlDataSource controls get one of them
-                        Try
-                            OracleConnection.ClearPool(oracon)
-                        Catch
-                        End Try
-                        Me.Close()
-                        Threading.Thread.Sleep(delay) ' Exponential backoff
-                        delay *= 2
-                    Else
-                        Throw New Exception("Failed to connect after multiple retries", ex)
-                    End If
-                Else
-                    Throw ' Re-throw unexpected Oracle exceptions
-                End If
             Catch ex As Exception
-                Throw
+                'Always give this attempt's connection back to the pool. Before, an error after Open (the check query failing,
+                'the last ORA-03113 retry, the 60 second query cancel) threw from the constructor without closing it: the
+                'caller's Using never got the object, so the connection stayed taken until garbage collection. After a few
+                'database hiccups all pooled connections were taken ("Timeout expired ... max pool size was reached").
+                Dim oex As OracleException = TryCast(ex, OracleException)
+                Dim lost As Boolean = (oex IsNot Nothing AndAlso IsConnectionLostCode(oex.Code)) ' e.g. ORA-03113: end-of-file on communication channel
+                If lost Then
+                    'The other idle connections in the pool are most likely dead too (cut by the server / network):
+                    'drop them all, so neither this retry nor the pages' SqlDataSource controls get one of them
+                    Try
+                        If oracon IsNot Nothing Then OracleConnection.ClearPool(oracon)
+                    Catch
+                    End Try
+                End If
+                DiscardConnection()
+                If Not lost Then Throw
+                retryCount += 1
+                If retryCount > maxRetries Then Throw New Exception("Failed to connect after multiple retries", ex)
+                Threading.Thread.Sleep(delay) ' Exponential backoff
+                delay *= 2
             End Try
         Loop While retryCount <= maxRetries
     End Sub
@@ -140,13 +144,29 @@ Public Class DBHelper
         End Try
     End Sub
 
+    'Closes the connection of a failed connect attempt (never throws), so it goes back to the pool
+    Private Sub DiscardConnection()
+        If oracon Is Nothing Then Return
+        Try
+            oracon.Close()
+        Catch
+        End Try
+        Try
+            oracon.Dispose()
+        Catch
+        End Try
+        oracon = Nothing
+    End Sub
+
     Public Sub Close()
         Select Case dbtype
             Case DataBaseType.ORACLE
+                If oracon Is Nothing Then Return 'already closed
                 oracon.Close()
                 oracon.Dispose()
                 oracon = Nothing
             Case DataBaseType.SQLSERVER
+                If sqlcon Is Nothing Then Return 'already closed
                 sqlcon.Close()
                 sqlcon.Dispose()
                 sqlcon = Nothing
