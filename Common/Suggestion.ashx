@@ -104,7 +104,14 @@ Public Class Search_VB : Implements IHttpHandler
 
                     SQL = "SELECT c.Name FROM  jho.customer@jho c " & _
                     " WHERE c.bid = :1 AND c.customerid = :2"
-                    Dim Name = CString(DB.GetScalar(SQL, id, id2))
+                    'The link to JHO (@jho) is sometimes cut while idle (e.g. ORA-02068 / ORA-03113): the first query fails and
+                    'Oracle opens the link again on the next one, so try once more
+                    Dim Name As String
+                    Try
+                        Name = CString(DB.GetScalar(SQL, id, id2))
+                    Catch ex As System.Data.OracleClient.OracleException
+                        Name = CString(DB.GetScalar(SQL, id, id2))
+                    End Try
                     sb.Append(Name)
                     context.Response.Write(sb.ToString)
                 Case "VAILDEMAIL"
@@ -128,11 +135,16 @@ Public Class Search_VB : Implements IHttpHandler
                         SQL = "SELECT s.email1 AS salesmanEmail, b.branchid, CASE WHEN b.branchid = '45' THEN '45' ELSE b.parent_branchid END AS parentBranchID " & _
                                 "FROM jho.branch@jho b, jho.customer@jho c, jho.salesman@jho s " & _
                                 "WHERE b.branchid = c.bid AND c.bid = s.bid AND c.cid = s.cid AND c.salesmanid = s.salesmanid AND b.branchid = :1 AND c.customerid = :2"
-                        r = DB.GetReader(SQL, id2, id3)
-                        'If r.Read() Then
-                        Dim salesmanEmail = CString(r("salesmanEmail"))
-                        'jfcBranchNr = CString(r("branchid"))
-                        'End If
+                        'Read() was missing (reading the row without it always threw an error); no sales rep found -> "not assigned".
+                        'Try once more if the JHO link was cut while idle (same as JFCBRANCH).
+                        Dim salesmanEmail As String = ""
+                        Try
+                            r = DB.GetReader(SQL, id2, id3)
+                        Catch ex As System.Data.OracleClient.OracleException
+                            r = DB.GetReader(SQL, id2, id3)
+                        End Try
+                        If r.Read() Then salesmanEmail = CString(r("salesmanEmail"))
+                        r.close()
 
                         If Not (salesmanEmail.Contains(id) OrElse SUPPORT_EMAIL.Contains(id) OrElse id = "yfukushima@jfc.com") Then
                             msg = "Error! You are not assigned to be the sales rep of this account " & id2 & " - " & id3 & ".<br /> You only can add your customers' account."

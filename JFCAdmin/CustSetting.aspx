@@ -29,20 +29,23 @@
                             callback(data);
 				        },
                         error: function() {
-                            alert('Error occured');
+                            // Server error: callback gets null and failed = true (before: an alert, and the check was skipped)
+                            callback(null, true);
                         }
 			        });
          }  
 
         
-         function getCustomerName(){
+         var CUST_LOOKUP_FAILED = '<span style="color:#c00;">Could not look up the customer (server error). Please try again.</span>';
+
+        function getCustomerName(){
               var id = document.getElementById('<%=txtPopJFCAccount.ClientID %>').value;
               var id2 = document.getElementById('<%=txtPopJFCNum.ClientID %>').value;
               if(id.length == 2 && id2.length == 4)
               {
-                    loadData(id,id2,'','','JFCBranch',function(data) {
+                    loadData(id,id2,'','','JFCBranch',function(data, failed) {
                     //processing the data
-                    document.getElementById('<%=lblPopCustomerName.ClientID%>').innerHTML = data;
+                    document.getElementById('<%=lblPopCustomerName.ClientID%>').innerHTML = failed ? CUST_LOOKUP_FAILED : data;
                    
                    });
              }
@@ -62,11 +65,11 @@
             var id2 = document.getElementById('<%=txtPopJFCNum.ClientID %>').value;
             if(id.length == 2 && id2.length == 4)
               {
-                   loadData(id,id2,'','','JFCBranch',function(data) {
+                   loadData(id,id2,'','','JFCBranch',function(data, failed) {
                     //processing the data
-                   document.getElementById('<%=lblPopCustomerName.ClientID%>').innerHTML = data;
+                   document.getElementById('<%=lblPopCustomerName.ClientID%>').innerHTML = failed ? CUST_LOOKUP_FAILED : data;
                     
-                   if (!data) 
+                   if (failed || !data) 
                    {
                     args.IsValid = false;
                     
@@ -100,9 +103,15 @@
             var id3 = document.getElementById('<%=txtPopJFCNum.ClientID %>').value;
               if(id.length > 0)
               {
-                   loadData(id,id2,id3,'','VAILDEMAIL',function(data) {
+                   loadData(id,id2,id3,'','VAILDEMAIL',function(data, failed) {
                     //processing the data
-                   if (!data) 
+                   if (failed)
+                   {
+                        args.IsValid = false;
+                        sender.innerText = "Could not check the email (server error). Please try again.";
+                        sender.errormessage = sender.innerText;
+                   }
+                   else if (!data) 
                    {
                     
                    }
