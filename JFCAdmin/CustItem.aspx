@@ -139,7 +139,6 @@
             });
             var dataToSend = JSON.stringify({ items: items });
             var id = '<%=lblCustomerID.text%>';
-            $("#buyAgainOrderMsg").text("Saving...");
 
             $.ajax({
                 type: 'POST',
@@ -147,30 +146,14 @@
                 url: '../Common/Suggestion.ashx?id=' + id + '&id2=&id3=&id4=&code=ITEMLIST',
                 data: dataToSend,
                 success: function (data) {
-                    $("#buyAgainOrderMsg").text("Order saved");
                 },
                 error: function () {
-                    $("#buyAgainOrderMsg").text("");
-                    alert('Error occurred');
+                    alert('Error occurred'); // only an error is shown (no "Saving... / Order saved")
                 }
             });
         }
 
-        // Buy Again display order (full and mobile site): each row has up / down buttons.
-        // Clicks / taps are saved together 1 second after the last one.
-        var buyAgainSaveTimer;
-        function moveBuyAgainRow(btn, dir) {
-            var row = $(btn).closest("tr");
-            var other = dir < 0 ? row.prev("tr") : row.next("tr");
-            if (other.length === 0 || other.find('input[name="item_id"]').length === 0) return false; // already first / last
-            if (dir < 0) row.insertBefore(other); else row.insertAfter(other);
-            row.addClass("buyAgainMoved");
-            setTimeout(function () { row.removeClass("buyAgainMoved"); }, 600);
-            $("#buyAgainOrderMsg").text("");
-            clearTimeout(buyAgainSaveTimer);
-            buyAgainSaveTimer = setTimeout(saveBuyAgainOrder, 1000);
-            return false;
-        }
+        var buyAgainSaveTimer; // save after a drag (initBuyAgainDrag)
 
         // Buy Again display order (full and mobile site): press and hold a row for 1 second (finger or mouse), then drag it
         // up / down; the order is saved when the finger / mouse button is released.
@@ -204,7 +187,6 @@
                     dragRow = row.addClass("buyAgainDragging");
                     $(grid).addClass("buyAgainDragActive");
                     if (window.getSelection) window.getSelection().removeAllRanges();
-                    $("#buyAgainOrderMsg").text("");
                     if (navigator.vibrate) navigator.vibrate(40);
                     // Scroll the page while the finger / mouse is near the top / bottom of the window
                     scrollTimer = setInterval(function () {
@@ -497,21 +479,19 @@
                 <asp:HiddenField ID="lblTextChanged_custItem" runat="server" /> <%--Can be access from both server and client side--%>
                 <h2>Buy Again &nbsp;&nbsp; </h2>
                 <style type="text/css">
-                    .buyAgainMove { display: inline-block; width: 34px; height: 30px; margin: 1px 0; padding: 0; border: 1px solid #C8C8C8; border-radius: 4px;
-                        background: #FFFFFF; color: #E78F08; font-size: 14px; line-height: 28px; text-align: center; cursor: pointer; }
-                    .buyAgainMove:active { background: #FDE9C6; }
-                    tr.buyAgainMoved td { background: #FDE9C6 !important; }
+                    .buyAgainSort { cursor: grab; }
                     tr.buyAgainDragging td { background: #F9B84A !important; color: #FFFFFF; }
                     .touchDragGrid tr { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
                     .buyAgainDragActive, .buyAgainDragActive tr { cursor: grabbing; -webkit-user-select: none; user-select: none; }
-                    #buyAgainOrderMsg { margin-left: 8px; color: #2E7D32; font-weight: bold; }
                 </style>
-                <span class="gray"><%= IIf(IsMobile(), "Change display order: touch and hold a row for 1 second, then drag it; or tap &#9650; / &#9660;.", "Change display order: click and hold a row for 1 second, then drag it; or click &#9650; / &#9660;.") %></span><span id="buyAgainOrderMsg"></span>
-                <br />
+                <asp:PlaceHolder runat="server" Visible='<%# IsMobile() %>'>
+                    <span class="midLabel">Change Display Order:</span> <span class="gray">touch and hold a row for 1 second, then drag it.</span>
+                    <br />
+                </asp:PlaceHolder>
                 
                    
                     <asp:Panel  runat="server" Visible='<%# Not IsMobile() %>'>
-                        <asp:Label ID="Label1" runat="server" CssClass=" midLabel" Text="Change Display Order:&nbsp;&nbsp;&nbsp;(1) " /> 
+                        <asp:Label ID="Label1" runat="server" CssClass=" midLabel" Text="Change Display Order:&nbsp;&nbsp;&nbsp;hold a row for 1 second, then drag it;&nbsp;&nbsp;or&nbsp;&nbsp;(1) " /> 
                         <asp:linkbutton ID="btnExportExcel"    CssClass=" linkLabel" ForeColor="#4169E1" runat="server" Text="Export"  UseSubmitBehavior="false" />
                         &nbsp;&nbsp;&nbsp;
                         <asp:Label ID="Label2" runat="server" CssClass=" midLabel" Text="&nbsp;&nbsp;&nbsp;(2) Change order in excel file &nbsp;&nbsp;&nbsp;(3) Select file " />
@@ -911,9 +891,6 @@
                         <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size1"  ItemStyle-CssClass="size1" >
                         <ItemTemplate>
                             <input type="hidden" name="item_id"  value='<%# Eval("custGrpItem_id") %>'  />
-                            <%--Move the row up / down (full and mobile site)--%>
-                            <button type="button" class="buyAgainMove" title="Move up" onclick="return moveBuyAgainRow(this, -1);">&#9650;</button><br />
-                            <button type="button" class="buyAgainMove" title="Move down" onclick="return moveBuyAgainRow(this, 1);">&#9660;</button>
                         </ItemTemplate>
 
                         </asp:TemplateField>
@@ -992,6 +969,12 @@
                                      <asp:Label runat="server" ID="lblenable" Visible ="false"  CssClass="number6" Text='<%# Eval("enabled") %>' />
                                     <%--<asp:TextBox runat="server" ID="txtLbPrice_orderByWgt" CssClass="stdTxt number6" Text='<%# Eval("lbPrice_orderByWgt", "{0:N}") %>' Visible='<%# Val(Eval("lbPrice_orderByWgt")) <> 0 %>' />
                                     <asp:TextBox runat="server" ID="txtLbPrice_orderByQty" CssClass="stdTxt number6" Text='<%# Eval("lbPrice_orderByQty", "{0:N}") %>' Visible='<%# Val(Eval("lbPrice_orderByQty")) <> 0 %>' />--%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <%--Display order: hold a row 1 second, then drag it (same icon as Branch Settings - Homepage images)--%>
+                            <asp:TemplateField HeaderText="Order <br/> (Hold 1 sec to move)" HeaderStyle-CssClass="th center12" ItemStyle-CssClass="center12">
+                                <ItemTemplate>
+                                    <asp:Image ID="btnSort" CssClass="xsImgBtn buyAgainSort" ToolTip="Hold 1 second, then drag to move" runat="server" ImageUrl='<%# GetWebImgUrl("sort.png") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField ItemStyle-CssClass="center4">
