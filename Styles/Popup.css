@@ -1,0 +1,103 @@
+/* ----------------------------------------------------------------------------------------------------------------------
+   Popup dialogs (ModalPopupExtender panels): same look as Customer Items - Item Info and Customer Settings - Add New Customer.
+   Use on the panel: CssClass="popup_dialog kp" (+ kp-wide / kp-narrow for the width).
+     <div class="kp-header"><h1>Title</h1> close button (kp-close)</div>
+     <div class="kp-body"> kp-alert, kp-section, kp-field (kp-label + kp-input), kp-kv rows ... </div>
+     <div class="kp-footer"> kp-btn kp-btn-delete (left) / kp-btn-cancel / kp-btn-primary </div>
+   ---------------------------------------------------------------------------------------------------------------------- */
+.kp.popup_dialog { width: 480px; max-width: 94vw; padding: 0; border: 1px solid #E0E0E0; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28); font-family: Arial, Helvetica, sans-serif; background: #FFFFFF; text-align: left; }
+.kp.popup_dialog.kp-wide { width: 600px; }
+.kp.popup_dialog.kp-narrow { width: 400px; }
+
+.kp .kp-header { position: relative; padding: 14px 48px 14px 20px; background: #F6A828; background-image: linear-gradient(to bottom, #F9B84A, #F09618);
+    border-bottom: 1px solid #E78F08; }
+.kp .kp-header h1 { margin: 0; padding: 0; border: none; font-size: 1.25em; font-weight: bold; color: #FFFFFF; text-align: left; }
+.kp .kp-close { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); width: 30px; height: 30px; margin: 0; padding: 0;
+    border: none; border-radius: 15px; background: transparent; color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 22px;
+    font-weight: normal; line-height: 30px; text-align: center; text-decoration: none; cursor: pointer; text-shadow: none; box-shadow: none; }
+.kp .kp-close:hover { background: rgba(255, 255, 255, 0.25); color: #FFFFFF; text-decoration: none; }
+
+.kp .kp-body { padding: 18px 20px 6px 20px; }
+.kp .kp-body.kp-scroll { max-height: calc(100vh - 170px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* Messages: kp-alert = error / warning (red), kp-note = information (orange bar) */
+.kp .kp-alert { display: block; margin: 0 0 14px 0; padding: 10px 12px; border: 1px solid #F5C2C0; border-left: 4px solid #D93025; border-radius: 4px;
+    background: #FDECEA; color: #B3261E; font-size: 0.95em; font-weight: bold; line-height: 1.4; }
+.kp .kp-alert:empty { display: none; }
+.kp .kp-note { margin: 0 0 14px 0; padding: 10px 12px; border: 1px solid #E0E0E0; border-left: 4px solid #F09618; border-radius: 4px;
+    background: #FAFAFA; color: #333333; font-size: 0.95em; line-height: 1.4; }
+
+.kp .kp-section { margin: 4px 0 10px 0; padding: 0 0 4px 0; border-bottom: 1px solid #EEEEEE; color: #E78F08; font-size: 0.8em;
+    font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Form fields */
+.kp .kp-field { margin: 0 0 16px 0; }
+.kp .kp-label { display: block; margin: 0 0 6px 0; color: #555555; font-size: 0.85em; font-weight: bold; letter-spacing: 0.02em; text-transform: uppercase; }
+.kp .kp-req { color: #D93025; font-weight: bold; }
+.kp .kp-input { box-sizing: border-box; height: 38px; margin: 0; padding: 6px 10px; border: 1px solid #C8C8C8; border-radius: 4px;
+    font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #222222; background: #FFFFFF; vertical-align: middle; }
+.kp .kp-input:focus { outline: none; border-color: #F09618; box-shadow: 0 0 0 3px rgba(240, 150, 24, 0.2); }
+.kp .kp-input[disabled] { background: #F3F3F3; color: #666666; }
+.kp select.kp-input { width: auto; min-width: 80px; padding: 6px; }
+.kp .kp-wide-input { width: 100%; }
+.kp .kp-short { width: 160px; max-width: 100%; }
+.kp .kp-date { width: 140px; }
+.kp .kp-hint { display: inline-block; margin: 0 0 0 8px; color: #888888; font-size: 0.8em; vertical-align: middle; }
+.kp .kp-hint-block { display: block; margin: 5px 0 0 0; color: #888888; font-size: 0.8em; }
+.kp .kp-err { display: block; margin: 5px 0 0 0; color: #D93025; font-size: 0.85em; font-weight: bold; }
+.kp .kp-value { display: block; min-height: 20px; padding: 9px 12px; border: 1px solid #EEEEEE; border-radius: 4px; background: #FAFAFA;
+    color: #222222; font-weight: bold; overflow-wrap: break-word; }
+.kp .kp-check { display: inline-block; padding: 4px 0; color: #333333; cursor: pointer; }
+.kp .kp-check input { width: 18px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; }
+.kp .kp-check label { cursor: pointer; }
+
+/* JFC account # boxes (branch - customer) and the looked-up name */
+.kp .kp-branch { width: 64px; text-align: center; }
+.kp .kp-number { width: 120px; }
+.kp .kp-dash { display: inline-block; margin: 0 6px; color: #888888; font-weight: bold; vertical-align: middle; }
+.kp .kp-name:empty:before { content: "Enter the account # to look up the name"; color: #AAAAAA; font-weight: normal; font-style: italic; }
+
+/* Read-only key / value rows */
+.kp .kp-kv { display: table; width: 100%; margin: 0 0 8px 0; border-collapse: separate; border-spacing: 0 6px; }
+.kp .kp-row { display: table-row; }
+.kp .kp-k { display: table-cell; width: 130px; padding: 0 10px 0 0; color: #777777; font-size: 0.9em; vertical-align: top; }
+.kp .kp-rowgroup { display: table-row-group; }
+.kp .kp-v { display: table-cell; color: #222222; vertical-align: top; overflow-wrap: break-word; }
+
+/* Item summary card */
+.kp .kp-summary { margin: 0 0 16px 0; padding: 12px 14px; border: 1px solid #EEEEEE; border-radius: 6px; background: #FAFAFA; }
+.kp .kp-title { display: block; color: #222222; font-size: 1.05em; font-weight: bold; line-height: 1.35; overflow-wrap: break-word; }
+.kp .kp-media { text-align: center; margin: 0 0 14px 0; }
+.kp .kp-media img { max-width: 100%; height: auto; border-radius: 6px; }
+.kp .kp-small { color: #888888; font-size: 0.85em; }
+.kp .kp-itemview { display: flex; align-items: flex-start; }
+.kp .kp-itemimg { flex: 0 0 auto; margin: 0 16px 0 0; }
+.kp .kp-itemimg img { margin: 0; border-radius: 6px; }
+.kp .kp-iteminfo { flex: 1 1 auto; min-width: 0; }
+
+/* Footer buttons */
+.kp .kp-footer { padding: 12px 20px; border-top: 1px solid #EEEEEE; background: #FAFAFA; text-align: right; }
+.kp .kp-footer:after { content: ""; display: table; clear: both; }
+.kp .kp-btn { box-sizing: border-box; min-width: 90px; height: 36px; margin: 0 0 0 8px; padding: 0 16px; border-radius: 4px;
+    font-family: Arial, Helvetica, sans-serif; font-size: 0.95em; font-weight: bold; cursor: pointer; text-shadow: none; box-shadow: none; }
+.kp .kp-btn-cancel { border: 1px solid #C8C8C8; background: #FFFFFF; color: #444444; }
+.kp .kp-btn-cancel:hover { background: #F0F0F0; }
+.kp .kp-btn-delete { float: left; margin: 0; border: 1px solid #E8B4B0; background: #FFFFFF; color: #C62828; }
+.kp .kp-btn-delete:hover { background: #FDECEA; }
+.kp .kp-btn-primary { border: 1px solid #2E7D32; background: #43A047; background-image: linear-gradient(to bottom, #4CAF50, #388E3C); color: #FFFFFF; }
+.kp .kp-btn-primary:hover { background: #2E7D32; }
+
+/* The calendar of a date box must not be cut off by the popup */
+.kp.popup_dialog.kp-calendar { overflow: visible; }
+.kp.popup_dialog.kp-calendar .kp-header { border-radius: 8px 8px 0 0; }
+.kp.popup_dialog.kp-calendar .kp-footer { border-radius: 0 0 8px 8px; }
+
+@media (max-width: 480px) {
+    .kp .kp-body { padding: 14px 14px 4px 14px; }
+    .kp .kp-footer { padding: 10px 14px; }
+    .kp .kp-btn { min-width: 0; padding: 0 12px; }
+    .kp .kp-k { width: 105px; }
+    .kp .kp-itemview { display: block; }
+    .kp .kp-itemimg { margin: 0 0 14px 0; text-align: center; }
+}
