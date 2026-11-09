@@ -43,6 +43,24 @@
             WriteErrorLog("ERROR EMAIL NOT SENT: " & ex.ToString())
         End Try
 
+        'Lost database connection (e.g. ORA-03113: a dead connection from the pool, which also happens in the pages'
+        'SqlDataSource controls that don't go through DBHelper): drop all pooled connections, then load the page again once
+        '(GET only; the dbretry=1 parameter stops a loop). A postback, or a second failure, shows "connection lost, please try again".
+        If DBHelper.IsConnectionLost(lastError) Then
+            DBHelper.ClearConnectionPools()
+            Server.ClearError()
+            If Request.HttpMethod = "GET" AndAlso Request.QueryString("dbretry") <> "1" Then
+                Dim retryURL As String = Request.RawUrl & IIf(Request.RawUrl.Contains("?"), "&", "?") & "dbretry=1"
+                WriteErrorLog("DB CONNECTION LOST - pools cleared, page loaded again: " & retryURL)
+                Response.Redirect(retryURL, False)
+            Else
+                WriteErrorLog("DB CONNECTION LOST - pools cleared, user asked to try again")
+                Response.Redirect("~/Errors/Error.aspx?reason=connection", False)
+            End If
+            Context.ApplicationInstance.CompleteRequest()
+            Exit Sub
+        End If
+
         'A query canceled for running too long (DBHelper.QUERY_TIMEOUT_SECONDS): show "the database is busy, please try again"
         'instead of the general error message
         If IsDBQueryTimeout(lastError) Then

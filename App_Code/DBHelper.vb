@@ -87,10 +87,15 @@ Public Class DBHelper
                 Exit Do
 
             Catch ex As System.Data.OracleClient.OracleException
-                If ex.Code = 3113 Then ' ORA-03113: end-of-file on communication channel
+                If IsConnectionLostCode(ex.Code) Then ' e.g. ORA-03113: end-of-file on communication channel
                     retryCount += 1
                     If retryCount <= maxRetries Then
-                        'OracleConnection.ClearPool(New OracleConnection(cs))
+                        'The other idle connections in the pool are most likely dead too (cut by the server / network):
+                        'drop them all, so neither this retry nor the pages' SqlDataSource controls get one of them
+                        Try
+                            OracleConnection.ClearPool(oracon)
+                        Catch
+                        End Try
                         Me.Close()
                         Threading.Thread.Sleep(delay) ' Exponential backoff
                         delay *= 2
@@ -104,6 +109,35 @@ Public Class DBHelper
                 Throw
             End Try
         Loop While retryCount <= maxRetries
+    End Sub
+
+    'Oracle errors meaning the connection itself is dead (not a problem with the query):
+    'ORA-00028 session killed, ORA-01012 not logged on, ORA-03113 end-of-file on communication channel,
+    'ORA-03114 not connected to ORACLE, ORA-03135 connection lost contact, ORA-12571 TNS packet writer failure
+    Public Shared Function IsConnectionLostCode(ByVal code As Integer) As Boolean
+        Select Case code
+            Case 28, 1012, 3113, 3114, 3135, 12571
+                Return True
+        End Select
+        Return False
+    End Function
+
+    'True if the error (or any error inside it) is a lost database connection, from DBHelper or from a SqlDataSource
+    Public Shared Function IsConnectionLost(ByVal ex As Exception) As Boolean
+        While ex IsNot Nothing
+            Dim oex As OracleException = TryCast(ex, OracleException)
+            If oex IsNot Nothing AndAlso IsConnectionLostCode(oex.Code) Then Return True
+            ex = ex.InnerException
+        End While
+        Return False
+    End Function
+
+    'Drops every pooled connection, so the next pages open new ones instead of getting a dead one
+    Public Shared Sub ClearConnectionPools()
+        Try
+            OracleConnection.ClearAllPools()
+        Catch
+        End Try
     End Sub
 
     Public Sub Close()
