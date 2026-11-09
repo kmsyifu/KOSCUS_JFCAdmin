@@ -169,12 +169,19 @@
 
             
             //$('#<%=lstCustCompany.ClientID%>').change(function(){alert(optionValue);});
-           $('#<%=txtJfcBranchNr.ClientID%>').mask("99");
-           $.mask.definitions['h'] = "[A-Za-z0-9]";
-           $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
-           $(".resetCursor").mouseup(function () {
-             this.setSelectionRange(0,0);    
-            });
+           if (<%= IIf(IsMobile(), "true", "false") %>) {
+               //Mobile: the masked input does not work with phone keyboards - limit the boxes while typing instead
+               limitInput('#<%=txtJfcBranchNr.ClientID%>', 2, /[0-9]/);
+               $('#<%=txtJfcBranchNr.ClientID%>').attr({ inputmode: "numeric", pattern: "[0-9]*" });
+               limitInput('#<%=txtJfcCustomerNr.ClientID%>', 4, /[A-Za-z0-9]/);
+           } else {
+               $('#<%=txtJfcBranchNr.ClientID%>').mask("99");
+               $.mask.definitions['h'] = "[A-Za-z0-9]";
+               $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
+               $(".resetCursor").mouseup(function () { //cursor to the start of the mask
+                   this.setSelectionRange(0,0);
+               });
+           }
 
            
            // var optionValue = $(this).attr("value");

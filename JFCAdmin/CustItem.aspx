@@ -284,13 +284,20 @@
             
            
         
-           $(".resetCursor").mouseup(function () {
-             this.setSelectionRange(0,0);    
-            });
 
-           $('#<%=txtJfcBranchNr.ClientID%>').mask("99");
-            $.mask.definitions['h'] = "[A-Za-z0-9]";
-           $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
+           if (<%= IIf(IsMobile(), "true", "false") %>) {
+               //Mobile: the masked input does not work with phone keyboards - limit the boxes while typing instead
+               limitInput('#<%=txtJfcBranchNr.ClientID%>', 2, /[0-9]/);
+               $('#<%=txtJfcBranchNr.ClientID%>').attr({ inputmode: "numeric", pattern: "[0-9]*" });
+               limitInput('#<%=txtJfcCustomerNr.ClientID%>', 4, /[A-Za-z0-9]/);
+           } else {
+               $('#<%=txtJfcBranchNr.ClientID%>').mask("99");
+               $.mask.definitions['h'] = "[A-Za-z0-9]";
+               $('#<%=txtJfcCustomerNr.ClientID%>').mask("hhhh");
+               $(".resetCursor").mouseup(function () { //cursor to the start of the mask
+                   this.setSelectionRange(0,0);
+               });
+           }
            applySortable();
            if (<%= IIf(IsMobile(), "true", "false") %>) initBuyAgainTouchDrag();
 //           $(".drag_drop_grid").sortable({

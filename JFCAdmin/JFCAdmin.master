@@ -96,13 +96,12 @@
         <div class="main turnOffFloat">
             <%--Show progress popup during postback--%>
             <script type="text/javascript">
-                $(document).on("submit", "form", function () { //was $('form').live(...) - .live is removed in jQuery 1.9+
-
-                    if (DoPageClientValidate("validgroup") && DoPageClientValidate("validgroupUser") && DoPageClientValidate("validgroupCompany") && DoPageClientValidate("Homepageupload")) {
-                        showProgress();
-                    }
-                
-
+                $(document).on("submit", "form", function (e) { //was $('form').live(...) - .live is removed in jQuery 1.9+
+                    //Show the loading screen unless the submit was canceled (the clicked button's validation failed:
+                    //WebForm_OnSubmit returns false before this runs). Before: it validated 4 fixed groups itself, so an
+                    //invalid / empty box in a hidden popup of another group stopped the loading screen for every button.
+                    if (e.isDefaultPrevented()) return;
+                    showProgress();
                 });
                 //Links, AutoPostBack dropdowns and grid commands post back with __doPostBack (form.submit()),
                 //which skips the submit handler above - show the loading screen for them too.
