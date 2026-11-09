@@ -15,103 +15,61 @@
 </ajaxToolKit:ModalPopupExtender>
 <%--CancelControlID="btnPopClose"--%><%--Error occurs when placing this inside--%>
 
-<asp:Panel ID="pnlPopItemDtl" style="display:none;" runat="server" CssClass="popup_dialog fontsize2">
-    <div class="inner">
-        <%--<asp:ImageButton ID="btnPopClose" CssClass="popClose" runat="server" ImageUrl='<%# GetWebImgUrl("close.jpg") %>' />--%>
-        <asp:LinkButton ID="btnPopClose" CssClass="popClose" runat="server" Text="x" /><%--Use LinkButton instead of ImageButton because progress bar shows after closed in some browser.--%>
+<asp:Panel ID="pnlPopItemDtl" style="display:none;" runat="server" CssClass="popup_dialog kp kp-wide">
+    <div class="kp-header">
         <h1>Item Info</h1>
-        <table>
-            <asp:Panel ID="Panel1" Visible='<%# Not IsMobile() %>' runat="server">
-                <tr>
-                    <td rowspan="18"><asp:Image ID="imgPopItem" CssClass="popImg" runat="server" /></td><%--rowspan="15"--%>
-                </tr>
-                <tr><td colspan="2"><br /><br /></td></tr>
+        <asp:LinkButton ID="btnPopClose" CssClass="kp-close" runat="server" Text="&times;" ToolTip="Close" /><%--Use LinkButton instead of ImageButton because progress bar shows after closed in some browser.--%>
+    </div>
+    <div class="kp-body kp-scroll">
+        <div class="kp-itemview">
+            <asp:Panel ID="Panel1" Visible='<%# Not IsMobile() %>' CssClass="kp-itemimg" runat="server">
+                <asp:Image ID="imgPopItem" CssClass="popImg" runat="server" />
             </asp:Panel>
-            <asp:Panel ID="Panel2" Visible='<%# IsMobile() %>' runat="server">
-                <tr>
-                    <td colspan="2"><asp:Image ID="imgPopItem2" CssClass="cellXLImg" runat="server" /></td>
-                </tr>
-            </asp:Panel>
-            <tr>
-                <td colspan="2"><asp:Label runat="server" ID="lblPopItemDesc" CssClass="cellLbl bold midLabel" />
-                <asp:Label Visible="false" runat="server" ID="lblPopCustGrpItemID" /></td>
-            </tr>
-            <tr>
-                <td colspan="2"><asp:Label runat="server" ID="lblPopJfcRemark" CssClass="cellLbl green" /></td>
-            </tr>
-            <tr>
-                <td class="gray right">Item #:</td>
-                <td><asp:Label runat="server" ID="lblPopItemIdNr" CssClass="cellLbl" /></td>
-            </tr>
-            <asp:Panel ID="pnlPopOrderForm" runat="server">
-                <tr>
-                    <td class="gray right">Order Form:</td>
-                    <td><asp:Label runat="server" ID="lblPopItemGrpName" CssClass="cellLbl" /></td>
-                </tr>
-            </asp:Panel>
-            <asp:Panel ID="pnlPopVendor" runat="server">
-                <tr>
-                    <td class="gray right">Vendor:</td>
-                    <td><asp:Label runat="server" ID="lblPopVendorName" CssClass="cellLbl" /></td>
-                </tr>
-            </asp:Panel>
-            <tr>
-                <td class="gray right">JFC Category:</td>
-                <td><asp:Label runat="server" ID="lblPopCtgName" CssClass="cellLbl" /></td>
-            </tr>
-            <asp:Panel ID="pnlPopEaPerCs" runat="server">
-                <tr>
-                    <td class="gray right">Each / Case:</td>
-                    <td><asp:Label runat="server" ID="lblPopEaPerCs" CssClass="cellLbl" /></td>
-                </tr>
-            </asp:Panel>
-            <tr>
-                <td class="gray right"><asp:Label runat="server" ID="lblPopAvgWgtTitle" Text="Average Weight:" /></td>
-                <td><asp:Label runat="server" ID="lblPopAvgCsWgt" CssClass="cellLbl" />
-                    <asp:Label runat="server" ID="lblPopAvgEaWgt" CssClass="cellLbl" /></td>
-            </tr>
-            <asp:Panel ID="pnlPopShowItemDtl" runat="server">
-                <tr>
-                    <td class="gray right">Weight:</td>
-                    <td><asp:Label runat="server" ID="lblPopGrossWeight" CssClass="cellLbl" /></td>
-                </tr>
-                <tr>
-                    <td class="gray right">Volume:</td>
-                    <td><asp:Label runat="server" ID="lblPopCaseVol" CssClass="cellLbl" /></td>
-                </tr>
-                <%--<tr>
-                    <td class="gray right">Pallet Tie / Height:</td>
-                    <td><asp:Label runat="server" ID="lblPopPallet" CssClass="cellLbl" /></td>
-                </tr>--%>
-                <asp:Panel ID="Panel3" Visible='<%# Not IsMobile() %>' runat="server">
-                    <tr>
-                        <td class="gray right">Ingredient:</td>
-                        <td><asp:Label runat="server" ID="lblPopIngredient" CssClass="cellLbl" /></td>
-                    </tr>
+            <div class="kp-iteminfo">
+                <asp:Panel ID="Panel2" Visible='<%# IsMobile() %>' CssClass="kp-media" runat="server">
+                    <asp:Image ID="imgPopItem2" CssClass="cellXLImg" runat="server" />
                 </asp:Panel>
-            </asp:Panel>
-            <asp:Panel ID="pnlPopShowPrice" runat="server">
-                <tr>
-                    <td class="gray right">Price:</td>
-                    <td><asp:Label runat="server" ID="lblPopLbPrice_OrderByQty" CssClass="cellLbl green bold" />
-                        <asp:Label runat="server" ID="lblPopCsPrice" CssClass="cellLbl red bold" /> 
-                        <asp:Label runat="server" ID="lblPopEaPrice" CssClass="cellLbl red bold" /> 
-                        <asp:Label runat="server" ID="lblPopLbPrice_OrderByWgt" CssClass="cellLbl red bold" /> 
-                        <asp:Label runat="server" ID="lblPopAskPrice" Text='Ask' CssClass="cellLbl red bold" />
-                        <asp:Label runat="server" ID="lblPopMinSalCnt_view" CssClass="cellLbl green" /> 
-                    </td>
-                </tr>
-            </asp:Panel>
-            <tr>
-                <td class="gray right top"><asp:Label runat="server" ID="lblPopQtyHistoryTitle" Text="Order History:" /></td>
-                <td><asp:Label runat="server" ID="lblPopQtyHistory" CssClass="gray" /></td>
-            </tr>
-            <tr>   
-                <td></td> 
-                <td><asp:Label ID="lblPopAvailQty" CssClass="cellLbl green" runat="server" /></td>
-            </tr>
-            <tr><td colspan="2" class="gray"><br />Note: The information above is for reference only.</td></tr>
-        </table>
-        <br />
+                <div class="kp-summary">
+                    <asp:Label runat="server" ID="lblPopItemDesc" CssClass="kp-title" />
+                    <asp:Label Visible="false" runat="server" ID="lblPopCustGrpItemID" />
+                    <asp:Label runat="server" ID="lblPopJfcRemark" CssClass="green" />
+                </div>
+                <div class="kp-kv">
+                    <div class="kp-row"><span class="kp-k">Item #</span><span class="kp-v"><asp:Label runat="server" ID="lblPopItemIdNr" /></span></div>
+                    <asp:Panel ID="pnlPopOrderForm" CssClass="kp-row" runat="server">
+                        <span class="kp-k">Order Form</span><span class="kp-v"><asp:Label runat="server" ID="lblPopItemGrpName" /></span>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlPopVendor" CssClass="kp-row" runat="server">
+                        <span class="kp-k">Vendor</span><span class="kp-v"><asp:Label runat="server" ID="lblPopVendorName" /></span>
+                    </asp:Panel>
+                    <div class="kp-row"><span class="kp-k">JFC Category</span><span class="kp-v"><asp:Label runat="server" ID="lblPopCtgName" /></span></div>
+                    <asp:Panel ID="pnlPopEaPerCs" CssClass="kp-row" runat="server">
+                        <span class="kp-k">Each / Case</span><span class="kp-v"><asp:Label runat="server" ID="lblPopEaPerCs" /></span>
+                    </asp:Panel>
+                    <div class="kp-row"><span class="kp-k"><asp:Label runat="server" ID="lblPopAvgWgtTitle" Text="Average Weight" /></span><span class="kp-v"><asp:Label runat="server" ID="lblPopAvgCsWgt" />
+                        <asp:Label runat="server" ID="lblPopAvgEaWgt" /></span></div>
+                    <asp:Panel ID="pnlPopShowItemDtl" CssClass="kp-rowgroup" runat="server">
+                        <div class="kp-row"><span class="kp-k">Weight</span><span class="kp-v"><asp:Label runat="server" ID="lblPopGrossWeight" /></span></div>
+                        <div class="kp-row"><span class="kp-k">Volume</span><span class="kp-v"><asp:Label runat="server" ID="lblPopCaseVol" /></span></div>
+                        <%--<div class="kp-row"><span class="kp-k">Pallet Tie / Height</span><span class="kp-v"><asp:Label runat="server" ID="lblPopPallet" /></span></div>--%>
+                        <asp:Panel ID="Panel3" Visible='<%# Not IsMobile() %>' CssClass="kp-row" runat="server">
+                            <span class="kp-k">Ingredient</span><span class="kp-v"><asp:Label runat="server" ID="lblPopIngredient" /></span>
+                        </asp:Panel>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlPopShowPrice" CssClass="kp-row" runat="server">
+                        <span class="kp-k">Price</span>
+                        <span class="kp-v"><asp:Label runat="server" ID="lblPopLbPrice_OrderByQty" CssClass="green bold" />
+                            <asp:Label runat="server" ID="lblPopCsPrice" CssClass="red bold" />
+                            <asp:Label runat="server" ID="lblPopEaPrice" CssClass="red bold" />
+                            <asp:Label runat="server" ID="lblPopLbPrice_OrderByWgt" CssClass="red bold" />
+                            <asp:Label runat="server" ID="lblPopAskPrice" Text='Ask' CssClass="red bold" />
+                            <asp:Label runat="server" ID="lblPopMinSalCnt_view" CssClass="green" /></span>
+                    </asp:Panel>
+                    <div class="kp-row"><span class="kp-k"><asp:Label runat="server" ID="lblPopQtyHistoryTitle" Text="Order History" /></span><span class="kp-v"><asp:Label runat="server" ID="lblPopQtyHistory" CssClass="gray" />
+                        <asp:Label ID="lblPopAvailQty" CssClass="green" runat="server" /></span></div>
+                </div>
+                <div class="kp-small">Note: The information above is for reference only.</div>
+            </div>
+        </div>
     </div>
 </asp:Panel>

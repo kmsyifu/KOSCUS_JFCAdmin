@@ -628,67 +628,56 @@
                                 <OnHiding><FadeOut Duration="0.3" Fps="25" /></OnHiding>
                             </Animations>
                         </ajaxToolKit:ModalPopupExtender>
-                        <asp:Panel ID="pnlPopSchedDtl" DefaultButton="btnPopSaveDelivery" style="display:none;" runat="server" CssClass="popup_dialog">
-                            <div class="inner">
-                                <asp:ImageButton ID="btnPopClose" CssClass="popClose theButtonClass" CausesValidation="False" runat="server"   ImageUrl='<%# GetWebImgUrl("close.jpg") %>'  />
+                        <asp:Panel ID="pnlPopSchedDtl" DefaultButton="btnPopSaveDelivery" style="display:none;" runat="server" CssClass="popup_dialog kp kp-calendar">
+                            <div class="kp-header">
                                 <h1><asp:Label ID="lblPopHeader_schedule" runat="server" Text="View/Add/Edit"/> Delivery</h1>
-                                <br />
-                                <asp:Panel runat="server" ID="pnlPopDtlEdit_schedule"> 
-                                  <asp:Panel runat="server" ID ="pnlPopSheduleWarning" Visible="false" >
-                                  <asp:Label ID="lblPopSheduleWarning" CssClass=" red bold  "  runat="server" />
-                                   <br />
-                                    <br />
-                                  </asp:Panel>             
-                                    <table>
-                                        <tr style="display:none;">
-                                            <td class="rowHdr">Vendor</td>
-                                            <td><asp:DropDownList ID="lstPopCustGrpVendor" CssClass="drpList size48" runat="server" /><asp:Label ID="lblPopCustGrpVendorID" visible="false" runat="server"/>
-                                                <asp:Label ID="lblPopStarCustGrpVendor" CssClass="red" runat="server" Text="*"/>
-                                                <asp:Label ID="lblPopVendorName" CssClass="rowLblVal" runat="server" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Delivery On</td>
-                                            <td><asp:TextBox ID="txtPopDeliveryDate" ValidationGroup="validgroup" CssClass="stdTxt size12" Text="01/01/2013" runat="server" autocomplete="off" />&nbsp;(mm/dd/yyyy) <%--Text required so that validator wouldn't work by default--%>
-                                              
-                                                <ajaxToolKit:CalendarExtender ID="calPopDeliveryDate"  Format="MM/dd/yyyy" TargetControlID="txtPopDeliveryDate" runat="server"  />
-                                                <asp:Label ID="Label30" CssClass="red" runat="server" Text="*"/>&nbsp;&nbsp;&nbsp;
-                                                <asp:CustomValidator ValidationGroup="validgroup" id="vldPopDeliveryDate" CssClass="red" runat="server" ValidateEmptyText="true" ControlToValidate="txtPopDeliveryDate"  ErrorMessage="Invalid date" ClientValidationFunction="validateDate" />
-                                                <asp:Label ID="lblPopOldDeliveryDate" Visible="false" runat="server" /></td>
-                                        </tr>
-                                        <tr> 
-                                            <td class="rowHdr">Order by</td>
-                                            <td><asp:TextBox ID="txtPopOrderByDate"  ValidationGroup="validgroup" CssClass="stdTxt size12" Text="01/01/2013" runat="server" autocomplete="off"  />&nbsp;(mm/dd/yyyy) <%--Text required so that validator wouldn't work by default--%>
-                                                <ajaxToolKit:CalendarExtender ID="calPopOrderByDate" Format="MM/dd/yyyy" TargetControlID="txtPopOrderByDate" runat="server" />
-                                                <asp:Label ID="Label29" CssClass="red" runat="server" Text="*"/>&nbsp;&nbsp;&nbsp;
-                                                <asp:CustomValidator ValidationGroup="validgroup" id="vldPopOrderByDate" CssClass="red" runat="server" ValidateEmptyText="true"  ControlToValidate="txtPopOrderByDate" ErrorMessage="Invalid date" ClientValidationFunction="validateDate" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr"></td>
-                                            <td><asp:DropDownList ID="lstPopOrderByTime" CssClass="drpList size12" runat="server" />
-                                                <asp:DropDownList ID="lstPopOrderByAmPm" CssClass="drpList size8" runat="server" />
-                                                <asp:Label ID="Label32" CssClass="red" runat="server" Text="*"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Send Reminder</td>
-                                            <td><asp:DropDownList ID="lstPopSendReminder" CssClass="drpList size12" runat="server" />
-                                                <asp:Label ID="Label37" CssClass="red" runat="server" Text="*"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="rowHdr">Schedule Name</td>
-                                            <td><asp:Label ID="lblPopSchedule" CssClass="rowLblVal" runat="server" /></td>
-                                        </tr>
-                                        <tr><td colspan="2"><asp:CheckBox  ID="ckbPopEmail" runat ="server" CssClass= "checkbox"  class="fontsize-1"/>Send email to customer (for update only)</td></tr>
-                                        <tr>
-                                            <td colspan="2" class="red"><asp:Label ID="Label33" CssClass="red" runat="server" Text="* Required"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" class="center"><asp:Button ID="btnPopSaveDelivery" CssClass="midButton_green" runat="server" Text="Update"  ValidationGroup="validgroup" />
-                                                <asp:Button ID="btnPopDeleteDelivery" CssClass="midButton" runat="server" Text="Delete Delivery" CausesValidation="false" /></td>
-                                        </tr>
-                                    </table>
-                                </asp:Panel>
-                              
+                                <asp:Button ID="btnPopClose" CssClass="kp-close theButtonClass" CausesValidation="False" runat="server" Text="×" ToolTip="Close" />
                             </div>
+                            <asp:Panel runat="server" ID="pnlPopDtlEdit_schedule">
+                                <div class="kp-body">
+                                    <asp:Panel runat="server" ID ="pnlPopSheduleWarning" Visible="false" >
+                                        <asp:Label ID="lblPopSheduleWarning" CssClass="kp-alert" runat="server" />
+                                    </asp:Panel>
+                                    <div style="display:none;">
+                                        <asp:DropDownList ID="lstPopCustGrpVendor" CssClass="drpList size48" runat="server" /><asp:Label ID="lblPopCustGrpVendorID" visible="false" runat="server"/>
+                                        <asp:Label ID="lblPopStarCustGrpVendor" CssClass="red" runat="server" Text="*"/>
+                                        <asp:Label ID="lblPopVendorName" CssClass="rowLblVal" runat="server" />
+                                    </div>
+                                    <div class="kp-field">
+                                        <label class="kp-label" for="<%= txtPopDeliveryDate.ClientID %>">Delivery On <asp:Label ID="Label30" CssClass="kp-req" runat="server" Text="*"/></label>
+                                        <asp:TextBox ID="txtPopDeliveryDate" ValidationGroup="validgroup" CssClass="kp-input kp-date" Text="01/01/2013" runat="server" autocomplete="off" /><span class="kp-hint">mm/dd/yyyy</span><%--Text required so that validator wouldn't work by default--%>
+                                        <ajaxToolKit:CalendarExtender ID="calPopDeliveryDate"  Format="MM/dd/yyyy" TargetControlID="txtPopDeliveryDate" runat="server"  />
+                                        <div><asp:CustomValidator ValidationGroup="validgroup" id="vldPopDeliveryDate" CssClass="kp-err" Display="Dynamic" runat="server" ValidateEmptyText="true" ControlToValidate="txtPopDeliveryDate"  ErrorMessage="Invalid date" ClientValidationFunction="validateDate" /></div>
+                                        <asp:Label ID="lblPopOldDeliveryDate" Visible="false" runat="server" />
+                                    </div>
+                                    <div class="kp-field">
+                                        <label class="kp-label" for="<%= txtPopOrderByDate.ClientID %>">Order By <asp:Label ID="Label29" CssClass="kp-req" runat="server" Text="*"/></label>
+                                        <asp:TextBox ID="txtPopOrderByDate"  ValidationGroup="validgroup" CssClass="kp-input kp-date" Text="01/01/2013" runat="server" autocomplete="off"  /><%--Text required so that validator wouldn't work by default--%>
+                                        <ajaxToolKit:CalendarExtender ID="calPopOrderByDate" Format="MM/dd/yyyy" TargetControlID="txtPopOrderByDate" runat="server" />
+                                        <asp:DropDownList ID="lstPopOrderByTime" CssClass="kp-input" runat="server" />
+                                        <asp:DropDownList ID="lstPopOrderByAmPm" CssClass="kp-input" runat="server" />
+                                        <asp:Label ID="Label32" Visible="false" runat="server" Text="*"/>
+                                        <div><asp:CustomValidator ValidationGroup="validgroup" id="vldPopOrderByDate" CssClass="kp-err" Display="Dynamic" runat="server" ValidateEmptyText="true"  ControlToValidate="txtPopOrderByDate" ErrorMessage="Invalid date" ClientValidationFunction="validateDate" /></div>
+                                    </div>
+                                    <div class="kp-field">
+                                        <label class="kp-label" for="<%= lstPopSendReminder.ClientID %>">Send Reminder <asp:Label ID="Label37" CssClass="kp-req" runat="server" Text="*"/></label>
+                                        <asp:DropDownList ID="lstPopSendReminder" CssClass="kp-input" runat="server" />
+                                    </div>
+                                    <div class="kp-field">
+                                        <span class="kp-label">Schedule Name</span>
+                                        <asp:Label ID="lblPopSchedule" CssClass="kp-value" runat="server" />
+                                    </div>
+                                    <div class="kp-field">
+                                        <label class="kp-check"><asp:CheckBox ID="ckbPopEmail" runat ="server" />Send email to customer (for update only)</label>
+                                    </div>
+                                    <div class="kp-field"><asp:Label ID="Label33" CssClass="kp-small" runat="server" Text="* Required"/></div>
+                                </div>
+                                <div class="kp-footer">
+                                    <asp:Button ID="btnPopDeleteDelivery" CssClass="kp-btn kp-btn-delete" runat="server" Text="Delete Delivery" CausesValidation="false" />
+                                    <button type="button" class="kp-btn kp-btn-cancel" onclick="$('#<%= btnPopClose.ClientID %>').click(); return false;">Close</button>
+                                    <asp:Button ID="btnPopSaveDelivery" CssClass="kp-btn kp-btn-primary" runat="server" Text="Update"  ValidationGroup="validgroup" />
+                                </div>
+                            </asp:Panel>
                         </asp:Panel>
                     </asp:Panel>
                     <br />

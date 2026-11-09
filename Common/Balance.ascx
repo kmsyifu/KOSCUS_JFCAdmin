@@ -443,69 +443,65 @@
             </Animations>
         </ajaxToolKit:ModalPopupExtender>
         <%--CancelControlID="btnPopClose"--%><%--Error occurs when placing this inside TODO: Add this code and reopen for error--%>
-        <asp:Panel ID="pnlPopNewAcc" style="display:none;" runat="server" CssClass="popup_dialog">
-            <div class="inner">
-                <asp:LinkButton ID="btnPopClose" CssClass="popClose" runat="server" Text="x" /><%--Use LinkButton instead of ImageButton because progress bar shows after closed in some browser.--%>
-                <asp:Label ID="lblPopNewAccCmd" runat="server" Visible="false" />
+        <asp:Panel ID="pnlPopNewAcc" style="display:none;" runat="server" CssClass="popup_dialog kp">
+            <div class="kp-header">
                 <h1>New Account</h1>
-                <table>
-                    <tr>
-                        <td class="bold red" colspan="2"><asp:Label ID="lblPopErrMsg" CssClass="red" runat="server" /></td>
-                    </tr>
-                    <tr>
-                        <td class="rowHdr">Payment Type</td>
-                        <td><asp:DropDownList ID="lstPopPaymentType" CssClass='<%# "drpList " & IIf(IsMobile(), "size24", "size32") %>' AutoPostBack='<%# Common.ALLOW_CARD_PAYMENT %>' runat="server" /></td>
-                    </tr>
-                    <tr>
-                        <td class="rowHdr">Name on Account</td>
-                        <td><asp:TextBox ID="txtPopAccName" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" />
-                            <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtPopAccName" WatermarkText="Name on your bank account" WatermarkCssClass='<%# "watermark stdTxt " & IIf(IsMobile(), "size24", "size48") %>' /></td>
-                    </tr>
-                    <asp:Panel ID="pnlPopBankAcc" runat="server">
-                        <tr>
-                            <td class="rowHdr">Routing # (9 digits)</td>
-                            <td><asp:TextBox ID="txtPopRoutingNr" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="rowHdr">Bank Account # (Up to 17 digits)</td>
-                            <td><asp:TextBox ID="txtPopBankAccNr" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="rowHdr">Confirm Bank Account #</td>
-                            <td><asp:TextBox ID="txtPopBankAccNr2" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" /></td>
-                        </tr>
-                    </asp:Panel>
-                    <asp:Panel ID="pnlPopCard" runat="server">
-                        <tr>
-                            <td class="rowHdr">Card Type</td>
-                            <td><asp:DropDownList ID="lstPopCardType" CssClass='<%# "drpList " & IIf(IsMobile(), "size24", "size48") %>' runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="rowHdr">Card Number</td>
-                            <td><asp:TextBox ID="txtPopCardNr" CssClass='<%# "stdTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="rowHdr">Expiration Date</td>
-                            <td><asp:DropDownList ID="lstPopMonth" CssClass="drpList size12" runat="server" /><asp:DropDownList ID="lstPopYear" CssClass="drpList size16" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td class="rowHdr">Security Code (Back of Card)</td>
-                            <td><asp:TextBox ID="txtPopSecurityCode" CssClass="stdTxt size12" runat="server" /></td>
-                        </tr>
-                    </asp:Panel>
-                    <tr>
-                        <td class="rowHdr"></td>
-                        <td><asp:CheckBox ID="chkPopRememberAcc" Checked="true" CssClass="checkbox" Text="Remember this Account" runat="server" /></td>
-                    </tr>
-                    <tr><td colspan="2"><br /></td></tr>
-                    <tr>
-                        <td colspan="2" class="center"><asp:Image ID="imgPopCheck" ImageAlign="top" Width='280px' Height='60px' runat="server" ImageUrl='<%# GetWebImgUrl("eCheck.jpg") %>' />&nbsp;&nbsp;
-                                <asp:Label ID="Label22" runat="server" Text='<%# IIf(IsMobile(), "<br /><br />", "") %>' />
-                            <asp:Button runat="server" ID="btnPopAddPaymentAcc" CssClass="midButton" Text="Use this Account" /><%--&nbsp;&nbsp;
-                            <asp:LinkButton ID="lnkPopCancelPaymentAcc" CssClass="linkLabel middle" ForeColor="#4169E1" runat="server" Text="Cancel" />--%></td>
-                    </tr>
-                </table>
-                <br />
+                <asp:LinkButton ID="btnPopClose" CssClass="kp-close" runat="server" Text="&times;" ToolTip="Close" /><%--Use LinkButton instead of ImageButton because progress bar shows after closed in some browser.--%>
+            </div>
+            <asp:Label ID="lblPopNewAccCmd" runat="server" Visible="false" />
+            <div class="kp-body kp-scroll">
+                <asp:Label ID="lblPopErrMsg" CssClass="kp-alert" runat="server" />
+                <div class="kp-field">
+                    <label class="kp-label" for="<%= lstPopPaymentType.ClientID %>">Payment Type</label>
+                    <asp:DropDownList ID="lstPopPaymentType" CssClass="kp-input kp-wide-input" AutoPostBack='<%# Common.ALLOW_CARD_PAYMENT %>' runat="server" />
+                </div>
+                <div class="kp-field">
+                    <label class="kp-label" for="<%= txtPopAccName.ClientID %>">Name on Account</label>
+                    <asp:TextBox ID="txtPopAccName" CssClass="kp-input kp-wide-input" runat="server" />
+                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtPopAccName" WatermarkText="Name on your bank account" WatermarkCssClass="watermark kp-input kp-wide-input" />
+                </div>
+                <asp:Panel ID="pnlPopBankAcc" runat="server">
+                    <div class="kp-field">
+                        <label class="kp-label" for="<%= txtPopRoutingNr.ClientID %>">Routing # <span class="kp-small">(9 digits)</span></label>
+                        <asp:TextBox ID="txtPopRoutingNr" CssClass="kp-input kp-wide-input" runat="server" inputmode="numeric" />
+                    </div>
+                    <div class="kp-field">
+                        <label class="kp-label" for="<%= txtPopBankAccNr.ClientID %>">Bank Account # <span class="kp-small">(up to 17 digits)</span></label>
+                        <asp:TextBox ID="txtPopBankAccNr" CssClass="kp-input kp-wide-input" runat="server" inputmode="numeric" />
+                    </div>
+                    <div class="kp-field">
+                        <label class="kp-label" for="<%= txtPopBankAccNr2.ClientID %>">Confirm Bank Account #</label>
+                        <asp:TextBox ID="txtPopBankAccNr2" CssClass="kp-input kp-wide-input" runat="server" inputmode="numeric" />
+                    </div>
+                </asp:Panel>
+                <asp:Panel ID="pnlPopCard" runat="server">
+                    <div class="kp-field">
+                        <label class="kp-label" for="<%= lstPopCardType.ClientID %>">Card Type</label>
+                        <asp:DropDownList ID="lstPopCardType" CssClass="kp-input kp-wide-input" runat="server" />
+                    </div>
+                    <div class="kp-field">
+                        <label class="kp-label" for="<%= txtPopCardNr.ClientID %>">Card Number</label>
+                        <asp:TextBox ID="txtPopCardNr" CssClass="kp-input kp-wide-input" runat="server" inputmode="numeric" />
+                    </div>
+                    <div class="kp-field">
+                        <span class="kp-label">Expiration Date</span>
+                        <asp:DropDownList ID="lstPopMonth" CssClass="kp-input" runat="server" /> <asp:DropDownList ID="lstPopYear" CssClass="kp-input" runat="server" />
+                    </div>
+                    <div class="kp-field">
+                        <label class="kp-label" for="<%= txtPopSecurityCode.ClientID %>">Security Code <span class="kp-small">(back of card)</span></label>
+                        <asp:TextBox ID="txtPopSecurityCode" CssClass="kp-input kp-short" runat="server" inputmode="numeric" />
+                    </div>
+                </asp:Panel>
+                <div class="kp-field">
+                    <asp:CheckBox ID="chkPopRememberAcc" Checked="true" CssClass="kp-check" Text="Remember this Account" runat="server" />
+                </div>
+                <div class="kp-media">
+                    <asp:Image ID="imgPopCheck" Width='280px' Height='60px' runat="server" ImageUrl='<%# GetWebImgUrl("eCheck.jpg") %>' />
+                    <asp:Label ID="Label22" runat="server" Visible="false" />
+                </div>
+            </div>
+            <div class="kp-footer">
+                <asp:Button runat="server" ID="btnPopAddPaymentAcc" CssClass="kp-btn kp-btn-primary" Text="Use this Account" />
             </div>
         </asp:Panel>
     </div>
