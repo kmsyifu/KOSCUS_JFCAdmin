@@ -3624,6 +3624,7 @@ Public Class Common
     End Function
 
     'ADD By YI FU 9/4/2020-- Function  setPrice  customer_custItem
+    'ItemID and customerID go into the SQL as they are: pass them quoted, DB.SqlEsc(...) (unquoted -> ORA-01722 invalid number)
     Public Shared Function SetPrice(ByVal PriceUnit As String, Price As Decimal, ItemID As String, customerID As String) As String
 
         Dim sb As New StringBuilder
