@@ -208,6 +208,19 @@ function showProgress() {
     centerProgress();
 }
 
+// Phone keyboards do not work with the masked input (jquery.maskedinput 1.3.1 needs keypress events, which Android
+// keyboards do not send), so on the mobile site boxes use this instead: it keeps only the characters that match
+// allowedChar (one character, e.g. /[0-9]/) and at most maxLen of them, while typing or pasting.
+function limitInput(selector, maxLen, allowedChar) {
+    $(selector).attr("maxlength", maxLen).on("input", function () {
+        var v = "";
+        for (var i = 0; i < this.value.length && v.length < maxLen; i++) {
+            if (allowedChar.test(this.value.charAt(i))) v += this.value.charAt(i);
+        }
+        if (v !== this.value) this.value = v;
+    });
+}
+
 function centerProgress() {
     var loading = $(".loading:visible").first();
     if (loading.length === 0) return;
