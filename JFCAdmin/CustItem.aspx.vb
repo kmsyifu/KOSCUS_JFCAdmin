@@ -1778,15 +1778,16 @@ Partial Class JFCAdmin_CustItem
             r = DB.GetReader(SQL)
 
             If r.Read() Then
+                'SaveCustItemCopy: retries once on ORA-00001 when the same item is copied twice at the same time
                 If copyall Then
-                    UpSertCustItem(DB, custInfo.customerID, CString(r("custGrpItem_id")), "Y", itemcode, itemdesc, itemremark,
+                    SaveCustItemCopy(DB, Function() UpSertCustItem(DB, custInfo.customerID, CString(r("custGrpItem_id")), "Y", itemcode, itemdesc, itemremark,
                               IIf(Val(r("csPrice_o")) = csPrice, Nothing, csPrice), IIf(Val(r("eaPrice_o")) = eaprice, Nothing, eaprice), 0,
-                              IIf(Val(r("lbPrice_OrderByQty_o")) = lbprice, Nothing, lbprice), False)
+                              IIf(Val(r("lbPrice_OrderByQty_o")) = lbprice, Nothing, lbprice), False))
 
                 Else
-                    UpSertCustItemCopyPrice(DB, custInfo.customerID, CString(r("custGrpItem_id")), "Y", CString(r("item_id")), CString(r("custItem_Desc")), CString(r("jfcRemark")),
+                    SaveCustItemCopy(DB, Function() UpSertCustItemCopyPrice(DB, custInfo.customerID, CString(r("custGrpItem_id")), "Y", CString(r("item_id")), CString(r("custItem_Desc")), CString(r("jfcRemark")),
                               IIf(Val(r("csPrice_o")) = csPrice, Nothing, csPrice), IIf(Val(r("eaPrice_o")) = eaprice, Nothing, eaprice), 0,
-                              IIf(Val(r("lbPrice_OrderByQty_o")) = lbprice, Nothing, lbprice), False)
+                              IIf(Val(r("lbPrice_OrderByQty_o")) = lbprice, Nothing, lbprice), False))
 
                 End If
 
@@ -1795,7 +1796,7 @@ Partial Class JFCAdmin_CustItem
                 SQL = GetSQL_CustItem(DB, "NewItem_Copy", custInfo, GroupItemID)
                 r2 = DB.GetReader(SQL, custInfo.jfcBranchNr, custInfo.jfcCustomerNr, custInfo.customerID, GroupItemID.Substring(GroupItemID.Length - 5))
                 If r2.Read() Then
-                    UpSertCustItem(DB, custInfo.customerID, CString(r2("custGrpItem_id")), "Y", itemcode, itemdesc, itemremark, csPrice, eaprice, 0, lbprice, True)
+                    SaveCustItemCopy(DB, Function() UpSertCustItem(DB, custInfo.customerID, CString(r2("custGrpItem_id")), "Y", itemcode, itemdesc, itemremark, csPrice, eaprice, 0, lbprice, True))
 
                 End If
                 r2.close()
