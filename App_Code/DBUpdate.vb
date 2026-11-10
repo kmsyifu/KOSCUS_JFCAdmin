@@ -1484,6 +1484,9 @@ Public Class DBUpdate
     Public Shared Function UpdateCustSetting(ByVal db As DBHelper, ByVal customerID As String, ByVal AllowCustOrder As String, HideItemPage As String, HidePaymentPage As String, HidePrice As String, anytimedelivery As String, TextPhones As String, ShowOutofStock As String, ShowAllExcepGrpItem As String, shipvia As String, shipdateoffset As Decimal, minOrderAmt As Integer, hideHomePage As String, allowChat As String, Optional ByVal isOneTrans As Boolean = True) As Boolean
         Dim SQL As String
         If isOneTrans Then db.BeginTransaction()
+        'AllowChat changed -> stamp jetsDataModDate (must run before AllowChat is overwritten below)
+        SQL = "UPDATE customer SET jetsDataModDate = SYSDATE WHERE customer_id = :1 AND NVL(AllowChat,'~') <> NVL(:2,'~')"
+        db.ExecuteNonQuery(SQL, customerID, allowChat)
         SQL = "Update customer SET allowCustOrder = :1, hideItemPage =:2,hidePaymentPage =:3, hidePrice = :4, anytimedelivery = :5, textphones = :6, SHOWOUTOFSTOCK = :7,ShowAllExcepGrpItem = :8, SHIPVIA = :9, ShipDateOffset = " &
             shipdateoffset & ", minOrderAmt = " & minOrderAmt & ", hideHomePage =:10, AllowChat =:11 where customer_id = :12"
         db.ExecuteNonQuery(SQL, AllowCustOrder, HideItemPage, HidePaymentPage, HidePrice, anytimedelivery, TextPhones, ShowOutofStock, ShowAllExcepGrpItem, shipvia, hideHomePage, allowChat, customerID)
