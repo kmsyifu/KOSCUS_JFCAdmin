@@ -107,7 +107,8 @@ Partial Class JFCAdmin_OrderForm
                 "LEFT JOIN orderForm_Customer fc ON fc.orderForm_id = f.orderForm_id " &
                 "LEFT JOIN customer c ON c.customer_id = fc.customer_id " &
                 "WHERE  f.jfcBranchNr = :1 " &
-                IIf(searchForm <> "", " AND UPPER(f.orderFormName) LIKE " & DB.SqlEsc("%" & searchForm.ToUpper & "%"), "") &
+                IIf(searchForm <> "", " AND (UPPER(f.orderFormName) LIKE " & DB.SqlEsc("%" & searchForm.ToUpper & "%") &
+                                      " OR UPPER(f.JFCPriceGrpID_Orig) LIKE " & DB.SqlEsc("%" & searchForm.ToUpper & "%") & ")", "") &
                 IIf(searchCust <> "", " AND (UPPER(c.jfcCustomerNr) LIKE " & custLike &
                                       " OR UPPER(c.jfcBranchNr || c.jfcCustomerNr) LIKE " & custLike &
                                       " OR UPPER(c.custGrp_id) LIKE " & custLike & ")", "") &
