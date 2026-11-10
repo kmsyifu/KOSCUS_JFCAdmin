@@ -21,6 +21,7 @@ KOSCUS_JFCADMIN022 (11/09/2026)
 *<OrderForm>: Order Forms list: the search box also finds the Price Group (partial match, upper / lower case ignored); placeholder "Search by Order Form or Price Group".
 *<EmailBody>: Order, payment, balance and price inquiry emails: the item / payment / price inquiry lists no longer have fixed column widths (they added up to more than the email width, up to 1164px in a 680px card, so the list stuck out of the white card, more on phones). The lists now fit the card and the columns size to their content.
 *<OrderForm>: Order Form detail: customers are sorted by name (checked customers first); the items' "Selected" sort is checked items first, then by description (was item #). While searching (search text, or an item category) the checked rows are not put first, and the item list shows only the matching items (check changes of items not shown are kept and saved). Case / Each / Lb Price show 0.00 when there is no price (was empty). New "Show: All / Selected only / Unselected only" radio buttons for customers and items. When a list has more than one page, a "Select all N customers / items (all pages)" checkbox checks / unchecks every row of the list (search and Show filter applied). Item search no longer searches the sales point.
+*<Common>: Version changed to 022.1 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN021 (11/08/2026)
 *<Common>: Version changed to 021 (Common.VERSION), so browsers load the new CSS / JS files.
