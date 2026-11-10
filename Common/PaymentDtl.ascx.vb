@@ -237,9 +237,11 @@ Partial Class Common_PaymentDtl
 
         'Get email body for user from email template in user control
         vendorEmail = GetJfcEmail(mDB, customerID, False)
-        CreateEmailBody(Page, emailBody, "PAY", paymentID, "You have voided your payment.", "CUSTOMER")
-        'Send confirmation email to user
-        If Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, "Payment Voided (" & paymentID & ")", emailBody, Nothing, True, errMsg) > 0 Then
+        'The payment is already voided: TryCreateEmailBody retries once on a lost DB connection; if it still fails, no email
+        '(instead of the error page)
+        If Not TryCreateEmailBody(Page, emailBody, "PAY", paymentID, "You have voided your payment.", "CUSTOMER") Then
+            emailSent = False
+        ElseIf Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, "Payment Voided (" & paymentID & ")", emailBody, Nothing, True, errMsg) > 0 Then
             'Email sent failed
             emailSent = False
         Else
@@ -248,8 +250,9 @@ Partial Class Common_PaymentDtl
         End If
 
         'Send email to vendor.
-        CreateEmailBody(Page, emailBody, "PAY", paymentID, "The following payment has been voided by your customer.", "JFC")
-        Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "Payment '" & paymentID & "' has been voided", emailBody, Nothing, True, errMsg)
+        If TryCreateEmailBody(Page, emailBody, "PAY", paymentID, "The following payment has been voided by your customer.", "JFC") Then
+            Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "Payment '" & paymentID & "' has been voided", emailBody, Nothing, True, errMsg)
+        End If
 
         'Refresh payment detail
         InsertEventLog(mDB, "Payment was voided" & If(emailSent = True, " and confirmation email sent.", ""), customerID, paymentID, Nothing, True)

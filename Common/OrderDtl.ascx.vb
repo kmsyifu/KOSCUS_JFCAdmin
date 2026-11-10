@@ -441,7 +441,14 @@ Partial Class Common_OrderDtl
             Thread.CurrentThread.CurrentUICulture = ci
 
             'Get email body for user from email template in user control
-            CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "DELETED", txtEmailMsg.Text)
+            'Nothing is canceled yet (the email is sent after "Yes"): if the body still cannot be built after the retry on a lost
+            'DB connection, stop here, so "Yes" never sends an empty email
+            If Not TryCreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "DELETED", txtEmailMsg.Text) Then
+                Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
+                Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
+                MessageBox("The connection to the database was lost. The order was not canceled. Please try again.", "Error", DB)
+                Exit Sub
+            End If
             ViewState("DIALOG_ARG1") = String.Format(rm.GetString("Yourorderwascanceled", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
             '"Your order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty) & "was canceled"
             ViewState("DIALOG_ARG2") = emailBody
@@ -1693,7 +1700,11 @@ Partial Class Common_OrderDtl
             'Send email to customer
             toEmail = GetOrderEmail(DB, webOrderID, IIf(sendToCustomer = True, "CUSTOMER", "VENDOR"))
             replyToEmail = GetOrderEmail(DB, webOrderID, IIf(sendToCustomer = True, "VENDOR", "CUSTOMER"))
-            CreateEmailBody(Page, emailBody, "ORDER", webOrderID, IIf(sendToCustomer = True, "CUSTOMER", "VENDOR"), "RESEND")
+            'Lost DB connection while building the email: retried once; if it still fails, "could not be sent" (not the error page)
+            If Not TryCreateEmailBody(Page, emailBody, "ORDER", webOrderID, IIf(sendToCustomer = True, "CUSTOMER", "VENDOR"), "RESEND") Then
+                MessageBox("Email could not be sent. Please try again.", "Error", DB)
+                Exit Sub
+            End If
             If Common.SendMail(SYSTEM_EMAIL, toEmail, replyToEmail, IIf(sendToCustomer = True, "Your order with JFC " & orderIdNr, "Web order " & orderIdNr & " from " & GetOrderCustName(DB, webOrderID)), emailBody, Nothing, True, errMsg) > 0 Then
                 'MessageBox("Email could not be sent to you because " & errMsg.ToLower & ". ", "Error", DB)
                 MessageBox("Email could not be sent. ", "Error", DB)
