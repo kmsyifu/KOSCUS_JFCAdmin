@@ -819,8 +819,8 @@ Partial Class JFCAdmin_CustItem
     End Function
 
     Public Function Displayformat(OrderByQty As Decimal, cs As Decimal, ea As Decimal, scaledItem As Boolean) As String
-        Return IIf(OrderByQty > 0 AndAlso scaledItem = True, String.Format("{0:C}", OrderByQty) & " / lb, ", "") & _
-                                       IIf(cs > 0, String.Format("{0:C}", cs) & " / cs, ", "") & _
+        Return IIf(OrderByQty > 0 AndAlso scaledItem = True, String.Format("{0:C}", OrderByQty) & " / lb, ", "") &
+                                       IIf(cs > 0, String.Format("{0:C}", cs) & " / cs, ", "") &
                                        IIf(ea > 0, String.Format("{0:C}", ea) & " / " & IIf(scaledItem, "pc", "ea"), "") 'Don't show cost / pc
 
     End Function
@@ -1042,7 +1042,7 @@ Partial Class JFCAdmin_CustItem
             Dim custInfo As CustomerInfo = ViewState("CUSTOMER_INFO")
             useCustomerCtg = custInfo.useCustomerCtg
             ViewState("jfcCustomerNr") = custInfo.jfcCustomerNr
-            Searchsql = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " & _
+            Searchsql = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
                         " OR UPPER(cc.CUSTITEMCODE) = {1} OR UPPER(i.item_id) = {1} OR UPPER(cc.CUSTITEMDESC) LIKE {0} OR cc.CUSTITEMDESC LIKE {0}) " 'OR UPPER(a.itemDesc_short) LIKE '%{0}%' 
 
             'Get part of SQL (added i.custgrp_id = " & mDB.SqlEsc(lstCustGrp_custItem.Text) to improve speed)
@@ -1056,17 +1056,17 @@ Partial Class JFCAdmin_CustItem
             '                IIf(lstCtgSearch_custItem.Text <> LST_ALL_STR, "  AND c.ctgName = " & DB.SqlEsc(lstCtgSearch_custItem.Text), "") & _
             '                IIf(lstItemGrpSearch_custItem.Text <> LST_ALL_STR, "  AND g.itemGrpName = " & DB.SqlEsc(lstItemGrpSearch_custItem.Text), "") & _
             '                IIf(txtItemSearch_custItem.Text <> String.Empty, "  AND (i.item_id LIKE " & DB.SqlEsc(txtItemSearch_custItem.Text & "%") & " OR UPPER(i.itemNr) LIKE " & DB.SqlEsc(txtItemSearch_custItem.Text.ToUpper & "%") & " OR UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE " & DB.SqlEsc("%" & txtItemSearch_custItem.Text.ToUpper & "%") & " OR UPPER(i.CustItemDesc) LIKE " & DB.SqlEsc("%" & txtItemSearch_custItem.Text.ToUpper & "%") & ")", "")
-            whereClause = "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " & _
-                            "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " & _
-                            "  AND i.custGrpItem_id = ci.custGrpItem_id " & _
-                            "  AND g.custgrp_id = " & DB.SqlEsc(custGrpID) & _
-                            "  AND ci.customer_id = " & DB.SqlEsc(customerID) & " " & _
-                            "  AND NOT (ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0) " & _
-                            "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " & _
-                            "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " & _
-                            IIf(lstVendorSearch_custItem.Text <> LST_ALL_STR, "  AND v.vendorName = " & DB.SqlEsc(lstVendorSearch_custItem.Text), "") & _
-                            IIf(lstItemGrpSearch_custItem.Text <> LST_ALL_STR, " AND g.itemGrpName = " & DB.SqlEsc(lstItemGrpSearch_custItem.Text), "") & _
-                            IIf(lstCtgSearch_custItem.Text <> LST_ALL_STR, "  AND NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) = " & DB.SqlEsc(lstCtgSearch_custItem.Text), "") & _
+            whereClause = "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " &
+                            "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " &
+                            "  AND i.custGrpItem_id = ci.custGrpItem_id " &
+                            "  AND g.custgrp_id = " & DB.SqlEsc(custGrpID) &
+                            "  AND ci.customer_id = " & DB.SqlEsc(customerID) & " " &
+                            "  AND NOT (ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0) " &
+                            "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " &
+                            "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " &
+                            IIf(lstVendorSearch_custItem.Text <> LST_ALL_STR, "  AND v.vendorName = " & DB.SqlEsc(lstVendorSearch_custItem.Text), "") &
+                            IIf(lstItemGrpSearch_custItem.Text <> LST_ALL_STR, " AND g.itemGrpName = " & DB.SqlEsc(lstItemGrpSearch_custItem.Text), "") &
+                            IIf(lstCtgSearch_custItem.Text <> LST_ALL_STR, "  AND NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) = " & DB.SqlEsc(lstCtgSearch_custItem.Text), "") &
                             IIf(txtItemSearch_custItem.Text <> "", String.Format(Searchsql, DB.SqlEsc("%" & Replace(txtItemSearch_custItem.Text.ToUpper, " ", "%") & "%"), DB.SqlEsc(txtItemSearch_custItem.Text.ToUpper)), "")
 
             'IIf(txtItemSearch_custItem.Text <> "", " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE '%" & Replace(txtItemSearch_custItem.Text.ToUpper, " ", "%") & "%'" & " OR UPPER(a.itemDesc_short) LIKE '%" & Replace(txtItemSearch_custItem.Text.ToUpper, " ", "%") & "%'" & " OR UPPER(a.itemDesc_long) LIKE '%" & Replace(txtItemSearch_custItem.Text.ToUpper, " ", "%") & "%'" & " OR a.itemDesc_ja LIKE '%" & Replace(txtItemSearch_custItem.Text, " ", "%") & "%')", "")
@@ -1186,58 +1186,58 @@ Partial Class JFCAdmin_CustItem
         '" Or UPPER(a.itemWebDesc_roman) Like {0}" & 'Relaced it with salesPoint by jzhou on 6/10/2025
 
 
-        Dim SQL_Select = "SELECT /*+rule*/ " & _
-                 " v.vendorName, " & IIf(nrCustGrpVendor > 1, "v.vendorName", "NULL") & " AS vendorName_view, " & _
-                 " NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) AS ctgName_view, NVL(jctgGrp2.dispOrder, jctgGrp.dispOrder) AS ctgDispOrder, " & _
-                 IIf(UseCustomerCtg, " NVL(customCtg.dispOrder, 0)", "0") & " AS itemDispOrder, " & _
-                 " q.shipDate, i.custGrpItem_id, i.custGrp_ID, i.vendor_id, i.itemGrp_id, g.itemGrpName," & _
-                 " g.dispOrder itemGrpDispOrder, " & _
-                 IIf(isSmallCust = True, "cp.custItem", "i.itemNr") & " AS itemNr, i.CustItemDesc, v.custGrpVendor_id," & _
-                 " i.minSalCnt,  cp.webCustRemark, " & _
-                 " ci.eaPerCs, " & _
-                 " q.csQty AS lastCsQty, CASE WHEN NVL(q.pcQty, 0) > 0 THEN q.pcQty ELSE q.eaQty END AS lastEaQty, q.lbs AS lastLbs," & _
-                 " CASE WHEN q.custGrpItem_id IS NOT NULL OR cp.regcsprice > 0 THEN 'Y' ELSE 'N' END ordered, " & _
-                 " CASE WHEN NVL(q.csQty, 0) > 0 OR NVL(q.eaQty, 0) > 0 OR NVL(q.lbs, 0) > 0 THEN 'Y' ELSE 'N' END AS lastQtyExist, " & _
+        Dim SQL_Select = "SELECT /*+rule*/ " &
+                 " v.vendorName, " & IIf(nrCustGrpVendor > 1, "v.vendorName", "NULL") & " AS vendorName_view, " &
+                 " NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) AS ctgName_view, NVL(jctgGrp2.dispOrder, jctgGrp.dispOrder) AS ctgDispOrder, " &
+                 IIf(UseCustomerCtg, " NVL(customCtg.dispOrder, 0)", "0") & " AS itemDispOrder, " &
+                 " q.shipDate, i.custGrpItem_id, i.custGrp_ID, i.vendor_id, i.itemGrp_id, g.itemGrpName," &
+                 " g.dispOrder itemGrpDispOrder, " &
+                 IIf(isSmallCust = True, "cp.custItem", "i.itemNr") & " AS itemNr, i.CustItemDesc, v.custGrpVendor_id," &
+                 " i.minSalCnt,  cp.webCustRemark, " &
+                 " ci.eaPerCs, " &
+                 " q.csQty AS lastCsQty, CASE WHEN NVL(q.pcQty, 0) > 0 THEN q.pcQty ELSE q.eaQty END AS lastEaQty, q.lbs AS lastLbs," &
+                 " CASE WHEN q.custGrpItem_id IS NOT NULL OR cp.regcsprice > 0 THEN 'Y' ELSE 'N' END ordered, " &
+                 " CASE WHEN NVL(q.csQty, 0) > 0 OR NVL(q.eaQty, 0) > 0 OR NVL(q.lbs, 0) > 0 THEN 'Y' ELSE 'N' END AS lastQtyExist, " &
                  " TO_CHAR(q.shipDate, " & db.SqlEsc(SHORTDATE_FMT) & ") AS shipDate_fmt, TO_CHAR(q.shipDate, " & db.SqlEsc(DATE_FMT) & ") AS shipDate_fmt2," &
-                 " cc.ENABLED," & _
-                 " nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, p.lbsPerEa, " & _
-                 " CASE WHEN i.jfcitem = 'Y' THEN 'JFCItems' ELSE 'OtherItems' END itemType, " & _
-                 " CASE WHEN i.jfcitem = 'Y' THEN a.pointPerCs ELSE NULL END pointPerCs, " & _
-                 " CASE WHEN " & IIf(isSmallCust = True, "cp.custItem", "i.itemNr") & " IS NULL THEN i.item_id ELSE " & IIf(isSmallCust = True, "cp.custItem", "i.itemNr") & " || '<br />(' || i.item_id || ')' END AS itemIdNr_view, " & _
-                 " CASE WHEN ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0 THEN 'Y' ELSE 'N' END askPrice, " & _
+                 " cc.ENABLED," &
+                 " nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, p.lbsPerEa, " &
+                 " CASE WHEN i.jfcitem = 'Y' THEN 'JFCItems' ELSE 'OtherItems' END itemType, " &
+                 " CASE WHEN i.jfcitem = 'Y' THEN a.pointPerCs ELSE NULL END pointPerCs, " &
+                 " CASE WHEN " & IIf(isSmallCust = True, "cp.custItem", "i.itemNr") & " IS NULL THEN i.item_id ELSE " & IIf(isSmallCust = True, "cp.custItem", "i.itemNr") & " || '<br />(' || i.item_id || ')' END AS itemIdNr_view, " &
+                 " CASE WHEN ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0 THEN 'Y' ELSE 'N' END askPrice, " &
                  IIf(Common.ShowItemDtl(db, customerid) = True, " TO_CHAR(ROUND(NVL(a.grossWeight, 0) / 2.2046, 2), 99999.99) || ' kg, ' || TO_CHAR(ROUND(ROUND(NVL(a.caseWidth, 0) * NVL(a.caseDepth, 0) * NVL(a.caseHight, 0) / 12 / 12 / 12, 8) / 35.314, 3), 99999.999) || ' m³'", "NULL") & " AS itemDtl, "
 
-        Dim sql_from = " FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(isSmallCust, IIf(isExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-               "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " & _
-               IIf(UseCustomerCtg = False, "LEFT OUTER JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " & _
-                                           "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id ", "") & _
-               IIf(UseCustomerCtg = True, "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = GetCtgGrpID(" & db.SqlEsc(customerid) & ", i.item_id, 'Y') " & _
-                                          "INNER JOIN customer_ctg customCtg ON customCtg.ctgGrp_id = jctgGrp.ctgGrp_id AND customCtg.customer_id = " & db.SqlEsc(customerid) & " AND customCtg.item_id = i.item_id ", "") & _
-               "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = " & db.SqlEsc(jfcBranchNr) & " AND cp.customerid = " & db.SqlEsc(jfcCustomerNr) & " " & _
-               "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & db.SqlEsc(PriceGrpId) & " " & _
+        Dim sql_from = " FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(isSmallCust, IIf(isExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+               "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " &
+               IIf(UseCustomerCtg = False, "LEFT OUTER JOIN jfcSubCtg jSubCtg ON jSubCtg.ctg_id = a.ctg_id AND jSubCtg.subCtg_id = a.subCtg_id " &
+                                           "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = jSubCtg.ctgGrp_id ", "") &
+               IIf(UseCustomerCtg = True, "LEFT OUTER JOIN jfcCtgGrp jctgGrp ON jctgGrp.ctgGrp_id = GetCtgGrpID(" & db.SqlEsc(customerid) & ", i.item_id, 'Y') " &
+                                          "INNER JOIN customer_ctg customCtg ON customCtg.ctgGrp_id = jctgGrp.ctgGrp_id AND customCtg.customer_id = " & db.SqlEsc(customerid) & " AND customCtg.item_id = i.item_id ", "") &
+               "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = " & db.SqlEsc(jfcBranchNr) & " AND cp.customerid = " & db.SqlEsc(jfcCustomerNr) & " " &
+               "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & db.SqlEsc(PriceGrpId) & " " &
                IIf(UseCustomerCtg = False, "LEFT OUTER JOIN jfcSubCtg jSubCtg2 ON jSubCtg2.ctg_id = p.ctg_id_branch AND jSubCtg2.subCtg_id = p.subCtg_id_branch " &
                                             "LEFT OUTER JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id ", "") &
-               IIf(UseCustomerCtg = True, "LEFT OUTER JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = GetCtgGrpID(" & db.SqlEsc(customerid) & ", i.item_id, 'Y') " & _
-                                          "INNER JOIN customer_ctg customCtg ON customCtg.ctgGrp_id = jctgGrp.ctgGrp_id AND customCtg.customer_id = " & db.SqlEsc(customerid) & " AND customCtg.item_id = i.item_id ", "") & _
-               "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & db.SqlEsc(PriceGrpId) & " " & _
-               "LEFT OUTER JOIN customer_lastOrderedQty q ON q.custGrpItem_id = i.custGrpItem_id AND q.customer_id = " & db.SqlEsc(customerid) & " " & _
-               "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.CUSTGRPITEM_ID AND cc.customer_id = " & db.SqlEsc(customerid) & " " & _
+               IIf(UseCustomerCtg = True, "LEFT OUTER JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = GetCtgGrpID(" & db.SqlEsc(customerid) & ", i.item_id, 'Y') " &
+                                          "INNER JOIN customer_ctg customCtg ON customCtg.ctgGrp_id = jctgGrp.ctgGrp_id AND customCtg.customer_id = " & db.SqlEsc(customerid) & " AND customCtg.item_id = i.item_id ", "") &
+               "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & db.SqlEsc(PriceGrpId) & " " &
+               "LEFT OUTER JOIN customer_lastOrderedQty q ON q.custGrpItem_id = i.custGrpItem_id AND q.customer_id = " & db.SqlEsc(customerid) & " " &
+               "LEFT OUTER JOIN customer_custItem cc ON cc.custGrpItem_id = i.CUSTGRPITEM_ID AND cc.customer_id = " & db.SqlEsc(customerid) & " " &
                "LEFT OUTER JOIN customer_itemDispOrder co ON i.CUSTGRPITEM_ID = co.custgrpitem_id and co.customer_id =  " & db.SqlEsc(customerid) & " "
 
-        Dim SQL_eaCost = "(CASE WHEN ci.eaPerCs <= 1 THEN 0 ELSE " & _
-                              "(CASE WHEN NVL(p.scaledItem, 'N') = 'Y' THEN (CASE WHEN ci.eapercs = 10 then round(NVL(p.csCost, 0) * nvl(p.avgeawgt, 0.9), 2) ELSE ROUND(ROUND(NVL(p.csCost, 0)/ci.eapercs, 3)*nvl(p.avgeawgt, 0.9)*10, 2) END) " & _
-                              " ELSE (CASE WHEN NVL(ci.eaPerCs, 0) = 0 THEN 0 ELSE ROUND(NVL(p.csCost, 0) / ci.eaPerCs, 2) END) END) " & _
+        Dim SQL_eaCost = "(CASE WHEN ci.eaPerCs <= 1 THEN 0 ELSE " &
+                              "(CASE WHEN NVL(p.scaledItem, 'N') = 'Y' THEN (CASE WHEN ci.eapercs = 10 then round(NVL(p.csCost, 0) * nvl(p.avgeawgt, 0.9), 2) ELSE ROUND(ROUND(NVL(p.csCost, 0)/ci.eapercs, 3)*nvl(p.avgeawgt, 0.9)*10, 2) END) " &
+                              " ELSE (CASE WHEN NVL(ci.eaPerCs, 0) = 0 THEN 0 ELSE ROUND(NVL(p.csCost, 0) / ci.eaPerCs, 2) END) END) " &
                            "END)"
         Dim SQL_lbCost = "(CASE WHEN NVL(ci.eaPerCs, 0) = 0 THEN 0 ELSE ROUND(NVL(p.csCost, 0) / ci.eaPerCs * 10, 2) END)"
 
-        Dim whereClause = "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " & _
-                      "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " & _
-                      "  AND i.custGrpItem_id = ci.custGrpItem_id " & _
-                      "  AND g.custgrp_id = " & db.SqlEsc(custGrpID) & _
-                      "  AND ci.customer_id = " & db.SqlEsc(customerid) & " " & _
-                      "  AND NOT (ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0) " & _
-                      "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " & _
-                      "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " & _
+        Dim whereClause = "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " &
+                      "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " &
+                      "  AND i.custGrpItem_id = ci.custGrpItem_id " &
+                      "  AND g.custgrp_id = " & db.SqlEsc(custGrpID) &
+                      "  AND ci.customer_id = " & db.SqlEsc(customerid) & " " &
+                      "  AND NOT (ci.csPrice = 0 and ci.eaPrice = 0 and ci.lbPrice_orderByWgt = 0 and ci.lbPrice_orderByQty = 0) " &
+                      "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " &
+                      "  AND (cc.enabled IS NULL OR cc.enabled = 'Y') " &
                       IIf(showOnlyRecentOrder4ExcepCust = True, " AND (q.custGrpItem_id IS NOT NULL OR cp.regcsprice > 0) ", "")
         Select Case cmd
             Case "CTG"
@@ -1245,70 +1245,70 @@ Partial Class JFCAdmin_CustItem
                 whereClause &= "group by NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc), NVL(jctgGrp2.ctgGrp_id, jctgGrp.ctgGrp_id)"
 
             Case "List"
-                SQL_Select &= " i.item_id as item_id,cc.CUSTITEMCODE as item_id_n, TRIM(i.jfcRemark || ' ' || cc.CUSTREMARK || ' ' || cp.webCustRemark) as jfcRemark, cc.CUSTREMARK as jfcRemark_n, " & _
-                    "ci.csPrice as csPrice,cc.CUSTCSPRICE as csPrice_n, ci.eaPrice as eaPrice, cc.CUSTEAPRICE as eaPrice_n," & _
-                    "ci.lbPrice_OrderByWgt as lbPrice_OrderByWgt, " & _
-                    "ci.lbPrice_OrderByQty as lbPrice_OrderByQty, cc.CUSTLBPRICE_ORDERBYQTY as lbPrice_OrderByQty_n, " & _
-                    "CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view," & _
+                SQL_Select &= " i.item_id as item_id,cc.CUSTITEMCODE as item_id_n, TRIM(i.jfcRemark || ' ' || cc.CUSTREMARK || ' ' || cp.webCustRemark) as jfcRemark, cc.CUSTREMARK as jfcRemark_n, " &
+                    "ci.csPrice as csPrice,cc.CUSTCSPRICE as csPrice_n, ci.eaPrice as eaPrice, cc.CUSTEAPRICE as eaPrice_n," &
+                    "ci.lbPrice_OrderByWgt as lbPrice_OrderByWgt, " &
+                    "ci.lbPrice_OrderByQty as lbPrice_OrderByQty, cc.CUSTLBPRICE_ORDERBYQTY as lbPrice_OrderByQty_n, " &
+                    "CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view," &
                     "cc.CUSTITEMDESC as itemDesc_view_n, co.disporder as custdisporder"
                 '"CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(" & IIf(IsMobile(), "a.itemDesc_short", "a.itemDesc") & ", a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view," & _
-                whereClause &= IIf(lstVendorSearch_custItem.Text <> LST_ALL_STR, "  AND v.vendorName = " & db.SqlEsc(lstVendorSearch_custItem.Text), "") & _
-                      IIf(lstItemGrpSearch_custItem.Text <> LST_ALL_STR, " AND g.itemGrpName = " & db.SqlEsc(lstItemGrpSearch_custItem.Text), "") & _
-                      IIf(lstCtgSearch_custItem.Text <> LST_ALL_STR, "  AND NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) = " & db.SqlEsc(lstCtgSearch_custItem.Text), "") & _
+                whereClause &= IIf(lstVendorSearch_custItem.Text <> LST_ALL_STR, "  AND v.vendorName = " & db.SqlEsc(lstVendorSearch_custItem.Text), "") &
+                      IIf(lstItemGrpSearch_custItem.Text <> LST_ALL_STR, " AND g.itemGrpName = " & db.SqlEsc(lstItemGrpSearch_custItem.Text), "") &
+                      IIf(lstCtgSearch_custItem.Text <> LST_ALL_STR, "  AND NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) = " & db.SqlEsc(lstCtgSearch_custItem.Text), "") &
                       SearchbyEachWord(db, Searchsql, txtItemSearch_custItem.Text.ToUpper)
 
                 'IIf(txtItemSearch_custItem.Text <> "", String.Format(Searchsql, Replace(txtItemSearch_custItem.Text.ToUpper, " ", "%")), "")
             Case "Item", "Item_Copy"
-                SQL_Select &= " NVL(p.csCost, 0) AS csCost, " & _
-                             " " & SQL_eaCost & " AS eaCost, " & _
-                             " " & SQL_lbCost & " AS lbCost, " & _
-                             " NVL(p.btmcsPrice, 0) AS btmcsPrice, " & _
-                               " NVL(jp.csprice,0) as regcsPrice, " & _
-                                " NVL(jp.eaprice,0) as regeaPrice, " & _
-                                 " NVL(jp.lbPrice_orderByQty,0) as reglbPrice, " & _
-                               " CASE WHEN i.jfcItem = 'Y' THEN p.csAvail ELSE NULL END AS csAvail_view, " & _
-                 " CASE WHEN i.jfcItem = 'Y' THEN p.eaAvail ELSE NULL END AS eaAvail_view," & _
-                 " CASE WHEN ci.lbPrice_orderByQty <> 0 THEN ROUND((ci.lbPrice_orderByQty - " & SQL_lbCost & ") / ci.lbPrice_orderByQty, 2) " & _
-                 " ELSE (CASE WHEN NVL(ci.csPrice, 0) = 0 THEN 1 ELSE ROUND((ci.csPrice - NVL(p.csCost, 0)) / ci.csPrice, 2) END) END gp," & _
-                 " cc.CUSTITEMCODE as item_id,i.item_id as item_id_o, cc.CUSTREMARK as jfcRemark,cc.CUSTCSPRICE as csPrice, " & _
-                 " ci.csPrice as csPrice_o, cc.CUSTEAPRICE as eaPrice, ci.eaPrice as eaPrice_o," & _
-                 " cc.CUSTLBPRICE_ORDERBYWGT as lbPrice_OrderByWgt,ci.lbPrice_OrderByWgt as lbPrice_OrderByWgt_o,  cc.CUSTLBPRICE_ORDERBYQTY as lbPrice_OrderByQty,ci.lbPrice_OrderByQty as lbPrice_OrderByQty_o," & _
+                SQL_Select &= " NVL(p.csCost, 0) AS csCost, " &
+                             " " & SQL_eaCost & " AS eaCost, " &
+                             " " & SQL_lbCost & " AS lbCost, " &
+                             " NVL(p.btmcsPrice, 0) AS btmcsPrice, " &
+                               " NVL(jp.csprice,0) as regcsPrice, " &
+                                " NVL(jp.eaprice,0) as regeaPrice, " &
+                                 " NVL(jp.lbPrice_orderByQty,0) as reglbPrice, " &
+                               " CASE WHEN i.jfcItem = 'Y' THEN p.csAvail ELSE NULL END AS csAvail_view, " &
+                 " CASE WHEN i.jfcItem = 'Y' THEN p.eaAvail ELSE NULL END AS eaAvail_view," &
+                 " CASE WHEN ci.lbPrice_orderByQty <> 0 THEN ROUND((ci.lbPrice_orderByQty - " & SQL_lbCost & ") / ci.lbPrice_orderByQty, 2) " &
+                 " ELSE (CASE WHEN NVL(ci.csPrice, 0) = 0 THEN 1 ELSE ROUND((ci.csPrice - NVL(p.csCost, 0)) / ci.csPrice, 2) END) END gp," &
+                 " cc.CUSTITEMCODE as item_id,i.item_id as item_id_o, cc.CUSTREMARK as jfcRemark,cc.CUSTCSPRICE as csPrice, " &
+                 " ci.csPrice as csPrice_o, cc.CUSTEAPRICE as eaPrice, ci.eaPrice as eaPrice_o," &
+                 " cc.CUSTLBPRICE_ORDERBYWGT as lbPrice_OrderByWgt,ci.lbPrice_OrderByWgt as lbPrice_OrderByWgt_o,  cc.CUSTLBPRICE_ORDERBYQTY as lbPrice_OrderByQty,ci.lbPrice_OrderByQty as lbPrice_OrderByQty_o," &
                  " CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view, cc.CUSTITEMDESC as custItem_Desc"
                 '" CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(" & IIf(IsMobile(), "a.itemDesc_short", "a.itemDesc") & ", a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view, cc.CUSTITEMDESC as custItem_Desc"
                 whereClause &= IIf(cmd = "Item", " AND i.custGrpItem_id = '" & GroupItemID & "'", " AND i.item_id = '" & GroupItemID.Substring(GroupItemID.Length - 5) & "'")
 
             Case "NewItem", "NewItem_Copy"
-                SQL_Select = "SELECT i.item_id, i.minSalCnt, (CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END) AS itemDtl, p.lbsPerEa," & _
-                       " i.custGrp_id,i.custGrpItem_id, i.vendor_id, i.item_id, i.itemNr, g.itemGrpName, ci.eaPerCs,ci.csPrice,ci.eaPrice,ci.lbPrice_OrderByWgt, ci.lbPrice_OrderByQty," & _
-                       " NVL(p.csCost, 0) AS csCost, " & _
-                       " " & SQL_eaCost & " AS eaCost, " & _
-                       " " & SQL_lbCost & " AS lbCost, nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt," & _
-                       " NVL(p.btmcsPrice,0) as btmcsPrice, " & _
-                       " NVL(jp.csprice,0) as regcsPrice, " & _
-                       " NVL(jp.eaprice,0) as regeaPrice, " & _
-                       " NVL(jp.lbPrice_orderByQty,0) as reglbPrice, " & _
-                       " CASE WHEN i.jfcItem = 'Y' THEN p.csAvail ELSE NULL END AS csAvail_view, " & _
+                SQL_Select = "SELECT i.item_id, i.minSalCnt, (CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END) AS itemDtl, p.lbsPerEa," &
+                       " i.custGrp_id,i.custGrpItem_id, i.vendor_id, i.item_id, i.itemNr, g.itemGrpName, ci.eaPerCs,ci.csPrice,ci.eaPrice,ci.lbPrice_OrderByWgt, ci.lbPrice_OrderByQty," &
+                       " NVL(p.csCost, 0) AS csCost, " &
+                       " " & SQL_eaCost & " AS eaCost, " &
+                       " " & SQL_lbCost & " AS lbCost, nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt," &
+                       " NVL(p.btmcsPrice,0) as btmcsPrice, " &
+                       " NVL(jp.csprice,0) as regcsPrice, " &
+                       " NVL(jp.eaprice,0) as regeaPrice, " &
+                       " NVL(jp.lbPrice_orderByQty,0) as reglbPrice, " &
+                       " CASE WHEN i.jfcItem = 'Y' THEN p.csAvail ELSE NULL END AS csAvail_view, " &
                        " CASE WHEN i.jfcItem = 'Y' THEN p.eaAvail ELSE NULL END AS eaAvail_view "
-                sql_from = "FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(isSmallCust = True, IIf(isExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-                     "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " & _
-                     "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = :1 AND cp.customerid = :2 " & _
-                     "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & db.SqlEsc(PriceGrpId) & " " & _
+                sql_from = "FROM custGrp_itemGrp g, custGrp_vendor v, " & IIf(isSmallCust = True, IIf(isExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+                     "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " &
+                     "LEFT OUTER JOIN jets_customer_price cp ON i.jfcItem = 'Y' AND cp.itemcode = i.item_id AND cp.bid = :1 AND cp.customerid = :2 " &
+                     "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & db.SqlEsc(PriceGrpId) & " " &
                      "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & db.SqlEsc(PriceGrpId) & " "
-                whereClause = "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " & _
-                             "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " & _
-                             "  AND i.custGrpItem_id = ci.custGrpItem_id " & _
-                             "  AND g.custgrp_id = " & db.SqlEsc(custGrpID) & _
+                whereClause = "WHERE i.custGrp_id = g.custGrp_id AND i.itemGrp_id = g.itemGrp_id " &
+                             "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id " &
+                             "  AND i.custGrpItem_id = ci.custGrpItem_id " &
+                             "  AND g.custgrp_id = " & db.SqlEsc(custGrpID) &
                              "  AND ci.customer_id = :3" &
-                             IIf(cmd = "NewItem", "  AND i.custGrpItem_id = :4 ", " AND i.item_id = :4 ") & _
-                             "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " & _
+                             IIf(cmd = "NewItem", "  AND i.custGrpItem_id = :4 ", " AND i.item_id = :4 ") &
+                             "  AND (cp.enabled IS NULL OR cp.enabled = 'Y') " &
                              " ORDER BY itemDtl "
 
             Case "ExportList"
-                SQL_Select &= " i.item_id as item_id,cc.CUSTITEMCODE as item_id_n, TRIM(i.jfcRemark || ' ' || cc.CUSTREMARK || ' ' || cp.webCustRemark) as jfcRemark, cc.CUSTREMARK as jfcRemark_n, " & _
-                   "ci.csPrice as csPrice,cc.CUSTCSPRICE as csPrice_n, ci.eaPrice as eaPrice, cc.CUSTEAPRICE as eaPrice_n," & _
-                   "ci.lbPrice_OrderByWgt as lbPrice_OrderByWgt, " & _
-                   "ci.lbPrice_OrderByQty as lbPrice_OrderByQty, cc.CUSTLBPRICE_ORDERBYQTY as lbPrice_OrderByQty_n, " & _
-                   "CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view," & _
+                SQL_Select &= " i.item_id as item_id,cc.CUSTITEMCODE as item_id_n, TRIM(i.jfcRemark || ' ' || cc.CUSTREMARK || ' ' || cp.webCustRemark) as jfcRemark, cc.CUSTREMARK as jfcRemark_n, " &
+                   "ci.csPrice as csPrice,cc.CUSTCSPRICE as csPrice_n, ci.eaPrice as eaPrice, cc.CUSTEAPRICE as eaPrice_n," &
+                   "ci.lbPrice_OrderByWgt as lbPrice_OrderByWgt, " &
+                   "ci.lbPrice_OrderByQty as lbPrice_OrderByQty, cc.CUSTLBPRICE_ORDERBYQTY as lbPrice_OrderByQty_n, " &
+                   "CASE WHEN i.jfcitem = 'Y' AND i.custItemDesc IS NULL  THEN NVL(p.itemDesc_branch, a.itemDesc) ELSE i.custItemDesc END AS itemDesc_view," &
                    "cc.CUSTITEMDESC as itemDesc_view_n, co.disporder as custdisporder, jsm.methdesc as methdesc, NVL(jSubCtg2.subctgdesc, jSubCtg.subctgdesc) subctgdesc, NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) ctgdesc " 'Changed from jctg.ctgdesc to NVL(jctgGrp2.ctgGrpDesc, jctgGrp.ctgGrpDesc) on 7/11/2023
 
                 sql_from &= " LEFT OUTER JOIN JFCStoreMethod jsm on jsm.storemethid = p.storemethid LEFT OUTER JOIN jfcCtg jctg ON jctg.ctg_id = a.ctg_id "
@@ -1861,9 +1861,9 @@ Partial Class JFCAdmin_CustItem
             Dim custInfo As CustomerInfo = ViewState("CUSTOMER_INFO")
 
 
-            Dim SQL_eaCost = "(CASE WHEN ci.eaPerCs <= 1 THEN 0 ELSE " & _
-                                "(CASE WHEN NVL(p.scaledItem, 'N') = 'Y' THEN (CASE WHEN ci.eapercs = 10 then round(NVL(p.csCost, 0) * nvl(p.avgeawgt, 0.9), 2) ELSE ROUND(ROUND(NVL(p.csCost, 0)/ci.eapercs, 3)*nvl(p.avgeawgt, 0.9)*10, 2) END) " & _
-                                " ELSE (CASE WHEN NVL(ci.eaPerCs, 0) = 0 THEN 0 ELSE ROUND(NVL(p.csCost, 0) / ci.eaPerCs, 2) END) END) " & _
+            Dim SQL_eaCost = "(CASE WHEN ci.eaPerCs <= 1 THEN 0 ELSE " &
+                                "(CASE WHEN NVL(p.scaledItem, 'N') = 'Y' THEN (CASE WHEN ci.eapercs = 10 then round(NVL(p.csCost, 0) * nvl(p.avgeawgt, 0.9), 2) ELSE ROUND(ROUND(NVL(p.csCost, 0)/ci.eapercs, 3)*nvl(p.avgeawgt, 0.9)*10, 2) END) " &
+                                " ELSE (CASE WHEN NVL(ci.eaPerCs, 0) = 0 THEN 0 ELSE ROUND(NVL(p.csCost, 0) / ci.eaPerCs, 2) END) END) " &
                              "END)"
             Dim SQL_lbCost = "(CASE WHEN NVL(ci.eaPerCs, 0) = 0 THEN 0 ELSE ROUND(NVL(p.csCost, 0) / ci.eaPerCs * 10, 2) END)"
 
@@ -1889,25 +1889,25 @@ Partial Class JFCAdmin_CustItem
                 Dim customerslist = DB.GetDataTable(SQL)
                 For Each item As DataRow In customerslist.Rows
                     custInfo = GetPriceInquiryCustomerInfo(item)
-                    SQL = "SELECT wp.customer_id,cust.customername, wp.custGrpItem_id, i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc, i.custItemDesc, p.csAvail, p.eaAvail, " & _
-                   " CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END AS itemIdNr_view,  TO_CHAR(wp.createdate, " & DB.SqlEsc(DATE_FMT) & ") AS createdate_FMT, " & _
-                   "p.csCost, i.minSalCnt,p.lbsPerEa, ci.eaPerCs," & _
-                     SQL_eaCost & " AS eaCost, " & _
-                     SQL_lbCost & " AS lbCost, p.scaledItem,nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, " & _
-                      " NVL(p.btmcsPrice,0) as btmcsPrice, " & _
-                  " NVL(jp.csprice,0) as regcsPrice, " & _
-                  " NVL(jp.eaprice,0) as regeaPrice, " & _
-                  " NVL(jp.lbPrice_orderByQty,0) as reglbPrice " & _
-                   "FROM webuser_priceInquiry wp, custGrp_vendor v,customer cust, " & IIf(custInfo.isSmallCust, IIf(custInfo.IsExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-                   "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " & _
-                   "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(custInfo.PriceGrpID) & " " & _
-                    "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & DB.SqlEsc(custInfo.PriceGrpID) & " " & _
-                   "WHERE wp.custGrpItem_id = i.custGrpItem_id And i.custGrpItem_id = ci.custGrpItem_id AND cust.customer_id = ci.customer_id" & _
+                    SQL = "SELECT wp.customer_id,cust.customername, wp.custGrpItem_id, i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc, i.custItemDesc, p.csAvail, p.eaAvail, " &
+                   " CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END AS itemIdNr_view,  TO_CHAR(wp.createdate, " & DB.SqlEsc(DATE_FMT) & ") AS createdate_FMT, " &
+                   "p.csCost, i.minSalCnt,p.lbsPerEa, ci.eaPerCs," &
+                     SQL_eaCost & " AS eaCost, " &
+                     SQL_lbCost & " AS lbCost, p.scaledItem,nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, " &
+                      " NVL(p.btmcsPrice,0) as btmcsPrice, " &
+                  " NVL(jp.csprice,0) as regcsPrice, " &
+                  " NVL(jp.eaprice,0) as regeaPrice, " &
+                  " NVL(jp.lbPrice_orderByQty,0) as reglbPrice " &
+                   "FROM webuser_priceInquiry wp, custGrp_vendor v,customer cust, " & IIf(custInfo.isSmallCust, IIf(custInfo.IsExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+                   "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " &
+                   "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(custInfo.PriceGrpID) & " " &
+                    "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & DB.SqlEsc(custInfo.PriceGrpID) & " " &
+                   "WHERE wp.custGrpItem_id = i.custGrpItem_id And i.custGrpItem_id = ci.custGrpItem_id AND cust.customer_id = ci.customer_id" &
                    "  AND ci.customer_id = " & DB.SqlEsc(custInfo.customerID) & " " &
-                   "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id" & _
-                   "  AND i.custgrp_id = " & DB.SqlEsc(custInfo.custGrpID) & _
-                   "  AND wp.sent = 'Y' AND wp.responded is null AND wp.customer_id = " & DB.SqlEsc(custInfo.customerID) & " " & _
-                   " Group by wp.customer_id,cust.customername, wp.custGrpItem_id , i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, a.itemDesc, p.itemDesc_branch, i.custItemDesc, p.csAvail, p.eaAvail,v.vendorName,i.itemNr, wp.createdate,ci.eaPerCs,p.csCost,p.avgeawgt,p.avgcswgt,p.scaledItem,i.minSalCnt,p.lbsPerEa,p.btmcsPrice,jp.csprice, jp.eaprice,jp.lbPrice_orderByQty " & _
+                   "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id" &
+                   "  AND i.custgrp_id = " & DB.SqlEsc(custInfo.custGrpID) &
+                   "  AND wp.sent = 'Y' AND wp.responded is null AND wp.customer_id = " & DB.SqlEsc(custInfo.customerID) & " " &
+                   " Group by wp.customer_id,cust.customername, wp.custGrpItem_id , i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, a.itemDesc, p.itemDesc_branch, i.custItemDesc, p.csAvail, p.eaAvail,v.vendorName,i.itemNr, wp.createdate,ci.eaPerCs,p.csCost,p.avgeawgt,p.avgcswgt,p.scaledItem,i.minSalCnt,p.lbsPerEa,p.btmcsPrice,jp.csprice, jp.eaprice,jp.lbPrice_orderByQty " &
                    "order by CASE WHEN wp.createdate IS NULL THEN '1' ELSE '2' END, wp.createdate,  v.vendorName, itemIdNr_view"
                     Dim dt As DataTable = DB.GetDataTable(SQL)
                     If TotalDt Is Nothing Or TotalDt.Rows.Count = 0 Then
@@ -1926,25 +1926,25 @@ Partial Class JFCAdmin_CustItem
 
 
             Else
-                SQL = "SELECT wp.customer_id,cust.customername,  wp.custGrpItem_id,i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc, i.custItemDesc, p.csAvail, p.eaAvail, " & _
-                      " CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END AS itemIdNr_view,  TO_CHAR(wp.createdate, " & DB.SqlEsc(DATE_FMT) & ") AS createdate_FMT, " & _
-                      "p.csCost, i.minSalCnt,p.lbsPerEa, ci.eaPerCs," & _
-                        SQL_eaCost & " AS eaCost, " & _
-                        SQL_lbCost & " AS lbCost, p.scaledItem,nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, " & _
-                         " NVL(p.btmcsPrice,0) as btmcsPrice, " & _
-                     " NVL(jp.csprice,0) as regcsPrice, " & _
-                     " NVL(jp.eaprice,0) as regeaPrice, " & _
-                     " NVL(jp.lbPrice_orderByQty,0) as reglbPrice " & _
-                      "FROM webuser_priceInquiry wp, custGrp_vendor v,customer cust, " & IIf(custInfo.isSmallCust, IIf(custInfo.IsExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " & _
-                      "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " & _
-                      "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(custInfo.PriceGrpID) & " " & _
-                       "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & DB.SqlEsc(custInfo.PriceGrpID) & " " & _
-                      "WHERE wp.custGrpItem_id = i.custGrpItem_id And i.custGrpItem_id = ci.custGrpItem_id AND cust.customer_id = ci.customer_id" & _
+                SQL = "SELECT wp.customer_id,cust.customername,  wp.custGrpItem_id,i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, NVL(p.itemDesc_branch, a.itemDesc) AS itemDesc, i.custItemDesc, p.csAvail, p.eaAvail, " &
+                      " CASE WHEN i.itemNr IS NULL THEN i.item_id ELSE i.itemNr END AS itemIdNr_view,  TO_CHAR(wp.createdate, " & DB.SqlEsc(DATE_FMT) & ") AS createdate_FMT, " &
+                      "p.csCost, i.minSalCnt,p.lbsPerEa, ci.eaPerCs," &
+                        SQL_eaCost & " AS eaCost, " &
+                        SQL_lbCost & " AS lbCost, p.scaledItem,nvl(p.avgcswgt, 0) avgcswgt, nvl(p.avgeawgt, 0) avgeawgt, " &
+                         " NVL(p.btmcsPrice,0) as btmcsPrice, " &
+                     " NVL(jp.csprice,0) as regcsPrice, " &
+                     " NVL(jp.eaprice,0) as regeaPrice, " &
+                     " NVL(jp.lbPrice_orderByQty,0) as reglbPrice " &
+                      "FROM webuser_priceInquiry wp, custGrp_vendor v,customer cust, " & IIf(custInfo.isSmallCust, IIf(custInfo.IsExcepPriceCustomer, "v_excepcust_custgrpitem_small", "v_customer_custGrpItem_small") & " ci, v_custgrp_item_small i", "customer_custGrpItem ci, custgrp_item i") & " " &
+                      "LEFT OUTER JOIN jfcItem a ON a.item_id = i.item_id " &
+                      "LEFT OUTER JOIN jets_price p ON i.jfcItem = 'Y' AND p.itemcode = i.item_id AND p.pricegpid = " & DB.SqlEsc(custInfo.PriceGrpID) & " " &
+                       "LEFT OUTER JOIN jfcPrice jp ON i.jfcItem ='Y' AND jp.item_id = i.item_id AND jp.pricegrp_id = " & DB.SqlEsc(custInfo.PriceGrpID) & " " &
+                      "WHERE wp.custGrpItem_id = i.custGrpItem_id And i.custGrpItem_id = ci.custGrpItem_id AND cust.customer_id = ci.customer_id" &
                       "  AND ci.customer_id = " & DB.SqlEsc(custInfo.customerID) & " " &
-                      "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id" & _
-                      "  AND i.custgrp_id = " & DB.SqlEsc(custInfo.custGrpID) & _
-                      "  AND wp.sent = 'Y' AND wp.responded is null AND wp.customer_id = " & DB.SqlEsc(custInfo.customerID) & " " & _
-                      " Group by  wp.customer_id,cust.customername,wp.custGrpItem_id,i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, a.itemDesc, p.itemDesc_branch, i.custItemDesc, p.csAvail, p.eaAvail,v.vendorName,i.itemNr, wp.createdate,ci.eaPerCs,p.csCost,p.avgeawgt,p.avgcswgt,p.scaledItem,i.minSalCnt,p.lbsPerEa,p.btmcsPrice,jp.csprice, jp.eaprice,jp.lbPrice_orderByQty " & _
+                      "  AND i.custGrp_id = v.custGrp_id AND i.vendor_id = v.vendor_id" &
+                      "  AND i.custgrp_id = " & DB.SqlEsc(custInfo.custGrpID) &
+                      "  AND wp.sent = 'Y' AND wp.responded is null AND wp.customer_id = " & DB.SqlEsc(custInfo.customerID) & " " &
+                      " Group by  wp.customer_id,cust.customername,wp.custGrpItem_id,i.custgrp_id, v.custGrpVendor_id, v.vendorName, i.item_id, i.itemNr, a.itemDesc, p.itemDesc_branch, i.custItemDesc, p.csAvail, p.eaAvail,v.vendorName,i.itemNr, wp.createdate,ci.eaPerCs,p.csCost,p.avgeawgt,p.avgcswgt,p.scaledItem,i.minSalCnt,p.lbsPerEa,p.btmcsPrice,jp.csprice, jp.eaprice,jp.lbPrice_orderByQty " &
                       "order by CASE WHEN wp.createdate IS NULL THEN '1' ELSE '2' END, wp.createdate,  v.vendorName, itemIdNr_view"
                 TotalDt = DB.GetDataTable(SQL)
             End If
