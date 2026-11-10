@@ -1052,10 +1052,13 @@ Partial Class Common_OrderDtl
                 Thread.CurrentThread.CurrentCulture = ci
                 Thread.CurrentThread.CurrentUICulture = ci
 
-                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "UPDATED", txtEmailMsg.Text)
+                'The order is already saved: TryCreateEmailBody retries once on a lost DB connection; if it still fails,
+                'the "could not be sent, please resend" warning is shown instead of the error page
                 subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
 
-                If Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg) > 0 Then
+                If Not TryCreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", "UPDATED", txtEmailMsg.Text) Then
+                    userEmailFailed = True
+                ElseIf Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg) > 0 Then
                     userEmailFailed = True
                 Else
                     UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
@@ -1065,8 +1068,9 @@ Partial Class Common_OrderDtl
                 Thread.CurrentThread.CurrentUICulture = New CultureInfo("en-US")
 
                 If SendOrderEmailToVendor(DB, webOrderID) = True Then
-                    CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "VENDOR", "UPDATED", txtEmailMsg.Text)
-                    If Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "[Action Required] You received a updated order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty), emailBody, Nothing, True, errMsg) > 0 Then
+                    If Not TryCreateEmailBody(Page, emailBody, "ORDER", webOrderID, "VENDOR", "UPDATED", txtEmailMsg.Text) Then
+                        userEmailFailed = True
+                    ElseIf Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "[Action Required] You received a updated order '" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(Cust PO #" & custOrderNr & ") ", String.Empty), emailBody, Nothing, True, errMsg) > 0 Then
                         userEmailFailed = True
                     Else
                         UpSertOrderEmail(DB, webOrderID, "VENDOR", "S", userEmail)
@@ -1087,7 +1091,7 @@ Partial Class Common_OrderDtl
                 Thread.CurrentThread.CurrentCulture = ci
                 Thread.CurrentThread.CurrentUICulture = ci
 
-                CreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", IIf(senderID = "btnConfirmAndEmail", "APPROVED_ORDER", "UPDATED"), txtEmailMsg.Text)
+                Dim bodyOK As Boolean = TryCreateEmailBody(Page, emailBody, "ORDER", webOrderID, "CUSTOMER", IIf(senderID = "btnConfirmAndEmail", "APPROVED_ORDER", "UPDATED"), txtEmailMsg.Text)
 
                 If senderID = "btnConfirmAndEmail" Then
                     subject = String.Format(rm.GetString("KocusAPIMsg10", ci), "'" & webOrderID & "' ", custOrderNr)
@@ -1097,7 +1101,9 @@ Partial Class Common_OrderDtl
                     subject = String.Format(rm.GetString("Yourorderwasupdated", ci), "'" & webOrderID & "' " & IIf(custOrderNr <> String.Empty, "(" & rm.GetString("CustPO", ci) & custOrderNr & ") ", String.Empty))
                 End If
 
-                If Common.SendMail(SYSTEM_EMAIL, customerEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg, vendorEmail) > 0 Then
+                If Not bodyOK Then
+                    userEmailFailed = True
+                ElseIf Common.SendMail(SYSTEM_EMAIL, customerEmail, vendorEmail, subject, emailBody, Nothing, True, errMsg, vendorEmail) > 0 Then
                     userEmailFailed = True
                 Else
                     UpSertOrderEmail(DB, webOrderID, "CUSTOMER", "S", userEmail)
