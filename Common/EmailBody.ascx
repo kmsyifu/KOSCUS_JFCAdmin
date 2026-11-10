@@ -111,16 +111,16 @@ Only one panel below is shown per email (Page_Init in the code-behind).
             <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField HeaderText="<%$ Resources:Strings, ItemNum %>" DataField="itemIdNr_view" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24 cellLbl gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px"/>
                 <asp:BoundField HeaderText="<%$ Resources:Strings, Description %>" DataField="itemDesc_view" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48 cellLbl gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="288px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <%--<asp:BoundField HeaderText="Order Form" DataField="ITEMGRPNAME" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20 cellLbl gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />--%>
                 <%--<asp:TemplateField HeaderText="Each/Case" HeaderStyle-CssClass="th number16" ItemStyle-CssClass="number16 gray" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="96px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblEaPerCs" CssClass="cellLbl" Visible='<%# CString(Eval("eaPerCs")) <> "0" and CString(Eval("eaPerCs")) <> "1" and CString(Eval("lbPrice_OrderByQty")) = "0" AndAlso Val(Eval("minSalCnt")) <> Val(Eval("eaPerCs")) %>' Text='<%# CString(Eval("eaPerCs"))%>' />
@@ -128,7 +128,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>--%>
                 <asp:TemplateField HeaderText="<%$ Resources:Strings, Price %>" HeaderStyle-CssClass="th number12" ItemStyle-CssClass="number12" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="72px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <%--<asp:Label runat="server" Text='(' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0" and CString(Eval("csQty")) <> "0"%>' />--%>
@@ -147,7 +147,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>
                 <%--<asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size6" ItemStyle-CssClass="size6 gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="36px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblCs" Text='/cs' Visible='<%# CString(Eval("csQty")) <> "0"%>' /><asp:Label ID="Label3" runat="server" Text='<br />' Visible='<%# CString(Eval("csQty")) <> "0"%>' />
@@ -157,7 +157,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>--%>
                 <asp:TemplateField HeaderText="<%$ Resources:Strings, Qty %>" HeaderStyle-CssClass="th number10" ItemStyle-CssClass="number10 bold" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" ItemStyle-Font-Bold="true">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblCsQty" Text='<%# CString(Eval("csQty")) & "<br />" %>' Visible='<%# Val(Eval("csQty")) <> 0%>' />
@@ -168,7 +168,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size4" ItemStyle-CssClass="size4 bold" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="24px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" ItemStyle-Font-Bold="true">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblCs" Text='cs<br />' Visible='<%# Val(Eval("csQty")) <> 0 %>' />
@@ -179,14 +179,14 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:Strings, Amount %>" HeaderStyle-CssClass="th number16" ItemStyle-CssClass="number16" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="96px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblLineAmt" CssClass="cellLbl" Text='<%# Eval("lineAmt", "{0:C}") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:Strings, Avail %>" HeaderStyle-CssClass="th number10" ItemStyle-CssClass="number10" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblCsAvail" Text='<%# CString(Eval("csAvail_view")) & "<br />" %>' />
@@ -194,7 +194,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size4" ItemStyle-CssClass="size4" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="24px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblCs2" Text="cs" /><br />
@@ -202,7 +202,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:Strings, OutOfStock %>" HeaderStyle-CssClass="th center10" ItemStyle-CssClass="center10 red bold" 
-                        HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Center" ItemStyle-Height="30px" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="#FF0000">
                     <ItemTemplate>
                         <%--<asp:Label runat="server" ID="lblOutOfStock" CssClass="cellLbl" Text="Yes" Visible='<%# Val(Eval("remainingInStockQty")) < 0 %>' />--%>
@@ -210,7 +210,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     </ItemTemplate>
                 </asp:TemplateField>
                 <%--<asp:BoundField HeaderText="Invoice" DataField="invoice" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16 cellLbl gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="96px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />--%>
             </Columns>
             <EmptyDataTemplate>
@@ -248,28 +248,28 @@ Only one panel below is shown per email (Page_Init in the code-behind).
         <AlternatingRowStyle BackColor="#FAFAFA" />
         <Columns>
             <asp:BoundField HeaderText="JFC Item #" DataField="item_id" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20 cellLbl gray" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
             <asp:BoundField HeaderText="JFC Item Description" DataField="itemDesc" HeaderStyle-CssClass="th size64" ItemStyle-CssClass="size64 cellLbl gray" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="288px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
             <asp:BoundField HeaderText="Customer Item #" DataField="itemNr" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20 cellLbl gray" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
             <asp:BoundField HeaderText="Customer Item Description" DataField="custItemDesc" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32 cellLbl gray" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="288px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
             <asp:BoundField HeaderText="Case Price" DataField="blank" HeaderStyle-CssClass="th center24" ItemStyle-CssClass="center24" 
-                    HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="72px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Center" ItemStyle-Height="30px" />
             <asp:BoundField HeaderText="Each Price" DataField="blank" HeaderStyle-CssClass="th center24" ItemStyle-CssClass="center24" 
-                    HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="72px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Center" ItemStyle-Height="30px" />
             <asp:BoundField HeaderText="Lb Price" DataField="blank" HeaderStyle-CssClass="th center24" ItemStyle-CssClass="center24" 
-                    HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="72px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Center" ItemStyle-Height="30px" />
             <asp:TemplateField HeaderText="Avail" HeaderStyle-CssClass="th number10" ItemStyle-CssClass="number10" 
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px">
                 <ItemTemplate>
                     <asp:Label runat="server" ID="lblCsAvail" Text='<%# CString(Eval("csAvail")) & "<br />" %>' />
@@ -277,7 +277,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size4" ItemStyle-CssClass="size4" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="24px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px">
                 <ItemTemplate>
                     <asp:Label runat="server" ID="lblCs" Text="cs" /><br />
@@ -285,20 +285,20 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                 </ItemTemplate>
             </asp:TemplateField>
             <%--<asp:BoundField HeaderText="Avail" DataField="csAvail" HeaderStyle-CssClass="th number10" ItemStyle-CssClass="number10" 
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" />
             <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size4" ItemStyle-CssClass="size4" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="24px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px">
                 <ItemTemplate>
                     <asp:Label runat="server" ID="lblCs" Text="cs" />
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField HeaderText="" DataField="eaAvail" HeaderStyle-CssClass="th number10" ItemStyle-CssClass="number10" 
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" />
             <asp:TemplateField HeaderText="" HeaderStyle-CssClass="th size4" ItemStyle-CssClass="size4" 
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="24px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px">
                 <ItemTemplate>
                     <asp:Label runat="server" ID="lblEa" Text="ea" />
@@ -386,32 +386,32 @@ Only one panel below is shown per email (Page_Init in the code-behind).
             <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField DataField="arDate" DataFormatString="{0:MM/dd/yyyy}" HeaderText="Date" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <asp:BoundField DataField="arType_view" HeaderText="Type" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="196px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <asp:BoundField DataField="isLiquor" HeaderText="Liquor" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <%--<asp:BoundField DataField="reference" HeaderText="Reference" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <asp:BoundField DataField="note" HeaderText="Note" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="288px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />--%>
                 <asp:BoundField DataField="arAmt" DataFormatString="{0:$#,#.00}" HeaderText="Invoice Amount" HeaderStyle-CssClass="th number20" ItemStyle-CssClass="number20"
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" />
                 <asp:TemplateField HeaderText="Web Discount" HeaderStyle-CssClass="th number20" ItemStyle-CssClass="number20" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px">
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblWebDiscAmt" CssClass="cellLbl" Text='<%# Eval("webDiscAmt", "{0:C}") %>' Visible='<%# Common.Val(Eval("webDiscAmt")) <> 0 %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="paymentLineAmt" DataFormatString="{0:$#,#.00}" HeaderText="Paid Amount" HeaderStyle-CssClass="th number20" ItemStyle-CssClass="number20"  
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="#FF0000" />
             </Columns>
             <EmptyDataTemplate>
@@ -433,22 +433,22 @@ Only one panel below is shown per email (Page_Init in the code-behind).
             <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField DataField="arDate" DataFormatString="{0:MM/dd/yyyy}" HeaderText="Date" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <asp:BoundField DataField="arType_view" HeaderText="Type" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="196px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <asp:BoundField DataField="isLiquor" HeaderText="Liquor" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <%--<asp:BoundField DataField="reference" HeaderText="Reference" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20"
-                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />--%>
                 <asp:BoundField DataField="arAmt" DataFormatString="{0:$#,#.00}" HeaderText="Invoice Amount" HeaderStyle-CssClass="th number20" ItemStyle-CssClass="number20"
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" />
                 <asp:BoundField DataField="balance" DataFormatString="{0:$#,#.00}" HeaderText="Remaining Balance" HeaderStyle-CssClass="th number20" ItemStyle-CssClass="number20"  
-                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="120px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                    HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                     ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="#FF0000" />
             </Columns>
             <EmptyDataTemplate>
@@ -672,13 +672,13 @@ Only one panel below is shown per email (Page_Init in the code-behind).
             <AlternatingRowStyle BackColor="#FAFAFA" />
             <Columns>
                 <asp:BoundField HeaderText="<%$Resources:Strings, ItemNum %>" DataField="item_id_o" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24 cellLbl gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="144px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px"/>
                 <asp:BoundField HeaderText="<%$Resources:Strings, Description %>" DataField="itemDesc_view" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48 cellLbl gray" 
-                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-Width="288px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Left" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Left" ItemStyle-Height="30px" />
                 <asp:TemplateField HeaderText="<%$Resources:Strings, EachCase %>" HeaderStyle-CssClass="th number10" ItemStyle-CssClass="number10" 
-                         HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="60px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                         HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" >
                     <ItemTemplate>
                         <asp:Label runat="server" ID="lblCsQty" Text='<%# CString(Eval("eaPerCs"))  %>' />
@@ -686,7 +686,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                 </asp:TemplateField> 
               
                 <asp:TemplateField HeaderText="<%$Resources:Strings, Price %>" HeaderStyle-CssClass="th number48" ItemStyle-CssClass="number48" 
-                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-Width="200px" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
+                        HeaderStyle-HorizontalAlign="Right" HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px"
                         ItemStyle-HorizontalAlign="Right" ItemStyle-Height="30px" ItemStyle-Font-Bold="true">
                     <ItemTemplate>
                        <asp:Label runat="server" ID="lblCsPrice" Text='<%# Displayformatgdv(Val(Eval("lbPrice_OrderByQty")), Val(Eval("csPrice")), Val(Eval("eaPrice")), Eval("scaledItem")="Y") %>'  />
