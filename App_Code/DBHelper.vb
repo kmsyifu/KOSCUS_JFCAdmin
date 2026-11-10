@@ -70,9 +70,24 @@ Public Class DBHelper
                 sqlcon.Open()
         End Select
     End Sub
+    'True while ConnectToOracle runs: its check query is counted as connect time, not as a query (slow request log)
+    Private connecting As Boolean = False
+
     Private Sub ConnectToOracle()
-        Dim cs As String = GetConnectionString()
+        'Slow request log (RequestTiming): time to get a working connection, including dead connection retries
+        Dim clock As Diagnostics.Stopwatch = Diagnostics.Stopwatch.StartNew()
         Dim retryCount As Integer = 0
+        connecting = True
+        Try
+            ConnectToOracleRetry(retryCount)
+        Finally
+            connecting = False
+            RequestTiming.AddConnect(clock.ElapsedMilliseconds, retryCount)
+        End Try
+    End Sub
+
+    Private Sub ConnectToOracleRetry(ByRef retryCount As Integer)
+        Dim cs As String = GetConnectionString()
         Dim maxRetries As Integer = 2
         Dim delay As Integer = 1000 ' Initial delay in milliseconds
 
@@ -352,6 +367,7 @@ Public Class DBHelper
                 End SyncLock
             End Sub
 
+        Dim clock As Diagnostics.Stopwatch = Diagnostics.Stopwatch.StartNew()
         Using tmr As New System.Threading.Timer(onTimeout, Nothing, QUERY_TIMEOUT_SECONDS * 1000, System.Threading.Timeout.Infinite)
             Try
                 Return work()
@@ -363,6 +379,8 @@ Public Class DBHelper
                 SyncLock lockObj
                     done = True
                 End SyncLock
+                'Slow request log (RequestTiming); the connect check query is in the connect time
+                If Not connecting Then RequestTiming.AddQuery(clock.ElapsedMilliseconds, cmd.CommandText)
             End Try
         End Using
     End Function
