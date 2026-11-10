@@ -142,14 +142,12 @@ Partial Class Login_Confirm
         Dim errMsg As String = ""
         Dim code As String = Common.randomString(6, "0123456789")
         Dim Message = Common.EmailLayout(
-            "Please use the following verification code to log in.<br /><br />" &
+            "Please use the following verification code to log in.<br />" &
+            "<span style=""color: #777777; font-size: 13px;"">Please note that this code will expire in 20 minutes.</span><br /><br />" &
             "Secure verification code:" &
-            "<div style=""margin: 8px 0 20px 0; padding: 14px 0; background-color: #FFF4EC; border: 1px solid #FFD2B3; border-radius: 4px; text-align: center;"">" &
-            "<div style=""font-family: 'Courier New', Courier, monospace; font-size: 30px; font-weight: bold; letter-spacing: 8px; color: #FF6600;"">" & code & "</div>" &
-            "<div style=""margin-top: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #777777;"">Please note that this code will expire in 20 minutes.</div>" &
-            "</div>")
-            'The expire note is inside the code box (the code differs each time): as the last line of the email, the same in
-            'every code email, Gmail hid it behind the "..." (trimmed content) button.
+            "<div style=""margin: 8px 0 0 0; padding: 14px 0; background-color: #FFF4EC; border: 1px solid #FFD2B3; border-radius: 4px; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 30px; font-weight: bold; letter-spacing: 8px; color: #FF6600;"">" & code & "</div>")
+            'Expire note above the code and the code last (it differs each time): when the note came after the code, even inside
+            'the code box, Gmail hid it behind the "..." (trimmed content) button.
         If Common.SendMail(Common.SYSTEM_EMAIL, email, Nothing, "One time verification code", Message, Nothing, True, errMsg) > 0 Then
 
         End If
