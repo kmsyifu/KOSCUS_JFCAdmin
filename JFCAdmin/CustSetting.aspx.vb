@@ -1274,7 +1274,12 @@ Partial Class JFCAdmin_CustSetting
                     Dim ci = New CultureInfo(IIf(CString(dr("language")) <> "", CString(dr("language")), "en-US").ToString)
                     Thread.CurrentThread.CurrentCulture = ci
                     Thread.CurrentThread.CurrentUICulture = ci
-                    CreateEmailBody(Page, emailBody, "MASTER", deliverySchedID & deliveryschedlinenr, newSchedule)
+                    'The schedule is already saved: TryCreateEmailBody retries once on a lost DB connection; if it still fails,
+                    'this email is skipped (instead of the error page) and a warning is shown
+                    If Not TryCreateEmailBody(Page, emailBody, "MASTER", deliverySchedID & deliveryschedlinenr, newSchedule) Then
+                        MessageBox("The delivery schedule was saved, but the email to the customer could not be sent (database connection lost).", "Warning")
+                        Exit For
+                    End If
                     Dim errmsg As String = ""
                     If Common.SendMail(SYSTEM_EMAIL, IIf(Common.IsDev(), "yfu@kmsnet.com, jzhou@kmsnet.com", CString(dr("customerEmail"))), VendorEmail, String.Format(rm.GetString("Yourdeliveryschedulewasupdated", ci), DB.NVL(deliverySchedID, "")), emailBody, Nothing, True, errmsg) > 0 Then
                         'Email sent failed
