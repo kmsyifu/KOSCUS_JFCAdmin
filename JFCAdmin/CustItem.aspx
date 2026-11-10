@@ -871,7 +871,9 @@
                             </div>
                             <div class="kp-footer">
                                 <button type="button" class="kp-btn kp-btn-cancel" onclick="$find('popDialog_User').hide(); return false;">Cancel</button>
-                                <asp:Button ID="btnPopSaveUser" CssClass="kp-btn kp-btn-primary" runat="server" Text="Copy" ValidationGroup="validgroupUser" />
+                                <%--One click only: disabled and "Copying..." until the page comes back (a second click started a second copy at the same time -> ORA-00001)--%>
+                                <asp:Button ID="btnPopSaveUser" CssClass="kp-btn kp-btn-primary" runat="server" Text="Copy" ValidationGroup="validgroupUser" UseSubmitBehavior="false"
+                                    OnClientClick="if (typeof(Page_ClientValidate) == 'function' && !Page_ClientValidate('validgroupUser')) return false; this.disabled = true; this.value = 'Copying...';" />
                             </div>
                         </asp:Panel>
                    
