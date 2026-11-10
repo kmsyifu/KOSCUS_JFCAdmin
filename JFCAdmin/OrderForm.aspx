@@ -74,7 +74,7 @@
                <asp:TextBox ID="txtSearchOrderForm" CssClass='<%# "largeTxt " & IIf(IsMobile(), "size24", "size48") %>' runat="server" autocomplete="off" />
                 <ajaxToolkit:TextBoxWatermarkExtender ID="watSearchOrderForm" runat="server"
                     TargetControlID="txtSearchOrderForm"
-                    WatermarkText="Search by Order Form"
+                    WatermarkText="Search by Order Form or Price Group"
                     WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size48") %>' />
                 <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
                 <asp:Label runat="server" Text="Customer #" CssClass="gray" />
