@@ -4,6 +4,11 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
     <script src="../Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
 
+    <%-- Show (All / Selected only / Unselected only): space between the radio buttons --%>
+    <style type="text/css">
+        .showRbl label { margin-left: 4px; margin-right: 18px; }
+    </style>
+
     <script type="text/javascript">
 
         // Loading screen for every postback on this page (showProgress adds only one overlay).
@@ -182,7 +187,7 @@
                     ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
                 <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
                 <asp:Label runat="server" Text="Show" CssClass="gray" />
-                <asp:RadioButtonList ID="rblCustShow" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True">
+                <asp:RadioButtonList ID="rblCustShow" CssClass="showRbl" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True">
                     <asp:ListItem Text="All" Value="ALL" Selected="True" />
                     <asp:ListItem Text="Selected only" Value="1" />
                     <asp:ListItem Text="Unselected only" Value="0" />
@@ -260,7 +265,7 @@
                     ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
                 <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
                 <asp:Label runat="server" Text="Show" CssClass="gray" />
-                <asp:RadioButtonList ID="rblItemShow" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True">
+                <asp:RadioButtonList ID="rblItemShow" CssClass="showRbl" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True">
                     <asp:ListItem Text="All" Value="ALL" Selected="True" />
                     <asp:ListItem Text="Selected only" Value="1" />
                     <asp:ListItem Text="Unselected only" Value="0" />
