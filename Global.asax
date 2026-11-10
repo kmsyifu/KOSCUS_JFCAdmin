@@ -5,6 +5,7 @@
 
     Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
         ' Code that runs on application startup
+        RequestTiming.AppStartTime = DateTime.Now   ' slow request log: shows when a slow request came right after a site (re)start
     End Sub
     
     Sub Application_End(ByVal sender As Object, ByVal e As EventArgs)
@@ -96,11 +97,12 @@
 
     'Appends a line to App_Data\ErrorLog\ErrorLog_yyyyMMdd.txt (one file per day; App_Data is never served to browsers).
     'Never throws - a logging failure must not hide the original error.
-    Private Sub WriteErrorLog(ByVal text As String)
+    'filePrefix: "SlowLog" for the slow request log (same folder, its own file)
+    Private Sub WriteErrorLog(ByVal text As String, Optional ByVal filePrefix As String = "ErrorLog")
         Try
             Dim folder As String = Server.MapPath("~/App_Data/ErrorLog")
             System.IO.Directory.CreateDirectory(folder)
-            Dim file As String = System.IO.Path.Combine(folder, "ErrorLog_" & DateTime.Now.ToString("yyyyMMdd") & ".txt")
+            Dim file As String = System.IO.Path.Combine(folder, filePrefix & "_" & DateTime.Now.ToString("yyyyMMdd") & ".txt")
             Dim entry As String = "==== " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & " ====" & vbCrLf & text & vbCrLf & vbCrLf
             SyncLock GetType(HttpApplication)
                 System.IO.File.AppendAllText(file, entry)
@@ -126,5 +128,39 @@
     'Added by jzhou to avoid click jacking
     Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
         HttpContext.Current.Response.AddHeader("x-frame-options", "DENY")
+        RequestTiming.Start(Context)
+    End Sub
+
+    ' ── Slow request log: App_Data\ErrorLog\SlowLog_yyyyMMdd.txt, every request of RequestTiming.SLOW_REQUEST_SECONDS
+    '    or longer, with the time of each part (site start / page compile, session wait, DB connect, DB queries, other).
+    '    Never throws: the log must not break a page.
+
+    'The page is ready to run (compiled if it changed / the site just started); next the session is loaded
+    Sub Application_PostMapRequestHandler(ByVal sender As Object, ByVal e As EventArgs)
+        Try
+            Dim t As RequestTiming = RequestTiming.Current()
+            If t IsNot Nothing Then t.HandlerReadyMs = t.Clock.ElapsedMilliseconds
+        Catch
+        End Try
+    End Sub
+
+    'Session loaded: waits here while another request of the same user holds the session lock
+    Sub Application_PostAcquireRequestState(ByVal sender As Object, ByVal e As EventArgs)
+        Try
+            Dim t As RequestTiming = RequestTiming.Current()
+            If t Is Nothing Then Return
+            t.SessionReadyMs = t.Clock.ElapsedMilliseconds
+            If Context.Session IsNot Nothing Then t.UserEmail = CString(Context.Session("SYS_SESSION_EMAIL"))
+        Catch
+        End Try
+    End Sub
+
+    Sub Application_EndRequest(ByVal sender As Object, ByVal e As EventArgs)
+        Try
+            Dim t As RequestTiming = RequestTiming.Current()
+            If t Is Nothing OrElse t.Clock.ElapsedMilliseconds < RequestTiming.SLOW_REQUEST_SECONDS * 1000L Then Return
+            WriteErrorLog(t.Report(Request), "SlowLog")
+        Catch
+        End Try
     End Sub
 </script>
