@@ -156,6 +156,8 @@ Partial Class JFCAdmin_OrderForm
         grdCustomers.PageIndex = 0
         grdItems.PageIndex = 0
         txtCustSearch.Text = ""
+        rblCustShow.SelectedValue = "ALL"
+        rblItemShow.SelectedValue = "ALL"
         hfOrderFormID.Value = orderFormID
         Dim isNew As Boolean = (orderFormID = "")
         pnlBranch.Visible = False
@@ -202,7 +204,7 @@ Partial Class JFCAdmin_OrderForm
 
             ' Sort by DDL init
             If lstSortBy.Items.Count = 0 Then
-                lstSortBy.Items.Add(New ListItem("Selected", "isAssigned DESC, item_id"))   ' selected first, then by item #
+                lstSortBy.Items.Add(New ListItem("Selected", "isAssigned DESC, itemDesc_view, item_id"))   ' selected first, then by description (searching: description only)
                 lstSortBy.Items.Add(New ListItem("Category", "ctgDispOrder, itemDesc_view"))
                 lstSortBy.Items.Add(New ListItem("Item Description", "itemDesc_view"))
                 lstSortBy.Items.Add(New ListItem("Item #", "item_id"))
@@ -255,19 +257,32 @@ Partial Class JFCAdmin_OrderForm
         If captureChecks Then CaptureCustChecks()
         Dim DB As DBHelper = If(dbIn, New DBHelper)
         Try
-            Dim searchText As String = IIf(watCustSearch.WatermarkText = txtCustSearch.Text, "", txtCustSearch.Text.Trim())
-            Dim dt As DataTable = GetCustomersTable(DB, orderFormID, searchText)
-            ' Selected customers first, then by customer #. Sorted after isAssigned is set, so unsaved checks are at the top too
-            dt.DefaultView.Sort = "isAssigned DESC, custNrSort, customerName"
-            grdCustomers.DataSource = dt.DefaultView
-            SetPageInRange(grdCustomers, dt.Rows.Count)
+            Dim dv As DataView = GetCustomersView(DB, orderFormID)
+            grdCustomers.DataSource = dv
+            SetPageInRange(grdCustomers, dv.Count)
             grdCustomers.DataBind()
+            ShowSelectAll(chkCustSelectAll, grdCustomers, dv, "customers")
         Finally
             If dbIn Is Nothing Then DB.Dispose()
         End Try
     End Sub
 
-    ' Customers of the selected exception price group, sorted by customer # (the grid then puts selected customers first).
+    Private Function CustSearchText() As String
+        Return IIf(watCustSearch.WatermarkText = txtCustSearch.Text, "", txtCustSearch.Text.Trim())
+    End Function
+
+    ' The customer list as the grid shows it: search, Show (All / Selected only / Unselected only) and sort applied.
+    ' Selected customers first, then by name; while searching by name only.
+    ' Sorted / filtered after isAssigned is set, so unsaved checks count too.
+    Private Function GetCustomersView(DB As DBHelper, orderFormID As String) As DataView
+        Dim searchText As String = CustSearchText()
+        Dim dt As DataTable = GetCustomersTable(DB, orderFormID, searchText)
+        dt.DefaultView.RowFilter = ShowFilter(rblCustShow)
+        dt.DefaultView.Sort = IIf(searchText = "", "isAssigned DESC, ", "") & "customerName, custNrSort"
+        Return dt.DefaultView
+    End Function
+
+    ' Customers of the selected exception price group, sorted by name (the grid then puts selected customers first).
     ' custNrSort = customer # padded with zeros, so it sorts in number order (12 before 100).
     ' isSaved = in orderForm_Customer, isAssigned = what the checkbox shows (saved + unsaved check edits).
     ' searchText: customer # (e.g. 1234, 30-1234, 301234) or part of the name; "" = all customers of the group.
@@ -294,7 +309,7 @@ Partial Class JFCAdmin_OrderForm
             "         ON fc.customer_id = c.customer_id AND fc.orderForm_id = :1 " &
             "WHERE  c.jfcBranchNr = :2 " &
             "  AND  c.JFCPRICEGRPID_ORIG = :3 " & searchCond &
-            "ORDER  BY LPAD(NVL(c.jfcCustomerNr, SUBSTR(c.custGrp_id, 3)), 20, '0'), c.customerName"   ' customer # in number order (12 before 100)
+            "ORDER  BY c.customerName, LPAD(NVL(c.jfcCustomerNr, SUBSTR(c.custGrp_id, 3)), 20, '0')"   ' then customer # in number order (12 before 100)
         Dim dt As DataTable = DB.GetDataTable(SQL,
             IIf(orderFormID = "", "~~NONE~~", orderFormID),
             lblBranchID.Text,
@@ -320,15 +335,58 @@ Partial Class JFCAdmin_OrderForm
         For Each row As GridViewRow In grdCustomers.Rows
             Dim chk = CType(row.FindControl("chkCustRow"), CheckBox)
             If chk IsNot Nothing Then
-                Dim custID As String = CString(grdCustomers.DataKeys(row.RowIndex)("customer_id"))
-                If chk.Checked = (Val(grdCustomers.DataKeys(row.RowIndex)("isSaved")) = 1) Then
-                    checks.Remove(custID)
-                Else
-                    checks(custID) = chk.Checked
-                End If
+                SetCheck(checks, CString(grdCustomers.DataKeys(row.RowIndex)("customer_id")), chk.Checked,
+                         Val(grdCustomers.DataKeys(row.RowIndex)("isSaved")) = 1)
             End If
         Next
         ViewState("CustChecks") = checks
+    End Sub
+
+    ' Record a check edit; a check that matches the saved state is not an edit
+    Private Sub SetCheck(checks As Dictionary(Of String, Boolean), id As String, checked As Boolean, isSaved As Boolean)
+        If checked = isSaved Then
+            checks.Remove(id)
+        Else
+            checks(id) = checked
+        End If
+    End Sub
+
+    ' Show radio buttons -> DataView row filter ("" = all)
+    Private Function ShowFilter(rbl As RadioButtonList) As String
+        Select Case rbl.SelectedValue
+            Case "1" : Return "isAssigned = 1"
+            Case "0" : Return "isAssigned = 0"
+            Case Else : Return ""
+        End Select
+    End Function
+
+    ' "Select all" of every page: shown only when the list has more than one page
+    ' (one page: the header checkbox does it). Checked when every listed row is checked.
+    Private Sub ShowSelectAll(chk As CheckBox, grd As GridView, dv As DataView, noun As String)
+        chk.Visible = (grd.PageCount > 1)
+        Dim checkedCount As Integer = 0
+        For Each drv As DataRowView In dv
+            If Val(drv("isAssigned")) = 1 Then checkedCount += 1
+        Next
+        chk.Checked = (dv.Count > 0 AndAlso checkedCount = dv.Count)
+        chk.Text = "Select all " & dv.Count & " " & noun & " (all pages)"
+    End Sub
+
+    Protected Sub chkCustSelectAll_CheckedChanged(sender As Object, e As EventArgs) Handles chkCustSelectAll.CheckedChanged
+        CaptureCustChecks()
+        Using DB As New DBHelper
+            Dim checks As Dictionary(Of String, Boolean) = CustChecks()
+            For Each drv As DataRowView In GetCustomersView(DB, hfOrderFormID.Value)
+                SetCheck(checks, CString(drv("customer_id")), chkCustSelectAll.Checked, Val(drv("isSaved")) = 1)
+            Next
+            BindCustomersGrid(hfOrderFormID.Value, False, DB)
+        End Using
+    End Sub
+
+    Protected Sub rblCustShow_SelectedIndexChanged(sender As Object, e As EventArgs) Handles rblCustShow.SelectedIndexChanged
+        CaptureCustChecks()
+        grdCustomers.PageIndex = 0
+        BindCustomersGrid(hfOrderFormID.Value, False)
     End Sub
 
     Protected Sub grdCustomers_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles grdCustomers.PageIndexChanging
@@ -374,17 +432,14 @@ Partial Class JFCAdmin_OrderForm
         Dim DB As DBHelper = If(dbIn, New DBHelper)
         Try
             Dim grpChanged As Boolean
-            Dim dt As DataTable = GetItemsTable(DB, orderFormID, True, grpChanged)
-            ' Sorted after isAssigned is set, so "Selected" shows unsaved checks at the top
-            dt.DefaultView.Sort = lstSortBy.SelectedValue
-            grdItems.DataSource = dt.DefaultView
-            SetPageInRange(grdItems, dt.Rows.Count)
+            Dim dv As DataView = GetItemsView(DB, orderFormID, grpChanged)
+            grdItems.DataSource = dv
+            SetPageInRange(grdItems, dv.Count)
             grdItems.DataBind()
+            ShowSelectAll(chkItemSelectAll, grdItems, dv, "items")
 
-            Dim changes As Integer = 0
-            For Each dr As DataRow In dt.Rows
-                If Val(dr("isAssigned")) <> Val(dr("isSaved")) Then changes += 1
-            Next
+            ' Every check edit, also of items not in the list now (search / Show filter)
+            Dim changes As Integer = ItemChecks().Count
             lblItemPendingMsg.Text = IIf(changes > 0,
                 changes & " unsaved item change(s) - click """ & btnSaveForm.Text & """ to save.", "")
             If grpChanged Then
@@ -396,12 +451,30 @@ Partial Class JFCAdmin_OrderForm
         End Try
     End Sub
 
+    ' The item list as the grid shows it: search / category, Show (All / Selected only / Unselected only) and sort applied.
+    ' While searching (search text or a category) "Selected" does not put the selected items first.
+    ' Sorted / filtered after isAssigned is set, so unsaved checks count too.
+    Private Function GetItemsView(DB As DBHelper, orderFormID As String, ByRef grpChanged As Boolean) As DataView
+        Dim dt As DataTable = GetItemsTable(DB, orderFormID, True, grpChanged)
+        dt.DefaultView.RowFilter = ShowFilter(rblItemShow)
+        Dim sort As String = lstSortBy.SelectedValue
+        If ItemSearchText() <> "" OrElse (lstCtgSearch.SelectedValue <> "" AndAlso lstCtgSearch.SelectedValue <> LST_ALL_STR) Then
+            sort = sort.Replace("isAssigned DESC, ", "")
+        End If
+        dt.DefaultView.Sort = sort
+        Return dt.DefaultView
+    End Function
+
+    Private Function ItemSearchText() As String
+        Return IIf(watItemSearch.WatermarkText = txtItemSearch.Text, "", txtItemSearch.Text.Trim())
+    End Function
+
     ' Items of the form's exception price group. isSaved = in orderForm_Item, isAssigned = what the checkbox
-    ' shows (saved + unsaved check edits). forList = True: the grid list (search / category apply; saved and
-    ' checked items are always listed). forList = False: only saved and checked items (Save - every page).
+    ' shows (saved + unsaved check edits). forList = True: the grid list (only items matching the search / category;
+    ' check edits of other items stay in ItemChecks). forList = False: only saved and checked items (Save - every page).
     Private Function GetItemsTable(DB As DBHelper, orderFormID As String, forList As Boolean, ByRef grpChanged As Boolean) As DataTable
         Dim jfcBranchNr As String = lblBranchID.Text
-        Dim searchText As String = IIf(watItemSearch.WatermarkText = txtItemSearch.Text, "", txtItemSearch.Text.Trim())
+        Dim searchText As String = ItemSearchText()
         Dim ctgFilter As String = lstCtgSearch.SelectedValue
         Dim priceGrpID As String = GetFormPriceGrpID(DB)
 
@@ -409,12 +482,12 @@ Partial Class JFCAdmin_OrderForm
         ' exception price group (customer.jfcPriceGrpID_orig). Those rows are the group's item list.
         ' jets_price (branch price group) only supplies the branch description / category / ea per cs.
         ' Every listed item must be in that group (enabled, non-zero price). Search text / category only
-        ' narrow the list; checked and saved items of the group are always listed so Save
-        ' (delete + re-insert checked rows) never drops them.
+        ' narrow the grid list; Save reads saved and checked items without them (forList = False), so
+        ' Save (delete + re-insert checked rows) never drops an item that is not listed.
         Dim groupCond As String = "cp.item_id IS NOT NULL AND cp.enabled = 'Y'" &
                                   " AND NOT (NVL(cp.csPrice, 0) = 0 AND NVL(cp.eaPrice, 0) = 0 AND NVL(cp.lbPrice_orderByQty, 0) = 0 AND NVL(cp.lbPrice_orderByWgt, 0) = 0)"
         Dim searchSQL As String = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
-                                  " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} OR UPPER(a.item_id) = {1}) "
+                                  " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.item_id) = {1}) "   ' sales point is not searched
         Dim searchCond As String = ""
         searchWords = New List(Of String)
         If Not forList Then searchText = ""
@@ -439,8 +512,8 @@ Partial Class JFCAdmin_OrderForm
             "NVL(jctgGrp2.dispOrder, NVL(jctgGrp.dispOrder, 99)) AS ctgDispOrder, " &
             "p.eaPerCs, NVL(cp.csPrice, 0) AS csPrice, NVL(cp.eaPrice, 0) AS eaPrice, NVL(cp.lbPrice_orderByQty, 0) AS lbPrice_OrderByQty, NVL(cp.lbPrice_orderByWgt, 0) AS lbPrice_OrderByWgt, " &
             "'' AS availMsg, " &
-            IIf(searchWords.Count > 0, "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, a.salesPoint, ",
-                "NULL AS itemDesc_ja, NULL AS itemDesc_long, NULL AS itemWebDesc, NULL AS salesPoint, ") &
+            IIf(searchWords.Count > 0, "a.itemDesc_ja, a.itemDesc_long, a.itemWebDesc, ",
+                "NULL AS itemDesc_ja, NULL AS itemDesc_long, NULL AS itemWebDesc, ") &
             "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isAssigned, " &
             "CASE WHEN fi.item_id IS NOT NULL THEN 1 ELSE 0 END AS isSaved " &
             "FROM   jfcItem a " &
@@ -452,9 +525,8 @@ Partial Class JFCAdmin_OrderForm
             "LEFT   JOIN jfcCtgGrp jctgGrp2 ON jctgGrp2.ctgGrp_id = jSubCtg2.ctgGrp_id " &
             "LEFT   JOIN orderForm_Item fi ON fi.item_id = a.item_id AND fi.orderForm_id = :3 " &
             "WHERE  " & groupCond &
-            "  AND  (fi.item_id IS NOT NULL" &
-            IIf(checkedCond <> "", " OR " & checkedCond, "") &
-            IIf(forList, " OR (1 = 1" & searchCond & ")", "") & ") "
+            IIf(forList, searchCond & " ",
+                "  AND  (fi.item_id IS NOT NULL" & IIf(checkedCond <> "", " OR " & checkedCond, "") & ") ")
 
         ' Saved items belong to the form's saved group; after switching groups none are checked
         ' (Save then replaces them with the items checked under the new group).
@@ -493,7 +565,7 @@ Partial Class JFCAdmin_OrderForm
         If searchWords.Count = 0 Then Return ""
         Dim desc As String = CString(drv("itemDesc_view")).ToUpper
         Dim itemID As String = CString(drv("item_id")).ToUpper
-        Dim fields As String() = {"itemDesc_ja", "itemDesc_long", "itemWebDesc", "salesPoint"}
+        Dim fields As String() = {"itemDesc_ja", "itemDesc_long", "itemWebDesc"}
         Dim html As New List(Of String)
         Dim usedFields As New List(Of String)
         For Each word As String In searchWords
@@ -538,15 +610,29 @@ Partial Class JFCAdmin_OrderForm
         For Each row As GridViewRow In grdItems.Rows
             Dim chk = CType(row.FindControl("chkItemRow"), CheckBox)
             If chk IsNot Nothing Then
-                Dim itemID As String = CString(grdItems.DataKeys(row.RowIndex)("item_id"))
-                If chk.Checked = (Val(grdItems.DataKeys(row.RowIndex)("isSaved")) = 1) Then
-                    checks.Remove(itemID)
-                Else
-                    checks(itemID) = chk.Checked
-                End If
+                SetCheck(checks, CString(grdItems.DataKeys(row.RowIndex)("item_id")), chk.Checked,
+                         Val(grdItems.DataKeys(row.RowIndex)("isSaved")) = 1)
             End If
         Next
         ViewState("ItemChecks") = checks
+    End Sub
+
+    Protected Sub chkItemSelectAll_CheckedChanged(sender As Object, e As EventArgs) Handles chkItemSelectAll.CheckedChanged
+        CaptureItemChecks()
+        Using DB As New DBHelper
+            Dim checks As Dictionary(Of String, Boolean) = ItemChecks()
+            Dim grpChanged As Boolean
+            For Each drv As DataRowView In GetItemsView(DB, hfOrderFormID.Value, grpChanged)
+                SetCheck(checks, CString(drv("item_id")), chkItemSelectAll.Checked, Val(drv("isSaved")) = 1)
+            Next
+            BindItemsGrid(hfOrderFormID.Value, False, DB)
+        End Using
+    End Sub
+
+    Protected Sub rblItemShow_SelectedIndexChanged(sender As Object, e As EventArgs) Handles rblItemShow.SelectedIndexChanged
+        CaptureItemChecks()
+        grdItems.PageIndex = 0
+        BindItemsGrid(hfOrderFormID.Value, False)
     End Sub
 
     ' "(col IN (...) OR col IN (...))" for item_ids with the given check state, 1000 per list (Oracle limit); "" if none
