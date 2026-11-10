@@ -92,7 +92,7 @@ Public Enum Init_Level
 End Enum
 
 Public Class Common
-    Public Const VERSION As String = "018.10"
+    Public Const VERSION As String = "018.11"
 
     ' Stylesheet <link> tag with VERSION in the URL, so browsers load the new file after VERSION changes.
     ' Use it as <%= Common.CssLink("~/Styles/Koscus.css") %> inside a master page's DefContent placeholder.
