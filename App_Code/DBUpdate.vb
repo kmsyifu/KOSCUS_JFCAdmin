@@ -1449,6 +1449,22 @@ Public Class DBUpdate
         Return True
     End Function
 
+    ''' <summary>
+    ''' Customer Items copy: runs one save (UpSertCustItem / UpSertCustItemCopyPrice with isOneTrans = True) and, when it fails
+    ''' with ORA-00001 (unique constraint, e.g. JFCCUSTOMERPRICE_PK), rolls back and runs it once more.
+    ''' Two copies of the same item at the same time (Copy clicked twice, or two users) both found no jfcCustomerPrice /
+    ''' customer_custitem row and both inserted; the second insert failed. On the retry the save finds the row the other copy
+    ''' committed and updates it instead.
+    ''' </summary>
+    Public Shared Function SaveCustItemCopy(ByVal DB As DBHelper, ByVal save As Func(Of Boolean)) As Boolean
+        Try
+            Return save()
+        Catch ex As System.Data.OracleClient.OracleException When ex.Code = 1
+            DB.RollbackTransaction()
+            Return save()
+        End Try
+    End Function
+
     Public Shared Function deleteCustCustItem(ByVal DB As DBHelper, ByVal customerID As String, ByVal custGrpItemID As String, Optional ByVal isOneTrans As Boolean = True) As Boolean
         Dim SQL As String
         If isOneTrans = True Then DB.BeginTransaction()
