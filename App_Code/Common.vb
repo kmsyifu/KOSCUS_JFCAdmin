@@ -1264,6 +1264,31 @@ Public Class Common
         page.Controls.Remove(ctrl)
     End Sub
 
+    ''' <summary>
+    ''' CreateEmailBody for emails sent after data was already saved (e.g. order update): a lost database connection
+    ''' (ORA-03113 etc., an idle pooled connection the server / network cut; EmailBody.ascx reads with SqlDataSource) clears
+    ''' the connection pools and builds the body once more. Returns False if it still fails, so the caller keeps the saved data
+    ''' and shows "email could not be sent" instead of the error page. Other errors are thrown as before.
+    ''' </summary>
+    Public Shared Function TryCreateEmailBody(ByVal page As Page, ByRef emailBody As String, ByVal cmd As String, ByVal ParamArray args() As Object) As Boolean
+        For attempt As Integer = 1 To 2
+            Try
+                CreateEmailBody(page, emailBody, cmd, args)
+                Return True
+            Catch ex As Exception When DBHelper.IsConnectionLost(ex)
+                'The failed EmailBody control stays on the page (Remove was not reached): take it off so it is not shown
+                For i As Integer = page.Controls.Count - 1 To 0 Step -1
+                    Dim uc As UserControl = TryCast(page.Controls(i), UserControl)
+                    If uc IsNot Nothing AndAlso uc.AppRelativeVirtualPath IsNot Nothing AndAlso
+                       uc.AppRelativeVirtualPath.EndsWith("EmailBody.ascx", StringComparison.OrdinalIgnoreCase) Then page.Controls.RemoveAt(i)
+                Next
+                DBHelper.ClearConnectionPools()
+            End Try
+        Next
+        emailBody = ""
+        Return False
+    End Function
+
     '---------------------------------------------------------------------------------------------------------------------------
     'Email HTML helpers for emails that are built in code (not from Common/EmailBody.ascx).
     'Same look as EmailBody.ascx: gray page, white card (max 680px), orange header bar with the company name,
