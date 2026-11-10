@@ -180,12 +180,22 @@
                     WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size48") %>' />
                 <asp:ImageButton ID="btnSearchCust" CssClass="xsImgBtn"
                     ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
+                <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
+                <asp:Label runat="server" Text="Show" CssClass="gray" />
+                <asp:RadioButtonList ID="rblCustShow" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True">
+                    <asp:ListItem Text="All" Value="ALL" Selected="True" />
+                    <asp:ListItem Text="Selected only" Value="1" />
+                    <asp:ListItem Text="Unselected only" Value="0" />
+                </asp:RadioButtonList>
                 <br />
             </asp:Panel>
 
             <br style="clear:both;" />
 
-            <%-- All customers of the selected exception price group: selected first, then by customer #; checked = saved to the form.
+            <%-- Shown only when the list has more than one page: checks / unchecks every customer of the list (all pages) --%>
+            <asp:CheckBox ID="chkCustSelectAll" runat="server" AutoPostBack="True" Visible="false" />
+
+            <%-- All customers of the selected exception price group: selected first, then by name (searching: by name only); checked = saved to the form.
                  25 per page; checks are kept when the page or search changes (ViewState CustChecks) --%>
             <asp:GridView ID="grdCustomers" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
@@ -248,6 +258,13 @@
                     WatermarkCssClass='<%# "watermark largeTxt " & IIf(IsMobile(), "size24", "size32") %>' />
                 <asp:ImageButton ID="btnSearchItem" CssClass="xsImgBtn"
                     ImageUrl='<%# GetWebImgUrl("search.png") %>' runat="server" />
+                <%= IIf(IsMobile(), "<br />", "&nbsp;") %>
+                <asp:Label runat="server" Text="Show" CssClass="gray" />
+                <asp:RadioButtonList ID="rblItemShow" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True">
+                    <asp:ListItem Text="All" Value="ALL" Selected="True" />
+                    <asp:ListItem Text="Selected only" Value="1" />
+                    <asp:ListItem Text="Unselected only" Value="0" />
+                </asp:RadioButtonList>
                 <br />
             </asp:Panel>
 
@@ -257,6 +274,9 @@
 
             <asp:Label ID="lblItemMsg" CssClass="red" runat="server" />
             <asp:Label ID="lblItemPendingMsg" CssClass="green" Font-Size="Large" Font-Bold="True" runat="server" />
+
+            <%-- Shown only when the list has more than one page: checks / unchecks every item of the list (all pages) --%>
+            <br /><asp:CheckBox ID="chkItemSelectAll" runat="server" AutoPostBack="True" Visible="false" />
 
             <asp:GridView ID="grdItems" runat="server"
                 CssClass="STDTABLE" AutoGenerateColumns="false"
@@ -323,7 +343,7 @@
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px" ItemStyle-Height="30px">
                         <ItemTemplate>
                             <asp:Label runat="server"
-                                Text='<%# IIf(Val(Eval("csPrice")) <> 0, Eval("csPrice", "{0:N2}"), "") %>' />
+                                Text='<%# Eval("csPrice", "{0:N2}") %>' /><%--no price = 0.00 (was empty)--%>
                         </ItemTemplate>
                     </asp:TemplateField>
 
@@ -332,7 +352,7 @@
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px" ItemStyle-Height="30px">
                         <ItemTemplate>
                             <asp:Label runat="server"
-                                Text='<%# IIf(Val(Eval("eaPrice")) <> 0, Eval("eaPrice", "{0:N2}"), "") %>' />
+                                Text='<%# Eval("eaPrice", "{0:N2}") %>' /><%--no price = 0.00 (was empty)--%>
                         </ItemTemplate>
                     </asp:TemplateField>
 
@@ -341,7 +361,7 @@
                         HeaderStyle-ForeColor="#FF6600" HeaderStyle-Height="30px" ItemStyle-Height="30px">
                         <ItemTemplate>
                             <asp:Label runat="server"
-                                Text='<%# IIf(Val(Eval("lbPrice_OrderByQty")) <> 0, Eval("lbPrice_OrderByQty", "{0:N2}"), IIf(Val(Eval("lbPrice_OrderByWgt")) <> 0, Eval("lbPrice_OrderByWgt", "{0:N2}"), "")) %>' /><%--lb price by qty, else by weight--%>
+                                Text='<%# IIf(Val(Eval("lbPrice_OrderByQty")) <> 0, Eval("lbPrice_OrderByQty", "{0:N2}"), Eval("lbPrice_OrderByWgt", "{0:N2}")) %>' /><%--lb price by qty, else by weight; no price = 0.00 (was empty)--%>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
