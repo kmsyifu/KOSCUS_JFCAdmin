@@ -1182,9 +1182,11 @@ Partial Class Common_Balance
 
         'Get email body for user from email template in user control
         vendorEmail = GetJfcEmail(mDB, customerID, False)
-        CreateEmailBody(Page, emailBody, "PAY", paymentID, IIf(lblErrorMsg.Text <> String.Empty, lblErrorMsg.Text, lblConfirmMsg.Text), "CUSTOMER")
-        'Send confirmation email to user
-        If Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, "Payment Confirmation (" & paymentID & ")", emailBody, Nothing, True, errMsg) > 0 Then
+        'The payment is already made: TryCreateEmailBody retries once on a lost DB connection; if it still fails, no email
+        '(instead of the error page)
+        If Not TryCreateEmailBody(Page, emailBody, "PAY", paymentID, IIf(lblErrorMsg.Text <> String.Empty, lblErrorMsg.Text, lblConfirmMsg.Text), "CUSTOMER") Then
+            emailSent = False
+        ElseIf Common.SendMail(SYSTEM_EMAIL, userEmail, vendorEmail, "Payment Confirmation (" & paymentID & ")", emailBody, Nothing, True, errMsg) > 0 Then
             'Email sent failed
             emailSent = False
         Else
@@ -1195,8 +1197,9 @@ Partial Class Common_Balance
         End If
 
         'Send email to vendor
-        CreateEmailBody(Page, emailBody, "PAY", paymentID, "The following payment has been submitted by your customer.", "JFC")
-        Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "Payment '" & paymentID & "' has been submitted", emailBody, Nothing, True, errMsg)
+        If TryCreateEmailBody(Page, emailBody, "PAY", paymentID, "The following payment has been submitted by your customer.", "JFC") Then
+            Common.SendMail(SYSTEM_EMAIL, vendorEmail, userEmail, "Payment '" & paymentID & "' has been submitted", emailBody, Nothing, True, errMsg)
+        End If
 
         'Return back to transaction list and refresh payment history
         InsertEventLog(mDB, "Payment approved" & IIf(payAmt > approvedAmt, " (partial)", "") & IIf(emailSent = True, " and confirmation email sent.", ""), customerID, lstPaymentAcc.Text, approvedAmt, True)

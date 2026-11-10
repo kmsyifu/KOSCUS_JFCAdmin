@@ -902,6 +902,7 @@ Partial Class JFCAdmin_CustItem
                         'jfcBranchNr = CString(r("jfcBranchNr"))
                     End If
                     r2.close()
+                    Dim itemEmailFailed As Boolean = False
                     '2023
                     For Each dr In dt.Rows
                         Dim ci = New CultureInfo(IIf(CString(dr("language")) <> "", CString(dr("language")), "en-US").ToString)
@@ -915,7 +916,12 @@ Partial Class JFCAdmin_CustItem
                         Else
                             subject = String.Format(rm.GetString("Youriteminfowasupdated", ci), lblPopEditItem.Text) '"Your item info was updated (#" & lblPopEditItem.Text & ")"
                         End If
-                        CreateEmailBody(Page, emailBody, "ITEM_DTL", custInfo.customerID, CString(dr("customerEmail")), custInfo.custGrpID, ViewState("PopEditCustomerGrpId"), emailresponse, txtNote.Text)
+                        'The item is already saved: TryCreateEmailBody retries once on a lost DB connection; if it still fails,
+                        'this email is skipped and "saved, but the email could not be sent" is shown
+                        If Not TryCreateEmailBody(Page, emailBody, "ITEM_DTL", custInfo.customerID, CString(dr("customerEmail")), custInfo.custGrpID, ViewState("PopEditCustomerGrpId"), emailresponse, txtNote.Text) Then
+                            itemEmailFailed = True
+                            Continue For
+                        End If
                         'Send confirmation email to user
                         'CreateEmailBody(Page, emailBody, "ITEM_DTL", "", "", "", "")
                         Dim errmsg As String = ""
@@ -929,7 +935,11 @@ Partial Class JFCAdmin_CustItem
                             'emailSent = True
                         End If
                     Next
-                    MessageLine("CONFIRM", "Successfully saved and sent email!")
+                    If itemEmailFailed Then
+                        MessageLine("CONFIRM", "Successfully saved, but the email could not be sent (database connection lost).")
+                    Else
+                        MessageLine("CONFIRM", "Successfully saved and sent email!")
+                    End If
                     'lblPopWarningItem.Text = "Successfully saved and sent email!"
                 Else
                     MessageLine("CONFIRM", "Successfully saved")
@@ -2214,6 +2224,7 @@ Partial Class JFCAdmin_CustItem
             Dim thecustInfo As CustomerInfo = CType(custID, CustomerInfo)
             If GroupEmailList(thecustInfo) IsNot Nothing Then
                 If CType(GroupEmailList(thecustInfo), List(Of String)).Count > 0 Then
+                    Dim inquiryEmailFailed As Boolean = False
                     Using db As New DBHelper
                         Dim b As String = ""
                         Dim c As String = ""
@@ -2252,7 +2263,12 @@ Partial Class JFCAdmin_CustItem
                             Thread.CurrentThread.CurrentUICulture = ci
                             '2023
                             Dim emailresponse As String = rm.GetString("Pleaseplaceaneworderifyouneedtheseitems", ci) '"Please place a new order if you need these items."
-                            CreateEmailBody(Page, emailBody, "PRICE_INQUIRY_LIST", thecustInfo, groupList, emailresponse, "")
+                            'The prices are already saved: TryCreateEmailBody retries once on a lost DB connection; if it still
+                            'fails, this email is skipped and "saved, but the email could not be sent" is shown
+                            If Not TryCreateEmailBody(Page, emailBody, "PRICE_INQUIRY_LIST", thecustInfo, groupList, emailresponse, "") Then
+                                inquiryEmailFailed = True
+                                Continue For
+                            End If
                             Dim subject = rm.GetString("Regardingyourpriceinquiry", ci) '"Regarding your price inquiry"
 
                             'Send confirmation email to user
@@ -2261,7 +2277,11 @@ Partial Class JFCAdmin_CustItem
                             End If
                         Next
                     End Using
-                    MessageLine("CONFIRM", "Successfully saved and sent email!")
+                    If inquiryEmailFailed Then
+                        MessageLine("CONFIRM", "Successfully saved, but the email could not be sent (database connection lost).")
+                    Else
+                        MessageLine("CONFIRM", "Successfully saved and sent email!")
+                    End If
                     checkallnumber = True
 
                 End If
