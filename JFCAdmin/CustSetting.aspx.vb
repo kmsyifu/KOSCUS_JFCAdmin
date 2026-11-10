@@ -1502,8 +1502,16 @@ Partial Class JFCAdmin_CustSetting
                 IIf(IsMobile(), lst.CssClass = "cellLbl drpList size4", "")
             End If
 
-            txt = CType(e.Row.FindControl("txtCell"), TextBox)
-            IIf(IsMobile(), txt.CssClass = "cellLbl size4", "")
+            'Mobile: Cell Phone box just wide enough for one phone number, e.g. (###)###-####
+            If IsMobile() Then
+                txt = CType(e.Row.FindControl("txtCell"), TextBox)
+                txt.CssClass = "cellLbl stdTxt size20"
+            End If
+        End If
+
+        'Mobile: Cell Phone column (header and rows) sized to the box instead of size32
+        If IsMobile() AndAlso (e.Row.RowType = DataControlRowType.DataRow OrElse e.Row.RowType = DataControlRowType.Header) Then
+            e.Row.Cells(1).CssClass = If(e.Row.RowType = DataControlRowType.Header, "th left", "left")
         End If
     End Sub
 
