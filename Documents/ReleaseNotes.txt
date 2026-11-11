@@ -34,6 +34,7 @@ KOSCUS_JFCADMIN018.4 (11/09/2026)
 *<Confirm>: One time verification code email: the subject now has the code ("One time verification code: 123456"), so it can be read in the mail list / phone notification without opening the email.
 *<Common>: Version changed to 018.14 (Common.VERSION), so browsers load the new CSS / JS files.
 *<OrderForm>: Order Form detail: wider space between the Show radio buttons (All / Selected only / Unselected only): 28px before each radio button (was 18px after each label).
+*<Common>: Version changed to 018.15 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN018.3 (11/08/2026)
 *<Common>: Version changed to 018.3 (Common.VERSION), so browsers load the new CSS / JS files.
