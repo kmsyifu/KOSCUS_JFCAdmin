@@ -6,7 +6,9 @@
 
     <%-- Show (All / Selected only / Unselected only): space between the radio buttons --%>
     <style type="text/css">
-        .showRbl label { margin-left: 4px; margin-right: 18px; }
+        .showRbl input[type="radio"] { margin: 0 5px 0 28px !important; vertical-align: middle; }
+        .showRbl input[type="radio"]:first-child { margin-left: 8px !important; }
+        .showRbl label { margin: 0 !important; vertical-align: middle; }
     </style>
 
     <script type="text/javascript">
