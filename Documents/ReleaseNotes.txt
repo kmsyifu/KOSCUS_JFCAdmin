@@ -31,6 +31,7 @@ KOSCUS_JFCADMIN017.4 (11/09/2026)
 *<OrderForm>: Order Form detail: more space between the Show radio buttons (All / Selected only / Unselected only) of the customers and items.
 *<Global.asax, DBHelper, RequestTiming>: New slow request log, to find why pages sometimes wait 30 seconds or more: every request that takes 10 seconds or longer (RequestTiming.SLOW_REQUEST_SECONDS) is written to App_Data\ErrorLog\SlowLog_yyyyMMdd.txt with the time of each part - start / page compile (and whether the site had just started), waiting for the session (another request of the same user still running), DB connect (count, slowest, lost connection retries), DB queries (count, slowest with its SQL), other (page code, SqlDataSource lists, email) - and the likely cause (the biggest part). Fast requests write nothing.
 *<Common>: Version changed to 017.13 (Common.VERSION), so browsers load the new CSS / JS files.
+*<Confirm>: One time verification code email: the subject now has the code ("One time verification code: 123456"), so it can be read in the mail list / phone notification without opening the email.
 
 KOSCUS_JFCADMIN017.3 (11/08/2026)
 *<Common>: Version changed to 017.3 (Common.VERSION), so browsers load the new CSS / JS files.
