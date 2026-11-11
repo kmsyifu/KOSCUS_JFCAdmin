@@ -148,7 +148,7 @@ Partial Class Login_Confirm
             "<div style=""margin: 8px 0 0 0; padding: 14px 0; background-color: #FFF4EC; border: 1px solid #FFD2B3; border-radius: 4px; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 30px; font-weight: bold; letter-spacing: 8px; color: #FF6600;"">" & code & "</div>")
             'Expire note above the code and the code last (it differs each time): when the note came after the code, even inside
             'the code box, Gmail hid it behind the "..." (trimmed content) button.
-        If Common.SendMail(Common.SYSTEM_EMAIL, email, Nothing, "One time verification code", Message, Nothing, True, errMsg) > 0 Then
+        If Common.SendMail(Common.SYSTEM_EMAIL, email, Nothing, "One time verification code: " & code, Message, Nothing, True, errMsg) > 0 Then
 
         End If
 
