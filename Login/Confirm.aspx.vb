@@ -150,7 +150,7 @@ Partial Class Login_Confirm
             "</div>")
             'The expire note is inside the code box (the code differs each time): as the last line of the email, the same in
             'every code email, Gmail hid it behind the "..." (trimmed content) button.
-        If Common.SendMail(Common.SYSTEM_EMAIL, email, Nothing, "One time verification code", Message, Nothing, True, errMsg) > 0 Then
+        If Common.SendMail(Common.SYSTEM_EMAIL, email, Nothing, "One time verification code: " & code, Message, Nothing, True, errMsg) > 0 Then
 
         End If
 
