@@ -77,6 +77,17 @@
             Exit Sub
         End If
 
+        'The database could not be reached (down / restarting, listener not running, network): show "the database is not
+        'available, please try again in a moment" instead of the general error message. No reload: it would fail again.
+        If DBHelper.IsConnectFailed(lastError) Then
+            DBHelper.ClearConnectionPools()
+            Server.ClearError()
+            WriteErrorLog("DB NOT AVAILABLE - user asked to try again later")
+            Response.Redirect("~/Errors/Error.aspx?reason=dbdown", False)
+            Context.ApplicationInstance.CompleteRequest()
+            Exit Sub
+        End If
+
         'A query canceled for running too long (DBHelper.QUERY_TIMEOUT_SECONDS): show "the database is busy, please try again"
         'instead of the general error message
         If IsDBQueryTimeout(lastError) Then

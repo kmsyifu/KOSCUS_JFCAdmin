@@ -151,6 +151,26 @@ Public Class DBHelper
         Return False
     End Function
 
+    'True if the error (or any error inside it) is a failure to open a new connection - the database / listener is down
+    'or cannot be reached (not a dead pooled connection, see IsConnectionLost):
+    'ORA-12170 connect timeout, ORA-12514 / 12505 listener does not know the service / SID, ORA-12518 / 12519 / 12520
+    'listener could not hand off / no handler, ORA-12528 / 12526 instance blocking new connections, ORA-12537 connection
+    'closed, ORA-12541 no listener, ORA-12543 destination host unreachable, ORA-12560 protocol adapter error,
+    'ORA-01033 initialization or shutdown in progress, ORA-01034 ORACLE not available, ORA-01089 immediate shutdown
+    Public Shared Function IsConnectFailed(ByVal ex As Exception) As Boolean
+        While ex IsNot Nothing
+            Dim oex As OracleException = TryCast(ex, OracleException)
+            If oex IsNot Nothing Then
+                Select Case oex.Code
+                    Case 1033, 1034, 1089, 12170, 12505, 12514, 12518, 12519, 12520, 12526, 12528, 12537, 12541, 12543, 12560
+                        Return True
+                End Select
+            End If
+            ex = ex.InnerException
+        End While
+        Return False
+    End Function
+
     'Drops every pooled connection, so the next pages open new ones instead of getting a dead one
     Public Shared Sub ClearConnectionPools()
         Try
