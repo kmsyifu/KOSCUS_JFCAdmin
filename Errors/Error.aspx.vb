@@ -5,12 +5,15 @@ Partial Class Errors_Error
 
     'reason=busy: a database query was canceled for running too long (set by Global.asax)
     'reason=connection: the database connection was lost (set by Global.asax)
+    'reason=dbdown: the database could not be reached (set by Global.asax)
     Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
         Dim busy As Boolean = (Request.QueryString("reason") = "busy")
         Dim connection As Boolean = (Request.QueryString("reason") = "connection")
+        Dim dbDown As Boolean = (Request.QueryString("reason") = "dbdown")
         phBusy.Visible = busy
         phConnection.Visible = connection
-        phError.Visible = Not busy AndAlso Not connection
+        phDbDown.Visible = dbDown
+        phError.Visible = Not busy AndAlso Not connection AndAlso Not dbDown
     End Sub
 
     'Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
