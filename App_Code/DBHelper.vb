@@ -171,6 +171,18 @@ Public Class DBHelper
         Return False
     End Function
 
+    'True if the error (or any error inside it) is "Timeout expired. The timeout period elapsed prior to obtaining a
+    'connection from the pool ... max pool size was reached": every pooled connection was in use, e.g. held by requests
+    'stuck waiting on the database (a hung connect / query cannot be canceled), so a new page could not get one
+    Public Shared Function IsPoolTimeout(ByVal ex As Exception) As Boolean
+        While ex IsNot Nothing
+            If TypeOf ex Is InvalidOperationException AndAlso
+               If(ex.Message, "").IndexOf("connection from the pool", StringComparison.OrdinalIgnoreCase) > -1 Then Return True
+            ex = ex.InnerException
+        End While
+        Return False
+    End Function
+
     'Drops every pooled connection, so the next pages open new ones instead of getting a dead one
     Public Shared Sub ClearConnectionPools()
         Try
