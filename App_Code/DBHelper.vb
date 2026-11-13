@@ -50,7 +50,10 @@ Public Class DBHelper
         Select Case dbtype
             Case DataBaseType.ORACLE
                 'Return "User Id=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD") & ";Data Source=" & GetConfig("TNSNAME") & ";Min Pool Size=10;Connection Lifetime=20;Pooling=FALSE"
-                Return "User Id=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD") & ";Data Source=" & GetConfig("TNSNAME") & ";Min Pool Size=10;Connection Lifetime=20;" 'Pooling=False -> Pooling=True 'Max Pool Size=200;
+                'Min Pool Size 10 -> 2: fewer idle connections kept all the time (a firewall / the server cuts idle ones -> ORA-03113).
+                'Connection Lifetime 20 -> 300 sec: a connection older than this is closed when it goes back to the pool; at 20 sec
+                'a busy site logged in to Oracle again every few pages.
+                Return "User Id=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD") & ";Data Source=" & GetConfig("TNSNAME") & ";Min Pool Size=2;Connection Lifetime=300;" 'Pooling=False -> Pooling=True 'Max Pool Size=200;
             Case DataBaseType.SQLSERVER
                 Return "MultipleActiveResultSets=True;Persist Security Info=True;Pooling=false;Max Pool Size=250;Min Pool Size=5;" & _
                        "server=" & GetConfig("DBServer") & ";database=" & GetConfig("DEFAULTDB") & ";User=" & GetConfig("DBUSER") & ";Password=" & GetConfig("DBPASSWD")
