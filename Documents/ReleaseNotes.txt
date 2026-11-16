@@ -34,6 +34,8 @@ KOSCUS_JFCADMIN022 (11/09/2026)
 *<Common>: Version changed to 022.5 (Common.VERSION), so browsers load the new CSS / JS files.
 *<DBHelper>: Database connection pool settings (for the pages and the SqlDataSource lists): Min Pool Size 10 -> 2 (fewer idle connections kept open all the time; idle connections cut by a firewall / the server gave "ORA-03113: end-of-file on communication channel") and Connection Lifetime 20 -> 300 seconds (a connection older than this is closed when it goes back to the pool; at 20 seconds a busy site logged in to Oracle again every few pages). Test site first.
 *<Common>: Version changed to 022.6 (Common.VERSION), so browsers load the new CSS / JS files.
+*<OrderForm>: Order Form detail: the "(new)" mark after the item # of checked but unsaved items is removed (after "Select all" every item showed it); the "N unsaved item change(s)" message still shows. The customer list now has the same message: "N unsaved customer change(s) - click "Add Form" / "Update Form" to save." above the list (also counts customers not shown because of the search / Show filter).
+*<CustItem>: Buy Again: the item search no longer searches the sales point (same as Order Form); it still searches the description, Japanese / long / web description, item # and customer item # / description.
 
 KOSCUS_JFCADMIN021 (11/08/2026)
 *<Common>: Version changed to 021 (Common.VERSION), so browsers load the new CSS / JS files.
