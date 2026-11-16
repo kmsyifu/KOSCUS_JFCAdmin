@@ -332,7 +332,7 @@ Partial Class BranchSetting
             SQL = "SELECT HOMEPAGEIMG_ID, IMGNAME,FOLDERPATH,REDIRECTURL, JFCBRANCHNR,DISPORDER,CREATEUSER, MODUSER,CREATEDATE,item_id," &
                 "CASE WHEN LENGTH(REDIRECTURL) > 20 THEN SUBSTR(REDIRECTURL, 1, 20) || '...' ELSE REDIRECTURL END AS REDIRECTURL FROM " &
                 IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " WHERE " &
-                   IIf(lstBranch.Text = LST_ALL_STR, "1=1 and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text), " JFCBRANCHNR = '" & lstBranch.SelectedValue & "' and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text))
+                   IIf(lstBranch.Text = LST_ALL_STR, "1=1 and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text), " JFCBRANCHNR = " & DB.SqlEsc(lstBranch.SelectedValue) & " and ImgCtg = " & DB.SqlEsc(lstImgCtg.Text))
             dsHomepageImg.ProviderName = "System.Data.OracleClient"
             dsHomepageImg.ConnectionString = DB.GetConnectionString
             dsHomepageImg.SelectCommand = SQL
@@ -484,8 +484,11 @@ Partial Class BranchSetting
                 'If fuHomepage.HasFile Then
                 ' Or (Not String.IsNullOrEmpty(ViewState("HomePageId")) And txtHomePageName.Text <> "") 
                 'HOMEPAGEIMG_ID = :1 and
-                Dim Sql = "Select HOMEPAGEIMG_ID from " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " where  IMGNAME = :1 order by ABS(jfcbranchnr - " & lstBranch.Text & ")"
-                Dim IMG_ID = CString(DB.GetScalar(Sql, HomePageName))
+                'Branch number is bound as a number (not concatenated) - prevents SQL injection
+                Dim branchNr As Integer = 0
+                Integer.TryParse(CString(lstBranch.Text), branchNr)
+                Dim Sql = "Select HOMEPAGEIMG_ID from " & IIf(IsProduction(), "HOMEPAGEIMG", "HOMEPAGEIMG_TEST") & " where  IMGNAME = :1 order by ABS(jfcbranchnr - :2)"
+                Dim IMG_ID = CString(DB.GetScalar(Sql, HomePageName, branchNr))
                 'If IMG_ID = "" Then
 
                 'Dim filetype = Path.GetExtension(fuHomepage.FileName)
@@ -1227,8 +1230,8 @@ Partial Class BranchSetting
                         "FROM webuser u, webuser_customer uc, customer c " &
                         "WHERE(u.email = uc.email And uc.customer_id = c.customer_id) " &
                         "AND uc.usercompany_id <> 'JFC' AND c.allowCustOrder = 'Y' AND NVL(uc.hideCustOrder, ' ') <> 'Y' " &
-                        "AND c.customer_id = '" & lblcustomerID.Text & "' order by c.customer_id"
-                    Dim dt = DB.GetDataTable(Sql)
+                        "AND c.customer_id = :1 order by c.customer_id"
+                    Dim dt = DB.GetDataTable(Sql, lblcustomerID.Text)
                     'Branch email is the same for every row - read it once, not once per checked row
                     If VendorEmail Is Nothing Then
                         VendorEmail = CString(DB.GetScalar("SELECT email FROM jfcVendor WHERE jfcBranchNr = :1", lstBranch.Text))
