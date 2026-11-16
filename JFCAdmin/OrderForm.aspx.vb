@@ -262,6 +262,11 @@ Partial Class JFCAdmin_OrderForm
             SetPageInRange(grdCustomers, dv.Count)
             grdCustomers.DataBind()
             ShowSelectAll(chkCustSelectAll, grdCustomers, dv, "customers")
+
+            ' Every check edit, also of customers not in the list now (search / Show filter) - same as the item list
+            Dim changes As Integer = CustChecks().Count
+            lblCustPendingMsg.Text = IIf(changes > 0,
+                changes & " unsaved customer change(s) - click """ & btnSaveForm.Text & """ to save.", "")
         Finally
             If dbIn Is Nothing Then DB.Dispose()
         End Try
@@ -550,11 +555,9 @@ Partial Class JFCAdmin_OrderForm
 
     Protected Sub grdItems_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles grdItems.RowDataBound
         If e.Row.RowType <> DataControlRowType.DataRow Then Return
-        ' Mark items added (checked) but not saved yet
+        ' No "(new)" mark on checked but unsaved items any more (after "Select all" every row showed it);
+        ' the "N unsaved item change(s)" message above the list tells that there are unsaved checks
         Dim drv As DataRowView = CType(e.Row.DataItem, DataRowView)
-        If Val(drv("isAssigned")) = 1 AndAlso Val(drv("isSaved")) = 0 Then
-            CType(e.Row.FindControl("lblAvailMsg"), Label).Text = " (new)"
-        End If
         CType(e.Row.FindControl("lblMatchTag"), Label).Text = MatchTagHtml(drv)
     End Sub
 

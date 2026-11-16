@@ -1191,9 +1191,10 @@ Partial Class JFCAdmin_CustItem
         'showOnlyRecentOrder = IIf(Val(db.GetScalar(SQL)) > 800, True, False)
 
         Dim Searchsql = " AND (UPPER(NVL(p.itemDesc_branch, a.itemDesc)) LIKE {0} OR a.itemDesc_ja LIKE {0} OR UPPER(a.itemDesc_long) LIKE {0} " &
-                            " OR UPPER(a.itemWebDesc) LIKE {0} OR UPPER(a.salesPoint) LIKE {0} " &
+                            " OR UPPER(a.itemWebDesc) LIKE {0} " &
                             " OR UPPER(cc.CUSTITEMCODE) = {1} OR UPPER(i.item_id) = {1} OR UPPER(cc.CUSTITEMDESC) LIKE {0} OR cc.CUSTITEMDESC LIKE :itemdesc) " 'OR UPPER(a.itemDesc_short) LIKE '%{0}%' 
         '" Or UPPER(a.itemWebDesc_roman) Like {0}" & 'Relaced it with salesPoint by jzhou on 6/10/2025
+        'The sales point is not searched any more (same as Order Form): words in the sales point text found unrelated items
 
 
         Dim SQL_Select = "SELECT /*+rule*/ " &

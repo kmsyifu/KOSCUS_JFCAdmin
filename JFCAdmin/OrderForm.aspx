@@ -199,8 +199,11 @@
 
             <br style="clear:both;" />
 
+            <%-- "N unsaved customer change(s)", same as the item list --%>
+            <asp:Label ID="lblCustPendingMsg" CssClass="green" Font-Size="Large" Font-Bold="True" runat="server" />
+
             <%-- Shown only when the list has more than one page: checks / unchecks every customer of the list (all pages) --%>
-            <asp:CheckBox ID="chkCustSelectAll" runat="server" AutoPostBack="True" Visible="false" />
+            <br /><asp:CheckBox ID="chkCustSelectAll" runat="server" AutoPostBack="True" Visible="false" />
 
             <%-- All customers of the selected exception price group: selected first, then by name (searching: by name only); checked = saved to the form.
                  25 per page; checks are kept when the page or search changes (ViewState CustChecks) --%>
@@ -313,7 +316,6 @@
                                 Text='<%# IIf(CString(Eval("itemNr")) <> "", CString(Eval("itemNr")), CString(Eval("item_id"))) %>' />
                             <asp:Label runat="server" CssClass="gray"
                                 Text='<%# IIf(CString(Eval("itemNr")) <> "", " (" & CString(Eval("item_id")) & ")", "") %>' />
-                            <asp:Label runat="server" ID="lblAvailMsg" CssClass="green" />
                         </ItemTemplate>
                     </asp:TemplateField>
 
