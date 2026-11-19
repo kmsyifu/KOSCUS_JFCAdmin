@@ -42,6 +42,7 @@ KOSCUS_JFCADMIN018.4 (11/09/2026)
 *<CustItem>: Buy Again: the item search no longer searches the sales point (same as Order Form); it still searches the description, Japanese / long / web description, item # and customer item # / description.
 *<Common>: Version changed to 018.17 (Common.VERSION), so browsers load the new CSS / JS files.
 *<OrderForm, JFCAdmin menu, Home>: Users with the JFC_NS role (webuser_vendor.userCompany_id = 'JFC_NS') can open Order Form and view / add / edit / delete order forms for all branches (same branch list as JFC HO). Other pages (Branch Settings, Tool) are unchanged for them.
+*<Common>: Version changed to 018.18 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN018.3 (11/08/2026)
 *<Common>: Version changed to 018.3 (Common.VERSION), so browsers load the new CSS / JS files.
