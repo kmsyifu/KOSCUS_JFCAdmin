@@ -37,6 +37,7 @@ KOSCUS_JFCADMIN022 (11/09/2026)
 *<OrderForm>: Order Form detail: the "(new)" mark after the item # of checked but unsaved items is removed (after "Select all" every item showed it); the "N unsaved item change(s)" message still shows. The customer list now has the same message: "N unsaved customer change(s) - click "Add Form" / "Update Form" to save." above the list (also counts customers not shown because of the search / Show filter).
 *<CustItem>: Buy Again: the item search no longer searches the sales point (same as Order Form); it still searches the description, Japanese / long / web description, item # and customer item # / description.
 *<Common>: Version changed to 022.7 (Common.VERSION), so browsers load the new CSS / JS files.
+*<OrderForm, JFCAdmin menu, Home>: Users with the JFC_NS role (webuser_vendor.userCompany_id = 'JFC_NS') can open Order Form and view / add / edit / delete order forms for all branches (same branch list as JFC HO). Other pages (Branch Settings, Tool) are unchanged for them.
 
 KOSCUS_JFCADMIN021 (11/08/2026)
 *<Common>: Version changed to 021 (Common.VERSION), so browsers load the new CSS / JS files.
