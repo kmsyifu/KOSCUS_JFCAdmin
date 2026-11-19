@@ -35,10 +35,11 @@ Partial Class JFCAdmin_OrderForm
                 'IsJfcHoAdmin and IsKmsSupport run the same query (and "Or" ran both) - read the role once
                 Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
                 ' Same people as Branch Settings (menu link is hidden for everyone else): branch / HO admin, KMS support
-                If jfcRole <> "JFC_BRANCH" AndAlso jfcRole <> "JFC_HO" AndAlso jfcRole <> "KMS_SUPPORT" Then
+                ' JFC_NS: Order Form only (view/edit), all branches
+                If jfcRole <> "JFC_BRANCH" AndAlso jfcRole <> "JFC_HO" AndAlso jfcRole <> "KMS_SUPPORT" AndAlso jfcRole <> "JFC_NS" Then
                     Response.Redirect("Home.aspx")
                 End If
-                If jfcRole = "JFC_HO" OrElse jfcRole = "KMS_SUPPORT" Then
+                If jfcRole = "JFC_HO" OrElse jfcRole = "KMS_SUPPORT" OrElse jfcRole = "JFC_NS" Then
                     ShowBranchList(DB, email, True, lstBranch)
                 Else
                     ShowBranchList(DB, email, False, lstBranch)
