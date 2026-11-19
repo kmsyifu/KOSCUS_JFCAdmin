@@ -1,6 +1,10 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN023 (11/19/2026)
+*<Common>: Version changed to 023 (Common.VERSION), so browsers load the new CSS / JS files.
+*<OrderForm, JFCAdmin menu, Home>: Users with the JFC_NS role (webuser_vendor.userCompany_id = 'JFC_NS') can open Order Form and view / add / edit / delete order forms for all branches (same branch list as JFC HO). Other pages (Branch Settings, Tool) are unchanged for them.
+
 KOSCUS_JFCADMIN022 (11/09/2026)
 *<Common>: Version changed to 022 (Common.VERSION), so browsers load the new CSS / JS files.
 *<DBHelper, Global.asax, Error page>: Fixed: random "ORA-03113: end-of-file on communication channel" errors (e.g. Customer Settings delivery point list). An idle pooled database connection that the server / network had cut was handed to a page; DBHelper retried it, but the pages' SqlDataSource controls (about 28 lists) did not. Now a lost connection (ORA-00028, 01012, 03113, 03114, 03135, 12571) clears the connection pool, anywhere in the site: DBHelper clears it before its retry, and Global.asax clears it for any page and loads the page again once (page open / link; dbretry=1 in the address stops a loop). A postback, or a second failure, shows "The connection to the database was lost. Please try again." instead of the error page. Each case is written to App_Data\ErrorLog.
@@ -37,8 +41,6 @@ KOSCUS_JFCADMIN022 (11/09/2026)
 *<OrderForm>: Order Form detail: the "(new)" mark after the item # of checked but unsaved items is removed (after "Select all" every item showed it); the "N unsaved item change(s)" message still shows. The customer list now has the same message: "N unsaved customer change(s) - click "Add Form" / "Update Form" to save." above the list (also counts customers not shown because of the search / Show filter).
 *<CustItem>: Buy Again: the item search no longer searches the sales point (same as Order Form); it still searches the description, Japanese / long / web description, item # and customer item # / description.
 *<Common>: Version changed to 022.7 (Common.VERSION), so browsers load the new CSS / JS files.
-*<OrderForm, JFCAdmin menu, Home>: Users with the JFC_NS role (webuser_vendor.userCompany_id = 'JFC_NS') can open Order Form and view / add / edit / delete order forms for all branches (same branch list as JFC HO). Other pages (Branch Settings, Tool) are unchanged for them.
-*<Common>: Version changed to 022.8 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN021 (11/08/2026)
 *<Common>: Version changed to 021 (Common.VERSION), so browsers load the new CSS / JS files.
