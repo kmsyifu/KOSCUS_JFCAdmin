@@ -9,6 +9,7 @@ Numbers (#18, #6, #5) are the item numbers from the security review list.
 | - | `Login/ShowFile.aspx` served any file, e.g. `Web.config` | Only `.pdf` in `Documents\` | `2ccff8f` |
 | 6 | Customer Items Import saved any file inside the site | Only `.xls/.xlsx`, saved in `App_Data`, deleted after import | `cff77a8` |
 | 5 | Customer-typed text shown as HTML (stored XSS) | HTML encode on display | `69bd3b4` |
+| 16 | `BranchSetting.IsUrlValid` could fetch any URL with the server's credentials (SSRF) | Removed (never called) | see [#16](#16-branchsetting-ssrf) |
 
 ---
 
@@ -104,3 +105,29 @@ the value must contain HTML, and then make sure nobody but JFC can type it.
 **Test:** in the app or portal put `<b>x</b><img src=x onerror=alert(1)>` in the cart message and PO number, place
 the order. In JFCAdmin Order Detail and in the order email the text shows as typed (no bold, no popup).
 A name or address with `&` (e.g. "Smith & Co") still looks normal.
+
+---
+
+## #16 BranchSetting SSRF
+
+**Problem:** `IsUrlValid(url)` in `JFCAdmin/BranchSetting.aspx.vb` sent a GET request from the web server to any URL it
+was given:
+- with the server's own Windows network credentials (`request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials`),
+  so a URL pointing at an internal host or an attacker's server could receive the server's identity;
+- it could reach internal-only hosts (server-side request forgery);
+- it set `ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls` (TLS 1.0 only) for the whole application
+  each time it ran, which breaks or weakens every other HTTPS call the site makes.
+
+**Finding:** the function is not called anywhere in the site (pages, markup, handlers). Git history shows it came in
+with the first commit ("Add project files") and was never called since. It was the only outbound web request in the
+site.
+
+**Fix:** removed the function. A comment in its place says what to do if a URL check is ever needed again:
+`https` only, a fixed list of allowed hosts, no proxy credentials, and never change `SecurityProtocol`.
+`IsValidUrl` (format check only, no request) is unchanged.
+
+**Deploy:** check that the published `BranchSetting.aspx.vb` on the server matches the repo (search it for
+`IsUrlValid`); if the server copy calls it, that copy differs from git and must be reviewed first.
+
+**Test:** Branch Settings - save a branch, add / update a homepage image, Promo Item, Order Reminder, Delivery
+Master: everything works as before.
