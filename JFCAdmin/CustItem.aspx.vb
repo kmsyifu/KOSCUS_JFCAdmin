@@ -1519,25 +1519,55 @@ Partial Class JFCAdmin_CustItem
 
     End Sub
 
+    'Largest Excel file accepted for the display order import
+    Private Const IMPORT_MAX_BYTES As Integer = 5 * 1024 * 1024
+
     Private Sub btnImport_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnImport.Click
-        Dim book As ExcelWorkbook
+        Dim book As ExcelWorkbook = Nothing
         Dim sheet As ExcelWorksheet
 
-        Dim vFileSaveDir As String = Request.PhysicalApplicationPath & "Files\TemporaryFiles\" & GetUserID() & "_"
-        Dim vFileName As String
-        'Dim vCntRow As Integer
-        'Dim vYYYYMM As String
-        If fileUpExcel.HasFile Then
-            vFileName = fileUpExcel.PostedFile.FileName
-            fileUpExcel.SaveAs(vFileSaveDir + vFileName)
-            book = New ExcelWorkbook(vFileSaveDir + vFileName)
-            sheet = book.Worksheets(book.ActiveSheetIndex)
-            uploadExcelSheet(sheet)
-            showCustItemList()
-        Else
+        If Not fileUpExcel.HasFile Then
             MessageBox("Please select an .xls file in the file upload", "Error")
             Exit Sub
         End If
+
+        'Only Excel files. Before, any file was saved under its own name in Files\TemporaryFiles (inside the site),
+        'so an uploaded .aspx could then be opened and run on the server, and "..\" in the name could leave the folder.
+        Dim ext As String = System.IO.Path.GetExtension(CString(fileUpExcel.PostedFile.FileName)).ToLowerInvariant()
+        If ext <> ".xls" AndAlso ext <> ".xlsx" Then
+            MessageBox("Please select an .xls or .xlsx file", "Error")
+            Exit Sub
+        End If
+        If fileUpExcel.PostedFile.ContentLength > IMPORT_MAX_BYTES Then
+            MessageBox("The file is too large (max " & (IMPORT_MAX_BYTES \ 1024 \ 1024) & " MB)", "Error")
+            Exit Sub
+        End If
+
+        'Saved under a random name in App_Data (never served to browsers) and deleted after the import
+        Dim uploadDir As String = Server.MapPath("~/App_Data/Upload/")
+        System.IO.Directory.CreateDirectory(uploadDir)
+        Dim savePath As String = System.IO.Path.Combine(uploadDir, Guid.NewGuid().ToString("N") & ext)
+        Try
+            fileUpExcel.SaveAs(savePath)
+            Try
+                book = New ExcelWorkbook(savePath)
+                sheet = book.Worksheets(book.ActiveSheetIndex)
+            Catch ex As Exception
+                MessageBox("Could not read the Excel file. Please use the file from Export.", "Error")
+                Exit Sub
+            End Try
+            uploadExcelSheet(sheet)
+            showCustItemList()
+        Finally
+            Try
+                If book IsNot Nothing Then book.Close()
+            Catch
+            End Try
+            Try
+                System.IO.File.Delete(savePath)
+            Catch
+            End Try
+        End Try
     End Sub
 
     Private Sub btnGetItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnGetItem.Click

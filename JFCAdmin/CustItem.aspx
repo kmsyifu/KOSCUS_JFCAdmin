@@ -497,6 +497,7 @@
                         <asp:Label ID="Label2" runat="server" CssClass=" midLabel" Text="&nbsp;&nbsp;&nbsp;(2) Change order in excel file &nbsp;&nbsp;&nbsp;(3) Select file " />
                        <asp:FileUpload   ID="fileUpExcel"
                                             AllowedFileTypes="xls"
+                                            accept=".xls,.xlsx"
                                             MaximumNumberOfFiles= "1"
                                             UseAbsoluteHandlerPath = "false" 
                                             
@@ -506,7 +507,7 @@
                         <asp:linkbutton ID="btnImport" ForeColor="#4169E1" ValidationGroup = "Homepageupload" CssClass="linkLabel" runat="server" Text="Import"  />
                          &nbsp;&nbsp;&nbsp;
                         <asp:RegularExpressionValidator ID="uplValidator" runat="server" ControlToValidate="fileUpExcel" ForeColor="Red" 
-                            ErrorMessage="format has to be .xls" ValidationGroup = "Homepageupload" ValidationExpression="(.+\.xls)">
+                            ErrorMessage="format has to be .xls or .xlsx" ValidationGroup = "Homepageupload" ValidationExpression="(.+\.[xX][lL][sS][xX]?)">
                         </asp:RegularExpressionValidator>
                      
                       </asp:Panel> 
