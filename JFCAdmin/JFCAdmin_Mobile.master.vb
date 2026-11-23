@@ -14,14 +14,17 @@ Partial Class JFCAdmin_JFCAdmin_Mobile
             Exit Sub
         End If
 
+        'Role check on every request, postbacks included (before, only on the first load, so a postback skipped it).
+        'Global.asax (App_Code/AdminAccess.vb) checks this too; kept here as a second guard.
+        If Session("SYS_SESSION_USERTYPE") <> "JFCADMIN" Then
+            Session("MSG_TYPE") = "ERROR"
+            Session("MSG") = "You have to log in as a JFC administrator to access the page you requested. Please relogin."
+            Response.Redirect("~/Login/Login.aspx?ReturnUrl=" & HttpUtility.UrlEncode(Request.Url.PathAndQuery))
+            Exit Sub
+        End If
+
         'No DB needed here (only Session is read) - the connection that used to be opened on every request was never used
         If IsPostBack = False Then
-            'Check error
-            If Session("SYS_SESSION_USERTYPE") <> "JFCADMIN" Then
-                Session("MSG_TYPE") = "ERROR"
-                Session("MSG") = "You have to log in as a JFC administrator to access the page you requested. Please relogin."
-                Response.Redirect("~/Login/Login.aspx?ReturnUrl=" & Request.Url.PathAndQuery)
-            End If
 
             ''Not to cache so that user cannot re-enter using back button after logout
             'Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1))

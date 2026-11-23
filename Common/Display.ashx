@@ -7,7 +7,8 @@ Imports System.Configuration
 Imports System.Text
 Imports Common
 
-Public Class Display_VB : Implements IHttpHandler
+'IReadOnlySessionState: lets Global.asax (AdminAccess) see the login; without session state every call is refused
+Public Class Display_VB : Implements IHttpHandler, System.Web.SessionState.IReadOnlySessionState
     
     Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
         Dim SQL, prefixtext, code, id, id2, id3, id4 As String

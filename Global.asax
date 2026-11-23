@@ -158,6 +158,10 @@
 
     'Session loaded: waits here while another request of the same user holds the session lock
     Sub Application_PostAcquireRequestState(ByVal sender As Object, ByVal e As EventArgs)
+        'JFC admin role check on every request to ~/JFCAdmin/, ~/Common/ and every .ashx (see App_Code/AdminAccess.vb).
+        'Outside the Try below on purpose: an error here must stop the request, not let it through.
+        AdminAccess.CheckRequest(Context)
+
         Try
             Dim t As RequestTiming = RequestTiming.Current()
             If t Is Nothing Then Return
