@@ -515,7 +515,7 @@
                             <asp:BoundField HeaderText="JFC Branch" DataField="JFCBRANCHNR" Visible="false" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" /> 
                             <asp:TemplateField HeaderText="Name" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" >
                                 <ItemTemplate>
-                                    <asp:Label Visible="false"  runat="server" ID="lblDeliverySchedID2" Text='<%# Eval("DELIVERYMASTERNAME") %>' />
+                                    <asp:Label Visible="false"  runat="server" ID="lblDeliverySchedID2" Text='<%#: Eval("DELIVERYMASTERNAME") %>' />
                                     <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkShipName" Text='<%# Eval("DELIVERYMASTERNAME") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("DELIVERYMASTER_ID")  %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>

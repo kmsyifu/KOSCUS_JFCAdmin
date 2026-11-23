@@ -53,11 +53,11 @@ Partial Class Common_ShowItemDtl
             imgUrl = GetItemImgUrl(CString(r("itemType")), CString(r("item_id")))
             imgPopItem.ImageUrl = imgUrl
             imgPopItem2.ImageUrl = imgUrl
-            lblPopItemDesc.Text = CString(r("itemDesc_view"))
-            lblPopJfcRemark.Text = CString(r("jfcRemark"))
+            lblPopItemDesc.Text = HtmlText(r("itemDesc_view"))
+            lblPopJfcRemark.Text = HtmlText(r("jfcRemark"))
             lblPopItemIdNr.Text = CString(r("itemIdNr_view"))
-            lblPopItemGrpName.Text = CString(r("itemGrpName"))
-            lblPopVendorName.Text = CString(r("vendorName"))
+            lblPopItemGrpName.Text = HtmlText(r("itemGrpName"))
+            lblPopVendorName.Text = HtmlText(r("vendorName"))
             lblPopCtgName.Text = CString(r("ctgName_view"))
             lblPopCsPrice.Text = String.Format("{0:C}", Val(r("csprice"))) & " / cs"
             lblPopCsPrice.Visible = IIf(Val(r("csprice")) <> 0, True, False)
@@ -103,7 +103,7 @@ Partial Class Common_ShowItemDtl
                 'lblPopCaseVol.Visible = IIf(Val(r("caseVol_ft3")) = 0, False, True)
                 'lblPopPallet.Text = Val(r("block")) & " x " & Val(r("high")) & " = " & Val(r("block")) * Val(r("high")) 'TODO: Add after JETS stores correct values
                 'lblPopPallet.Visible = IIf(Val(r("block")) = 0 AndAlso Val(r("high")) = 0, False, True)
-                lblPopIngredient.Text = CString(r("ingredient"))
+                lblPopIngredient.Text = HtmlText(r("ingredient"))
             End If
         End If
         r.close()

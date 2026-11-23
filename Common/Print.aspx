@@ -21,14 +21,14 @@
                     <asp:BoundField HeaderText="Category" DataField="ctgName_view" HeaderStyle-CssClass="th size16" ItemStyle-CssClass="size16 bold top" />
                     <asp:TemplateField HeaderText="Item #" HeaderStyle-CssClass="th">
                         <ItemTemplate>
-                            <asp:Label runat="server" CssClass="cellLbl bold" ID="lblVendorName" Text='<%# Eval("vendorName_view") %>' /><br />
+                            <asp:Label runat="server" CssClass="cellLbl bold" ID="lblVendorName" Text='<%#: Eval("vendorName_view") %>' /><br />
                             <asp:Label runat="server" CssClass="cellLbl" ID="lblItemIdNrView" Text='<%# Eval("itemIdNr_view") %>' />
                         </ItemTemplate>
                     </asp:TemplateField>
                     <%--<asp:BoundField HeaderText="Item Description" DataField="itemDesc_view" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size48 cellLbl" />--%>
                     <asp:TemplateField HeaderText="Item Description" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48" >
                         <ItemTemplate>
-                            <asp:Label runat="server" CssClass="cellLbl" ID="lblItemDesc" Text='<%# Eval("itemDesc_view") %>' />
+                            <asp:Label runat="server" CssClass="cellLbl" ID="lblItemDesc" Text='<%#: Eval("itemDesc_view") %>' />
                             <asp:Label runat="server" ID="lblJfcRemark" CssClass="cellLbl" Text='<%# "<br />(" & CString(Eval("jfcRemark")) & ")" %>' Visible='<%# CString(Eval("jfcRemark")) <> "" %>' />
                         </ItemTemplate>
                     </asp:TemplateField>

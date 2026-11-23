@@ -3361,6 +3361,13 @@ Public Class Common
         Return ret
     End Function
 
+    'Text for a Label / Literal / HyperLink / LinkButton .Text: those controls write their text as raw HTML, so a
+    'value someone typed (order message, PO number, address, ...) could carry a script into the page or the email.
+    'Use this for any DB value that is only displayed. Don't use it when the label's text is read back and saved.
+    Public Shared Function HtmlText(ByVal v As Object) As String
+        Return HttpUtility.HtmlEncode(CString(v))
+    End Function
+
     Public Shared Function L(ByVal s As String) As String
         Return s
     End Function

@@ -75,7 +75,7 @@
         </asp:TemplateField>--%>
         <asp:TemplateField HeaderText="Reference" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20" >
             <ItemTemplate>
-                <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%# Eval("reference") %>' Visible='<%# NOT (CString(Eval("allowCustDownloadInvoice")) = "Y" AndAlso CString(Eval("fileName")) <> "") %>' />
+                <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%#: Eval("reference") %>' Visible='<%# NOT (CString(Eval("allowCustDownloadInvoice")) = "Y" AndAlso CString(Eval("fileName")) <> "") %>' />
                 <asp:LinkButton runat="server" ID="lnkRefWLink" CommandName="DOWNLOAD" CommandArgument='<%# Eval("reference")%>' CssClass="cellLink" ForeColor="#4169E1" 
                     ToolTip='<%# "Download " & CString(Eval("fileName")) %>' Text='<%# Eval("reference") %>' Visible='<%# CString(Eval("allowCustDownloadInvoice")) = "Y" AndAlso CString(Eval("fileName")) <> "" %>' />
             </ItemTemplate>

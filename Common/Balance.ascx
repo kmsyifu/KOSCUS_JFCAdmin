@@ -192,7 +192,7 @@
                     <%--<asp:ButtonField DataTextField="reference" HeaderText="Reference" CommandName="DOWNLOAD" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32 cellLink" ItemStyle-ForeColor="#4169E1"/>--%>
                     <asp:TemplateField HeaderText="Reference" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size32" >
                         <ItemTemplate>
-                            <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%# Eval("reference") %>' Visible='<%# Not ((CString(Eval("allowCustDownloadInvoice")) = "Y" OrElse Session("BALANCE_CMD") = "JFCADMIN") AndAlso CString(Eval("fileName")) <> "") %>' />
+                            <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%#: Eval("reference") %>' Visible='<%# Not ((CString(Eval("allowCustDownloadInvoice")) = "Y" OrElse Session("BALANCE_CMD") = "JFCADMIN") AndAlso CString(Eval("fileName")) <> "") %>' />
                             <asp:LinkButton runat="server" ID="lnkRefWLink" CommandName="DOWNLOAD" CommandArgument='<%# Eval("reference")%>' CssClass="cellLink" ForeColor="#4169E1" 
                                 ToolTip='<%# "Download " & CString(Eval("fileName")) %>' Text='<%# Eval("reference") %>' Visible='<%#  (CString(Eval("allowCustDownloadInvoice")) = "Y" OrElse Session("BALANCE_CMD") = "JFCADMIN") AndAlso CString(Eval("fileName")) <> "" %>' />
                         </ItemTemplate>
@@ -278,7 +278,7 @@
                     </asp:TemplateField>--%>
                     <asp:TemplateField HeaderText="Reference" HeaderStyle-CssClass="th size20" ItemStyle-CssClass="size20" >
                         <ItemTemplate>
-                            <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%# Eval("reference") %>' Visible='<%# CString(Eval("fileName")) = "" %>' />
+                            <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%#: Eval("reference") %>' Visible='<%# CString(Eval("fileName")) = "" %>' />
                             <asp:LinkButton runat="server" ID="lnkRefWLink" CommandName="DOWNLOAD" CommandArgument='<%# Eval("reference")%>' CssClass="cellLink" ForeColor="#4169E1" 
                                 ToolTip='<%# "Download " & CString(Eval("fileName")) %>' Text='<%# Eval("reference") %>' Visible='<%# CString(Eval("fileName")) <> "" %>' />
                         </ItemTemplate>

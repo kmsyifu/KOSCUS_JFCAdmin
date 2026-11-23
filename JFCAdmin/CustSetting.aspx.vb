@@ -548,7 +548,7 @@ Partial Class JFCAdmin_CustSetting
                    " WHERE c.bid = :1 AND c.customerid = :2"
                 Dim r = db.GetReader(Sql, txtPopJFCAccount.Text, txtPopJFCNum.Text)
                 If r.Read() Then
-                    lblPopCustomerName.Text = CString(r("Name"))
+                    lblPopCustomerName.Text = HtmlText(r("Name"))
                 End If
             End Using
         End If
@@ -592,15 +592,15 @@ Partial Class JFCAdmin_CustSetting
                 lblCustomerName.Text = CString(r("customerName"))
                 lblJfcBranchNr.Text = CString(r("jfcBranchNr"))
                 lblJfcCustomerNr.Text = CString(r("jfcCustomerNr"))
-                lblPhone.Text = CString(r("phone"))
-                lblFax.Text = CString(r("fax"))
-                lblAddress1.Text = CString(r("address1"))
-                lblAddress2.Text = CString(r("address2"))
-                lblCity.Text = CString(r("city"))
-                lblState.Text = CString(r("state"))
-                lblZip.Text = CString(r("zip"))
-                lblCountry.Text = CString(r("country"))
-                lblJfcContactName.Text = CString(r("jfcContactName"))
+                lblPhone.Text = HtmlText(r("phone"))
+                lblFax.Text = HtmlText(r("fax"))
+                lblAddress1.Text = HtmlText(r("address1"))
+                lblAddress2.Text = HtmlText(r("address2"))
+                lblCity.Text = HtmlText(r("city"))
+                lblState.Text = HtmlText(r("state"))
+                lblZip.Text = HtmlText(r("zip"))
+                lblCountry.Text = HtmlText(r("country"))
+                lblJfcContactName.Text = HtmlText(r("jfcContactName"))
                 lblJfcEmail.Text = foldlongString(CString(r("jfcEmail")), New Char() {","})
 
                 'Auto pay columns come from the same customer row (was 5 separate GetCustAutoPayType queries)

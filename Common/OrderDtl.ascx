@@ -591,7 +591,7 @@
             <%--<asp:BoundField HeaderText="Description" DataField="itemDesc_view" HeaderStyle-CssClass="th size64" ItemStyle-CssClass="size64 cellLbl gray" />--%>
             <asp:TemplateField HeaderText="Description" HeaderStyle-CssClass="th size64" ItemStyle-CssClass="size64" >
                 <ItemTemplate>
-                    <asp:Label runat="server" ID="lblItemDesc" CssClass="cellLbl" Text='<%# Eval("itemDesc_view") %>' />
+                    <asp:Label runat="server" ID="lblItemDesc" CssClass="cellLbl" Text='<%#: Eval("itemDesc_view") %>' />
                     <asp:Label runat="server" ID="Label12" CssClass="cellLbl green" Visible='<%# Session("ORDERDTL_CMD") = "JFCADMIN" %>' Text='<%# "<br />" & CString(Eval("vpMemo")) %>' />
                 </ItemTemplate>
             </asp:TemplateField>
@@ -651,7 +651,7 @@
             <%--<asp:BoundField HeaderText="Invoice" DataField="INVOICE" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24 cellLbl gray" />--%>
             <asp:TemplateField HeaderText="Invoice" HeaderStyle-CssClass="th size12" ItemStyle-CssClass="size12" >
                 <ItemTemplate>
-                    <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%# Eval("invoice") %>' Visible='<%# NOT ((CString(Eval("allowCustDownloadInvoice")) = "Y" OrElse Session("ORDERDTL_CMD") = "JFCADMIN") AndAlso CString(Eval("fileName")) <> "") %>' />
+                    <asp:Label runat="server" ID="lblRefWoLink" CssClass="cellLbl" Text='<%#: Eval("invoice") %>' Visible='<%# NOT ((CString(Eval("allowCustDownloadInvoice")) = "Y" OrElse Session("ORDERDTL_CMD") = "JFCADMIN") AndAlso CString(Eval("fileName")) <> "") %>' />
                     <asp:LinkButton runat="server" ID="lnkRefWLink" CommandName="DOWNLOAD" CommandArgument='<%# Eval("invoice")%>' CssClass="cellLink" ForeColor="#4169E1" 
                         ToolTip='<%# "Download " & CString(Eval("fileName")) %>' Text='<%# Eval("invoice") %>' Visible='<%# (CString(Eval("allowCustDownloadInvoice")) = "Y" OrElse Session("ORDERDTL_CMD") = "JFCADMIN") AndAlso CString(Eval("fileName")) <> "" %>' />
                 </ItemTemplate>

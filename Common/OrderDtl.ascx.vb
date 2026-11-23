@@ -575,12 +575,12 @@ Partial Class Common_OrderDtl
                 imgNewItem.ImageUrl = GetItemImgUrl(CString(r("itemType")), CString(r("item_id")))
                 imgNewItem_mobile.ImageUrl = GetItemImgUrl(CString(r("itemType")), CString(r("item_id")))
                 lblNewCustGrpItemID.Text = CString(r("custGrpItem_id"))
-                lblNewItemDesc.Text = CString(r("itemDesc_view"))
-                lblNewJfcRemark.Text = CString(r("jfcRemark"))
+                lblNewItemDesc.Text = HtmlText(r("itemDesc_view"))
+                lblNewJfcRemark.Text = HtmlText(r("jfcRemark"))
                 lblNewItemIdNr.Text = CString(r("itemIdNr_view"))
                 'lblNewItemID.Text = CString(r("itemID"))
-                lblNewItemGrpName.Text = CString(r("itemGrpName"))
-                lblNewVendorName.Text = CString(r("vendorName"))
+                lblNewItemGrpName.Text = HtmlText(r("itemGrpName"))
+                lblNewVendorName.Text = HtmlText(r("vendorName"))
                 lblNewCtgName.Text = CString(r("ctgName_view"))
                 lblNewCsPrice.Text = Val(r("csprice"))
                 lblNewCsPrice_view.Text = String.Format("{0:C}", Val(r("csprice"))) & " / cs"
@@ -1857,16 +1857,16 @@ Partial Class Common_OrderDtl
                 lblHideEaQty.Text = IIf(HideEaQty(DB, lblCustomerID.Text) = True, "Y", "N")
                 lblTitle2.Visible = IIf(CString(r("weborder_id")) = "", True, False) 'Show / hide "(Non Web Order)"
                 lblOrderID.Text = IIf(CString(r("jetsOrderNr")) = "", CString(r("weborder_id")), CString(r("jetsOrderNr")) & IIf(CString(r("weborder_id")) = "", "", " (" & CString(r("weborder_id")) & ")"))
-                lblOrderState.Text = CString(r("codeDesc"))
+                lblOrderState.Text = HtmlText(r("codeDesc"))
                 'lblOrderDate.Text = CString(r("orderDate"))
-                lblVendorName.Text = CString(r("vendorName"))
+                lblVendorName.Text = HtmlText(r("vendorName"))
                 lblShipPointID.Text = CString(r("shipPoint_id"))
                 lblCreateDateTimeUser.Text = CString(r("createDateTimeUser"))
                 lblSFA.Text = CString(r("SfaDevice"))
                 lblApproveDateTimeUser.Text = CString(r("ApproveDateTimeUser"))
                 lblModDateUser.Text = CString(r("modDate")) 'CString(r("modDateUser"))
-                lblCustGrpName.Text = CString(r("custGrpName"))
-                lblCustomerName.Text = CString(r("customerName"))
+                lblCustGrpName.Text = HtmlText(r("custGrpName"))
+                lblCustomerName.Text = HtmlText(r("customerName"))
                 lblJfcBranchNr.Text = CString(r("jfcBranchNr"))
                 lblJfcCustomerNr.Text = CString(r("jfcCustomerNr"))
                 lnkCurrentBalance.Text = "AR Balance: $" & GetCurrentBalance(DB, CString(r("customer_id")))
@@ -1877,18 +1877,18 @@ Partial Class Common_OrderDtl
                 lblShipOffset.Text = IIf((ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" OrElse ViewState("ORDER_MODE") = "VIEW_WEB_ORDER") And Val(r("SHIPDATEOFFSET")) <> 0,
                                              IIf(IsMobile(), "<br />", "") & "Delivery Date: +" & CString(r("SHIPDATEOFFSET")) & " Day(s)", "")
                 txtCustOrderNr.Text = CString(r("custOrderNr"))
-                lblCustOrderNr.Text = CString(r("custOrderNr"))
+                lblCustOrderNr.Text = HtmlText(r("custOrderNr"))
                 If CString(r("jfcBranchNr")) = "05" Then
-                    lblreference.Text = CString(r("Reference"))
+                    lblreference.Text = HtmlText(r("Reference"))
                     pnlreference.Visible = True
                 Else
                     pnlreference.Visible = False
                 End If
 
                 txtMessage.Text = CString(r("message"))
-                lblMessage.Text = CString(r("message"))
+                lblMessage.Text = HtmlText(r("message"))
                 txtVendorNote.Text = CString(r("vendorNote"))
-                lblVendorNote.Text = CString(r("vendorNote"))
+                lblVendorNote.Text = HtmlText(r("vendorNote"))
                 If ViewState("ORDER_MODE") = "EDIT_WEB_ORDER" Then
                     'txtCustOrderNr.Text = CString(r("custOrderNr"))
                     'txtMessage.Text = CString(r("message"))
@@ -1930,12 +1930,12 @@ Partial Class Common_OrderDtl
                      IIf(ViewState("ORDER_MODE") <> "VIEW_JETS_ORDER", " AND shipPoint_id = " & DB.SqlEsc(lblShipPointID.Text), "") 'JETS order doesn't store shippoint. Assume only one exists.
             r = DB.GetReader(SQL, lblCustomerID.Text)
             If r.Read() Then
-                lblShipName.Text = CString(r("shipName"))
-                lblAddress1.Text = CString(r("address1"))
-                lblAddress2.Text = CString(r("address2"))
-                lblCity.Text = CString(r("city"))
-                lblState.Text = CString(r("state"))
-                lblZip.Text = CString(r("zip"))
+                lblShipName.Text = HtmlText(r("shipName"))
+                lblAddress1.Text = HtmlText(r("address1"))
+                lblAddress2.Text = HtmlText(r("address2"))
+                lblCity.Text = HtmlText(r("city"))
+                lblState.Text = HtmlText(r("state"))
+                lblZip.Text = HtmlText(r("zip"))
                 'lblCountry.Text = CString(r("country"))
             End If
             r.close()

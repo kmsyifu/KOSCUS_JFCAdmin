@@ -695,7 +695,7 @@
                             <Columns>
                                 <asp:TemplateField HeaderText="Email" HeaderStyle-CssClass='th size32 left' ItemStyle-CssClass=" size32 left" >
                                     <ItemTemplate>
-                                        <asp:Label runat="server" ID="lblEmail" CssClass="cellLbl" Text='<%# Eval("email")%>' />
+                                        <asp:Label runat="server" ID="lblEmail" CssClass="cellLbl" Text='<%#: Eval("email")%>' />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Cell Phone (Text)" HeaderStyle-CssClass='th size32 left' ItemStyle-CssClass=" size32 left" >

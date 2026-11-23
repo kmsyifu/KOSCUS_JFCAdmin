@@ -485,11 +485,11 @@ Only one panel below is shown per email (Page_Init in the code-behind).
             </asp:TemplateField>
             <asp:TemplateField>
                 <ItemTemplate>
-                    <asp:Label runat="server" ID="lblItemDesc" style="font-size: 15px; font-weight: bold; color: #222222;" Text='<%# Eval("itemDesc_view") %>' />
+                    <asp:Label runat="server" ID="lblItemDesc" style="font-size: 15px; font-weight: bold; color: #222222;" Text='<%#: Eval("itemDesc_view") %>' />
                     <asp:Label runat="server" ID="lblItemIdNr" style="color: #777777; font-size: 13px;" Text='<%# Eval("itemIdNr_view") %>' /><br />
                     <%--<asp:Label runat="server" ID="lblItemGrpName" CssClass="cellLbl gray" Text='<%# CString(Eval("itemGrpName")) & "<br />" %>' />
                     <asp:Label runat="server" ID="lblVendorName" CssClass="cellLbl" Text='<%# CString(Eval("vendorName")) & "<br />" %>' />--%>
-                    <asp:Label runat="server" ID="lblCtgName" style="color: #999999; font-size: 12px;" Text='<%# Eval("ctgName_view") %>' />
+                    <asp:Label runat="server" ID="lblCtgName" style="color: #999999; font-size: 12px;" Text='<%#: Eval("ctgName_view") %>' />
                     <%--<asp:ImageButton ID="btnFavorite" ToolTip="Add or remove from my favorite" CommandName="FAVORITE" CssClass="xxsImgBtn" ImageUrl='<%# GetWebImgUrl_OnOff("FAVORITE", CString(Eval("favorite"))) %>' CommandArgument='<%# Eval("custGrpItem_id")%>' runat="server" />
                     <asp:Image ID="imgOrdered" ToolTip="Previously ordered item" CssClass="xxxsImgBtn" ImageUrl='<%# GetWebImgUrl("greenCheck.png") %>' Visible='<%# CString(Eval("ordered")) = "ON" %>' runat="server" />--%><br />
                     <asp:Label ID="Label1" runat="server" Text='(' Visible='<%# CString(Eval("lbPrice_OrderByQty")) <> "0"%>' />
@@ -507,7 +507,7 @@ Only one panel below is shown per email (Page_Init in the code-behind).
                     <%--Don't show out of stock for new items--%>
                     <%--<asp:Label runat="server" ID="lblOutOfStock" CssClass="cellLbl green bold" Text='Out of Stock' Visible='<%# CString(Eval("outOfStock")) = "Y"%>' />--%>
                     <asp:Label runat="server" ID="lblArrivDate" style="color: #2E7D32; font-size: 13px;" Text='<%# "Est. arrival: " & Eval("arrivDate_fmt") %>' Visible='<%# CString(Eval("arrivDate_fmt")) <> "" %>' />
-                    <asp:Label runat="server" ID="lblJfcRemark" style="color: #2E7D32; font-size: 13px;" Text='<%# Eval("jfcRemark") %>' />
+                    <asp:Label runat="server" ID="lblJfcRemark" style="color: #2E7D32; font-size: 13px;" Text='<%#: Eval("jfcRemark") %>' />
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>

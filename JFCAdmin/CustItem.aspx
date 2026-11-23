@@ -924,13 +924,13 @@
                             <asp:BoundField HeaderText="Category" DataField="ctgName_view" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24"   />                
                             <%--<asp:TemplateField HeaderText="Category" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" >
                                 <ItemTemplate>
-                                    <asp:Label runat="server" ID="lblCtgName" Text='<%# Eval("ctgName_view") %>' />
+                                    <asp:Label runat="server" ID="lblCtgName" Text='<%#: Eval("ctgName_view") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>--%>
                             <%--<asp:BoundField HeaderText="Vendor" DataField="VENDORNAME" HeaderStyle-CssClass="th size24" ItemStyle-CssClass="size24" />--%>
                             <%--<asp:TemplateField HeaderText="JFC Description" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48" >
                                 <ItemTemplate>
-                                    <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkItemDesc" Text='<%# Eval("itemDesc") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("custGrpItem_id")%>' />
+                                    <asp:LinkButton runat="server" CssClass="cellLink" ForeColor="#4169E1" ID="lnkItemDesc" Text='<%#: Eval("itemDesc") %>' CommandName="EDIT_ROW" CommandArgument='<%# Eval("custGrpItem_id")%>' />
                                 </ItemTemplate>
                             </asp:TemplateField>--%>
                             <%--<asp:BoundField HeaderText="Customer Description" DataField="CUSTITEMDESC" HeaderStyle-CssClass="th size32" ItemStyle-CssClass="size48" />--%>
@@ -938,10 +938,10 @@
                             
                             <%--<asp:TemplateField HeaderText="Customer Description<br />JFC Description (In Italic)" HeaderStyle-CssClass="th size48" ItemStyle-CssClass="size48" >
                                 <ItemTemplate>
-                                    <asp:Label runat="server" ID="lblItemDesc" Text='<%# Eval("itemDesc_view") %>' />
-                                    <asp:Label runat="server" ID="lblCustItemDesc" Text='<%# Eval("custItemDesc") %>' />
+                                    <asp:Label runat="server" ID="lblItemDesc" Text='<%#: Eval("itemDesc_view") %>' />
+                                    <asp:Label runat="server" ID="lblCustItemDesc" Text='<%#: Eval("custItemDesc") %>' />
                                     <asp:Label runat="server" ID="lblNewline2" Text="<br />" Visible='<%# CString(Eval("custItemDesc")) <> "" %>' />
-                                    <asp:Label runat="server" CssClass="italic" ID="lblItemDesc" Text='<%# Eval("itemDesc") %>' />
+                                    <asp:Label runat="server" CssClass="italic" ID="lblItemDesc" Text='<%#: Eval("itemDesc") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>--%>
                             <asp:TemplateField HeaderText="Ea/Cs" HeaderStyle-CssClass="th number6" ItemStyle-CssClass="number6">

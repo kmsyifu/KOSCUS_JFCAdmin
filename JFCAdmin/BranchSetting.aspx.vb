@@ -1344,7 +1344,7 @@ Partial Class BranchSetting
                     lstOrderbyDate.Text = CString(r("ORDERBYDAY"))
                     lstOrderbyTime.Text = Left(CString(r("orderByTime")), 5)
                     lstAMPM.Text = Right(CString(r("orderByTime")), 2)
-                    lblCreateUser.Text = CString(r("CreateUser"))
+                    lblCreateUser.Text = HtmlText(r("CreateUser"))
                     txtStartDate.Text = Date.Parse(CString(r("startdate"))).Date.ToString(DATE_FMT)
                     btnSaveSchedule.Text = "Update Master"
                     btnDeleteSchedule.Visible = True
@@ -1441,7 +1441,7 @@ Partial Class BranchSetting
 
             r = DB.GetReader(SQL, DATE_FMT, DATE_FMT, TIME_SQLFMT, lstBranch.Text, dateStr, DATE_FMT, MasterID)
             If r.Read() Then
-                lblPopMasterName.Text = CString(r("DELIVERYMASTERNAME"))
+                lblPopMasterName.Text = HtmlText(r("DELIVERYMASTERNAME"))
                 lblPopMasterID.Text = CString(r("DELIVERYMASTER_ID"))
                 'lblPopVendorName2.Text = vendorName
                 'lblPopCustGrpVendorID.Text = CString(r("custGrpVendor_id"))
