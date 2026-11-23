@@ -6,12 +6,23 @@ Partial Class Common_ShowFile
 
     Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
         If IsPostBack = False Then
-            Dim fileName As String = Request.QueryString("NAME")
-            Dim type As String = IIf(Request.QueryString("TYPE") = String.Empty, "application/pdf", Request.QueryString("TYPE"))
+            'Only a plain .pdf file name in ~/Documents/. Before, "..\Web.config" or "..\Secrets.config" was served,
+            'and TYPE could set any content type.
+            Dim fileName As String = System.IO.Path.GetFileName(CString(Request.QueryString("NAME")))
+            Dim type As String = "application/pdf"
+            If fileName = String.Empty OrElse System.IO.Path.GetExtension(fileName).ToLowerInvariant() <> ".pdf" Then
+                Response.StatusCode = 404
+                Response.End()
+                Exit Sub
+            End If
             Dim path As String = MapPath(DOC_DIR & fileName)
-            Dim fileLength As String
             Dim myFileInfo As New FileInfo(path)
-            fileLength = CString(myFileInfo.Length)
+            If Not myFileInfo.Exists Then
+                Response.StatusCode = 404
+                Response.End()
+                Exit Sub
+            End If
+            Dim fileLength As String = CString(myFileInfo.Length)
 
             Response.Clear()
 
