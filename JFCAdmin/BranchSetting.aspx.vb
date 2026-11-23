@@ -667,29 +667,9 @@ Partial Class BranchSetting
         Return Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute)
     End Function
 
-    Private Function IsUrlValid(url As String) As Boolean
-        If String.IsNullOrEmpty(url) Then
-            Return False
-        End If
-
-        Try
-            Dim request As HttpWebRequest = CType(WebRequest.Create(url), HttpWebRequest)
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
-            request.Method = "GET"
-            request.KeepAlive = False
-            request.Timeout = 5000 ' 1 seconds timeout
-            request.Proxy = WebRequest.DefaultWebProxy
-            request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-            Using response As HttpWebResponse = CType(request.GetResponse(), HttpWebResponse)
-                Return response.StatusCode = HttpStatusCode.OK
-            End Using
-        Catch ex As WebException
-            Return False
-        Catch ex As Exception
-            Return False
-        End Try
-    End Function
+    'IsUrlValid removed (security #16): it fetched any URL from the server with the server's own network credentials
+    '(Proxy.Credentials = DefaultNetworkCredentials) and forced TLS 1.0 for the whole site. It was never called.
+    'If a live URL check is ever needed: https only, a fixed list of hosts, no proxy credentials, don't change SecurityProtocol.
     Public Function IsValidItemId(itemId As String) As Boolean
         Dim regex As New Regex("^\d{5}$")
         Return regex.IsMatch(itemId)
