@@ -1,12 +1,14 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN024 (11/24/2026)
+*<Common>: Version changed to 024 (Common.VERSION), so browsers load the new CSS / JS files.
+*<CustSetting>: Only JFC_BRANCH and KMS_SUPPORT can change customer settings. JFC_HO users could still change them; they now only view the page (like sales reps), and the server refuses their saves. See Documents/CustSettingPermission.md.
+
 KOSCUS_JFCADMIN023 (11/19/2026)
 *<Common>: Version changed to 023 (Common.VERSION), so browsers load the new CSS / JS files.
 *<OrderForm, JFCAdmin menu, Home>: Users with the JFC_NS role (webuser_vendor.userCompany_id = 'JFC_NS') can open Order Form and view / add / edit / delete order forms for all branches (same branch list as JFC HO). Other pages (Branch Settings, Tool) are unchanged for them.
 *<CustSetting>: Fixed: sales reps (and other users without JFC_BRANCH / JFC_HO / KMS_SUPPORT) could change customer settings. Changing a Delivery Schedule master dropdown made a postback that turned on the "Update Changes" button for everyone, and the save did not check the role. Now for those users the delivery master dropdowns, Send Reminder / Notify check boxes and the schedule "Update Changes" button are locked or hidden, and every save / delete / add handler on the page checks the role on the server. See Documents/CustSettingPermission.md.
-*<Common>: Version changed to 023.1 (Common.VERSION), so browsers load the new CSS / JS files.
-*<CustSetting>: Only JFC_BRANCH and KMS_SUPPORT can change customer settings. JFC_HO users could still change them; they now only view the page (like sales reps), and the server refuses their saves. See Documents/CustSettingPermission.md.
 
 KOSCUS_JFCADMIN022 (11/09/2026)
 *<Common>: Version changed to 022 (Common.VERSION), so browsers load the new CSS / JS files.
