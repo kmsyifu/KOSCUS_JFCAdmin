@@ -105,6 +105,7 @@ Partial Class JFCAdmin_CustSetting
                     btnAddUser.Visible = False
                     btnSaveCust.Visible = False
                     btnAddSchedule.Visible = False
+                    btnUpdateSchedule.Visible = False   'Delivery Schedule is outside pnlCustSetting, so hide its save button too
                     ViewState("JFC_ADMINGROUP") = False
 
 
@@ -139,10 +140,29 @@ Partial Class JFCAdmin_CustSetting
                     lstAllExcepGrpItem.Enabled = False
                 End If
             Else
-                SetUpdateButton(True)
+                'Only users who may change settings get the save buttons turned on (before: every postback, e.g. changing
+                'a delivery master dropdown, turned on "Update Changes" for sales reps too)
+                If IsJfcAdminGroup() Then SetUpdateButton(True)
             End If
         End Using
     End Sub
+
+
+    '--------------------------------------------------------------------------------------------------------------------
+    'True when the user may change customer settings (JFC_BRANCH, JFC_HO, KMS_SUPPORT - set in Page_Load).
+    'Sales reps and other roles can only look. Every save handler checks this on the server, so a hidden or disabled
+    'button that is clicked anyway (old page, browser dev tools) still saves nothing.
+    '--------------------------------------------------------------------------------------------------------------------
+    Private Function IsJfcAdminGroup() As Boolean
+        Return ViewState("JFC_ADMINGROUP") IsNot Nothing AndAlso CBool(ViewState("JFC_ADMINGROUP"))
+    End Function
+
+    Private Function DenyIfNotAdmin() As Boolean
+        If IsJfcAdminGroup() Then Return False
+        SetUpdateButton(False)
+        MessageBox("You do not have permission to change customer settings.", "Error")
+        Return True
+    End Function
 
 
     Protected Sub lstCustCompany_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstCustCompany.SelectedIndexChanged
@@ -300,6 +320,7 @@ Partial Class JFCAdmin_CustSetting
     'Save - only writes the parts that actually changed
     '--------------------------------------------------------------------------------------------------------------------
     Protected Sub btnSaveCust_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSaveCust.Click, btnUpdateChnage.Click, btnUpdateSchedule.Click
+        If DenyIfNotAdmin() Then Exit Sub
 
         'Validate schedule masters first (cheap, no DB)
         For Each row As GridViewRow In grdActiveSchedule.Rows
@@ -892,6 +913,7 @@ Partial Class JFCAdmin_CustSetting
 
 
     Protected Sub btnPopSaveDelivery_Click(sender As Object, e As System.EventArgs) Handles btnPopSaveDelivery.Click
+        If DenyIfNotAdmin() Then Exit Sub
         Dim cmd As String
         Dim DeliveryDate As DateTime
         Dim Orderdate As DateTime
@@ -966,6 +988,7 @@ Partial Class JFCAdmin_CustSetting
 
 
     Protected Sub btnPopDeleteDelivery_Click(sender As Object, e As System.EventArgs) Handles btnPopDeleteDelivery.Click
+        If DenyIfNotAdmin() Then Exit Sub
         Dim dt As Date
 
         Using DB As New DBHelper
@@ -988,6 +1011,7 @@ Partial Class JFCAdmin_CustSetting
         If e.CommandName = "EDIT_ROW" Then
             'showScheduleDtl(Convert.ToString(e.CommandArgument))
         ElseIf e.CommandName = "DELETE_ROW" Then
+            If DenyIfNotAdmin() Then Exit Sub
             'Delete schedule
             Dim gvr As GridViewRow = CType(CType(e.CommandSource, ImageButton).NamingContainer, GridViewRow)
             deleteScheduleRow(Convert.ToString(e.CommandArgument), gvr.RowIndex)
@@ -1037,6 +1061,7 @@ Partial Class JFCAdmin_CustSetting
 
 
     Protected Sub btnAddschedule_Click(sender As Object, e As System.EventArgs) Handles btnAddSchedule.Click
+        If DenyIfNotAdmin() Then Exit Sub
 
         Dim dt As DataTable = GetTableWithNodata()
         Dim dr As DataRow
@@ -1101,6 +1126,7 @@ Partial Class JFCAdmin_CustSetting
 
 
     Protected Sub lstDeliveryMaster_SelectedIndexChanged(sender As Object, e As System.EventArgs)
+        If DenyIfNotAdmin() Then Exit Sub
         Dim ddlClientId As String = (CType(sender, DropDownList)).ClientID
         Dim firstcount As Integer = ddlClientId.IndexOf("_")
         Dim lastcount As Integer = ddlClientId.LastIndexOf("_")
@@ -1347,10 +1373,14 @@ Partial Class JFCAdmin_CustSetting
             Dim linkbtn As LinkButton = e.Row.FindControl("lnkdeliveryMasterName")
             Dim Imgbtn As ImageButton = e.Row.FindControl("btnDelete")
 
-            If Not ViewState("JFC_ADMINGROUP") Then
+            If Not IsJfcAdminGroup() Then
                 linkbtn.ForeColor = Drawing.Color.Black
                 linkbtn.Enabled = False
                 Imgbtn.Visible = False
+                'Look only: the master dropdown and the two check boxes are outside pnlCustSetting, so lock them here
+                CType(e.Row.FindControl("lstDeliveryMaster"), DropDownList).Enabled = False
+                CType(e.Row.FindControl("ChkSendReminder"), CheckBox).Enabled = False
+                CType(e.Row.FindControl("ckbEmail"), CheckBox).Enabled = False
             End If
 
             'Load the delivery master list once per request, not once per row
