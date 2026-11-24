@@ -28,6 +28,7 @@ Partial Class Login_Login
         Dim vendorCompanyID As String = ""
         Dim email As String
         Dim usedFlatPassword As Boolean = False
+        Dim rememberedLogin As Boolean = False 'True: log in with the saved login (KOSCUS_REMEMBER), no password typed
 
         'Show msg such as time out
         If Session("MSG") <> "" Then
@@ -97,11 +98,22 @@ Partial Class Login_Login
                 txtPassword.Text = ViewState("PASSWORD")
                 chkRememberMe.Checked = IsMobile()
             Else
-                'RememberMe by cookie
-                If IsPostBack = False And Request.Cookies("KOSCUS_EMAIL") IsNot Nothing Then
+                'RememberMe by cookie (security #14): KOSCUS_REMEMBER holds a signed token, not the password.
+                'Before, KOSCUS_PASSWD kept the plain password for 60 days and it was written back into the page.
+                Dim rememberedEmail As String = ReadRememberedEmail(DB)
+                If IsPostBack = False AndAlso rememberedEmail <> "" Then
+                    txtUserName.Text = rememberedEmail
+                    txtPassword.Attributes("placeholder") = "(saved - click Login)"
+                    chkRememberMe.Checked = True
+                    'Links in order / item emails use AUTO_LOGIN=Y: log in at once with the saved login
+                    If ViewState("AUTO_LOGIN") = "Y" Then rememberedLogin = True
+                ElseIf IsPostBack = True AndAlso txtPassword.Text = "" AndAlso rememberedEmail <> "" AndAlso
+                       rememberedEmail = CString(txtUserName.Text).Trim.ToLower Then
+                    'Login clicked with the saved login (password box left empty)
+                    rememberedLogin = True
+                ElseIf IsPostBack = False AndAlso Request.Cookies("KOSCUS_EMAIL") IsNot Nothing Then
+                    'Email only (old cookie, or the saved login no longer valid: password changed / expired)
                     txtUserName.Text = Request.Cookies("KOSCUS_EMAIL").Value
-                    txtPassword.Attributes("value") = Request.Cookies("KOSCUS_PASSWD").Value
-                    If ViewState("AUTO_LOGIN") = "Y" Then txtPassword.Text = txtPassword.Attributes("value")
                     chkRememberMe.Checked = True
                 End If
 
@@ -113,6 +125,8 @@ Partial Class Login_Login
                 'End If
             End If
 
+            'Old "remember me" cookie with the plain password: delete it as soon as the login page is opened
+            If Request.Cookies("KOSCUS_PASSWD") IsNot Nothing Then DeleteCookie("KOSCUS_PASSWD")
             If Not IsPostBack And Request.Cookies("KOSCUS_DEVICECODE") IsNot Nothing Then
                 ViewState("DeviceCode") = Request.Cookies("KOSCUS_DEVICECODE").Value
             End If
@@ -122,7 +136,7 @@ Partial Class Login_Login
                 Exit Sub
             End If
 
-            If txtPassword.Text = "" Then
+            If txtPassword.Text = "" AndAlso Not rememberedLogin Then
                 txtPassword.Focus()
                 Exit Sub
             End If
@@ -132,6 +146,9 @@ Partial Class Login_Login
             r = DB.GetDataRow("select * from webuser where email = :email", email)
             If r Is Nothing Then GoTo fail
             If Val(r("user_id")) <= 0 Then GoTo fail
+
+            'Saved login (KOSCUS_REMEMBER checked above: signed, not expired, password not changed since)
+            If rememberedLogin Then GoTo PASS
 
             'Check flat password, onetime password, and regular password
             'Read each setting once on this page's connection (GetUserParam opened a new DB connection on every call)
@@ -174,15 +191,18 @@ PASS:
             Session("SYS_SCREEN_HEIGHT") = Request.QueryString("screenheight")
             'Response.Cookies("KOSCUS_LOGIN")("RememberMe") = IIf(chkRememberMe.Checked, email, "")
             'Response.Cookies("KOSCUS_LOGIN").Expires = DateTime.Now.AddDays(60)
+            'Remember me (security #14): email + signed token, never the password
             If chkRememberMe.Checked Then
-                Response.Cookies("KOSCUS_EMAIL").Expires = DateTime.Now.AddDays(60)
-                Response.Cookies("KOSCUS_PASSWD").Expires = DateTime.Now.AddDays(60)
+                Response.Cookies("KOSCUS_EMAIL").Value = email
+                Response.Cookies("KOSCUS_EMAIL").Expires = DateTime.Now.AddDays(REMEMBER_DAYS)
+                SetRememberCookie(email, CString(r("password")))
             Else
+                Response.Cookies("KOSCUS_EMAIL").Value = ""
                 Response.Cookies("KOSCUS_EMAIL").Expires = DateTime.Now.AddDays(-1)
-                Response.Cookies("KOSCUS_PASSWD").Expires = DateTime.Now.AddDays(-1)
+                DeleteCookie(REMEMBER_COOKIE)
             End If
-            Response.Cookies("KOSCUS_EMAIL").Value = email
-            Response.Cookies("KOSCUS_PASSWD").Value = txtPassword.Text.Trim
+            'The old cookie with the plain password is removed at every login
+            DeleteCookie("KOSCUS_PASSWD")
 
 
             'Leave event
@@ -278,5 +298,62 @@ FAIL:
         Return True
     End Function
 
+    '--------------------------------------------------------------------------------------------------------------------
+    ' Remember me (security #14) - same as the customer portal (KOSCUS Login.aspx.vb), own purpose string
+    ' Cookie KOSCUS_REMEMBER = MachineKey.Protect("email|expiresUtcTicks|fingerprint of the current password hash").
+    ' - Signed and encrypted with the site's machine key: it can't be read or made by anyone else.
+    ' - Ends after REMEMBER_DAYS, and as soon as the password is changed (the fingerprint no longer matches).
+    ' - Never contains the password. Before, KOSCUS_PASSWD held the plain password for 60 days.
+    ' Unchecking "Remember me" at login deletes it. A different server (other machine key) just asks for the password.
+    '--------------------------------------------------------------------------------------------------------------------
+    Private Const REMEMBER_COOKIE As String = "KOSCUS_REMEMBER"
+    Private Const REMEMBER_DAYS As Integer = 60
+    Private Const REMEMBER_PURPOSE As String = "KOSCUS_JFCAdmin.Login.RememberMe.v1"
+
+    Private Shared Function PasswordFingerprint(ByVal passwordHash As String) As String
+        Using sha As New System.Security.Cryptography.SHA256Managed()
+            Return Convert.ToBase64String(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes("remember|" & CString(passwordHash))))
+        End Using
+    End Function
+
+    Private Sub SetRememberCookie(ByVal email As String, ByVal passwordHash As String)
+        If CString(passwordHash) = "" Then DeleteCookie(REMEMBER_COOKIE) : Exit Sub
+        Dim expires As DateTime = DateTime.UtcNow.AddDays(REMEMBER_DAYS)
+        Dim payload As String = email.ToLower() & "|" & expires.Ticks.ToString() & "|" & PasswordFingerprint(passwordHash)
+        Dim token As String = Convert.ToBase64String(System.Web.Security.MachineKey.Protect(System.Text.Encoding.UTF8.GetBytes(payload), REMEMBER_PURPOSE))
+        Dim c As New HttpCookie(REMEMBER_COOKIE, token)
+        c.Expires = expires.ToLocalTime()
+        c.HttpOnly = True
+        c.Secure = Request.IsSecureConnection
+        c.SameSite = SameSiteMode.Lax
+        Response.Cookies.Set(c)
+    End Sub
+
+    'Email of a valid saved login, or "" (no cookie, broken, expired, other server, or password changed since)
+    Private Function ReadRememberedEmail(ByVal DB As DBHelper) As String
+        Try
+            Dim c As HttpCookie = Request.Cookies(REMEMBER_COOKIE)
+            If c Is Nothing OrElse CString(c.Value) = "" Then Return ""
+            Dim bytes As Byte() = System.Web.Security.MachineKey.Unprotect(Convert.FromBase64String(c.Value), REMEMBER_PURPOSE)
+            If bytes Is Nothing Then Return ""
+            Dim parts As String() = System.Text.Encoding.UTF8.GetString(bytes).Split("|"c)
+            If parts.Length <> 3 Then Return ""
+            Dim ticks As Long
+            If Not Long.TryParse(parts(1), ticks) OrElse ticks < DateTime.UtcNow.Ticks Then Return ""
+            Dim email As String = parts(0)
+            Dim currentHash As String = CString(DB.GetScalar("SELECT password FROM webuser WHERE email = :1", email))
+            If currentHash = "" OrElse PasswordFingerprint(currentHash) <> parts(2) Then Return ""
+            Return email
+        Catch
+            'Bad / foreign cookie (e.g. made on another server): ignore it
+            Return ""
+        End Try
+    End Function
+
+    Private Sub DeleteCookie(ByVal name As String)
+        Dim c As New HttpCookie(name, "")
+        c.Expires = DateTime.Now.AddDays(-1)
+        Response.Cookies.Set(c)
+    End Sub
 
 End Class
