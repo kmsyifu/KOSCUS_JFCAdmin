@@ -9,7 +9,8 @@ Numbers (#18, #6, #5) are the item numbers from the security review list.
 | - | `Login/ShowFile.aspx` served any file, e.g. `Web.config` | Only `.pdf` in `Documents\` | `2ccff8f` |
 | 6 | Customer Items Import saved any file inside the site | Only `.xls/.xlsx`, saved in `App_Data`, deleted after import | `cff77a8` |
 | 5 | Customer-typed text shown as HTML (stored XSS) | HTML encode on display | `69bd3b4` |
-| 16 | `BranchSetting.IsUrlValid` could fetch any URL with the server's credentials (SSRF) | Removed (never called) | see [#16](#16-branchsetting-ssrf) |
+| 16 | `BranchSetting.IsUrlValid` could fetch any URL with the server's credentials (SSRF) | Removed (never called) | `1fff50c` |
+| 14 | "Remember me" kept the plain password in a 60-day cookie | Signed token cookie, no password | see [#14](#14-password-in-a-60-day-cookie) |
 
 ---
 
@@ -131,3 +132,33 @@ site.
 
 **Test:** Branch Settings - save a branch, add / update a homepage image, Promo Item, Order Reminder, Delivery
 Master: everything works as before.
+
+---
+
+## #14 Password in a 60-day cookie
+
+Same change as the customer portal (KOSCUS `Documents/SecurityFixes.md`, #14); the code in `Login/Login.aspx.vb` is
+the same except for the signing purpose (`KOSCUS_JFCAdmin.Login.RememberMe.v1`), so a token from one site can't be
+used on the other.
+
+**Problem:** with "Remember me" checked, `KOSCUS_PASSWD` kept the password as typed for 60 days and the login page
+wrote it back into the password box (page source). Emailed links with `AUTO_LOGIN=Y` logged in with that password.
+
+**Fix (no database change)**
+- New cookie `KOSCUS_REMEMBER` = `MachineKey.Protect("email|expiresUtcTicks|SHA-256 fingerprint of webuser.password")`:
+  encrypted and signed, never the password, `HttpOnly`, `Secure` on https, `SameSite=Lax`, 60 days, renewed at login.
+- Login page: email filled, password box "(saved - click Login)", Login with an empty password box logs in.
+  `AUTO_LOGIN=Y` links (order / item emails from the API) log in at once with a valid saved login.
+- Ends after 60 days, on any password change, or when Login is clicked with "Remember me" unchecked.
+- Old `KOSCUS_PASSWD` deleted when the login page is opened and at every login.
+
+**Effect on users:** JFC admins with a saved login type the password once after the release.
+
+**Things to know:** `machineKey` is `AutoGenerate`; another server / app pool without a loaded user profile means users
+type the password again (nothing breaks). Logout does not end the saved login (same as before).
+
+**Test**
+1. Log in with "Remember me": cookies `KOSCUS_REMEMBER` (HttpOnly) and `KOSCUS_EMAIL`, no `KOSCUS_PASSWD`.
+2. Close the browser, open the login page: email filled, no password in the page source, Login works.
+3. Open an `AUTO_LOGIN=Y` link from an order email with a saved login: goes straight to the page.
+4. Change the password: the saved login no longer works. Log in with "Remember me" unchecked: cookies deleted.
