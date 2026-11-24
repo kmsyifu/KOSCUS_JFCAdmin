@@ -30,7 +30,14 @@ How it happened:
   `btnPopSaveDelivery_Click`, `btnPopDeleteDelivery_Click`, `grdActiveSchedule_RowCommand` (DELETE_ROW),
   `btnAddschedule_Click`, `lstDeliveryMaster_SelectedIndexChanged`.
 
-Roles that can change settings are unchanged: `JFC_BRANCH`, `JFC_HO`, `KMS_SUPPORT`.
+Roles that can change settings: `JFC_BRANCH` and `KMS_SUPPORT` only.
+
+## Update 11/24/2026: JFC_HO is look-only too
+
+The first fix kept `JFC_HO` in the edit list (it was allowed before). Only `JFC_BRANCH` and `KMS_SUPPORT` should
+change customer settings, so `jfcRole = "JFC_HO"` was removed from the role check in `Page_Load`. JFC_HO users now
+see Customer Settings the same way as sales reps (grayed out, no save / add / delete), and the server-side checks
+refuse their saves. JFC_HO keeps its other rights (Order Form, Branch Settings, Tool, branch lists) - unchanged.
 The user list (Add / delete user) keeps its own rules (`btnPopSaveUser_Click`) and was not changed.
 
 ## Deploy
@@ -43,12 +50,12 @@ Code-behind only: deploy `JFCAdmin/CustSetting.aspx.vb` (or the compiled site). 
    - Settings panel and user list are grayed out; no Save / Update Changes / Add Schedule buttons.
    - Delivery Schedule: master dropdowns and check boxes are grayed out; no Update Changes button; no delete (X) icons.
    - Change the ship-to dropdown or the customer: still no save button appears.
-2. Log in as JFC_BRANCH (and KMS_SUPPORT, JFC_HO): change a delivery master, Update Changes turns green, save works
+2. Log in as JFC_HO: same as step 1 (look only).
+3. Log in as JFC_BRANCH (and KMS_SUPPORT): change a delivery master, Update Changes turns green, save works
    as before; add / delete schedule works.
-3. Optional: as a sales rep, re-enable the button with browser dev tools and click it: the page shows the permission
+4. Optional: as a sales rep or JFC_HO, re-enable the button with browser dev tools and click it: the page shows the permission
    message and nothing is saved.
 
 ## Still open
 
-- `JFC_HO` can still change settings (it was already allowed before this fix). If only `JFC_BRANCH` and
-  `KMS_SUPPORT` should, remove `jfcRole = "JFC_HO"` from the role check in `Page_Load`.
+- Nothing for this page.
