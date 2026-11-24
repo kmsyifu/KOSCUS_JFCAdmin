@@ -97,7 +97,8 @@ Partial Class JFCAdmin_CustSetting
                 'Read the user's JFC role once (same query IsJfcBranchAdmin / IsJfcHoAdmin / IsKmsSupport each run)
                 Dim jfcRole As String = CString(DB.GetScalar("SELECT userCompany_id FROM webUser_vendor WHERE vendorCompany_id = 'JFC' and email = :1", email))
                 Dim isKmsSupportUser As Boolean = (jfcRole = "KMS_SUPPORT")
-                If Not (jfcRole = "JFC_BRANCH" Or jfcRole = "JFC_HO" Or isKmsSupportUser) Then
+                'Only JFC_BRANCH and KMS_SUPPORT can change customer settings (JFC_HO removed 11/24/2026 - look only, like sales reps)
+                If Not (jfcRole = "JFC_BRANCH" OrElse isKmsSupportUser) Then
                     pnlCustSetting.Enabled = False
                     btnUpdateChnage.Visible = False
                     btnAddCust.Visible = False
@@ -149,7 +150,7 @@ Partial Class JFCAdmin_CustSetting
 
 
     '--------------------------------------------------------------------------------------------------------------------
-    'True when the user may change customer settings (JFC_BRANCH, JFC_HO, KMS_SUPPORT - set in Page_Load).
+    'True when the user may change customer settings (JFC_BRANCH, KMS_SUPPORT - set in Page_Load).
     'Sales reps and other roles can only look. Every save handler checks this on the server, so a hidden or disabled
     'button that is clicked anyway (old page, browser dev tools) still saves nothing.
     '--------------------------------------------------------------------------------------------------------------------
