@@ -1,10 +1,12 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------
 Release Notes
 ----------------------------------------------------------------------------------------------------------------------------------
+KOSCUS_JFCADMIN017.20 (11/25/2026)
+*<Common>: Version changed to 017.20 (Common.VERSION), so browsers load the new CSS / JS files.
+
 KOSCUS_JFCADMIN017.19 (11/24/2026)
 *<Common>: Version changed to 017.19 (Common.VERSION), so browsers load the new CSS / JS files.
 *<CustSetting>: Only JFC_BRANCH and KMS_SUPPORT can change customer settings. JFC_HO users could still change them; they now only view the page (like sales reps), and the server refuses their saves. See Documents/CustSettingPermission.md.
-*<Common>: Version changed to 017.20 (Common.VERSION), so browsers load the new CSS / JS files.
 
 KOSCUS_JFCADMIN017.18 (11/19/2026)
 *<Common>: Version changed to 017.18 (Common.VERSION), so browsers load the new CSS / JS files.
